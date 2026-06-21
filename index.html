@@ -21,7 +21,8 @@
   a.card{text-decoration:none;color:inherit;background:linear-gradient(180deg,var(--panel),#0d1017);border:1px solid var(--line);
     border-radius:18px;padding:30px 26px;transition:.18s;display:flex;flex-direction:column;gap:10px}
   a.card:hover{transform:translateY(-5px);box-shadow:0 22px 48px -16px rgba(0,0,0,.7)}
-  a.card.games:hover{border-color:var(--acc)} a.card.books:hover{border-color:var(--gold)}
+  a.card.games:hover{border-color:var(--acc)} a.card.books:hover{border-color:var(--gold)} a.card.vocab:hover{border-color:#22d3ee}
+  .vocab .go{color:#22d3ee}
   .ic{font-size:38px}
   .ct{font-family:'Fraunces',serif;font-size:24px;font-weight:900}
   .cd{color:var(--mut);font-size:14px;line-height:1.5}
@@ -47,6 +48,12 @@
       <div class="ct">Book Index</div>
       <div class="cd">756 books across 16 genres ranked by Goodreads ratings, with cover art, star ratings, and a flashcard-style detail view.</div>
       <div class="go">Open the Book Index →</div>
+    </a>
+    <a class="card vocab" href="vocab.html">
+      <div class="ic">📖</div>
+      <div class="ct">Lexicon Vault</div>
+      <div class="cd">A personal vocabulary storer — auto-fetches definitions, saves words in your browser, with tags, status tracking and flashcard study.</div>
+      <div class="go">Open the Lexicon Vault →</div>
     </a>
   </div>
   <footer>Fan-made reference tools · data compiled from public sources and approximate. Cover art © respective publishers.</footer>
