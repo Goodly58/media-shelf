@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Index — Interactive Browsers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0a0c11;--panel:#14181f;--line:#262c3b;--txt:#eef1f7;--mut:#8b94a8;--acc:#4f8cff;--acc2:#8b5cff;--gold:#e6b54a;--rose:#d98a3d}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;color:var(--txt);font-family:'Inter',system-ui,Segoe UI,Roboto,Arial,sans-serif;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;
+    background:radial-gradient(900px 480px at 20% -10%,#1a2236,transparent 58%),radial-gradient(800px 480px at 85% -6%,#2a1f12,transparent 55%),var(--bg)}
+  .hd{text-align:center;margin-bottom:42px}
+  h1{font-family:'Fraunces',Georgia,serif;font-size:38px;font-weight:900;letter-spacing:-.6px;margin:0}
+  h1 b{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--mut);margin-top:10px;font-size:15px}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;max-width:760px;width:100%}
+  a.card{text-decoration:none;color:inherit;background:linear-gradient(180deg,var(--panel),#0d1017);border:1px solid var(--line);
+    border-radius:18px;padding:30px 26px;transition:.18s;display:flex;flex-direction:column;gap:10px}
+  a.card:hover{transform:translateY(-5px);box-shadow:0 22px 48px -16px rgba(0,0,0,.7)}
+  a.card.games:hover{border-color:var(--acc)} a.card.books:hover{border-color:var(--gold)}
+  .ic{font-size:38px}
+  .ct{font-family:'Fraunces',serif;font-size:24px;font-weight:900}
+  .cd{color:var(--mut);font-size:14px;line-height:1.5}
+  .go{margin-top:8px;font-weight:700;font-size:14px;color:var(--acc)}
+  .books .go{color:var(--gold)}
+  footer{margin-top:44px;color:#5f6878;font-size:12.5px;text-align:center}
+</style>
+</head>
+<body>
+  <div class="hd">
+    <h1>Interactive <b>Browsers</b></h1>
+    <div class="sub">Two filterable, sortable catalogs — pick one to explore.</div>
+  </div>
+  <div class="cards">
+    <a class="card games" href="games.html">
+      <div class="ic">🎮</div>
+      <div class="ct">Game Index</div>
+      <div class="cd">1,396 PC games (2010–2026) ranked by Metacritic &amp; IGN, with verified scores, cover art, genres and a detail view.</div>
+      <div class="go">Open the Game Index →</div>
+    </a>
+    <a class="card books" href="books.html">
+      <div class="ic">📚</div>
+      <div class="ct">Book Index</div>
+      <div class="cd">756 books across 16 genres ranked by Goodreads ratings, with cover art, star ratings, and a flashcard-style detail view.</div>
+      <div class="go">Open the Book Index →</div>
+    </a>
+  </div>
+  <footer>Fan-made reference tools · data compiled from public sources and approximate. Cover art © respective publishers.</footer>
+</body>
+</html>
