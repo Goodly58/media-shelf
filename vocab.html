@@ -52,6 +52,13 @@
     padding:13px 22px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;transition:.15s;white-space:nowrap}
   .addbtn:hover{filter:brightness(1.07);transform:translateY(-1px)} .addbtn:disabled{opacity:.6;cursor:default}
   .hint{width:100%;font-size:12px;color:var(--mut2);margin-top:-2px}
+  .lockpanel{display:flex;gap:11px;align-items:center;flex-wrap:wrap;width:100%}
+  .lockpanel .lockicon{font-size:20px}
+  .lockpanel input{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--line2);border-radius:11px;
+    color:var(--txt);font-size:15px;padding:13px 14px;outline:none;font-family:inherit;letter-spacing:.2em}
+  .lockpanel input:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--accSoft)}
+  .lockmsg{width:100%;font-size:12.5px;color:var(--learning);font-weight:600;min-height:4px}
+  #lockBtn{padding:13px 13px}
 
   .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:20px 0 6px}
   .search{position:relative;flex:1;min-width:200px}
@@ -174,14 +181,23 @@
     </div>
 
     <div class="addbar">
-      <div class="wordin">
-        <input id="wordIn" type="text" placeholder="Type a word you found…" autocomplete="off" autofocus>
+      <div id="addArea" style="display:contents">
+        <div class="wordin">
+          <input id="wordIn" type="text" placeholder="Type a word you found…" autocomplete="off">
+        </div>
+        <div class="srcin">
+          <input id="srcIn" type="text" placeholder="Where you found it (optional)" autocomplete="off">
+        </div>
+        <button class="addbtn" id="addBtn">+ Add word</button>
+        <button class="btn" id="lockBtn" title="Lock adding again">🔓</button>
+        <div class="hint">Press <b>Enter</b> to add · definition is looked up automatically · everything saves to this browser.</div>
       </div>
-      <div class="srcin">
-        <input id="srcIn" type="text" placeholder="Where you found it (optional)" autocomplete="off">
+      <div id="lockPanel" class="lockpanel">
+        <span class="lockicon">🔒</span>
+        <input id="pwIn" type="password" inputmode="numeric" placeholder="Enter password to add words" autocomplete="off">
+        <button class="addbtn" id="unlockBtn">Unlock</button>
+        <div class="lockmsg" id="lockMsg"></div>
       </div>
-      <button class="addbtn" id="addBtn">+ Add word</button>
-      <div class="hint">Press <b>Enter</b> to add · definition is looked up automatically · everything saves to this browser.</div>
     </div>
   </div>
 </header>
@@ -236,6 +252,45 @@ function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(
 
 function toast(msg,kind){ const t=$('#toast'); t.textContent=msg; t.className='show '+(kind||''); clearTimeout(t._t); t._t=setTimeout(()=>t.className='',2400); }
 
+/* ---------- add-word lock (password gate) ---------- */
+const PW={ salt:'7baab1b915a5036a7216c28a594b455e', iter:150000, hash:'80d7e5e48ff188ba95d8006d91e17f62ae875e7c6593390274ce5ac41b4594d7' };
+const MAX_TRIES=3;
+let unlocked = localStorage.getItem('lex_unlocked')==='1';
+let clientIP='noip';
+function hexBytes(h){ const a=new Uint8Array(h.length/2); for(let i=0;i<a.length;i++) a[i]=parseInt(h.substr(i*2,2),16); return a; }
+async function verifyPW(pw){
+  if(!(window.crypto&&crypto.subtle)) return false;
+  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:hexBytes(PW.salt),iterations:PW.iter,hash:'SHA-256'},key,256);
+  const hex=[...new Uint8Array(bits)].map(b=>b.toString(16).padStart(2,'0')).join('');
+  return hex===PW.hash;
+}
+async function getIP(){ try{ const r=await fetch('https://api.ipify.org?format=json'); return (await r.json()).ip||'noip'; }catch(e){ return 'noip'; } }
+const failKey=()=>'lex_fail_'+clientIP;
+const getFails=()=>+(localStorage.getItem(failKey())||0);
+const setFails=n=>localStorage.setItem(failKey(),n);
+const lockedOut=()=>getFails()>=MAX_TRIES;
+function updateLockMsg(){
+  const m=$('#lockMsg'); if(!m) return; const left=MAX_TRIES-getFails();
+  if(lockedOut()){ $('#pwIn').disabled=true; $('#unlockBtn').disabled=true; m.textContent='🚫 Too many attempts — adding is disabled on this network.'; m.style.color='var(--rose)'; }
+  else if(getFails()>0){ m.textContent=left+' attempt'+(left===1?'':'s')+' remaining.'; m.style.color='var(--learning)'; }
+  else m.textContent='';
+}
+function applyLock(){
+  const area=$('#addArea'), panel=$('#lockPanel');
+  if(unlocked){ area.style.display='contents'; panel.style.display='none'; }
+  else { area.style.display='none'; panel.style.display='flex'; updateLockMsg(); }
+}
+async function tryUnlock(){
+  if(lockedOut()){ updateLockMsg(); return; }
+  const pw=$('#pwIn').value; const btn=$('#unlockBtn');
+  btn.disabled=true; btn.textContent='Checking…';
+  const ok=await verifyPW(pw);
+  btn.disabled=false; btn.textContent='Unlock';
+  if(ok){ unlocked=true; localStorage.setItem('lex_unlocked','1'); setFails(0); $('#pwIn').value=''; applyLock(); $('#wordIn').focus(); toast('Unlocked — you can add words','ok'); }
+  else { setFails(getFails()+1); $('#pwIn').value=''; updateLockMsg(); toast(lockedOut()?'Locked: too many attempts':'Wrong password','err'); }
+}
+
 /* ---------- definition fetch ---------- */
 async function fetchDef(word){
   try{
@@ -258,6 +313,7 @@ async function fetchDef(word){
 }
 
 async function addWord(){
+  if(!unlocked){ toast('Adding is locked — enter the password','err'); const p=$('#pwIn'); if(p) p.focus(); return; }
   const raw = $('#wordIn').value.trim();
   if(!raw){ $('#wordIn').focus(); return; }
   const term = raw.replace(/\s+/g,' ');
@@ -491,6 +547,7 @@ $('#overlay').addEventListener('click',e=>{ if(e.target===$('#overlay')) closeOv
 
 /* ---------- seed examples ---------- */
 async function seed(){
+  if(!unlocked){ toast('Unlock to add words','err'); return; }
   const samples=[
     {word:'serendipity',source:'The Alchemist'},
     {word:'ephemeral',source:''},
@@ -517,7 +574,7 @@ $('#srcIn').addEventListener('keydown',e=>{ if(e.key==='Enter') addWord(); });
 $('#posFilter').addEventListener('change',render);
 $('#studyBtn').onclick=openStudy;
 $('#exportBtn').onclick=exportJSON;
-$('#importBtn').onclick=()=>$('#importFile').click();
+$('#importBtn').onclick=()=>{ if(!unlocked){ toast('Unlock to import words','err'); return; } $('#importFile').click(); };
 $('#importFile').onchange=e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); e.target.value=''; };
 $('#seedBtn').onclick=seed;
 document.addEventListener('keydown',e=>{
@@ -525,7 +582,12 @@ document.addEventListener('keydown',e=>{
   if(e.key==='/' && document.activeElement!==$('#wordIn') && document.activeElement!==$('#search')){ e.preventDefault(); $('#wordIn').focus(); }
 });
 
-buildStats(); buildChips(); render();
+$('#unlockBtn').onclick=tryUnlock;
+$('#pwIn').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
+$('#lockBtn').onclick=()=>{ unlocked=false; localStorage.removeItem('lex_unlocked'); applyLock(); toast('Locked','ok'); };
+
+buildStats(); buildChips(); render(); applyLock();
+getIP().then(ip=>{ clientIP=ip; if(!unlocked) updateLockMsg(); });
 </script>
 </body>
 </html>
