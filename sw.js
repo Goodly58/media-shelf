@@ -5,4 +5,10 @@
    site root gives the worker whole-site scope.
    The ?v= query is forwarded so the imported script is re-fetched (and its
    cache renamed) whenever pwa.js bumps SW_VERSION. */
+/* BUILD_STAMP: d8c5413545
+   Browsers revalidate the REGISTERED worker script on navigation, but they only
+   re-install when its bytes differ. This shim was previously byte-identical on
+   every deploy, so a client that had cached an old build could never be told
+   about a new one. The stamp below is rewritten by build-version.js each build,
+   which guarantees a re-install and a fresh precache. Do not hand-edit it. */
 importScripts('assets/sw.js' + (self.location.search || ''));
