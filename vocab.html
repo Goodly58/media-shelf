@@ -387,7 +387,7 @@ function buildStats(){
   const list=collection(), wk=Date.now()-7*864e5;
   const c={total:list.length,new:0,learning:0,mastered:0,week:0};
   list.forEach(w=>{ c[w.status]=(c[w.status]||0)+1; if(new Date(w.dateAdded).getTime()>wk)c.week++; });
-  $('#stats').innerHTML=[{v:c.total,l:'Words'},{v:c.new,l:'New',c:'new'},{v:c.learning,l:'Learning',c:'learning'},
+  $('#stats').innerHTML=[{v:c.new,l:'New',c:'new'},{v:c.learning,l:'Learning',c:'learning'},
     {v:c.mastered,l:'Mastered',c:'mastered'},{v:c.week,l:'This week'}]
     .map(s=>`<div class="stat ${s.c||''}"><div class="v">${s.v}</div><div class="l">${s.l}</div></div>`).join('');
   $('#cntMine').textContent=mine.length; $('#cntCur').textContent=curated.length;
@@ -486,7 +486,7 @@ function render(){
   const arr=filtered(), list=$('#list'); list.innerHTML='';
   arr.forEach(w=>list.appendChild(wordCard(w)));
   const total=collection().length;
-  $('#count').innerHTML=total?`Showing <b>${arr.length}</b> of <b>${total}</b> words`:'';
+  $('#count').innerHTML=total?(arr.length===total?`<b>${total}</b> word${total===1?'':'s'}`:`<b>${arr.length}</b> of ${total} shown`):'';
   const emp=$('#empty');
   if(total===0){
     emp.style.display='block';

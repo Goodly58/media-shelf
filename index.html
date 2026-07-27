@@ -120,8 +120,8 @@
     <a class="tool g" href="games.html">
       <div class="ic">🎮</div>
       <h2>Game Index</h2>
-      <div class="cnt" data-line="games">PC GAMES · METACRITIC &amp; IGN</div>
-      <p>Every notable PC release of the last 16 years, ranked and filterable.</p>
+      <div class="cnt" data-line="games">METACRITIC &amp; IGN</div>
+      <p>Every notable PC release, ranked and filterable.</p>
       <ul>
         <li>Metacritic and IGN scores, many verified against live data</li>
         <li>Filter by genre, year range and minimum score</li>
@@ -133,7 +133,7 @@
     <a class="tool b" href="books.html">
       <div class="ic">📚</div>
       <h2>Book Index</h2>
-      <div class="cnt" data-line="books">BOOKS · GOODREADS RATINGS</div>
+      <div class="cnt" data-line="books">GOODREADS RATINGS</div>
       <p>From ancient classics to this year's releases, sorted by what readers actually rate highest.</p>
       <ul>
         <li>Goodreads ratings, star bars and popularity counts</li>
@@ -206,10 +206,11 @@ fetch('assets/stats.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(s
   document.querySelectorAll('[data-stat]').forEach(el=>{
     const v=s[el.dataset.stat]; if(v!=null) el.textContent=fmt(v);
   });
+  const yr=v=>v<0?Math.abs(v)+' BC':v;
   const gl=document.querySelector('[data-line="games"]');
-  if(gl&&s.games) gl.innerHTML=fmt(s.games)+' PC GAMES · '+s.gamesFrom+'–'+s.gamesTo;
+  if(gl&&s.gamesFrom) gl.textContent=yr(s.gamesFrom)+'–'+s.gamesTo+' · '+s.gamesGenres+' GENRES';
   const bl=document.querySelector('[data-line="books"]');
-  if(bl&&s.books) bl.innerHTML=fmt(s.books)+' BOOKS · '+(s.booksFrom<0?Math.abs(s.booksFrom)+' BC':s.booksFrom)+'–'+s.booksTo;
+  if(bl&&s.booksFrom) bl.textContent=yr(s.booksFrom)+'–'+s.booksTo+' · '+s.booksGenres+' GENRES';
 }).catch(()=>{});
 </script>
 <script src="assets/site.js" defer></script>

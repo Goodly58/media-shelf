@@ -243,8 +243,8 @@
 <div class="wrap">
   <div class="statusrow">
     <span class="pill"><b id="shown">0</b> shown</span>
-    <span>of <b id="total">0</b> books</span>
-    <span id="avg"></span>
+    
+        <span id="avg"></span>
     <span id="activeFilters" style="margin-left:auto"></span>
   </div>
   <div class="grid" id="grid"></div>
@@ -255,8 +255,7 @@
 
 <footer>
   <div class="wrap">
-    <b id="footStats"></b><br>
-    Ratings reflect approximate Goodreads averages and rating counts compiled from public knowledge. Cover images via the Open Library Covers API (a placeholder shows when no cover is found). Click any book for details and links. Fan-made reference tool, not affiliated with Goodreads or Open Library.
+        Ratings reflect approximate Goodreads averages and rating counts compiled from public knowledge. Cover images via the Open Library Covers API (a placeholder shows when no cover is found). Click any book for details and links. Fan-made reference tool, not affiliated with Goodreads or Open Library.
   </div>
 </footer>
 
@@ -295,7 +294,6 @@ function buildStats(){
     {v:authors.toLocaleString(), l:'Authors'},
   ];
   $('#stats').innerHTML = cards.map(c=>`<div class="stat ${c.c||''}"><div class="v">${c.v}</div><div class="l">${c.l}</div></div>`).join('');
-  $('#footStats').textContent = `${BOOKS.length.toLocaleString()} books · ${authors.toLocaleString()} authors · spanning ${fmtYear(YMIN)}–${fmtYear(YMAX)}.`;
 }
 
 function buildChips(){
@@ -387,8 +385,7 @@ function render(){
   currentList=sortBooks(BOOKS.filter(passes));
   grid.innerHTML='';rendered=0;renderBatch();
   $('#shown').textContent=currentList.length.toLocaleString();
-  $('#total').textContent=BOOKS.length.toLocaleString();
-  empty.style.display=currentList.length?'none':'block';
+    empty.style.display=currentList.length?'none':'block';
   const avg=currentList.length?(currentList.reduce((s,b)=>s+b.rating,0)/currentList.length).toFixed(2):0;
   $('#avg').innerHTML=currentList.length?`avg ★ <b>${avg}</b>`:'';
   const af=[];

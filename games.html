@@ -216,7 +216,7 @@
           <div class="logo">🎮</div>
           <div>
             <h1>GAME <b>INDEX</b></h1>
-            <div class="tagline">PC releases 2010–present · ranked by Metacritic &amp; IGN</div>
+            <div class="tagline">Ranked by Metacritic &amp; IGN — filter, sort and find your next game.</div>
           </div>
         </div>
       </div>
@@ -275,8 +275,8 @@
 <div class="wrap">
   <div class="statusrow">
     <span class="pill"><b id="shown">0</b> shown</span>
-    <span>of <b id="total">0</b> games</span>
-    <span id="avg"></span>
+    
+        <span id="avg"></span>
     <span id="activeFilters" style="margin-left:auto"></span>
   </div>
   <div class="grid" id="grid"></div>
@@ -287,8 +287,7 @@
 
 <footer>
   <div class="wrap">
-    <b id="footStats"></b><br>
-    Metacritic scores for the top titles are verified against live metacritic.com data (look for the ✓ badge); remaining scores and all IGN figures are compiled from public knowledge and are approximate.
+        Metacritic scores for the top titles are verified against live metacritic.com data (look for the ✓ badge); remaining scores and all IGN figures are compiled from public knowledge and are approximate.
     Cover art © respective publishers, served via Steam's CDN. Click any game for details. This is a fan-made reference tool, not affiliated with Metacritic or IGN.
   </div>
 </footer>
@@ -327,7 +326,6 @@ function buildStats(){
     {v:YMIN+'–'+String(YMAX).slice(2), l:'Years', c:''},
   ];
   $('#stats').innerHTML = cards.map(c=>`<div class="stat ${c.c}"><div class="v">${c.v}</div><div class="l">${c.l}</div></div>`).join('');
-  $('#footStats').textContent = `${GAMES.length.toLocaleString()} games indexed · ${verified.toLocaleString()} with verified Metacritic scores · covering ${YMIN}–${YMAX}.`;
 }
 
 /* ---------- genre chips ---------- */
@@ -429,8 +427,7 @@ function render(){
   currentList=sortGames(GAMES.filter(passes));
   grid.innerHTML=''; rendered=0; renderBatch();
   $('#shown').textContent=currentList.length.toLocaleString();
-  $('#total').textContent=GAMES.length.toLocaleString();
-  empty.style.display=currentList.length?'none':'block';
+    empty.style.display=currentList.length?'none':'block';
   const avg=currentList.length?Math.round(currentList.reduce((s,g)=>s+g.metacritic,0)/currentList.length):0;
   $('#avg').innerHTML=currentList.length?`avg <b>${avg}</b>`:'';
   // active filter summary
