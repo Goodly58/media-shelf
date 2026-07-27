@@ -384,7 +384,9 @@ function renderBatch(){
 function render(){
   currentList=sortBooks(BOOKS.filter(passes));
   grid.innerHTML='';rendered=0;renderBatch();
-  $('#shown').textContent=currentList.length.toLocaleString();
+  {const _p=$('#shown').parentElement;
+    if(currentList.length===BOOKS.length){ _p.style.display='none'; }
+    else { _p.style.display=''; $('#shown').textContent=currentList.length.toLocaleString(); }}
     empty.style.display=currentList.length?'none':'block';
   const avg=currentList.length?(currentList.reduce((s,b)=>s+b.rating,0)/currentList.length).toFixed(2):0;
   $('#avg').innerHTML=currentList.length?`avg ★ <b>${avg}</b>`:'';

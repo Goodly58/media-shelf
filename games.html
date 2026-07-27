@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GAME INDEX · PC 2010+ — Metacritic &amp; IGN Browser</title>
+<title>Game Index — browse PC games by Metacritic &amp; IGN</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -426,7 +426,9 @@ function renderBatch(){
 function render(){
   currentList=sortGames(GAMES.filter(passes));
   grid.innerHTML=''; rendered=0; renderBatch();
-  $('#shown').textContent=currentList.length.toLocaleString();
+  {const _p=$('#shown').parentElement;
+    if(currentList.length===GAMES.length){ _p.style.display='none'; }
+    else { _p.style.display=''; $('#shown').textContent=currentList.length.toLocaleString(); }}
     empty.style.display=currentList.length?'none':'block';
   const avg=currentList.length?Math.round(currentList.reduce((s,g)=>s+g.metacritic,0)/currentList.length):0;
   $('#avg').innerHTML=currentList.length?`avg <b>${avg}</b>`:'';
