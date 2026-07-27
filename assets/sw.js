@@ -67,8 +67,23 @@ var SHELL = [
   'books.html',
   'vocab.html',
   'manifest.webmanifest',
+  /* Shared chrome */
   'assets/site.css',
   'assets/site.js',
+  /* Enhancement layers. These are part of the shell, not extras — without them
+     an offline load renders an unstyled, unthemed, non-interactive page. */
+  'assets/theme.css',
+  'assets/palette.css',
+  'assets/features.css',
+  'assets/motion.css',
+  'assets/polish.css',
+  'assets/a11y.css',
+  'assets/theme-patch.css',
+  'assets/theme.js',
+  'assets/motion.js',
+  'assets/palette.js',
+  'assets/features.js',
+  'assets/a11y.js',
   'assets/pwa.js',
   'assets/stats.json',
   'assets/icon.svg',

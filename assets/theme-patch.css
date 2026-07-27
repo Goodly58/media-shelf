@@ -1,0 +1,50 @@
+/* ==========================================================================
+   Shelf — theme patch                                 assets/theme-patch.css
+   --------------------------------------------------------------------------
+   Loaded LAST, after every other stylesheet.
+
+   theme.css correctly re-points the design tokens (--bg, --txt, --panel …) for
+   light mode, and most components follow because they are written in var().
+   Two declarations on <body> did not follow in practice, and because nearly all
+   text inherits its colour from <body>, the result was light text on light
+   surfaces — unreadable. Rather than fight the cascade at a distance, the two
+   properties that everything else depends on are pinned here explicitly.
+
+   Scoped to [data-theme="light"], so dark mode is untouched.
+   ========================================================================== */
+
+:root[data-theme="light"] body{
+  background-color: var(--bg) !important;
+  color: var(--txt) !important;
+}
+
+/* Anything that opts out of inheritance for text still needs the light value. */
+:root[data-theme="light"] .ttl,
+:root[data-theme="light"] .bt,
+:root[data-theme="light"] .term,
+:root[data-theme="light"] h1,
+:root[data-theme="light"] h2,
+:root[data-theme="light"] h3,
+:root[data-theme="light"] h4,
+:root[data-theme="light"] .mtitle,
+:root[data-theme="light"] .stat .v,
+:root[data-theme="light"] .hn .v{
+  color: var(--txt);
+}
+
+/* Secondary copy keeps its intended hierarchy instead of collapsing to --txt. */
+:root[data-theme="light"] .blurb,
+:root[data-theme="light"] .lblurb,
+:root[data-theme="light"] .tagline,
+:root[data-theme="light"] .meta,
+:root[data-theme="light"] .ba,
+:root[data-theme="light"] .count,
+:root[data-theme="light"] .statusrow{
+  color: var(--mut);
+}
+
+/* The gradient wordmark is painted through the text, so it must be re-stated
+   in light mode or it clips to a dark-mode gradient over a light page. */
+:root[data-theme="light"] h1 b{
+  -webkit-text-fill-color: transparent;
+}
