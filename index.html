@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="f4843a5448">
+<meta name="shelf-build" content="4783fc750f">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 
 <title>Shelf — a fast, filterable catalogue of games, books and words</title>
@@ -853,7 +853,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
   function isNum(v) { return typeof v === 'number' && isFinite(v); }
 
   /* ---- formatting ---------------------------------------------------
-     Counts are grouped (2,164). Years never are (1976, not 1,976), and a
+     Counts are grouped with separators. Years never are (1976, not 1,976), and a
      negative year is rendered as an era: -700 -> "700 BC".              */
   function fmtInt(n) {
     try { return Number(n).toLocaleString('en-US'); }
