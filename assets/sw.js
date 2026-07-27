@@ -84,6 +84,7 @@ var SHELL = [
   'assets/palette.js',
   'assets/features.js',
   'assets/a11y.js',
+  'assets/theme-fix.js',
   'assets/pwa.js',
   'assets/stats.json',
   'assets/icon.svg',
