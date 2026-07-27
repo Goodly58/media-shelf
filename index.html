@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Shelf — browse great games, books &amp; build your vocabulary</title>
-<meta name="description" content="Shelf: browse 1,396 PC games ranked by Metacritic & IGN, 756 books ranked by Goodreads rating, and build a personal vocabulary vault. Free, no sign-up.">
+<meta name="description" content="Shelf: browse PC games ranked by Metacritic &amp; IGN, books ranked by Goodreads rating, and build a personal vocabulary vault. Free, no sign-up.">
 <meta property="og:title" content="Shelf — games, books & words">
-<meta property="og:description" content="Browse 1,396 PC games, 756 books, and build your own vocabulary. Fast, filterable, no sign-up.">
+<meta property="og:description" content="Browse PC games and books by rating, and build your own vocabulary. Fast, filterable, no sign-up.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -109,9 +109,9 @@
     <div class="badge"><span class="dot"></span> Free · no sign-up · nothing to install</div>
     <h1>Everything worth<br><span class="g">reading, playing</span> &amp; <em>remembering</em></h1>
     <p class="lede">Three fast, filterable catalogs in one place. Find your next game by <b>Metacritic score</b>, your next book by <b>Goodreads rating</b>, and keep every new word you meet along the way.</p>
-    <div class="heronums">
-      <div class="hn"><div class="v">1,396</div><div class="l">PC games</div></div>
-      <div class="hn"><div class="v">756</div><div class="l">Books</div></div>
+    <div class="heronums" id="heronums">
+      <div class="hn"><div class="v" data-stat="games">—</div><div class="l">PC games</div></div>
+      <div class="hn"><div class="v" data-stat="books">—</div><div class="l">Books</div></div>
       <div class="hn"><div class="v">∞</div><div class="l">Your words</div></div>
     </div>
   </section>
@@ -120,11 +120,11 @@
     <a class="tool g" href="games.html">
       <div class="ic">🎮</div>
       <h2>Game Index</h2>
-      <div class="cnt">1,396 PC GAMES · 2010–2026</div>
+      <div class="cnt" data-line="games">PC GAMES · METACRITIC &amp; IGN</div>
       <p>Every notable PC release of the last 16 years, ranked and filterable.</p>
       <ul>
-        <li>Metacritic + IGN scores, 338 verified against live data</li>
-        <li>Filter by 14 genres, year range and minimum score</li>
+        <li>Metacritic and IGN scores, many verified against live data</li>
+        <li>Filter by genre, year range and minimum score</li>
         <li>Cover art, user scores and one-click Steam links</li>
       </ul>
       <span class="go">Browse games <span class="ar">→</span></span>
@@ -133,11 +133,11 @@
     <a class="tool b" href="books.html">
       <div class="ic">📚</div>
       <h2>Book Index</h2>
-      <div class="cnt">756 BOOKS · 700 BC–2026</div>
+      <div class="cnt" data-line="books">BOOKS · GOODREADS RATINGS</div>
       <p>From ancient classics to this year's releases, sorted by what readers actually rate highest.</p>
       <ul>
         <li>Goodreads ratings, star bars and popularity counts</li>
-        <li>16 genres — literary, fantasy, sci-fi, memoir and more</li>
+        <li>Genres spanning literary, fantasy, sci-fi, memoir and more</li>
         <li>Cover art with links to Goodreads &amp; Open Library</li>
       </ul>
       <span class="go">Browse books <span class="ar">→</span></span>
@@ -184,7 +184,7 @@
 
   <div class="note">
     <h4>📋 About the data — honestly</h4>
-    <p>The game and book catalogues were compiled with AI assistance from public sources. <b>338 game scores were verified directly against Metacritic</b> and carry a ✓ badge; the rest — including IGN scores and all Goodreads ratings — are close approximations and may contain errors. Treat this as a <b>discovery tool</b>, not a citation source. Cover art is served from Steam and Open Library and remains © its respective publishers.</p>
+    <p>The game and book catalogues were compiled with AI assistance from public sources. <b>Many game scores were verified directly against Metacritic</b> and carry a ✓ badge; the rest — including IGN scores and all Goodreads ratings — are close approximations and may contain errors. Treat this as a <b>discovery tool</b>, not a citation source. Cover art is served from Steam and Open Library and remains © its respective publishers.</p>
   </div>
 
   <footer>
@@ -196,6 +196,22 @@
 </div>
 
 <link rel="stylesheet" href="assets/site.css">
+<script>
+/* Counts are loaded from assets/stats.json so nothing is hard-coded in the page.
+   If the file is unavailable (e.g. opened straight from disk) the numbers simply
+   stay hidden rather than showing something stale. */
+fetch('assets/stats.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(s=>{
+  if(!s) return;
+  const fmt=n=>Number(n).toLocaleString();
+  document.querySelectorAll('[data-stat]').forEach(el=>{
+    const v=s[el.dataset.stat]; if(v!=null) el.textContent=fmt(v);
+  });
+  const gl=document.querySelector('[data-line="games"]');
+  if(gl&&s.games) gl.innerHTML=fmt(s.games)+' PC GAMES · '+s.gamesFrom+'–'+s.gamesTo;
+  const bl=document.querySelector('[data-line="books"]');
+  if(bl&&s.books) bl.innerHTML=fmt(s.books)+' BOOKS · '+(s.booksFrom<0?Math.abs(s.booksFrom)+' BC':s.booksFrom)+'–'+s.booksTo;
+}).catch(()=>{});
+</script>
 <script src="assets/site.js" defer></script>
 </body>
 </html>
