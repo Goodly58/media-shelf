@@ -3,59 +3,199 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Index — Interactive Browsers</title>
+<title>Shelf — browse great games, books &amp; build your vocabulary</title>
+<meta name="description" content="Shelf: browse 1,396 PC games ranked by Metacritic & IGN, 756 books ranked by Goodreads rating, and build a personal vocabulary vault. Free, no sign-up.">
+<meta property="og:title" content="Shelf — games, books & words">
+<meta property="og:description" content="Browse 1,396 PC games, 756 books, and build your own vocabulary. Fast, filterable, no sign-up.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,600;9..144,0,900;9..144,1,600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0a0c11;--panel:#14181f;--line:#262c3b;--txt:#eef1f7;--mut:#8b94a8;--acc:#4f8cff;--acc2:#8b5cff;--gold:#e6b54a;--rose:#d98a3d}
+  :root{
+    --bg:#080a0f; --panel:#11151d; --panel2:#171d27; --line:#232b38; --line2:#333d4d;
+    --txt:#eef1f7; --txt2:#c3cbd9; --mut:#8b94a8; --mut2:#5f6878;
+    --games:#4f8cff; --games2:#8b5cff; --books:#e6b54a; --books2:#d98a3d; --words:#22d3ee; --words2:#818cf8;
+    --r:18px;
+  }
   *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;color:var(--txt);font-family:'Inter',system-ui,Segoe UI,Roboto,Arial,sans-serif;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;
-    background:radial-gradient(900px 480px at 20% -10%,#1a2236,transparent 58%),radial-gradient(800px 480px at 85% -6%,#2a1f12,transparent 55%),var(--bg)}
-  .hd{text-align:center;margin-bottom:42px}
-  h1{font-family:'Fraunces',Georgia,serif;font-size:38px;font-weight:900;letter-spacing:-.6px;margin:0}
-  h1 b{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .sub{color:var(--mut);margin-top:10px;font-size:15px}
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:22px;max-width:760px;width:100%}
-  a.card{text-decoration:none;color:inherit;background:linear-gradient(180deg,var(--panel),#0d1017);border:1px solid var(--line);
-    border-radius:18px;padding:30px 26px;transition:.18s;display:flex;flex-direction:column;gap:10px}
-  a.card:hover{transform:translateY(-5px);box-shadow:0 22px 48px -16px rgba(0,0,0,.7)}
-  a.card.games:hover{border-color:var(--acc)} a.card.books:hover{border-color:var(--gold)} a.card.vocab:hover{border-color:#22d3ee}
-  .vocab .go{color:#22d3ee}
-  .ic{font-size:38px}
-  .ct{font-family:'Fraunces',serif;font-size:24px;font-weight:900}
-  .cd{color:var(--mut);font-size:14px;line-height:1.5}
-  .go{margin-top:8px;font-weight:700;font-size:14px;color:var(--acc)}
-  .books .go{color:var(--gold)}
-  footer{margin-top:44px;color:#5f6878;font-size:12.5px;text-align:center}
+  html{scroll-behavior:smooth}
+  body{margin:0;min-height:100vh;color:var(--txt);
+    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+    background:
+      radial-gradient(1000px 520px at 8% -10%, #16243a 0%, transparent 55%),
+      radial-gradient(900px 520px at 92% -6%, #2a1e10 0%, transparent 52%),
+      radial-gradient(800px 500px at 50% 108%, #101f2b 0%, transparent 55%),
+      var(--bg);}
+  a{text-decoration:none;color:inherit}
+  ::selection{background:rgba(79,140,255,.25)}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+
+  /* hero */
+  .hero{padding:76px 0 30px;text-align:center}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--txt2);
+    background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:999px;padding:7px 16px;margin-bottom:26px}
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 10px #34d399}
+  h1{font-family:'Fraunces',Georgia,serif;font-size:clamp(38px,7vw,66px);font-weight:900;letter-spacing:-1.8px;
+    line-height:1.02;margin:0 0 20px}
+  h1 .g{background:linear-gradient(100deg,var(--games),var(--games2) 45%,var(--words));-webkit-background-clip:text;background-clip:text;color:transparent}
+  h1 em{font-style:italic;font-weight:600}
+  .lede{font-size:clamp(16px,2.1vw,19px);color:var(--txt2);max-width:640px;margin:0 auto;line-height:1.62}
+  .lede b{color:var(--txt);font-weight:700}
+  .heronums{display:flex;justify-content:center;gap:34px;flex-wrap:wrap;margin-top:34px}
+  .hn .v{font-family:'Fraunces',serif;font-size:30px;font-weight:900;letter-spacing:-.6px}
+  .hn:nth-child(1) .v{color:var(--games)} .hn:nth-child(2) .v{color:var(--books)} .hn:nth-child(3) .v{color:var(--words)}
+  .hn .l{font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:3px}
+
+  /* tool cards */
+  .tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;padding:46px 0 10px}
+  .tool{position:relative;background:linear-gradient(180deg,var(--panel),#0b0e14);border:1px solid var(--line);
+    border-radius:var(--r);padding:28px 26px 24px;display:flex;flex-direction:column;gap:13px;transition:.2s;overflow:hidden}
+  .tool::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;opacity:.9}
+  .tool.g::before{background:linear-gradient(90deg,var(--games),var(--games2))}
+  .tool.b::before{background:linear-gradient(90deg,var(--books),var(--books2))}
+  .tool.w::before{background:linear-gradient(90deg,var(--words),var(--words2))}
+  .tool:hover{transform:translateY(-6px);box-shadow:0 26px 54px -18px rgba(0,0,0,.8)}
+  .tool.g:hover{border-color:var(--games)} .tool.b:hover{border-color:var(--books)} .tool.w:hover{border-color:var(--words)}
+  .tool .ic{font-size:34px;line-height:1}
+  .tool h2{font-family:'Fraunces',serif;font-size:25px;font-weight:900;margin:0;letter-spacing:-.4px}
+  .tool .cnt{font-size:12.5px;font-weight:700;color:var(--mut);letter-spacing:.3px}
+  .tool p{color:var(--txt2);font-size:14.3px;line-height:1.58;margin:0}
+  .tool ul{margin:2px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
+  .tool li{font-size:13.2px;color:var(--mut);display:flex;gap:9px;align-items:flex-start;line-height:1.45}
+  .tool li::before{content:'✓';color:var(--txt2);font-weight:800;font-size:12px;margin-top:1px}
+  .tool .go{margin-top:auto;padding-top:16px;font-weight:800;font-size:14.5px;display:inline-flex;align-items:center;gap:8px}
+  .tool.g .go{color:var(--games)} .tool.b .go{color:var(--books)} .tool.w .go{color:var(--words)}
+  .tool:hover .go .ar{transform:translateX(4px)}
+  .go .ar{transition:.2s;display:inline-block}
+
+  /* quick jumps */
+  .sec{padding:56px 0 0}
+  .sech{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+  .sech h3{font-family:'Fraunces',serif;font-size:23px;font-weight:900;margin:0;letter-spacing:-.4px}
+  .sech .s{color:var(--mut);font-size:13.5px}
+  .jumps{display:flex;gap:10px;flex-wrap:wrap}
+  .jump{display:inline-flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);
+    border-radius:11px;padding:11px 15px;font-size:13.5px;font-weight:600;color:var(--txt2);transition:.15s}
+  .jump:hover{border-color:var(--line2);color:var(--txt);transform:translateY(-2px)}
+  .jump .e{font-size:15px}
+
+  /* features */
+  .feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:16px}
+  .feat{background:rgba(255,255,255,.022);border:1px solid var(--line);border-radius:14px;padding:19px 18px}
+  .feat .fi{font-size:21px;margin-bottom:9px}
+  .feat h4{margin:0 0 6px;font-size:14.8px;font-weight:800}
+  .feat p{margin:0;color:var(--mut);font-size:13.2px;line-height:1.55}
+
+  /* note */
+  .note{margin:56px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.03),transparent);
+    border:1px solid var(--line);border-left:3px solid var(--books);border-radius:12px;padding:20px 22px}
+  .note h4{margin:0 0 8px;font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .note p{margin:0;color:var(--mut);font-size:13.4px;line-height:1.65}
+  .note b{color:var(--txt2)}
+
+  footer{margin-top:64px;border-top:1px solid var(--line);padding:26px 0 54px;color:var(--mut2);font-size:12.8px;line-height:1.7}
+  footer a{color:var(--mut);text-decoration:underline;text-underline-offset:3px}
+  footer a:hover{color:var(--txt)}
+  .fbar{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+  @media(max-width:640px){ .hero{padding:44px 0 20px} .heronums{gap:24px} }
 </style>
 </head>
-<body>
-  <div class="hd">
-    <h1>Interactive <b>Browsers</b></h1>
-    <div class="sub">Two filterable, sortable catalogs — pick one to explore.</div>
-  </div>
-  <div class="cards">
-    <a class="card games" href="games.html">
+<body data-page="home">
+
+<div class="wrap">
+  <section class="hero">
+    <div class="badge"><span class="dot"></span> Free · no sign-up · nothing to install</div>
+    <h1>Everything worth<br><span class="g">reading, playing</span> &amp; <em>remembering</em></h1>
+    <p class="lede">Three fast, filterable catalogs in one place. Find your next game by <b>Metacritic score</b>, your next book by <b>Goodreads rating</b>, and keep every new word you meet along the way.</p>
+    <div class="heronums">
+      <div class="hn"><div class="v">1,396</div><div class="l">PC games</div></div>
+      <div class="hn"><div class="v">756</div><div class="l">Books</div></div>
+      <div class="hn"><div class="v">∞</div><div class="l">Your words</div></div>
+    </div>
+  </section>
+
+  <section class="tools">
+    <a class="tool g" href="games.html">
       <div class="ic">🎮</div>
-      <div class="ct">Game Index</div>
-      <div class="cd">1,396 PC games (2010–2026) ranked by Metacritic &amp; IGN, with verified scores, cover art, genres and a detail view.</div>
-      <div class="go">Open the Game Index →</div>
+      <h2>Game Index</h2>
+      <div class="cnt">1,396 PC GAMES · 2010–2026</div>
+      <p>Every notable PC release of the last 16 years, ranked and filterable.</p>
+      <ul>
+        <li>Metacritic + IGN scores, 338 verified against live data</li>
+        <li>Filter by 14 genres, year range and minimum score</li>
+        <li>Cover art, user scores and one-click Steam links</li>
+      </ul>
+      <span class="go">Browse games <span class="ar">→</span></span>
     </a>
-    <a class="card books" href="books.html">
+
+    <a class="tool b" href="books.html">
       <div class="ic">📚</div>
-      <div class="ct">Book Index</div>
-      <div class="cd">756 books across 16 genres ranked by Goodreads ratings, with cover art, star ratings, and a flashcard-style detail view.</div>
-      <div class="go">Open the Book Index →</div>
+      <h2>Book Index</h2>
+      <div class="cnt">756 BOOKS · 700 BC–2026</div>
+      <p>From ancient classics to this year's releases, sorted by what readers actually rate highest.</p>
+      <ul>
+        <li>Goodreads ratings, star bars and popularity counts</li>
+        <li>16 genres — literary, fantasy, sci-fi, memoir and more</li>
+        <li>Cover art with links to Goodreads &amp; Open Library</li>
+      </ul>
+      <span class="go">Browse books <span class="ar">→</span></span>
     </a>
-    <a class="card vocab" href="vocab.html">
+
+    <a class="tool w" href="vocab.html">
       <div class="ic">📖</div>
-      <div class="ct">Lexicon Vault</div>
-      <div class="cd">A personal vocabulary storer — auto-fetches definitions, saves words in your browser, with tags, status tracking and flashcard study.</div>
-      <div class="go">Open the Lexicon Vault →</div>
+      <h2>Lexicon Vault</h2>
+      <div class="cnt">YOUR PERSONAL WORD COLLECTION</div>
+      <p>Met a word you liked? Type it once — the definition arrives automatically.</p>
+      <ul>
+        <li>Auto-fetched definitions, pronunciation and synonyms</li>
+        <li>Tag words, track New → Learning → Mastered</li>
+        <li>Flashcard study mode, plus export to back up</li>
+      </ul>
+      <span class="go">Start collecting <span class="ar">→</span></span>
     </a>
+  </section>
+
+  <section class="sec">
+    <div class="sech"><h3>Jump straight in</h3><span class="s">— curated starting points</span></div>
+    <div class="jumps">
+      <a class="jump" href="games.html#minmc=90&sort=mc-desc"><span class="e">🏆</span> Best games ever (90+)</a>
+      <a class="jump" href="games.html#yrmin=2025&sort=year-desc"><span class="e">🆕</span> Newest game releases</a>
+      <a class="jump" href="games.html#g=Horror%20%2F%20Survival&sort=mc-desc"><span class="e">👻</span> Top horror games</a>
+      <a class="jump" href="books.html#minrate=4.3&sort=rate-desc"><span class="e">⭐</span> Highest-rated books</a>
+      <a class="jump" href="books.html#g=Science%20Fiction&sort=rate-desc"><span class="e">🚀</span> Best sci-fi reads</a>
+      <a class="jump" href="books.html#sort=pop-desc"><span class="e">🔥</span> What everyone's reading</a>
+      <a class="jump" href="vocab.html"><span class="e">✨</span> Build a word list</a>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sech"><h3>Built to be actually pleasant</h3></div>
+    <div class="feats">
+      <div class="feat"><div class="fi">🔗</div><h4>Shareable views</h4><p>Set your filters, hit <b>Share view</b>, and send a link that reopens exactly what you were looking at.</p></div>
+      <div class="feat"><div class="fi">⌨️</div><h4>Keyboard first</h4><p>Press <b>/</b> to search, <b>G</b>/<b>L</b> to switch layouts, <b>R</b> for a random pick, <b>?</b> for the full list.</p></div>
+      <div class="feat"><div class="fi">🎲</div><h4>Can't decide?</h4><p>The Surprise button picks something great from whatever you've filtered down to.</p></div>
+      <div class="feat"><div class="fi">⭐</div><h4>Save favourites</h4><p>Star anything to build a shortlist. It stays in your browser — no account needed.</p></div>
+      <div class="feat"><div class="fi">📱</div><h4>Works everywhere</h4><p>Phone, tablet or desktop. Lazy-loaded so even 1,400 items stay smooth.</p></div>
+      <div class="feat"><div class="fi">🔒</div><h4>Private by default</h4><p>Your favourites and words never leave your device. Nothing is tracked or uploaded.</p></div>
+    </div>
+  </section>
+
+  <div class="note">
+    <h4>📋 About the data — honestly</h4>
+    <p>The game and book catalogues were compiled with AI assistance from public sources. <b>338 game scores were verified directly against Metacritic</b> and carry a ✓ badge; the rest — including IGN scores and all Goodreads ratings — are close approximations and may contain errors. Treat this as a <b>discovery tool</b>, not a citation source. Cover art is served from Steam and Open Library and remains © its respective publishers.</p>
   </div>
-  <footer>Fan-made reference tools · data compiled from public sources and approximate. Cover art © respective publishers.</footer>
+
+  <footer>
+    <div class="fbar">
+      <div>Made as a personal project · <a href="https://github.com/Goodly58/shelf" target="_blank" rel="noopener">source on GitHub</a></div>
+      <div>Not affiliated with Metacritic, IGN, Goodreads, Steam or Open Library.</div>
+    </div>
+  </footer>
+</div>
+
+<link rel="stylesheet" href="assets/site.css">
+<script src="assets/site.js" defer></script>
 </body>
 </html>

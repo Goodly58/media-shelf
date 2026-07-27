@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LEXICON — Your Vocabulary Vault</title>
+<title>Lexicon Vault — save every word worth keeping</title>
+<meta name="description" content="Type a word, get the definition automatically, and build a personal vocabulary collection with tags, study flashcards and export. Free, private, no sign-up.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,600;9..144,0,900;9..144,1,500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,7 +27,7 @@
   *::-webkit-scrollbar-thumb{background:var(--line2);border-radius:20px}
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
 
-  header{padding:30px 0 14px}
+  header{padding:26px 0 12px}
   .brandrow{display:flex;justify-content:space-between;align-items:flex-end;gap:22px;flex-wrap:wrap}
   .brand{display:flex;align-items:center;gap:14px}
   .logo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;font-size:24px;
@@ -39,8 +41,29 @@
   .stat .l{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.7px;margin-top:1px;font-weight:600}
   .stat.new .v{color:var(--new)} .stat.learning .v{color:var(--learning)} .stat.mastered .v{color:var(--mastered)}
 
+  /* vault switcher */
+  .vaultbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px}
+  .vtabs{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+  .vtab{cursor:pointer;border:0;background:transparent;color:var(--mut);font-family:inherit;font-size:13.5px;
+    font-weight:700;padding:9px 15px;border-radius:9px;transition:.15s;display:inline-flex;align-items:center;gap:7px}
+  .vtab:hover{color:var(--txt2)}
+  .vtab.on{background:var(--panel3);color:var(--txt);box-shadow:0 2px 8px rgba(0,0,0,.35)}
+  .vtab .cnt{font-size:11.5px;opacity:.6;font-weight:800}
+  .ownerbtn{margin-left:auto;display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;
+    font-size:13px;font-weight:700;color:var(--mut);background:var(--panel2);border:1px solid var(--line);
+    border-radius:10px;padding:10px 14px;transition:.15s}
+  .ownerbtn:hover{color:var(--txt);border-color:var(--line2)}
+  .ownerbtn.on{color:var(--mastered);border-color:var(--mastered);background:rgba(52,211,153,.09)}
+
+  .banner{margin-top:14px;border-radius:13px;padding:13px 16px;font-size:13.4px;line-height:1.55;
+    display:flex;gap:11px;align-items:flex-start}
+  .banner .bi{font-size:17px;line-height:1.2}
+  .banner.info{background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.24);color:var(--txt2)}
+  .banner.owner{background:rgba(52,211,153,.07);border:1px solid rgba(52,211,153,.3);color:var(--txt2)}
+  .banner b{color:var(--txt)}
+
   /* add bar */
-  .addbar{margin-top:18px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);
+  .addbar{margin-top:16px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line2);
     border-radius:16px;padding:16px;display:flex;gap:11px;flex-wrap:wrap;align-items:center;box-shadow:var(--shadow)}
   .addbar .wordin{flex:2;min-width:200px;position:relative}
   .addbar .srcin{flex:1.4;min-width:160px}
@@ -50,15 +73,9 @@
   .addbar input:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--accSoft)}
   .addbtn{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#04222b;border:0;border-radius:11px;
     padding:13px 22px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;transition:.15s;white-space:nowrap}
-  .addbtn:hover{filter:brightness(1.07);transform:translateY(-1px)} .addbtn:disabled{opacity:.6;cursor:default}
+  .addbtn:hover{filter:brightness(1.07);transform:translateY(-1px)} .addbtn:disabled{opacity:.55;cursor:default;transform:none}
   .hint{width:100%;font-size:12px;color:var(--mut2);margin-top:-2px}
-  .lockpanel{display:flex;gap:11px;align-items:center;flex-wrap:wrap;width:100%}
-  .lockpanel .lockicon{font-size:20px}
-  .lockpanel input{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--line2);border-radius:11px;
-    color:var(--txt);font-size:15px;padding:13px 14px;outline:none;font-family:inherit;letter-spacing:.2em}
-  .lockpanel input:focus{border-color:var(--acc);box-shadow:0 0 0 3px var(--accSoft)}
-  .lockmsg{width:100%;font-size:12.5px;color:var(--learning);font-weight:600;min-height:4px}
-  #lockBtn{padding:13px 13px}
+  .hint b{color:var(--mut)}
 
   .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:20px 0 6px}
   .search{position:relative;flex:1;min-width:200px}
@@ -75,6 +92,7 @@
     border-radius:10px;padding:10px 13px;font-size:13.5px;font-weight:600;font-family:inherit;cursor:pointer;transition:.15s}
   .btn:hover{border-color:var(--line2);color:var(--txt)}
   .btn.accent{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#04222b;border-color:transparent;font-weight:700}
+  .btn:disabled{opacity:.45;cursor:default}
 
   .chips{display:flex;gap:8px;flex-wrap:wrap;padding:10px 0 2px}
   .chip{cursor:pointer;user-select:none;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:600;
@@ -101,10 +119,12 @@
   .spacer{flex:1}
   .wact{display:flex;gap:6px;align-items:center}
   .iconbtn{cursor:pointer;border:1px solid var(--line);background:var(--panel2);color:var(--mut);border-radius:8px;
-    width:30px;height:28px;display:grid;place-items:center;font-size:14px;transition:.15s}
+    height:28px;min-width:30px;padding:0 8px;display:grid;place-items:center;font-size:14px;transition:.15s}
   .iconbtn:hover{color:var(--txt);border-color:var(--line2)}
   .iconbtn.fav.on{color:var(--learning);border-color:var(--learning)}
   .iconbtn.del:hover{color:var(--rose);border-color:var(--rose)}
+  .iconbtn.copy{font-size:12px;font-weight:700;color:var(--acc)}
+  .iconbtn.copy:hover{border-color:var(--acc)}
   .def{margin-top:9px;color:var(--txt2);font-size:14.5px;line-height:1.5}
   .def .n2{color:var(--mut2);font-weight:700;margin-right:6px;font-family:'Fraunces',serif}
   .ex{margin-top:6px;color:var(--mut);font-size:13.5px;font-style:italic;line-height:1.45}
@@ -118,33 +138,38 @@
   .note{margin-top:9px;background:var(--bg2);border:1px dashed var(--line2);border-radius:9px;padding:9px 11px;color:var(--txt2);font-size:13px;line-height:1.45}
   .statusSel{font-size:11.5px;padding:4px 8px;border-radius:7px}
 
-  .empty{display:none;text-align:center;color:var(--mut);padding:70px 20px}
+  .empty{display:none;text-align:center;color:var(--mut);padding:64px 20px}
   .empty .big{font-size:46px;margin-bottom:12px}
-  .empty button{margin-top:14px}
+  .empty .eh{font-size:16px;color:var(--txt2);font-weight:600;margin-bottom:6px}
+  .empty .es{font-size:13.5px;max-width:420px;margin:0 auto 16px;line-height:1.6}
 
-  /* toast */
   #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(20px);z-index:120;opacity:0;
     background:var(--panel3);border:1px solid var(--line2);color:var(--txt);padding:12px 18px;border-radius:11px;
-    font-size:14px;font-weight:600;box-shadow:var(--shadow);transition:.25s;pointer-events:none;max-width:90vw}
+    font-size:14px;font-weight:600;box-shadow:var(--shadow);transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
   #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   #toast.err{border-color:var(--rose)} #toast.ok{border-color:var(--mastered)}
 
-  /* modal (edit + study) */
-  .overlay{position:fixed;inset:0;z-index:90;background:rgba(4,7,11,.8);backdrop-filter:blur(6px);display:none;
+  .overlay{position:fixed;inset:0;z-index:150;background:rgba(4,7,11,.82);backdrop-filter:blur(6px);display:none;
     align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .2s}
   .overlay.show{display:flex;opacity:1}
   .modal{width:min(560px,100%);max-height:90vh;overflow:auto;background:var(--panel);border:1px solid var(--line2);
     border-radius:18px;box-shadow:var(--shadow);padding:24px;position:relative;transform:translateY(12px) scale(.98);transition:transform .25s}
   .overlay.show .modal{transform:none}
-  .mh{font-family:'Fraunces',serif;font-size:21px;font-weight:900;margin:0 0 16px}
+  .modal.shake{animation:shake .4s}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+  .mh{font-family:'Fraunces',serif;font-size:21px;font-weight:900;margin:0 0 6px}
+  .msub{color:var(--mut);font-size:13.4px;line-height:1.55;margin:0 0 18px}
   .fld{margin-bottom:14px} .fld label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--mut);font-weight:700;margin-bottom:5px}
   .fld input,.fld textarea,.fld select{width:100%;background:var(--bg2);border:1px solid var(--line2);border-radius:10px;color:var(--txt);
-    font-size:14px;padding:10px 12px;outline:none;font-family:inherit}
+    font-size:14px;padding:11px 12px;outline:none;font-family:inherit}
   .fld textarea{resize:vertical;min-height:64px;line-height:1.5}
   .fld input:focus,.fld textarea:focus,.fld select:focus{border-color:var(--acc)}
-  .mactions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+  .pwinput{letter-spacing:.35em;font-size:19px !important;text-align:center;font-weight:700}
+  .mactions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px;flex-wrap:wrap}
+  .lockmsg{font-size:13px;font-weight:600;min-height:18px;margin:-4px 0 12px;text-align:center}
+  .lockmsg.warn{color:var(--learning)} .lockmsg.bad{color:var(--rose)}
+  .softnote{margin-top:16px;font-size:11.8px;color:var(--mut2);line-height:1.55;border-top:1px solid var(--line);padding-top:13px}
 
-  /* study / flashcard */
   .card3d{width:min(540px,100%);height:340px;perspective:1400px;cursor:pointer}
   .inner{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
   .inner.flip{transform:rotateY(180deg)}
@@ -163,41 +188,39 @@
   .sbtn.know{border-color:var(--mastered);color:var(--mastered)} .sbtn.again{border-color:var(--learning);color:var(--learning)}
 
   footer{border-top:1px solid var(--line);color:var(--mut2);font-size:12px;padding:20px 0 44px;line-height:1.6}
-  @media(max-width:560px){.term{font-size:20px}.face .fterm{font-size:27px}.card3d{height:300px}}
+  footer b{color:var(--mut)}
+  @media(max-width:560px){.term{font-size:20px}.face .fterm{font-size:27px}.card3d{height:300px}.ownerbtn{margin-left:0}}
 </style>
 </head>
-<body>
+<body data-page="vocab">
 <header>
   <div class="wrap">
     <div class="brandrow">
       <div class="brand">
         <div class="logo">📖</div>
         <div>
-          <h1>LEXICON <b>vault</b></h1>
-          <div class="tagline">Save words you discover — definitions fetched automatically, stored in your browser.</div>
+          <h1>Lexicon <b>Vault</b></h1>
+          <div class="tagline">Type a word — the definition arrives automatically and stays in your collection.</div>
         </div>
       </div>
       <div class="stats" id="stats"></div>
     </div>
 
-    <div class="addbar">
-      <div id="addArea" style="display:contents">
-        <div class="wordin">
-          <input id="wordIn" type="text" placeholder="Type a word you found…" autocomplete="off">
-        </div>
-        <div class="srcin">
-          <input id="srcIn" type="text" placeholder="Where you found it (optional)" autocomplete="off">
-        </div>
-        <button class="addbtn" id="addBtn">+ Add word</button>
-        <button class="btn" id="lockBtn" title="Lock adding again">🔓</button>
-        <div class="hint">Press <b>Enter</b> to add · definition is looked up automatically · everything saves to this browser.</div>
+    <div class="vaultbar">
+      <div class="vtabs">
+        <button class="vtab on" id="tabMine">🗃️ My Vault <span class="cnt" id="cntMine">0</span></button>
+        <button class="vtab" id="tabCur">✨ Curator's Picks <span class="cnt" id="cntCur">0</span></button>
       </div>
-      <div id="lockPanel" class="lockpanel">
-        <span class="lockicon">🔒</span>
-        <input id="pwIn" type="password" inputmode="numeric" placeholder="Enter password to add words" autocomplete="off">
-        <button class="addbtn" id="unlockBtn">Unlock</button>
-        <div class="lockmsg" id="lockMsg"></div>
-      </div>
+      <button class="ownerbtn" id="ownerBtn" title="Curator sign-in">🔒 Curator</button>
+    </div>
+
+    <div class="banner info" id="banner"></div>
+
+    <div class="addbar" id="addbar">
+      <div class="wordin"><input id="wordIn" type="text" placeholder="Type a word you found…" autocomplete="off"></div>
+      <div class="srcin"><input id="srcIn" type="text" placeholder="Where you found it (optional)" autocomplete="off"></div>
+      <button class="addbtn" id="addBtn">+ Add word</button>
+      <div class="hint">Press <b>Enter</b> to add · the definition is looked up for you · saved privately in this browser.</div>
     </div>
   </div>
 </header>
@@ -206,7 +229,7 @@
   <div class="toolbar">
     <div class="search">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-      <input id="search" type="text" placeholder="Search your words, definitions, notes…" autocomplete="off">
+      <input id="search" type="text" placeholder="Search words, definitions, notes…" autocomplete="off">
     </div>
     <select id="sort">
       <option value="new">Newest added</option>
@@ -224,232 +247,272 @@
   <div class="chips" id="chips"></div>
   <div class="count" id="count"></div>
   <div class="list" id="list"></div>
-  <div class="empty" id="empty">
-    <div class="big">📚</div>
-    <div>No words yet — add your first one above.</div>
-    <button class="btn" id="seedBtn">✨ Add a few examples to explore</button>
-  </div>
+  <div class="empty" id="empty"></div>
 </div>
 
 <footer><div class="wrap">
-  Definitions from the free <b>Dictionary API</b> (dictionaryapi.dev). Your saved words live only in this browser's local storage — use <b>Export</b> to back them up. Pronunciation uses the API's audio when available, otherwise your browser's speech synthesis.
+  Definitions from the free <b>Dictionary API</b> (dictionaryapi.dev). Your vault is stored only in this browser's local storage — it is never uploaded, and only you can see it. Use <b>Export</b> to keep a backup. Pronunciation uses the dictionary's audio when available, otherwise your browser's speech synthesis.
 </div></footer>
 
 <div id="toast"></div>
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
 
+<link rel="stylesheet" href="assets/site.css">
 <script>
-const API = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
-const KEY = 'lexicon_v1';
-const $ = s => document.querySelector(s);
-const esc = s => (s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-let words = load();
-let activeStatus = '', activeTag = '';
+/* ============================ config ============================ */
+const API='https://api.dictionaryapi.dev/api/v2/entries/en/';
+const KEY='lexicon_v2';           // visitor's personal vault
+const CUR_KEY='lexicon_curator';  // curator overrides (owner only)
+const $=s=>document.querySelector(s);
+const esc=s=>(s==null?'':String(s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
 
-function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch(e){ return []; } }
-function save(){ localStorage.setItem(KEY, JSON.stringify(words)); }
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
-
-function toast(msg,kind){ const t=$('#toast'); t.textContent=msg; t.className='show '+(kind||''); clearTimeout(t._t); t._t=setTimeout(()=>t.className='',2400); }
-
-/* ---------- add-word lock (password gate) ---------- */
-const PW={ salt:'7baab1b915a5036a7216c28a594b455e', iter:150000, hash:'80d7e5e48ff188ba95d8006d91e17f62ae875e7c6593390274ce5ac41b4594d7' };
-const MAX_TRIES=3;
-let unlocked = localStorage.getItem('lex_unlocked')==='1';
-let clientIP='noip';
-function hexBytes(h){ const a=new Uint8Array(h.length/2); for(let i=0;i<a.length;i++) a[i]=parseInt(h.substr(i*2,2),16); return a; }
-async function verifyPW(pw){
-  if(!(window.crypto&&crypto.subtle)) return false;
-  const key=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
-  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',salt:hexBytes(PW.salt),iterations:PW.iter,hash:'SHA-256'},key,256);
-  const hex=[...new Uint8Array(bits)].map(b=>b.toString(16).padStart(2,'0')).join('');
-  return hex===PW.hash;
-}
-async function getIP(){ try{ const r=await fetch('https://api.ipify.org?format=json'); return (await r.json()).ip||'noip'; }catch(e){ return 'noip'; } }
-const failKey=()=>'lex_fail_'+clientIP;
-const getFails=()=>+(localStorage.getItem(failKey())||0);
-const setFails=n=>localStorage.setItem(failKey(),n);
-const lockedOut=()=>getFails()>=MAX_TRIES;
-function updateLockMsg(){
-  const m=$('#lockMsg'); if(!m) return; const left=MAX_TRIES-getFails();
-  if(lockedOut()){ $('#pwIn').disabled=true; $('#unlockBtn').disabled=true; m.textContent='🚫 Too many attempts — adding is disabled on this network.'; m.style.color='var(--rose)'; }
-  else if(getFails()>0){ m.textContent=left+' attempt'+(left===1?'':'s')+' remaining.'; m.style.color='var(--learning)'; }
-  else m.textContent='';
-}
-function applyLock(){
-  const area=$('#addArea'), panel=$('#lockPanel');
-  if(unlocked){ area.style.display='contents'; panel.style.display='none'; }
-  else { area.style.display='none'; panel.style.display='flex'; updateLockMsg(); }
-}
-async function tryUnlock(){
-  if(lockedOut()){ updateLockMsg(); return; }
-  const pw=$('#pwIn').value; const btn=$('#unlockBtn');
-  btn.disabled=true; btn.textContent='Checking…';
-  const ok=await verifyPW(pw);
-  btn.disabled=false; btn.textContent='Unlock';
-  if(ok){ unlocked=true; localStorage.setItem('lex_unlocked','1'); setFails(0); $('#pwIn').value=''; applyLock(); $('#wordIn').focus(); toast('Unlocked — you can add words','ok'); }
-  else { setFails(getFails()+1); $('#pwIn').value=''; updateLockMsg(); toast(lockedOut()?'Locked: too many attempts':'Wrong password','err'); }
+/* ---- curator's shipped collection (read-only for visitors) ---- */
+const CURATED=[
+ {word:'petrichor',phonetic:'/ˈpɛtrɪkɔːr/',pos:'noun',def:'The pleasant, earthy smell that follows rain falling on dry ground.',ex:'She stepped outside for the petrichor after the first storm of spring.',tags:['sensory','favourite']},
+ {word:'sonder',phonetic:'/ˈsɒndər/',pos:'noun',def:'The realisation that every passer-by is living a life as vivid and complex as your own.',ex:'Sitting on the train, a quiet sonder settled over him.',tags:['modern','feeling']},
+ {word:'ineffable',phonetic:'/ɪnˈɛfəbl/',pos:'adjective',def:'Too great or extreme to be expressed in words.',ex:'The view from the ridge had an ineffable stillness.',tags:['literary']},
+ {word:'ephemeral',phonetic:'/ɪˈfɛm(ə)rəl/',pos:'adjective',def:'Lasting for a very short time.',ex:'Fame in the internet age is famously ephemeral.',tags:['literary']},
+ {word:'liminal',phonetic:'/ˈlɪmɪnl/',pos:'adjective',def:'Occupying a position at, or on both sides of, a boundary or threshold.',ex:'Airports at 3am feel deeply liminal.',tags:['modern']},
+ {word:'susurrus',phonetic:'/suːˈsʌrəs/',pos:'noun',def:'A whispering or rustling sound.',ex:'The susurrus of wind through the wheat.',tags:['sensory']},
+ {word:'defenestrate',phonetic:'/diːˈfɛnɪstreɪt/',pos:'verb',def:'To throw someone or something out of a window.',ex:'The word survives mostly because the act is so specific.',tags:['odd']},
+ {word:'saudade',phonetic:'/saʊˈdɑːdə/',pos:'noun',def:'A deep, nostalgic longing for something absent that one loves.',ex:'Portuguese fado is built almost entirely on saudade.',tags:['feeling','borrowed']},
+ {word:'apricity',phonetic:'/əˈprɪsɪti/',pos:'noun',def:'The warmth of the sun in winter.',ex:'They sat on the bench chasing a little apricity.',tags:['rare','sensory']},
+ {word:'lacuna',phonetic:'/ləˈkjuːnə/',pos:'noun',def:'An unfilled space or gap, especially a missing portion of a text.',ex:'There is a frustrating lacuna in the historical record.',tags:['literary']},
+ {word:'obstreperous',phonetic:'/əbˈstrɛp(ə)rəs/',pos:'adjective',def:'Noisy and difficult to control.',ex:'An obstreperous crowd filled the square.',tags:['useful']},
+ {word:'hiraeth',phonetic:'/ˈhɪraɪθ/',pos:'noun',def:'A homesickness for a home you cannot return to, or that never was.',ex:'Welsh hiraeth has no clean English equivalent.',tags:['feeling','borrowed']},
+ {word:'crepuscular',phonetic:'/krɪˈpʌskjʊlə/',pos:'adjective',def:'Relating to twilight; (of animals) appearing or active at dusk.',ex:'Foxes are crepuscular hunters.',tags:['nature']},
+ {word:'palimpsest',phonetic:'/ˈpalɪm(p)sɛst/',pos:'noun',def:'Something reused but still bearing visible traces of its earlier form.',ex:'The city is a palimpsest of every era that built it.',tags:['literary']},
+];
+function curatedSeed(){
+  return CURATED.map((c,i)=>({
+    id:'cur_'+i, word:c.word, phonetic:c.phonetic||'', audio:'',
+    defs:[{pos:c.pos||'',def:c.def||'',example:c.ex||''}], synonyms:[],
+    source:"Curator's Picks", note:'', tags:c.tags||[], status:'new', favorite:false,
+    dateAdded:new Date(2026,0,1+i).toISOString(), curated:true
+  }));
 }
 
-/* ---------- definition fetch ---------- */
+/* ============================ state ============================ */
+let mine=loadMine();
+let curated=loadCurated();
+let view='mine';                 // 'mine' | 'curated'
+let activeStatus='', activeTag='';
+const collection=()=>view==='mine'?mine:curated;
+const canEdit=()=>view==='mine'||ownerActive();
+
+function loadMine(){ try{ const a=JSON.parse(localStorage.getItem(KEY)||'[]'); return Array.isArray(a)?a:[]; }catch(e){ return []; } }
+function saveMine(){ localStorage.setItem(KEY,JSON.stringify(mine)); }
+function loadCurated(){
+  try{ const o=JSON.parse(localStorage.getItem(CUR_KEY)||'null'); if(Array.isArray(o)&&o.length) return o; }catch(e){}
+  return curatedSeed();
+}
+function saveCurated(){ localStorage.setItem(CUR_KEY,JSON.stringify(curated)); }
+function persist(){ view==='mine'?saveMine():saveCurated(); }
+
+function toast(msg,kind){ const t=$('#toast'); t.textContent=msg; t.className='show '+(kind||''); clearTimeout(t._t); t._t=setTimeout(()=>t.className='',2600); }
+
+/* ==================== curator mode (delegated to shared auth) ====================
+   All passcode handling, the escalating lockout and the session timer live in
+   assets/site.js so every page shares one sign-in. Guests are never blocked:
+   My Vault is fully editable without signing in.                              */
+function ownerActive(){ return !!(window.Shelf && window.Shelf.isCurator()); }
+function paintOwner(){
+  const b=$('#ownerBtn'); if(!b) return;
+  const on=ownerActive();
+  b.classList.toggle('on',on);
+  b.textContent=on?'🔓 Curator mode':'🔒 Curator';
+  b.title=on?'Curator mode active — click for profile options':'Sign in to edit the shared collection';
+}
+function openOwner(){ if(window.Shelf) window.Shelf.openCurator(); else toast('Sign-in unavailable','err'); }
+
+/* ============================ dictionary ============================ */
 async function fetchDef(word){
   try{
-    const r = await fetch(API+encodeURIComponent(word.toLowerCase()));
+    const r=await fetch(API+encodeURIComponent(word.toLowerCase()));
     if(!r.ok) return null;
-    const data = await r.json();
-    const e = Array.isArray(data)?data[0]:null;
+    const data=await r.json(); const e=Array.isArray(data)?data[0]:null;
     if(!e) return null;
-    let phonetic = e.phonetic||'', audio='';
+    let phonetic=e.phonetic||'', audio='';
     (e.phonetics||[]).forEach(p=>{ if(!phonetic&&p.text)phonetic=p.text; if(!audio&&p.audio)audio=p.audio; });
     if(audio.startsWith('//')) audio='https:'+audio;
     const defs=[]; const syn=new Set();
     (e.meanings||[]).forEach(m=>{
       (m.synonyms||[]).forEach(s=>syn.add(s));
       const d=(m.definitions||[])[0];
-      if(d){ defs.push({pos:m.partOfSpeech||'', def:d.definition||'', example:d.example||''}); (d.synonyms||[]).forEach(s=>syn.add(s)); }
+      if(d){ defs.push({pos:m.partOfSpeech||'',def:d.definition||'',example:d.example||''}); (d.synonyms||[]).forEach(s=>syn.add(s)); }
     });
-    return { word:e.word||word, phonetic, audio, defs, synonyms:[...syn].slice(0,12) };
+    return {word:e.word||word,phonetic,audio,defs,synonyms:[...syn].slice(0,12)};
   }catch(err){ return 'neterr'; }
 }
 
 async function addWord(){
-  if(!unlocked){ toast('Adding is locked — enter the password','err'); const p=$('#pwIn'); if(p) p.focus(); return; }
-  const raw = $('#wordIn').value.trim();
-  if(!raw){ $('#wordIn').focus(); return; }
-  const term = raw.replace(/\s+/g,' ');
-  const src = $('#srcIn').value.trim();
-  if(words.some(w=>w.word.toLowerCase()===term.toLowerCase())){
-    toast('“'+term+'” is already in your vault','err'); flashWord(term); return;
-  }
+  if(!canEdit()){ toast("Curator's Picks is read-only — switch to My Vault","err"); return; }
+  const raw=$('#wordIn').value.trim(); if(!raw){ $('#wordIn').focus(); return; }
+  const term=raw.replace(/\s+/g,' ');
+  const list=collection();
+  if(list.some(w=>w.word.toLowerCase()===term.toLowerCase())){ toast('“'+term+'” is already here','err'); flashWord(term); return; }
   const btn=$('#addBtn'); btn.disabled=true; btn.textContent='Looking up…';
-  const res = await fetchDef(term);
+  const res=await fetchDef(term);
   btn.disabled=false; btn.textContent='+ Add word';
-  const entry = {
-    id:uid(), word:term, phonetic:'', audio:'', defs:[], synonyms:[],
-    source:src, note:'', tags:[], status:'new', favorite:false, dateAdded:new Date().toISOString()
-  };
-  let notFound=false;
-  if(res && res!=='neterr'){ Object.assign(entry,{word:res.word,phonetic:res.phonetic,audio:res.audio,defs:res.defs,synonyms:res.synonyms}); }
-  else if(res==='neterr'){ toast('Network error — saved the word; add a definition manually','err'); notFound=true; }
-  else { toast('No dictionary entry for “'+term+'” — add your own definition','err'); notFound=true; }
-  words.unshift(entry); save();
+  const entry={id:uid(),word:term,phonetic:'',audio:'',defs:[],synonyms:[],source:$('#srcIn').value.trim(),
+    note:'',tags:[],status:'new',favorite:false,dateAdded:new Date().toISOString()};
+  let manual=false;
+  if(res&&res!=='neterr') Object.assign(entry,{word:res.word,phonetic:res.phonetic,audio:res.audio,defs:res.defs,synonyms:res.synonyms});
+  else if(res==='neterr'){ toast('Network error — saved; add a definition yourself','err'); manual=true; }
+  else { toast('No dictionary entry for “'+term+'” — add your own','err'); manual=true; }
+  list.unshift(entry); persist();
   $('#wordIn').value=''; $('#srcIn').value=''; $('#wordIn').focus();
-  buildStats(); buildChips(); render();
-  if(notFound) openEdit(entry.id);
-  else { toast('Added “'+entry.word+'”','ok'); flashWord(entry.word); }
+  renderAll();
+  if(manual) openEdit(entry.id); else { toast('Added “'+entry.word+'”','ok'); flashWord(entry.word); }
 }
-
 function flashWord(term){
   setTimeout(()=>{ const el=[...document.querySelectorAll('.word')].find(n=>n.dataset.term===term.toLowerCase());
-    if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.borderColor='var(--acc)';
-      setTimeout(()=>el.style.borderColor='',1200);} },60);
+    if(el){ el.scrollIntoView({behavior:'smooth',block:'center'}); el.style.borderColor='var(--acc)'; setTimeout(()=>el.style.borderColor='',1300);} },70);
+}
+function copyToMine(id){
+  const w=curated.find(x=>x.id===id); if(!w) return;
+  if(mine.some(m=>m.word.toLowerCase()===w.word.toLowerCase())){ toast('Already in your vault','err'); return; }
+  const c=JSON.parse(JSON.stringify(w));
+  c.id=uid(); c.curated=false; c.dateAdded=new Date().toISOString(); c.status='new'; c.favorite=false;
+  mine.unshift(c); saveMine(); renderAll(); toast('“'+w.word+'” copied to My Vault','ok');
 }
 
-/* ---------- pronunciation ---------- */
-function speak(w){
-  if(w.audio){ const a=new Audio(w.audio); a.play().catch(()=>tts(w.word)); }
-  else tts(w.word);
-}
+/* ============================ speech ============================ */
+function speak(w){ if(w.audio){ const a=new Audio(w.audio); a.play().catch(()=>tts(w.word)); } else tts(w.word); }
 function tts(t){ if('speechSynthesis' in window){ const u=new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=.9; speechSynthesis.cancel(); speechSynthesis.speak(u);} }
 
-/* ---------- stats / chips ---------- */
+/* ============================ chrome ============================ */
 function buildStats(){
-  const wk = Date.now()-7*864e5;
-  const c={total:words.length, new:0, learning:0, mastered:0, week:0};
-  words.forEach(w=>{ c[w.status]=(c[w.status]||0)+1; if(new Date(w.dateAdded).getTime()>wk)c.week++; });
-  $('#stats').innerHTML=[
-    {v:c.total,l:'Words'},{v:c.new,l:'New',c:'new'},{v:c.learning,l:'Learning',c:'learning'},
-    {v:c.mastered,l:'Mastered',c:'mastered'},{v:c.week,l:'This week'}
-  ].map(s=>`<div class="stat ${s.c||''}"><div class="v">${s.v}</div><div class="l">${s.l}</div></div>`).join('');
+  const list=collection(), wk=Date.now()-7*864e5;
+  const c={total:list.length,new:0,learning:0,mastered:0,week:0};
+  list.forEach(w=>{ c[w.status]=(c[w.status]||0)+1; if(new Date(w.dateAdded).getTime()>wk)c.week++; });
+  $('#stats').innerHTML=[{v:c.total,l:'Words'},{v:c.new,l:'New',c:'new'},{v:c.learning,l:'Learning',c:'learning'},
+    {v:c.mastered,l:'Mastered',c:'mastered'},{v:c.week,l:'This week'}]
+    .map(s=>`<div class="stat ${s.c||''}"><div class="v">${s.v}</div><div class="l">${s.l}</div></div>`).join('');
+  $('#cntMine').textContent=mine.length; $('#cntCur').textContent=curated.length;
+}
+function buildBanner(){
+  const b=$('#banner');
+  if(view==='mine'){
+    b.className='banner info';
+    b.innerHTML='<span class="bi">🗃️</span><div><b>This vault is yours alone.</b> Words you add are saved in this browser only — nobody else can see or change them. New here? Open <b>Curator\'s Picks</b> for a starter set you can copy from.</div>';
+  } else if(ownerActive()){
+    b.className='banner owner';
+    b.innerHTML='<span class="bi">🔓</span><div><b>Curator mode active.</b> You\'re editing the shared starter collection. Use <b>Export</b> to save it, then commit the file to publish. Session ends in 1 hour.</div>';
+  } else {
+    b.className='banner info';
+    b.innerHTML='<span class="bi">✨</span><div><b>A starter collection, read-only.</b> Browse or study these, and hit <b>＋Copy</b> on any word to add it to your own vault. Only the curator can change this list.</div>';
+  }
+  $('#addbar').style.display = canEdit()?'flex':'none';
 }
 function buildChips(){
-  const tags={}; words.forEach(w=>(w.tags||[]).forEach(t=>tags[t]=(tags[t]||0)+1));
-  const statuses=[['','All'],['new','New'],['learning','Learning'],['mastered','Mastered'],['fav','★ Favorites']];
-  let html = statuses.map(([v,l])=>`<div class="chip status ${activeStatus===v?'on':''}" data-s="${v}">${l}</div>`).join('');
-  const tagKeys=Object.keys(tags).sort();
-  if(tagKeys.length){ html+='<span style="width:1px;background:var(--line2);margin:2px 4px"></span>';
-    html+=tagKeys.map(t=>`<div class="chip tag2 ${activeTag===t?'on':''}" data-t="${esc(t)}">#${esc(t)}<span class="n">${tags[t]}</span></div>`).join(''); }
+  const list=collection(), tags={};
+  list.forEach(w=>(w.tags||[]).forEach(t=>tags[t]=(tags[t]||0)+1));
+  const statuses=[['','All'],['new','New'],['learning','Learning'],['mastered','Mastered'],['fav','★ Favourites']];
+  let html=statuses.map(([v,l])=>`<div class="chip status ${activeStatus===v?'on':''}" data-s="${v}">${l}</div>`).join('');
+  const keys=Object.keys(tags).sort();
+  if(keys.length){ html+='<span style="width:1px;background:var(--line2);margin:2px 4px"></span>';
+    html+=keys.map(t=>`<div class="chip tag2 ${activeTag===t?'on':''}" data-t="${esc(t)}">#${esc(t)}<span class="n">${tags[t]}</span></div>`).join(''); }
   $('#chips').innerHTML=html;
   $('#chips').querySelectorAll('.chip.status').forEach(c=>c.onclick=()=>{activeStatus=activeStatus===c.dataset.s?'':c.dataset.s;buildChips();render();});
   $('#chips').querySelectorAll('.chip.tag2').forEach(c=>c.onclick=()=>{activeTag=activeTag===c.dataset.t?'':c.dataset.t;buildChips();render();});
-  // populate POS filter
-  const pos=new Set(); words.forEach(w=>(w.defs||[]).forEach(d=>d.pos&&pos.add(d.pos)));
+  const pos=new Set(); list.forEach(w=>(w.defs||[]).forEach(d=>d.pos&&pos.add(d.pos)));
   const cur=$('#posFilter').value;
   $('#posFilter').innerHTML='<option value="">All parts of speech</option>'+[...pos].sort().map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join('');
   $('#posFilter').value=cur;
 }
 
-/* ---------- filter / sort / render ---------- */
+/* ============================ list ============================ */
 function filtered(){
-  const q=$('#search').value.trim().toLowerCase();
-  const pf=$('#posFilter').value;
-  let arr=words.filter(w=>{
+  const q=$('#search').value.trim().toLowerCase(), pf=$('#posFilter').value;
+  let arr=collection().filter(w=>{
     if(activeStatus==='fav'){ if(!w.favorite) return false; } else if(activeStatus){ if(w.status!==activeStatus) return false; }
-    if(activeTag && !(w.tags||[]).includes(activeTag)) return false;
-    if(pf && !(w.defs||[]).some(d=>d.pos===pf)) return false;
+    if(activeTag&&!(w.tags||[]).includes(activeTag)) return false;
+    if(pf&&!(w.defs||[]).some(d=>d.pos===pf)) return false;
     if(q){ const hay=(w.word+' '+(w.defs||[]).map(d=>d.def).join(' ')+' '+(w.note||'')+' '+(w.tags||[]).join(' ')+' '+(w.source||'')).toLowerCase();
       if(!hay.includes(q)) return false; }
     return true;
   });
-  const s=$('#sort').value, ord={new:1,learning:2,mastered:3};
-  arr.sort({
-    new:(a,b)=>new Date(b.dateAdded)-new Date(a.dateAdded),
-    old:(a,b)=>new Date(a.dateAdded)-new Date(b.dateAdded),
-    az:(a,b)=>a.word.localeCompare(b.word),
-    za:(a,b)=>b.word.localeCompare(a.word),
-    status:(a,b)=>(ord[a.status]||9)-(ord[b.status]||9)||a.word.localeCompare(b.word),
-  }[s]);
+  const ord={new:1,learning:2,mastered:3};
+  arr.sort({ new:(a,b)=>new Date(b.dateAdded)-new Date(a.dateAdded), old:(a,b)=>new Date(a.dateAdded)-new Date(b.dateAdded),
+    az:(a,b)=>a.word.localeCompare(b.word), za:(a,b)=>b.word.localeCompare(a.word),
+    status:(a,b)=>(ord[a.status]||9)-(ord[b.status]||9)||a.word.localeCompare(b.word) }[$('#sort').value]);
   return arr;
 }
 function wordCard(w){
   const el=document.createElement('div'); el.className='word s-'+w.status; el.dataset.term=w.word.toLowerCase();
-  const primary=(w.defs||[])[0];
+  const editable=canEdit();
   const defsHtml=(w.defs||[]).map((d,i)=>`<div class="def">${(w.defs.length>1)?`<span class="n2">${i+1}.</span>`:''}${d.pos?`<span class="pos">${esc(d.pos)}</span> `:''}${esc(d.def)||'<span style="color:var(--mut2)">— no definition yet —</span>'}${d.example?`<div class="ex">${esc(d.example)}</div>`:''}</div>`).join('')
-    || `<div class="def" style="color:var(--mut2)">— no definition yet (click ✎ to add one) —</div>`;
+    || `<div class="def" style="color:var(--mut2)">— no definition yet —</div>`;
   const syn=(w.synonyms||[]).length?`<div class="syn">${w.synonyms.map(s=>`<span class="s" data-syn="${esc(s)}">${esc(s)}</span>`).join('')}</div>`:'';
   const tags=(w.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('');
   const src=w.source?`<span class="src">from <b>${esc(w.source)}</b></span>`:'';
   const note=w.note?`<div class="note">📝 ${esc(w.note)}</div>`:'';
   const date=new Date(w.dateAdded).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+  const actions = editable
+    ? `<select class="statusSel" title="Status">
+         <option value="new"${w.status==='new'?' selected':''}>🔵 New</option>
+         <option value="learning"${w.status==='learning'?' selected':''}>🟡 Learning</option>
+         <option value="mastered"${w.status==='mastered'?' selected':''}>🟢 Mastered</option></select>
+       <span class="iconbtn fav ${w.favorite?'on':''}" title="Favourite">${w.favorite?'★':'☆'}</span>
+       <span class="iconbtn edit" title="Edit">✎</span>
+       <span class="iconbtn del" title="Delete">🗑</span>`
+    : `<span class="iconbtn copy" title="Copy to My Vault">＋ Copy</span>`;
   el.innerHTML=`
     <div class="wtop">
       <span class="term">${esc(w.word)}</span>
       ${w.phonetic?`<span class="phon">${esc(w.phonetic)}</span>`:''}
       <span class="spk" title="Pronounce">🔊</span>
       <span class="spacer"></span>
-      <div class="wact">
-        <select class="statusSel iconize" title="Status">
-          <option value="new"${w.status==='new'?' selected':''}>🔵 New</option>
-          <option value="learning"${w.status==='learning'?' selected':''}>🟡 Learning</option>
-          <option value="mastered"${w.status==='mastered'?' selected':''}>🟢 Mastered</option>
-        </select>
-        <span class="iconbtn fav ${w.favorite?'on':''}" title="Favorite">${w.favorite?'★':'☆'}</span>
-        <span class="iconbtn edit" title="Edit">✎</span>
-        <span class="iconbtn del" title="Delete">🗑</span>
-      </div>
+      <div class="wact">${actions}</div>
     </div>
-    ${defsHtml}
-    ${syn}
+    ${defsHtml}${syn}
     <div class="meta">${tags}${src}<span class="src" style="margin-left:auto;color:var(--mut2)">added ${date}</span></div>
     ${note}`;
   el.querySelector('.spk').onclick=()=>speak(w);
-  el.querySelector('.fav').onclick=()=>{w.favorite=!w.favorite;save();buildStats();buildChips();render();};
-  el.querySelector('.edit').onclick=()=>openEdit(w.id);
-  el.querySelector('.del').onclick=()=>{ if(confirm('Delete “'+w.word+'”?')){ words=words.filter(x=>x.id!==w.id); save(); buildStats(); buildChips(); render(); toast('Deleted','ok'); } };
-  el.querySelector('.statusSel').onchange=e=>{w.status=e.target.value;save();buildStats();buildChips();render();};
-  el.querySelectorAll('.syn .s').forEach(s=>s.onclick=()=>{$('#wordIn').value=s.dataset.syn;$('#wordIn').focus();$('#wordIn').scrollIntoView({behavior:'smooth',block:'center'});});
+  el.querySelectorAll('.syn .s').forEach(s=>s.onclick=()=>{ $('#wordIn').value=s.dataset.syn; $('#wordIn').focus(); $('#wordIn').scrollIntoView({behavior:'smooth',block:'center'}); });
+  if(editable){
+    el.querySelector('.fav').onclick=()=>{w.favorite=!w.favorite;persist();renderAll();};
+    el.querySelector('.edit').onclick=()=>openEdit(w.id);
+    el.querySelector('.del').onclick=()=>{ if(confirm('Delete “'+w.word+'”?')){ const l=collection(); const i=l.findIndex(x=>x.id===w.id); if(i>-1)l.splice(i,1); persist(); renderAll(); toast('Deleted','ok'); } };
+    el.querySelector('.statusSel').onchange=e=>{w.status=e.target.value;persist();renderAll();};
+  } else {
+    el.querySelector('.copy').onclick=()=>copyToMine(w.id);
+  }
   return el;
 }
 function render(){
-  const arr=filtered(); const list=$('#list'); list.innerHTML='';
+  const arr=filtered(), list=$('#list'); list.innerHTML='';
   arr.forEach(w=>list.appendChild(wordCard(w)));
-  $('#empty').style.display=words.length?'none':'block';
-  $('#count').innerHTML=words.length?`Showing <b>${arr.length}</b> of <b>${words.length}</b> words`:'';
+  const total=collection().length;
+  $('#count').innerHTML=total?`Showing <b>${arr.length}</b> of <b>${total}</b> words`:'';
+  const emp=$('#empty');
+  if(total===0){
+    emp.style.display='block';
+    emp.innerHTML=view==='mine'
+      ? `<div class="big">📚</div><div class="eh">Your vault is empty</div>
+         <div class="es">Add the first word you're curious about above — the definition, pronunciation and synonyms are fetched for you.</div>
+         <button class="btn accent" id="goCur">✨ Browse Curator's Picks</button>`
+      : `<div class="big">✨</div><div class="eh">No curated words</div><div class="es">The starter collection is empty.</div>`;
+    const g=$('#goCur'); if(g) g.onclick=()=>switchView('curated');
+  } else if(arr.length===0){
+    emp.style.display='block';
+    emp.innerHTML=`<div class="big">🔍</div><div class="eh">No matches</div><div class="es">Nothing fits those filters. Try clearing the search or status chips.</div>`;
+  } else emp.style.display='none';
+}
+function renderAll(){ buildStats(); buildBanner(); buildChips(); render(); paintOwner(); }
+
+function switchView(v){
+  view=v; activeStatus=''; activeTag=''; $('#search').value='';
+  $('#tabMine').classList.toggle('on',v==='mine');
+  $('#tabCur').classList.toggle('on',v==='curated');
+  renderAll();
 }
 
-/* ---------- edit modal ---------- */
+/* ============================ edit ============================ */
 function openEdit(id){
-  const w=words.find(x=>x.id===id); if(!w) return;
+  const w=collection().find(x=>x.id===id); if(!w) return;
   const d0=(w.defs||[])[0]||{pos:'',def:'',example:''};
   $('#modal').innerHTML=`
     <h3 class="mh">Edit “${esc(w.word)}”</h3>
@@ -457,137 +520,115 @@ function openEdit(id){
     <div class="fld"><label>Definition</label><textarea id="eDef" placeholder="What does it mean?">${esc(d0.def)}</textarea></div>
     <div class="fld"><label>Example sentence</label><input id="eEx" value="${esc(d0.example)}" placeholder="Use it in a sentence"></div>
     <div class="fld"><label>Where you found it</label><input id="eSrc" value="${esc(w.source)}" placeholder="Book, article, conversation…"></div>
-    <div class="fld"><label>Tags (comma separated)</label><input id="eTags" value="${esc((w.tags||[]).join(', '))}" placeholder="e.g. literary, latin-root"></div>
+    <div class="fld"><label>Tags (comma separated)</label><input id="eTags" value="${esc((w.tags||[]).join(', '))}" placeholder="literary, latin-root"></div>
     <div class="fld"><label>Personal note</label><textarea id="eNote" placeholder="A memory hook, mnemonic, etymology…">${esc(w.note)}</textarea></div>
     <div class="fld"><label>Status</label><select id="eStatus">
       <option value="new"${w.status==='new'?' selected':''}>New</option>
       <option value="learning"${w.status==='learning'?' selected':''}>Learning</option>
-      <option value="mastered"${w.status==='mastered'?' selected':''}>Mastered</option>
-    </select></div>
-    <div class="mactions">
-      <button class="btn" id="eCancel">Cancel</button>
-      <button class="btn accent" id="eSave">Save changes</button>
-    </div>`;
+      <option value="mastered"${w.status==='mastered'?' selected':''}>Mastered</option></select></div>
+    <div class="mactions"><button class="btn" id="eCancel">Cancel</button><button class="btn accent" id="eSave">Save changes</button></div>`;
   showOverlay();
   $('#eCancel').onclick=closeOverlay;
   $('#eSave').onclick=()=>{
-    const def=$('#eDef').value.trim(), pos=$('#ePos').value.trim(), ex=$('#eEx').value.trim();
     if(!w.defs||!w.defs.length) w.defs=[{pos:'',def:'',example:''}];
-    w.defs[0]={pos,def,example:ex};
+    w.defs[0]={pos:$('#ePos').value.trim(),def:$('#eDef').value.trim(),example:$('#eEx').value.trim()};
     w.source=$('#eSrc').value.trim();
     w.tags=$('#eTags').value.split(',').map(t=>t.trim()).filter(Boolean);
-    w.note=$('#eNote').value.trim();
-    w.status=$('#eStatus').value;
-    save(); buildStats(); buildChips(); render(); closeOverlay(); toast('Saved','ok');
+    w.note=$('#eNote').value.trim(); w.status=$('#eStatus').value;
+    persist(); renderAll(); closeOverlay(); toast('Saved','ok');
   };
 }
 
-/* ---------- study mode ---------- */
+/* ============================ study ============================ */
 function openStudy(){
-  const deck=filtered().slice(); if(!deck.length){ toast('No words to study in this filter','err'); return; }
-  // shuffle
+  const deck=filtered().slice();
+  if(!deck.length){ toast('Nothing to study in this view','err'); return; }
   for(let i=deck.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
   let idx=0, flipped=false, known=0;
+  const writable=canEdit();
   function draw(){
-    const w=deck[idx]; const d=(w.defs||[])[0]||{};
+    const w=deck[idx], d=(w.defs||[])[0]||{};
     $('#modal').innerHTML=`
       <h3 class="mh" style="text-align:center">🎴 Study session</h3>
-      <div class="card3d" id="flashcard">
-        <div class="inner" id="inner">
-          <div class="face front">
-            <div class="fterm">${esc(w.word)}</div>
-            ${w.phonetic?`<div class="fphon">${esc(w.phonetic)}</div>`:''}
-            <div class="ftap">tap to reveal definition</div>
-          </div>
-          <div class="face back">
-            ${d.pos?`<div class="fpos">${esc(d.pos)}</div>`:''}
-            <div class="fdef">${esc(d.def)||'— no definition —'}</div>
-            <div class="ftap">tap to flip back</div>
-          </div>
-        </div>
-      </div>
+      <div class="card3d" id="flashcard"><div class="inner" id="inner">
+        <div class="face front"><div class="fterm">${esc(w.word)}</div>
+          ${w.phonetic?`<div class="fphon">${esc(w.phonetic)}</div>`:''}
+          <div class="ftap">tap to reveal definition</div></div>
+        <div class="face back">${d.pos?`<div class="fpos">${esc(d.pos)}</div>`:''}
+          <div class="fdef">${esc(d.def)||'— no definition —'}</div>
+          <div class="ftap">tap to flip back</div></div>
+      </div></div>
       <div class="studybar">
         <button class="sbtn again" id="sAgain">↻ Still learning</button>
         <button class="sbtn" id="sSpeak">🔊 Hear it</button>
         <button class="sbtn know" id="sKnow">✓ I know it</button>
       </div>
-      <div class="studyprog">Card ${idx+1} of ${deck.length} · ${known} known</div>`;
+      <div class="studyprog">Card ${idx+1} of ${deck.length} · ${known} known${writable?'':' · progress not saved for read-only picks'}</div>`;
     flipped=false;
     $('#flashcard').onclick=()=>{ flipped=!flipped; $('#inner').classList.toggle('flip',flipped); };
-    $('#sSpeak').onclick=e=>{ e.stopPropagation(); speak(w); };
-    $('#sKnow').onclick=e=>{ e.stopPropagation(); w.status='mastered'; known++; save(); next(); };
-    $('#sAgain').onclick=e=>{ e.stopPropagation(); if(w.status==='new')w.status='learning'; save(); next(); };
+    $('#sSpeak').onclick=e=>{e.stopPropagation();speak(w);};
+    $('#sKnow').onclick=e=>{e.stopPropagation(); if(writable){w.status='mastered';persist();} known++; next();};
+    $('#sAgain').onclick=e=>{e.stopPropagation(); if(writable&&w.status==='new'){w.status='learning';persist();} next();};
   }
-  function next(){ idx++; if(idx>=deck.length){ buildStats();buildChips();render(); $('#modal').innerHTML=`<h3 class="mh" style="text-align:center">🎉 Session complete</h3><p style="text-align:center;color:var(--txt2);font-size:15px">You reviewed <b>${deck.length}</b> ${deck.length===1?'card':'cards'} and marked <b style="color:var(--mastered)">${known}</b> as known.</p><div class="mactions" style="justify-content:center"><button class="btn" id="sClose">Done</button><button class="btn accent" id="sAgain2">Study again</button></div>`; $('#sClose').onclick=closeOverlay; $('#sAgain2').onclick=openStudy; } else draw(); }
+  function next(){
+    idx++;
+    if(idx>=deck.length){
+      renderAll();
+      $('#modal').innerHTML=`<h3 class="mh" style="text-align:center">🎉 Session complete</h3>
+        <p class="msub" style="text-align:center">You reviewed <b>${deck.length}</b> ${deck.length===1?'card':'cards'} and marked <b style="color:var(--mastered)">${known}</b> as known.</p>
+        <div class="mactions" style="justify-content:center"><button class="btn" id="sClose">Done</button><button class="btn accent" id="sAgain2">Study again</button></div>`;
+      $('#sClose').onclick=closeOverlay; $('#sAgain2').onclick=openStudy;
+    } else draw();
+  }
   showOverlay(); draw();
 }
 
-/* ---------- export / import ---------- */
+/* ============================ import / export ============================ */
 function exportJSON(){
-  const blob=new Blob([JSON.stringify(words,null,2)],{type:'application/json'});
+  const list=collection();
+  if(!list.length){ toast('Nothing to export','err'); return; }
+  const blob=new Blob([JSON.stringify(list,null,2)],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='lexicon-vocab-'+new Date().toISOString().slice(0,10)+'.json'; a.click(); URL.revokeObjectURL(a.href);
-  toast('Exported '+words.length+' words','ok');
+  a.download=(view==='mine'?'my-vocabulary-':'curator-picks-')+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(a.href);
+  toast('Exported '+list.length+' words','ok');
 }
 function importJSON(file){
   const r=new FileReader();
   r.onload=()=>{ try{
     const data=JSON.parse(r.result); if(!Array.isArray(data)) throw 0;
-    const have=new Set(words.map(w=>w.word.toLowerCase())); let added=0;
-    data.forEach(w=>{ if(w&&w.word&&!have.has(w.word.toLowerCase())){ w.id=w.id||uid(); words.push(w); have.add(w.word.toLowerCase()); added++; } });
-    save(); buildStats(); buildChips(); render(); toast('Imported '+added+' new words','ok');
+    const list=collection(); const have=new Set(list.map(w=>w.word.toLowerCase())); let added=0;
+    data.forEach(w=>{ if(w&&w.word&&!have.has(w.word.toLowerCase())){ w.id=w.id||uid(); w.status=w.status||'new';
+      w.dateAdded=w.dateAdded||new Date().toISOString(); w.defs=w.defs||[]; list.push(w); have.add(w.word.toLowerCase()); added++; } });
+    persist(); renderAll(); toast('Imported '+added+' new word'+(added===1?'':'s'),'ok');
   }catch(e){ toast('Could not read that file','err'); } };
   r.readAsText(file);
 }
 
-/* ---------- overlay helpers ---------- */
+/* ============================ overlay ============================ */
 function showOverlay(){ $('#overlay').classList.add('show'); document.body.style.overflow='hidden'; }
-function closeOverlay(){ $('#overlay').classList.remove('show'); document.body.style.overflow=''; }
+function closeOverlay(){ $('#overlay').classList.remove('show'); document.body.style.overflow=''; clearInterval(lockTimer); }
 $('#overlay').addEventListener('click',e=>{ if(e.target===$('#overlay')) closeOverlay(); });
 
-/* ---------- seed examples ---------- */
-async function seed(){
-  if(!unlocked){ toast('Unlock to add words','err'); return; }
-  const samples=[
-    {word:'serendipity',source:'The Alchemist'},
-    {word:'ephemeral',source:''},
-    {word:'petrichor',source:'a poem'},
-    {word:'sonder',source:''},
-    {word:'ineffable',source:''},
-  ];
-  toast('Fetching a few examples…');
-  for(const s of samples){
-    if(words.some(w=>w.word.toLowerCase()===s.word)) continue;
-    const res=await fetchDef(s.word);
-    const e={id:uid(),word:s.word,phonetic:'',audio:'',defs:[],synonyms:[],source:s.source,note:'',tags:['example'],status:'new',favorite:false,dateAdded:new Date().toISOString()};
-    if(res&&res!=='neterr') Object.assign(e,{word:res.word,phonetic:res.phonetic,audio:res.audio,defs:res.defs,synonyms:res.synonyms});
-    words.push(e);
-  }
-  save(); buildStats(); buildChips(); render(); toast('Added examples — try Study mode!','ok');
-}
-
-/* ---------- wiring ---------- */
+/* ============================ wiring ============================ */
 $('#addBtn').onclick=addWord;
 $('#wordIn').addEventListener('keydown',e=>{ if(e.key==='Enter') addWord(); });
 $('#srcIn').addEventListener('keydown',e=>{ if(e.key==='Enter') addWord(); });
 ['#search','#sort','#posFilter'].forEach(s=>$(s).addEventListener('input',render));
 $('#posFilter').addEventListener('change',render);
+$('#tabMine').onclick=()=>switchView('mine');
+$('#tabCur').onclick=()=>switchView('curated');
+$('#ownerBtn').onclick=openOwner;
 $('#studyBtn').onclick=openStudy;
 $('#exportBtn').onclick=exportJSON;
-$('#importBtn').onclick=()=>{ if(!unlocked){ toast('Unlock to import words','err'); return; } $('#importFile').click(); };
+$('#importBtn').onclick=()=>{ if(!canEdit()){ toast("Switch to My Vault to import",'err'); return; } $('#importFile').click(); };
 $('#importFile').onchange=e=>{ if(e.target.files[0]) importJSON(e.target.files[0]); e.target.value=''; };
-$('#seedBtn').onclick=seed;
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape') closeOverlay();
-  if(e.key==='/' && document.activeElement!==$('#wordIn') && document.activeElement!==$('#search')){ e.preventDefault(); $('#wordIn').focus(); }
-});
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeOverlay(); });
 
-$('#unlockBtn').onclick=tryUnlock;
-$('#pwIn').addEventListener('keydown',e=>{ if(e.key==='Enter') tryUnlock(); });
-$('#lockBtn').onclick=()=>{ unlocked=false; localStorage.removeItem('lex_unlocked'); applyLock(); toast('Locked','ok'); };
-
-buildStats(); buildChips(); render(); applyLock();
-getIP().then(ip=>{ clientIP=ip; if(!unlocked) updateLockMsg(); });
+renderAll();
+if(window.Shelf) window.Shelf.onChange(renderAll);
+else document.addEventListener('DOMContentLoaded',()=>{ if(window.Shelf) window.Shelf.onChange(renderAll); });
 </script>
+<script src="assets/site.js" defer></script>
 </body>
 </html>
