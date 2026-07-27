@@ -435,15 +435,19 @@
         stop(true);
       }
     }
+    /* Never zero the number while the page is hidden. Counting up from 0 needs
+       rAF, and a hidden tab pauses rAF *and* throttles setTimeout to roughly
+       once a minute — so the element would sit displaying "0", which reads as
+       real data rather than an unfinished animation. Nobody can see the
+       animation in a hidden tab anyway, so keep the true value and let the
+       next scan animate it once the page is actually visible. */
+    if (D.hidden) { stop(true); return; }
+
     el.textContent = info.pre + fmtNum(0, info.dec, info.grouped) + info.suf;
     raf(frame);
 
-    /* Safety net. The tick starts by writing 0 and relies on rAF to count up,
-       but rAF is paused in a hidden or backgrounded tab — so a page opened in
-       a background tab (or in an environment that never composites) would sit
-       showing "0", which reads as real data rather than an unfinished
-       animation. A wall-clock timer, which keeps running regardless, snaps the
-       true value in if the animation has not finished on time. */
+    /* Belt and braces for any environment where rAF never delivers a frame:
+       a wall-clock timer snaps the real value in if the animation overruns. */
     setTimeout(safe(function () {
       if (el.classList.contains('sm-ticking')) stop(true);
     }), TICK_MS + 1200);
@@ -467,6 +471,12 @@
       runTick(el, info, original);
     }
   }
+
+  /* A page loaded in a background tab skips its tick (see runTick). Re-scan
+     when it first becomes visible so the animation still happens for real. */
+  D.addEventListener(visibilitychange, function () {
+    if (!D.hidden) { tickDone = {}; scheduleTickScan(); }
+  });
 
   var scanQueued = false;
   function scheduleTickScan() {
