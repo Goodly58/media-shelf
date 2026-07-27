@@ -3,22 +3,31 @@
    --------------------------------------------------------------------------
    Loaded LAST, after every other stylesheet.
 
-   theme.css correctly re-points the design tokens (--bg, --txt, --panel …) for
-   light mode, and most components follow because they are written in var().
-   Two declarations on <body> did not follow in practice, and because nearly all
-   text inherits its colour from <body>, the result was light text on light
-   surfaces — unreadable. Rather than fight the cascade at a distance, the two
-   properties that everything else depends on are pinned here explicitly.
+   theme.css re-points the design tokens (--bg, --txt, --panel …) for light mode
+   and most components follow, because they are authored in var(). Two
+   declarations on <body> did not follow in practice: its base background-color
+   and its text colour. Since nearly all copy inherits colour from <body>, the
+   result was light text on light surfaces — unreadable.
 
-   Scoped to [data-theme="light"], so dark mode is untouched.
+   The values below are written as LITERALS rather than var(--bg)/var(--txt) on
+   purpose. Resolving a custom property that is being redefined on the same
+   element, by a different stylesheet, in the same cascade pass, proved not to
+   settle reliably here; a literal cannot fail that way. These two properties
+   are the foundation everything else inherits from, so they are worth pinning.
+   Everything else in light mode continues to flow from theme.css's tokens.
+
+   Scoped to [data-theme="light"] only — dark mode is untouched.
    ========================================================================== */
 
 :root[data-theme="light"] body{
-  background-color: var(--bg) !important;
-  color: var(--txt) !important;
+  background-color: #f4f2ed !important;
+  color: #1b1a17 !important;
 }
+:root[data-theme="light"] body[data-page="books"]{ background-color: #f6f1e7 !important; }
+:root[data-theme="light"] body[data-page="vocab"]{ background-color: #f2f5f6 !important; }
 
-/* Anything that opts out of inheritance for text still needs the light value. */
+/* Elements that set their own colour must be re-stated, or they keep the
+   dark-theme value and vanish against a light surface. */
 :root[data-theme="light"] .ttl,
 :root[data-theme="light"] .bt,
 :root[data-theme="light"] .term,
@@ -27,24 +36,38 @@
 :root[data-theme="light"] h3,
 :root[data-theme="light"] h4,
 :root[data-theme="light"] .mtitle,
+:root[data-theme="light"] .eh,
 :root[data-theme="light"] .stat .v,
-:root[data-theme="light"] .hn .v{
-  color: var(--txt);
+:root[data-theme="light"] .hn .v,
+:root[data-theme="light"] .count b,
+:root[data-theme="light"] .statusrow b{
+  color: #1b1a17 !important;
 }
 
-/* Secondary copy keeps its intended hierarchy instead of collapsing to --txt. */
+/* Secondary copy keeps its hierarchy instead of collapsing to full contrast. */
 :root[data-theme="light"] .blurb,
 :root[data-theme="light"] .lblurb,
 :root[data-theme="light"] .tagline,
 :root[data-theme="light"] .meta,
 :root[data-theme="light"] .ba,
 :root[data-theme="light"] .count,
-:root[data-theme="light"] .statusrow{
-  color: var(--mut);
+:root[data-theme="light"] .statusrow,
+:root[data-theme="light"] .lede,
+:root[data-theme="light"] .msub,
+:root[data-theme="light"] .es{
+  color: #5c584f !important;
 }
 
-/* The gradient wordmark is painted through the text, so it must be re-stated
-   in light mode or it clips to a dark-mode gradient over a light page. */
-:root[data-theme="light"] h1 b{
-  -webkit-text-fill-color: transparent;
+/* Panels/cards need a light surface for the light text above to sit on. */
+:root[data-theme="light"] .card,
+:root[data-theme="light"] .word,
+:root[data-theme="light"] .stat,
+:root[data-theme="light"] .feat,
+:root[data-theme="light"] .step,
+:root[data-theme="light"] .tool{
+  background-image: linear-gradient(180deg, #fffdf8, #f3f0e9) !important;
 }
+
+/* The gradient wordmark is painted through the text; restate it or it clips a
+   dark-mode gradient over a light page. */
+:root[data-theme="light"] h1 b{ -webkit-text-fill-color: transparent; }

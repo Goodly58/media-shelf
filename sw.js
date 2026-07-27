@@ -5,7 +5,7 @@
    site root gives the worker whole-site scope.
    The ?v= query is forwarded so the imported script is re-fetched (and its
    cache renamed) whenever pwa.js bumps SW_VERSION. */
-/* BUILD_STAMP: 49316e2717
+/* BUILD_STAMP: 23d2d48800
    Browsers revalidate the REGISTERED worker script on navigation, but they only
    re-install when its bytes differ. This shim was previously byte-identical on
    every deploy, so a client that had cached an old build could never be told
