@@ -1,0 +1,304 @@
+/* =====================================================================
+   Shelf — accessibility layer (CSS)
+   Loaded AFTER assets/site.css, so it wins ties with the base chrome and
+   with each page's inline <style> block (same specificity, later source).
+
+   This file is purely ADDITIVE: it never changes layout, colour or motion
+   of the existing designs in their resting state. It only:
+     · provides a strong, consistent focus ring (dark AND light friendly)
+     · makes room for that ring where a parent would clip it
+     · gives the skip links + live regions somewhere to live
+     · enlarges hit targets on touch devices
+     · honours prefers-reduced-motion, prefers-contrast and forced-colors
+
+   NOTE ON !important: the pages set `outline:none` on inputs/selects and
+   other modules may do the same. Focus indication is a WCAG 2.4.7
+   requirement and must not be defeatable by a later layer, so the ring
+   declarations — and only those — are marked !important.
+   ===================================================================== */
+
+:root{
+  /* Ring colour follows the page accent, so games/books/vocab each get a
+     ring in their own hue. Fallback keeps it usable if --acc is missing. */
+  --a11y-ring: var(--acc, #4f8cff);
+  /* Hairline that hugs the element: reads on light surfaces where a bright
+     accent ring alone can disappear. Nearly invisible on the dark themes. */
+  --a11y-ring-edge: rgba(0,0,0,.55);
+  /* Soft outer glow — static fallback, upgraded to the accent hue below. */
+  --a11y-ring-glow: rgba(120,160,255,.30);
+  /* Combined height of the sticky chrome (site nav + sticky toolbar).
+     assets/a11y.js keeps this in sync at runtime; 52px is --navh. */
+  --a11y-sticky: 52px;
+  --a11y-scroll-off: calc(var(--a11y-sticky, 52px) + 16px);
+}
+
+/* Re-declared on <body> as well: a theming layer may redefine --acc per page
+   (body[data-page="…"]) rather than on :root, and a custom property is
+   substituted where it is DECLARED, not where it is used. Declaring on both
+   means the ring follows the accent wherever that accent is defined. */
+body{ --a11y-ring: var(--acc, #4f8cff); }
+
+@supports (color: color-mix(in srgb, red 50%, transparent)){
+  :root{ --a11y-ring-glow: color-mix(in srgb, var(--acc, #4f8cff) 32%, transparent); }
+  body{ --a11y-ring-glow: color-mix(in srgb, var(--acc, #4f8cff) 32%, transparent); }
+}
+
+/* If any later module introduces a light theme, keep the ring legible:
+   a light surface needs a darker hairline, a dark surface a lighter one. */
+:root[data-theme="light"], :root.light, body.light{
+  --a11y-ring-edge: rgba(0,0,0,.62);
+}
+:root[data-theme="dark"], :root.dark{
+  --a11y-ring-edge: rgba(0,0,0,.75);
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){ --a11y-ring-edge: rgba(0,0,0,.62); }
+}
+
+/* ---------------------------------------------------------------------
+   1. Screen-reader-only utility + live regions
+   Must stay in the layout/painting tree (no display:none, no visibility:
+   hidden) or assistive tech will not announce updates.
+   --------------------------------------------------------------------- */
+.a11y-sr-only{
+  position:absolute !important;
+  width:1px; height:1px;
+  margin:-1px; padding:0; border:0;
+  clip:rect(0 0 0 0);
+  clip-path:inset(50%);
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+/* ---------------------------------------------------------------------
+   2. Skip links — invisible until focused, then a real, calm control
+   --------------------------------------------------------------------- */
+/* Fixed, not absolute: the link must be reachable and visible even when the
+   user has scrolled and tabbed back to the top of the page. */
+.a11y-skiplinks{
+  position:fixed; top:0; left:0; z-index:9999;
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+}
+.a11y-skiplinks a{
+  position:absolute; top:0; left:0;
+  transform:translateY(-140%);
+  display:inline-flex; align-items:center; gap:8px;
+  margin:10px; padding:11px 16px;
+  font-size:14px; font-weight:700; line-height:1;
+  color:var(--txt, #eef1f7);
+  background:var(--panel2, #171d27);
+  border:1px solid var(--a11y-ring);
+  border-radius:10px;
+  box-shadow:0 18px 40px -14px rgba(0,0,0,.8);
+  text-decoration:none; white-space:nowrap;
+  transition:transform .16s ease;
+}
+.a11y-skiplinks a:nth-child(2){ left:210px; }
+.a11y-skiplinks a:focus{ transform:translateY(0); }
+
+/* Programmatic focus on a scroll target must not paint a ring for mouse
+   users; :focus-visible still fires for the keyboard path, which is right. */
+[tabindex="-1"]:focus:not(:focus-visible){ outline:none; }
+
+/* ---------------------------------------------------------------------
+   3. The focus ring
+   Two rings + a glow so it survives any background: a dark hairline on the
+   border box, the accent outline just outside it, and a soft accent halo.
+   --------------------------------------------------------------------- */
+a:focus-visible,
+area:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible,
+[contenteditable]:focus-visible,
+[role="button"]:focus-visible,
+[role="switch"]:focus-visible,
+[role="link"]:focus-visible,
+[role="checkbox"]:focus-visible,
+[role="dialog"]:focus-visible,
+.card:focus-visible,
+.chip:focus-visible,
+.word:focus-visible,
+.fav:focus-visible,
+.iconbtn:focus-visible,
+.tool:focus-visible,
+.jump:focus-visible{
+  outline:2px solid var(--a11y-ring) !important;
+  outline-offset:2px !important;
+  box-shadow:0 0 0 1px var(--a11y-ring-edge), 0 0 0 6px var(--a11y-ring-glow) !important;
+  z-index:5;
+}
+
+/* Range thumbs: the input itself is transparent and full-width, so ring the
+   whole track rather than nothing at all. */
+.slider input:focus-visible{
+  outline:2px solid var(--a11y-ring) !important;
+  outline-offset:1px !important;
+  border-radius:14px;
+  box-shadow:0 0 0 5px var(--a11y-ring-glow) !important;
+}
+
+/* Segmented control: .seg has overflow:hidden, which would clip an outside
+   ring — draw it inset instead so it is still unmistakable. */
+.seg > button:focus-visible{
+  outline:2px solid var(--a11y-ring) !important;
+  outline-offset:-3px !important;
+  box-shadow:inset 0 0 0 6px var(--a11y-ring-glow) !important;
+}
+
+/* Cards clip their own cover art; the ring sits outside the card, which is
+   fine, but the grid must not clip it. */
+.grid, .list{ overflow:visible; }
+
+/* The chip rail is a horizontal scroller (overflow-x:auto also clips the
+   Y axis). Add invisible headroom so the ring is never cut off — the
+   negative margin cancels the padding, so nothing moves. */
+.chips{ padding-top:8px; margin-top:-8px; }
+
+/* Nav pills sit inside a scroller too. */
+.sn-links{ padding:3px 0; }
+
+/* ---------------------------------------------------------------------
+   4. Sticky chrome must never hide what you just focused
+   --------------------------------------------------------------------- */
+html{ scroll-padding-top:var(--a11y-scroll-off); }
+
+a, button, input, select, textarea, summary,
+[tabindex], [role="button"], [role="switch"],
+.card, .chip, .word, .stat, h1, h2, h3{
+  scroll-margin-top:var(--a11y-scroll-off);
+}
+
+/* ---------------------------------------------------------------------
+   5. Touch targets — >=40px on coarse pointers only, so the tight desktop
+   layout is untouched.
+   --------------------------------------------------------------------- */
+@media (pointer: coarse){
+  .btn, .sn-btn, .sn-acct, .vtab, .addbtn, .mbtn, .sbtn, .ownerbtn,
+  .sh-primary, .sh-ghost, .sh-close{
+    min-height:40px;
+  }
+  .seg > button, .iconbtn, .spk, .statusSel{
+    min-height:40px; min-width:40px;
+  }
+  .chip{
+    min-height:40px;
+    display:inline-flex; align-items:center;
+  }
+  .sn-links a, .jump{
+    min-height:40px;
+    display:inline-flex; align-items:center;
+  }
+  .card .fav, .coverwrap .fav, .cover .fav{
+    min-width:40px; min-height:40px;
+    display:grid; place-items:center;
+  }
+  .mclose{ min-width:44px; min-height:44px; }
+  /* The search shortcut hint is decorative and steals tap area on phones. */
+  .search kbd{ pointer-events:none; }
+}
+
+/* Very small screens: keep the skip links from overflowing. */
+@media (max-width: 460px){
+  .a11y-skiplinks a{ font-size:13px; padding:10px 12px; margin:8px; }
+  .a11y-skiplinks a:nth-child(2){ left:0; top:52px; }
+}
+
+/* ---------------------------------------------------------------------
+   6. Reduced motion — shorten or remove motion, never remove meaning.
+   (assets/a11y.js additionally downgrades smooth scrollIntoView calls.)
+   --------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto !important; }
+  .a11y-skiplinks a{ transition:none; }
+  .card.flash{ animation:none !important; }
+  .sh-md.shake{ animation:none !important; }
+  .card:hover{ transform:none !important; }
+  .btn:hover{ transform:none !important; }
+  .sn-home:hover{ transform:none !important; }
+}
+
+/* ---------------------------------------------------------------------
+   7. prefers-contrast: more — raise the muted greys and hairlines to a
+   comfortable contrast while keeping each page's hue.
+   --------------------------------------------------------------------- */
+@media (prefers-contrast: more){
+  a:focus-visible, button:focus-visible, input:focus-visible,
+  select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible,
+  [role="button"]:focus-visible, .card:focus-visible, .chip:focus-visible{
+    outline-width:3px !important;
+    outline-offset:3px !important;
+  }
+
+  /* Brighter greys for the dark designs, each keeping its own hue. Skipped in
+     a light theme, where "brighter" is the wrong direction — a theming layer
+     owns those values and the ring/border rules below still apply. */
+  :root:not([data-theme="light"]) body[data-page="games"]{
+    --txt2:#dde3ee; --mut:#a7b0c2; --mut2:#8b95a8;
+    --line:#3b4457; --line2:#4d5870;
+  }
+  :root:not([data-theme="light"]) body[data-page="books"]{
+    --txt2:#efe4d2; --mut:#c3b498; --mut2:#a2947b;
+    --line:#4a3e2d; --line2:#63533c;
+  }
+  :root:not([data-theme="light"]) body[data-page="vocab"]{
+    --txt2:#dfe7ef; --mut:#a3b1c0; --mut2:#8794a2;
+    --line:#324050; --line2:#4a5b6d;
+  }
+  :root:not([data-theme="light"]) body[data-page="home"]{
+    --txt2:#dde3ee; --mut:#a7b0c2; --mut2:#8b95a8;
+    --line:#39424f; --line2:#4c5768;
+  }
+
+  .card, .word, .chip, .stat, .btn, .seg, .modal, .sh-md{
+    border-color:var(--line2);
+  }
+  .chip.on{ border-width:2px; }
+  .blurb, .lblurb, .tagline, .meta, .ba{ color:var(--txt2); }
+  :root:not([data-theme="light"]) .sn-links a{ color:rgba(255,255,255,.82); }
+  :root:not([data-theme="light"]) .sitenav{ border-bottom-color:rgba(255,255,255,.24); }
+  .a11y-skiplinks a{ border-width:2px; }
+}
+
+/* ---------------------------------------------------------------------
+   8. Windows High Contrast / forced-colors — use system colours so the
+   ring survives when authored colours are discarded.
+   --------------------------------------------------------------------- */
+@media (forced-colors: active){
+  a:focus-visible, button:focus-visible, input:focus-visible,
+  select:focus-visible, textarea:focus-visible, summary:focus-visible,
+  [tabindex]:focus-visible, [role="button"]:focus-visible,
+  [role="switch"]:focus-visible, .card:focus-visible, .chip:focus-visible,
+  .seg > button:focus-visible{
+    outline:3px solid Highlight !important;
+    outline-offset:2px !important;
+    box-shadow:none !important;
+  }
+  .a11y-skiplinks a{
+    background:Canvas; color:CanvasText; border:2px solid CanvasText;
+    box-shadow:none;
+  }
+  .chip[aria-pressed="true"], .btn[aria-pressed="true"],
+  .seg > button[aria-pressed="true"]{
+    outline:2px solid CanvasText;
+    outline-offset:-2px;
+  }
+  /* Gradient-painted badges lose their fill in forced colours. */
+  .card .mc, .stat, .verified{ border:1px solid CanvasText; }
+}
+
+/* ---------------------------------------------------------------------
+   9. Dialog polish — the panel receives focus programmatically; give it a
+   quiet ring only when the keyboard put it there.
+   --------------------------------------------------------------------- */
+[role="dialog"][tabindex="-1"]:focus:not(:focus-visible){ outline:none; }
+
+/* Elements we mark as toggles get a subtle pressed affordance even if a
+   page never styled the state (e.g. future modules adding new chips). */
+[role="switch"][aria-checked="true"]:not(.on),
+[aria-pressed="true"]:not(.on):not(.btn):not(.vtab):not(.chip){
+  border-color:var(--a11y-ring);
+}

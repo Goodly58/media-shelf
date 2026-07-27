@@ -1,0 +1,282 @@
+/* ==========================================================================
+   Shelf — motion system                                    assets/motion.css
+   --------------------------------------------------------------------------
+   Loaded on every page AFTER assets/site.css, so it wins ties by source order.
+   Purely additive: it never changes layout or colour, only how things enter,
+   press and settle. Everything here is transform/opacity based (the only two
+   properties the compositor can animate without layout or paint work).
+
+   Companion file: assets/motion.js (adds/removes the .sm-* state classes).
+   Every rule that hides something on purpose has a CSS-only failsafe, so the
+   page is still fully readable if motion.js never loads or throws.
+
+   Namespace: classes .sm-*, custom properties --sm-*, keyframes sm-*.
+   ========================================================================== */
+
+:root{
+  /* Durations. Nothing here is allowed to feel slow. */
+  --sm-fast:140ms;
+  --sm-base:200ms;
+  --sm-slow:380ms;
+  --sm-reveal:520ms;
+  /* Easings. --sm-ease is the "settle" curve, --sm-ease-out the "arrive" one. */
+  --sm-ease:cubic-bezier(.2,.8,.3,1);
+  --sm-ease-out:cubic-bezier(.16,.84,.44,1);
+  /* Per-item stagger step used by the grid entrance (JS writes --sm-d). */
+  --sm-step:22ms;
+}
+
+/* ==========================================================================
+   1. Keyframes
+   Values are hard-coded (no var() inside keyframes) so that a browser which
+   fails to resolve a custom property can never leave an element at opacity 0.
+   ========================================================================== */
+
+@keyframes sm-fade-up      { from{opacity:0;transform:translate3d(0,10px,0)} to{opacity:1;transform:none} }
+@keyframes sm-fade-in      { from{opacity:0}                                 to{opacity:1} }
+@keyframes sm-scale-in     { from{opacity:0;transform:scale(.96)}            to{opacity:1;transform:none} }
+@keyframes sm-shimmer      { from{transform:translate3d(-100%,0,0)}          to{transform:translate3d(100%,0,0)} }
+@keyframes sm-pulse-once   { 0%{transform:scale(1)} 40%{transform:scale(1.06)} 100%{transform:scale(1)} }
+
+/* grid / list item entrance */
+@keyframes sm-item-in      { from{opacity:0;transform:translate3d(0,12px,0) scale(.985)} to{opacity:1;transform:none} }
+/* the same, but for a filter re-render: no travel, so 60 cards don't all slide */
+@keyframes sm-item-swap    { from{opacity:0;transform:scale(.992)}           to{opacity:1;transform:none} }
+/* container-level cross-fade while the grid is being swapped out */
+@keyframes sm-grid-swap    { from{opacity:.45}                               to{opacity:1} }
+
+/* landing-page scroll reveal */
+@keyframes sm-rv-enter     { from{opacity:0;transform:translate3d(0,14px,0)} to{opacity:1;transform:none} }
+/* CSS-only rescue: if motion.js never runs, pre-hidden sections show anyway */
+@keyframes sm-rv-failsafe  { to{opacity:1} }
+
+/* chip toggle pop */
+@keyframes sm-pop          { 0%{transform:scale(1)} 35%{transform:scale(1.075)} 100%{transform:scale(1)} }
+/* modal / dialog box arrival */
+@keyframes sm-box-in       { from{opacity:0;transform:translate3d(0,10px,0) scale(.985)} to{opacity:1;transform:none} }
+/* page enter */
+@keyframes sm-page-in      { from{opacity:0} to{opacity:1} }
+/* focus ring converging inwards (outline-offset never triggers layout) */
+@keyframes sm-ring         { from{outline-offset:7px} to{outline-offset:2px} }
+/* view transitions */
+@keyframes sm-vt-out       { to{opacity:0} }
+@keyframes sm-vt-in        { from{opacity:0} to{opacity:1} }
+
+/* ==========================================================================
+   2. Reusable utility classes
+   Opt-in helpers for the other Shelf modules. All of them use fill-mode
+   "both": if the element also has a :hover transform, remove the class when
+   the animation ends (ShelfMotion.reveal() does this for you) — a filling
+   animation outranks every normal declaration in the cascade.
+   ========================================================================== */
+
+.sm-fade-up   { animation:sm-fade-up   var(--sm-slow) var(--sm-ease-out) both; animation-delay:var(--sm-d,0ms) }
+.sm-fade-in   { animation:sm-fade-in   var(--sm-base) ease-out both;           animation-delay:var(--sm-d,0ms) }
+.sm-scale-in  { animation:sm-scale-in  var(--sm-base) var(--sm-ease) both;     animation-delay:var(--sm-d,0ms) }
+.sm-pulse-once{ animation:sm-pulse-once 420ms var(--sm-ease) 1 }
+
+/* Sheen for placeholders/skeletons. Transform-driven, so no repaint per frame.
+   The host gets position/overflow so the sheen is clipped to its box. */
+.sm-shimmer{ position:relative; overflow:hidden }
+.sm-shimmer::after{
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.075) 50%,transparent 80%);
+  transform:translate3d(-100%,0,0);
+  animation:sm-shimmer 1.25s linear infinite;
+}
+
+/* Escape hatch other modules can use to silence motion inside a subtree. */
+.sm-no-motion, .sm-no-motion *{ animation:none !important; transition:none !important }
+
+/* ==========================================================================
+   3. Page enter + View Transitions API
+   Opacity only — a transform here would turn <body> into the containing block
+   for every position:fixed overlay on the site.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference){
+  body{ animation:sm-page-in 260ms ease-out both }
+}
+
+/* Cross-document view transitions. Unknown at-rule => silently ignored. */
+@view-transition{ navigation:auto }
+::view-transition-old(root){ animation:sm-vt-out 120ms ease-in  both }
+::view-transition-new(root){ animation:sm-vt-in  180ms ease-out both }
+
+/* ==========================================================================
+   4. Staggered entrance for grid / list items
+   motion.js adds .sm-item-in with a per-item --sm-d and removes it again on
+   animationend, so :hover transforms are never blocked by a filling animation.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference){
+  .sm-item-in{
+    animation:sm-item-in var(--sm-slow) var(--sm-ease-out) both;
+    animation-delay:var(--sm-d,0ms);
+  }
+  /* Cross-fade when #grid / #list is re-rendered after a filter change. */
+  #grid.sm-swap, #list.sm-swap, .sm-swap{ animation:sm-grid-swap 150ms ease-out both }
+  .sm-swap .sm-item-in{ animation-name:sm-item-swap; animation-duration:300ms }
+}
+
+/* ==========================================================================
+   5. Landing-page scroll reveal (.tool .feat .step .jump on index.html)
+   Sections start hidden so nothing can flash before the observer arms; the
+   failsafe animation reveals them ~2.4s later if motion.js is missing.
+   Rule order matters below — all three blocks have equal specificity and the
+   later one wins:  pre-hide  ->  .sm-rv (JS owns it)  ->  .sm-rv-done.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: no-preference){
+  [data-page="home"] .tool,
+  [data-page="home"] .feat,
+  [data-page="home"] .step,
+  [data-page="home"] .jump{
+    opacity:0;
+    animation:sm-rv-failsafe 1ms linear 2400ms forwards;
+  }
+  /* JS has taken ownership: cancel the failsafe, stay hidden until revealed. */
+  [data-page="home"] .sm-rv{ animation:none }
+  [data-page="home"] .sm-rv.sm-rv-in{
+    animation:sm-rv-enter var(--sm-reveal) var(--sm-ease-out) both;
+    animation-delay:var(--sm-d,0ms);
+  }
+  /* Revealed and settled — back to a plain element so :hover works again. */
+  [data-page="home"] .sm-rv-done{ opacity:1; animation:none }
+}
+
+/* ==========================================================================
+   6. Micro-interactions
+   ========================================================================== */
+
+/* --- press compression ------------------------------------------------- */
+.btn, .sn-btn, .sn-acct, .mbtn, .chip, .jump, .fav, .rate, .mclose, .seg button,
+.sh-primary, .sh-ghost, .sh-close, .sn-home, .spk{
+  transition:transform var(--sm-fast) var(--sm-ease),
+             border-color var(--sm-fast) ease,
+             color var(--sm-fast) ease,
+             background-color var(--sm-fast) ease,
+             box-shadow var(--sm-fast) ease;
+}
+.btn:active, .sn-btn:active, .sn-acct:active, .mbtn:active, .seg button:active,
+.sh-primary:not(:disabled):active, .sh-ghost:active, .sh-close:active, .spk:active{
+  transform:translate3d(0,0,0) scale(.965);
+  transition-duration:80ms;
+}
+.chip:active, .jump:active{ transform:scale(.955); transition-duration:80ms }
+.fav:active, .rate:active, .mclose:active{ transform:scale(.9); transition-duration:80ms }
+.sn-home:active{ transform:translate3d(-2px,0,0) scale(.97); transition-duration:80ms }
+
+/* --- card hover lift refinement ---------------------------------------- */
+.card{
+  transition:transform 220ms var(--sm-ease),
+             border-color 180ms ease,
+             box-shadow 220ms ease;
+}
+.card:active{ transform:translate3d(0,-1px,0) scale(.993); transition-duration:90ms }
+.word{ transition:transform 180ms var(--sm-ease), border-color 150ms ease, background-color 150ms ease }
+
+@media (hover:hover) and (pointer:fine){
+  .grid:not(.list) .card:hover{ transform:translate3d(0,-6px,0) }
+  .grid.list .card:hover     { transform:translate3d(0,-2px,0) }
+  .word:hover                { transform:translate3d(0,-1px,0) }
+  /* icon flourishes — small, and only where the icon means something */
+  .btn .ic, .sn-btn .ic, .sn-home .ic, .mbtn .ic, .seg button .ic{
+    transition:transform var(--sm-base) var(--sm-ease);
+  }
+  #resetBtn:hover .ic   { transform:rotate(-40deg) }
+  #surpriseBtn:hover .ic{ transform:rotate(14deg) scale(1.08) }
+  #studyBtn:hover .ic,
+  #shShare:hover .ic, #shHelp:hover .ic, #shAcct:hover .ic{ transform:scale(1.12) }
+  #favBtn:hover .ic     { transform:scale(1.14) }
+  .sn-home:hover .ic    { transform:translate3d(-2px,0,0) }
+  .mclose:hover         { transform:scale(1.08) }
+  .fav:hover            { transform:scale(1.1) }
+}
+
+/* --- chip toggle pop ---------------------------------------------------- */
+.sm-pop{ animation:sm-pop 320ms var(--sm-ease) 1 }
+
+/* --- focus-visible ring ------------------------------------------------- */
+/* Explicit (non-:where) selectors, because the page CSS sets outline:none on
+   selects and we need to win that. Text inputs are left alone: they already
+   have a full border + 3px ring focus style of their own. */
+a:focus-visible, button:focus-visible, select:focus-visible,
+.btn:focus-visible, .chip:focus-visible, .sn-btn:focus-visible, .sn-acct:focus-visible,
+.mbtn:focus-visible, .jump:focus-visible, .seg button:focus-visible, [tabindex]:focus-visible{
+  outline:2px solid var(--acc, var(--games, #4f8cff));
+  outline-offset:2px;
+}
+@media (prefers-reduced-motion: no-preference){
+  a:focus-visible, button:focus-visible, select:focus-visible,
+  .btn:focus-visible, .chip:focus-visible, .sn-btn:focus-visible, .sn-acct:focus-visible,
+  .mbtn:focus-visible, .jump:focus-visible, .seg button:focus-visible, [tabindex]:focus-visible{
+    animation:sm-ring 220ms var(--sm-ease) 1;
+  }
+}
+
+/* Numbers being ticked up: tabular figures stop the digits from dancing. */
+.sm-ticking{ font-variant-numeric:tabular-nums; font-feature-settings:'tnum' 1 }
+
+/* ==========================================================================
+   7. Modal / overlay transitions  (open and close both <= 220ms)
+   Two independent mechanisms, so this improves every browser:
+     - the box animation restarts whenever the overlay gains .show, which
+       works even though the overlay goes display:none -> flex;
+     - allow-discrete + @starting-style give a real fade-out on close in
+       browsers that support them, and are ignored everywhere else.
+   ========================================================================== */
+
+.overlay, .sh-ov{
+  transition:opacity 160ms ease, display 160ms allow-discrete;
+}
+@starting-style{
+  .overlay.show, .sh-ov.show{ opacity:0 }
+}
+
+@media (prefers-reduced-motion: no-preference){
+  /* motion.js adds .sm-box-in to the .modal / .sh-md when the overlay opens.
+     Using a JS class (instead of `.overlay.show .modal`) keeps us out of the
+     way of site.css's `.sh-md.shake` on a wrong passcode. */
+  .sm-box-in{ animation:sm-box-in 200ms var(--sm-ease) both }
+  /* Tighten the page's own modal transition to stay inside the 220ms budget. */
+  .modal, .sh-md{ transition:transform 200ms var(--sm-ease), opacity 160ms ease }
+}
+
+/* ==========================================================================
+   8. Reduced motion
+   Scoped to this module's own animations plus the site-wide smooth scroll —
+   deliberately NOT a global `* { animation:none }` reset, which would break
+   other modules that rely on transitionend/animationend firing.
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto }
+
+  body,
+  .sm-fade-up, .sm-fade-in, .sm-scale-in, .sm-pulse-once,
+  .sm-item-in, .sm-swap, .sm-pop, .sm-box-in, .sm-rv, .sm-rv-in, .sm-rv-done,
+  .sm-shimmer::after{
+    animation:none !important;
+    opacity:1 !important;
+    transform:none !important;
+  }
+  .sm-shimmer::after{ display:none }
+
+  /* No hover/press travel, and no transition timing to wait on. */
+  .btn, .sn-btn, .sn-acct, .mbtn, .chip, .jump, .fav, .rate, .mclose, .seg button,
+  .sh-primary, .sh-ghost, .sh-close, .sn-home, .spk, .card, .word,
+  .overlay, .sh-ov, .modal, .sh-md{
+    transition-duration:1ms !important;
+  }
+  .btn:active, .sn-btn:active, .sn-acct:active, .mbtn:active, .seg button:active,
+  .sh-primary:active, .sh-ghost:active, .sh-close:active, .spk:active,
+  .chip:active, .jump:active, .fav:active, .rate:active, .mclose:active,
+  .card:active, .card:hover, .word:hover, .sn-home:active{
+    transform:none !important;
+  }
+  .btn .ic, .sn-btn .ic, .sn-home .ic, .mbtn .ic, .seg button .ic{
+    transform:none !important; transition:none !important;
+  }
+  ::view-transition-old(root), ::view-transition-new(root){ animation:none !important }
+}

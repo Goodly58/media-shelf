@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96" role="img" aria-label="Games">
+  <title>Games</title>
+  <!-- App shortcut icon. Full-bleed background (safe under launcher masks),
+       glyph kept inside the centred 40% safe circle. -->
+  <defs>
+    <linearGradient id="gb" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#151d2c"/><stop offset="1" stop-color="#070910"/>
+    </linearGradient>
+    <linearGradient id="ga" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5f97ff"/><stop offset="1" stop-color="#8b5cff"/>
+    </linearGradient>
+  </defs>
+  <rect width="96" height="96" fill="url(#gb)"/>
+  <g transform="translate(24 24) scale(2)" fill="none" stroke="url(#ga)" stroke-width="2"
+     stroke-linecap="round" stroke-linejoin="round">
+    <rect x="1.5" y="6.5" width="21" height="11" rx="5.5"/>
+    <path d="M7 10v4"/>
+    <path d="M5 12h4"/>
+    <circle cx="16.2" cy="10.6" r="1.1" fill="url(#ga)" stroke="none"/>
+    <circle cx="18.6" cy="13.4" r="1.1" fill="url(#ga)" stroke="none"/>
+  </g>
+</svg>

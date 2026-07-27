@@ -1,0 +1,403 @@
+/* =====================================================================
+   Shelf — Command palette (⌘K / Ctrl K)
+   Additive layer. Everything is namespaced `shp-` so it can never collide
+   with page CSS or with the shared chrome in site.css.
+
+   Colours are read from the per-page custom properties (--panel, --line,
+   --acc …) with hard fallbacks, because index.html defines a slightly
+   smaller set than games/books/vocab do. The palette therefore inherits
+   each page's accent automatically: blue on games, gold on books,
+   cyan on words.
+   ===================================================================== */
+
+/* scroll lock while the palette is open (a class on <html> so it never
+   fights with the page modals, which manage document.body.style.overflow) */
+html.shp-lock { overflow: hidden !important; }
+
+/* ------------------------------------------------------------ overlay -- */
+.shp-ov {
+  position: fixed;
+  inset: 0;
+  z-index: 400;                 /* above nav (60), page modal (90), sh-ov (200) */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(48px, 11vh, 132px) 16px 24px;
+  background: rgba(6, 8, 13, .58);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .14s ease, visibility 0s linear .14s;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.shp-ov * { box-sizing: border-box; }
+
+.shp-ov.shp-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+  backdrop-filter: blur(10px) saturate(1.15);
+  transition: opacity .14s ease, visibility 0s;
+}
+
+/* -------------------------------------------------------------- panel -- */
+.shp-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: min(640px, 100%);
+  max-height: min(74vh, 620px);
+  overflow: hidden;
+  color: var(--txt, #eef1f7);
+  background-color: var(--panel, #12161d);
+  background-image: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, 0) 140px);
+  border: 1px solid var(--line2, #333d4d);
+  border-radius: 16px;
+  box-shadow:
+    0 40px 90px -28px rgba(0, 0, 0, .9),
+    0 8px 24px -12px rgba(0, 0, 0, .6);
+  transform: translateY(-8px) scale(.985);
+  opacity: .5;
+  transition: transform .16s cubic-bezier(.2, .8, .25, 1), opacity .16s ease;
+}
+.shp-ov.shp-open .shp-panel { transform: none; opacity: 1; }
+
+/* hairline highlight along the top edge — the only piece of "shine" */
+.shp-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .16), transparent);
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------ top row -- */
+.shp-top {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--line, #232b38);
+  flex: 0 0 auto;
+}
+.shp-si {
+  display: inline-flex;
+  color: var(--mut, #8b94a8);
+  flex: 0 0 auto;
+}
+.shp-si .ic { width: 18px; height: 18px; }
+
+.shp-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: var(--txt, #eef1f7);
+  font-family: inherit;
+  font-size: 16px;           /* 16px keeps iOS from zooming on focus */
+  font-weight: 500;
+  letter-spacing: -.1px;
+  padding: 3px 0;
+  line-height: 1.3;
+}
+.shp-input::placeholder { color: var(--mut2, #5f6878); }
+.shp-input::-webkit-search-cancel-button { display: none; }
+
+.shp-esc {
+  flex: 0 0 auto;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--mut, #8b94a8);
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid var(--line, #232b38);
+  border-radius: 7px;
+  padding: 4px 8px;
+  transition: color .14s, border-color .14s;
+}
+.shp-esc:hover { color: var(--txt, #eef1f7); border-color: var(--line2, #333d4d); }
+.shp-esc:focus-visible { outline: 2px solid var(--acc, #4f8cff); outline-offset: 2px; }
+
+/* ------------------------------------------------------------ results -- */
+.shp-results {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0 6px 8px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line2, #333d4d) transparent;
+}
+.shp-results::-webkit-scrollbar { width: 9px; }
+.shp-results::-webkit-scrollbar-thumb {
+  background: var(--line2, #333d4d);
+  border-radius: 20px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+.shp-group + .shp-group { margin-top: 2px; }
+
+/* sticky group header — negative side margins so its background spans
+   the full panel width despite the scroller's horizontal padding */
+.shp-gh {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 -6px;
+  padding: 11px 16px 6px;
+  background: var(--panel, #12161d);
+  font-size: 10.5px;
+  font-weight: 750;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--mut2, #5f6878);
+}
+.shp-gh .shp-n {
+  font-size: 10.5px;
+  font-weight: 650;
+  letter-spacing: .04em;
+  text-transform: none;
+  color: var(--mut2, #5f6878);
+  opacity: .75;
+}
+
+/* ---------------------------------------------------------------- row -- */
+.shp-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 44px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--txt2, #c2c9d8);
+  scroll-margin-top: 36px;      /* keeps rows clear of the sticky header */
+  scroll-margin-bottom: 8px;
+  transition: background-color .1s ease;
+}
+.shp-row.is-sel {
+  background: var(--accSoft, rgba(79, 140, 255, .14));
+  color: var(--txt, #eef1f7);
+}
+.shp-row.is-sel::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--acc, #4f8cff);
+}
+
+.shp-ic {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--panel2, #1a1e2a);
+  border: 1px solid var(--line, #232b38);
+  color: var(--mut, #8b94a8);
+  transition: color .1s ease, border-color .1s ease;
+}
+.shp-ic .ic { width: 15px; height: 15px; }
+.shp-row.is-sel .shp-ic {
+  color: var(--acc, #4f8cff);
+  border-color: color-mix(in srgb, var(--acc, #4f8cff) 45%, transparent);
+}
+/* fallback for engines without color-mix() */
+@supports not (color: color-mix(in srgb, red 50%, blue)) {
+  .shp-row.is-sel .shp-ic { border-color: var(--line2, #333d4d); }
+}
+
+.shp-txt {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.shp-lbl {
+  font-size: 13.8px;
+  font-weight: 600;
+  letter-spacing: -.1px;
+  line-height: 1.35;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.shp-sub {
+  font-size: 11.8px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--mut, #8b94a8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.shp-row mark {
+  background: transparent;
+  color: var(--acc, #4f8cff);
+  font-weight: 800;
+  border-radius: 2px;
+}
+.shp-sub mark { font-weight: 700; }
+
+.shp-meta {
+  flex: 0 0 auto;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--mut, #8b94a8);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.shp-row.is-sel .shp-meta { color: var(--txt2, #c2c9d8); }
+
+.shp-go {
+  flex: 0 0 auto;
+  width: 18px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--acc, #4f8cff);
+  opacity: 0;
+}
+.shp-row.is-sel .shp-go { opacity: .9; }
+
+/* shown when the only rows are hand-offs to another page */
+.shp-note {
+  padding: 14px 10px 4px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--mut2, #5f6878);
+  overflow-wrap: anywhere;
+}
+.shp-note b { color: var(--txt2, #c2c9d8); font-weight: 650; }
+
+/* -------------------------------------------------------------- empty -- */
+.shp-empty {
+  padding: 34px 22px 38px;
+  text-align: center;
+  color: var(--mut, #8b94a8);
+}
+.shp-empty .shp-eic {
+  display: inline-flex;
+  color: var(--mut2, #5f6878);
+  margin-bottom: 10px;
+}
+.shp-empty .shp-eic .ic { width: 22px; height: 22px; }
+.shp-empty .shp-et {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--txt2, #c2c9d8);
+  overflow-wrap: anywhere;
+}
+.shp-empty .shp-es {
+  margin-top: 5px;
+  font-size: 12.3px;
+  line-height: 1.55;
+  color: var(--mut2, #5f6878);
+}
+
+/* ------------------------------------------------------------- footer -- */
+.shp-foot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 13px;
+  border-top: 1px solid var(--line, #232b38);
+  background: rgba(0, 0, 0, .22);
+  font-size: 11.3px;
+  color: var(--mut2, #5f6878);
+}
+.shp-hints { display: flex; align-items: center; gap: 13px; flex-wrap: wrap; min-width: 0; }
+.shp-hint { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+.shp-k {
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--txt2, #c2c9d8);
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid var(--line, #232b38);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 3px 5px;
+  min-width: 18px;
+  display: inline-block;
+  text-align: center;
+}
+.shp-count { white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* --------------------------------------------------------- nav button -- */
+/* inherits .sn-btn from site.css; this only adds the ⌘K chip */
+.shp-navbtn { position: relative; }
+.shp-navbtn .shp-kbd {
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  line-height: 1;
+  color: rgba(255, 255, 255, .55);
+  background: rgba(255, 255, 255, .07);
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 5px;
+  padding: 3px 5px;
+}
+.shp-navbtn:hover .shp-kbd { color: rgba(255, 255, 255, .8); }
+/* keep the nav from overflowing once an extra button is added */
+.sitenav .sn-links { min-width: 0; }
+
+/* --------------------------------------------------------- responsive -- */
+@media (max-width: 720px) {
+  .shp-navbtn .shp-kbd { display: none; }
+}
+@media (max-width: 560px) {
+  .shp-ov { padding: 10px 10px 10px; }
+  .shp-panel {
+    max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - 20px);
+    border-radius: 14px;
+  }
+  .shp-top { padding: 12px; }
+  .shp-hints { display: none; }
+  .shp-foot { justify-content: flex-end; }
+  .shp-go { display: none; }
+  .shp-row { min-height: 46px; }   /* comfortable touch target */
+}
+@media (max-width: 380px) {
+  .shp-esc { display: none; }
+  .shp-meta { display: none; }
+}
+
+/* ---------------------------------------------- reduced motion / a11y -- */
+@media (prefers-reduced-motion: reduce) {
+  .shp-ov,
+  .shp-panel,
+  .shp-row,
+  .shp-ic,
+  .shp-esc { transition: none !important; }
+  .shp-panel { transform: none; opacity: 1; }
+  .shp-results { scroll-behavior: auto; }
+}
+
+@media (forced-colors: active) {
+  .shp-panel { border: 1px solid CanvasText; }
+  .shp-row.is-sel { background: Highlight; color: HighlightText; forced-color-adjust: none; }
+  .shp-row mark { color: inherit; text-decoration: underline; }
+}

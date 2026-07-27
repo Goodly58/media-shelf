@@ -1,0 +1,565 @@
+/* ==========================================================================
+   Shelf — light / dark / auto theme layer
+   Loaded AFTER assets/site.css and after each page's inline <style>.
+
+   How it works
+   ------------
+   theme.js (or the tiny <head> snippet) writes a RESOLVED theme onto <html>:
+       <html data-theme="light|dark" data-theme-mode="light|dark|auto">
+   CSS only ever reads data-theme, so "auto" needs no special casing here.
+
+   Dark is the site's native design: this file adds *nothing* for dark beyond
+   `color-scheme` and the toggle button, so the original look is untouched.
+
+   Light is built by re-declaring every design token, first as a page-agnostic
+   fallback on :root[data-theme="light"], then per page on
+   :root[data-theme="light"] body[data-page="…"] so each section keeps its own
+   accent (games = blue/violet, books = warm gold, vocab = cyan/indigo).
+   Anything the pages hard-coded (gradients, glass bars, scrims, shimmer,
+   badges) is overridden explicitly below the token blocks.
+
+   Private tokens introduced here are prefixed --t- so they can never collide
+   with the contract's token names or with another module's additions:
+     --t-navbg    translucent shared nav background
+     --t-barbg    translucent page .toolbar background
+     --t-scrim    modal / overlay scrim
+     --t-glass    glass chip sitting on top of cover art (fav, year, close)
+     --t-glassbd  border for the above
+     --t-cover    plate colour behind a cover image while it loads
+     --t-sk1/2    skeleton shimmer stops
+     --t-tint     "accent on tinted background" text colour (AA safe)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Colour scheme + the toggle button itself
+   -------------------------------------------------------------------------- */
+
+/* Native widgets (scrollbars, select popups, date pickers) follow the theme.
+   The :not() rule covers the moment before JS/snippet runs on a fresh load. */
+:root[data-theme="dark"],
+:root:not([data-theme]) { color-scheme: dark; }
+:root[data-theme="light"] { color-scheme: light; background: #f5f3ef; }
+
+/* The button reuses .sn-btn from site.css for its shell; these rules only add
+   what .sn-btn does not provide, so the nav stays visually consistent. */
+.sth-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1;
+}
+.sth-toggle .sth-ic { width: 16px; height: 16px; flex: 0 0 auto; }
+.sth-toggle .lbl { min-width: 34px; text-align: left; }
+/* Icon swap gets a very short fade so the change is noticed but never showy. */
+.sth-toggle .sth-ic { animation: sth-icon-in .18s ease both; }
+@keyframes sth-icon-in { from { opacity: 0; transform: scale(.86); } to { opacity: 1; transform: none; } }
+
+/* Fallback placement used only when no .sn-right exists (site.js missing). */
+.sth-float {
+  position: fixed;
+  top: 10px;
+  right: 12px;
+  z-index: 61;
+  box-shadow: 0 8px 22px -10px rgba(0, 0, 0, .6);
+}
+
+/* Cross-fade the whole page on an explicit theme change. The class lives on
+   <html> for ~220ms only, so overriding transitions globally is safe. */
+:root.sth-switching *,
+:root.sth-switching *::before,
+:root.sth-switching *::after {
+  transition: background-color .2s ease, border-color .2s ease, color .2s ease,
+              fill .2s ease, stroke .2s ease, box-shadow .2s ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sth-toggle .sth-ic { animation: none; }
+  :root.sth-switching *,
+  :root.sth-switching *::before,
+  :root.sth-switching *::after { transition: none !important; }
+}
+
+/* ==========================================================================
+   2. LIGHT — page-agnostic token fallback (warm paper, blue/violet accent)
+   ========================================================================== */
+:root[data-theme="light"] {
+  --bg:      #f5f3ef;
+  --bg2:     #efece5;
+  --panel:   #fffdf9;
+  --panel2:  #f7f4ee;
+  --panel3:  #e9e5db;
+  --line:    #e4dfd5;
+  --line2:   #cfc9bb;
+  --txt:     #1c1b18;
+  --txt2:    #3f3d38;
+  --mut:     #5c584f;
+  --mut2:    #6f6a5d;
+  --acc:     #2563eb;
+  --acc2:    #6d28d9;
+  --accSoft: rgba(37, 99, 235, .13);
+  --good:    #0b7a4b;
+  --mid:     #9a6408;
+  --bad:     #c0303c;
+  --rose:    #b04a4a;
+  --new:     #4c5fd7;
+  --learning:#9a6408;
+  --mastered:#0b7a4b;
+  --shadow:  0 16px 34px -18px rgba(38, 33, 25, .35);
+  --r:       16px;
+
+  --t-navbg:   rgba(250, 248, 244, .86);
+  --t-barbg:   rgba(245, 243, 239, .86);
+  --t-scrim:   rgba(44, 38, 30, .46);
+  --t-glass:   rgba(255, 253, 249, .82);
+  --t-glassbd: rgba(40, 34, 26, .18);
+  --t-cover:   #eae5db;
+  --t-sk1:     #eceadf;
+  --t-sk2:     #f7f5ee;
+  --t-tint:    #1d4ed8;
+}
+
+/* --------------------------------------------------------------------------
+   2a. Shared chrome injected by site.js (identical markup on every page)
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] .sitenav {
+  background: var(--t-navbg);
+  border-bottom-color: rgba(28, 24, 18, .12);
+}
+:root[data-theme="light"] .sn-home {
+  color: var(--txt);
+  border-color: rgba(28, 24, 18, .14);
+  background: linear-gradient(135deg, rgba(28, 24, 18, .055), rgba(28, 24, 18, .02));
+}
+:root[data-theme="light"] .sn-home:hover { border-color: rgba(28, 24, 18, .34); }
+:root[data-theme="light"] .sn-links a { color: var(--mut); }
+:root[data-theme="light"] .sn-links a:hover { color: var(--txt); background: rgba(28, 24, 18, .06); }
+:root[data-theme="light"] .sn-links a.cur {
+  color: var(--txt);
+  background: rgba(28, 24, 18, .085);
+  border-color: rgba(28, 24, 18, .14);
+}
+:root[data-theme="light"] .sn-btn,
+:root[data-theme="light"] .sn-acct {
+  color: var(--mut);
+  background: rgba(28, 24, 18, .045);
+  border-color: rgba(28, 24, 18, .14);
+}
+:root[data-theme="light"] .sn-btn:hover,
+:root[data-theme="light"] .sn-acct:hover { color: var(--txt); border-color: rgba(28, 24, 18, .36); }
+:root[data-theme="light"] .sn-btn.ok { color: #0b7a4b; border-color: #0b7a4b; }
+:root[data-theme="light"] .sn-acct.in { color: var(--txt); }
+:root[data-theme="light"] .sn-acct .av {
+  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  color: #fff;
+}
+:root[data-theme="light"] .sn-acct .av.guest { background: rgba(28, 24, 18, .1); color: var(--mut); }
+:root[data-theme="light"] .sn-acct.cur { border-color: #0b7a4b; }
+:root[data-theme="light"] .sn-acct.cur .av { background: linear-gradient(135deg, #0b7a4b, #0e7490); }
+:root[data-theme="light"] .sn-acct .crown { color: #a9760a; }
+
+/* help / auth overlays */
+:root[data-theme="light"] .sh-ov { background: var(--t-scrim); }
+:root[data-theme="light"] .sh-md {
+  background: var(--panel);
+  border-color: var(--line);
+  color: var(--txt);
+  box-shadow: 0 26px 60px -24px rgba(40, 33, 22, .38);
+}
+:root[data-theme="light"] .sh-md .sub { color: var(--mut); }
+:root[data-theme="light"] .sh-md .sub b { color: var(--txt); }
+:root[data-theme="light"] .sh-row { border-bottom-color: var(--line); }
+:root[data-theme="light"] .sh-row span { color: var(--txt2); }
+:root[data-theme="light"] .sh-md kbd {
+  background: var(--panel2);
+  border-color: var(--line2);
+  color: var(--txt);
+}
+:root[data-theme="light"] .sh-close,
+:root[data-theme="light"] .sh-primary {
+  background: linear-gradient(135deg, var(--acc), var(--acc2));
+  color: #fff;
+}
+:root[data-theme="light"] .sh-field label { color: var(--mut); }
+:root[data-theme="light"] .sh-field input {
+  background: #fff;
+  border-color: var(--line2);
+  color: var(--txt);
+}
+:root[data-theme="light"] .sh-field input:focus {
+  border-color: var(--acc);
+  box-shadow: 0 0 0 3px var(--accSoft);
+}
+:root[data-theme="light"] .sh-ghost {
+  background: var(--panel2);
+  border-color: var(--line);
+  color: var(--txt2);
+}
+:root[data-theme="light"] .sh-ghost:hover { color: var(--txt); border-color: var(--line2); }
+:root[data-theme="light"] .sh-ghost.danger:hover { color: #c0303c; border-color: #c0303c; }
+:root[data-theme="light"] .sh-alt { color: var(--mut2); }
+:root[data-theme="light"] .sh-alt::before,
+:root[data-theme="light"] .sh-alt::after { background: var(--line); }
+:root[data-theme="light"] .sh-note { border-top-color: var(--line); color: var(--mut2); }
+:root[data-theme="light"] .sh-note b { color: var(--mut); }
+:root[data-theme="light"] .sh-lockmsg.warn { color: #9a6408; }
+:root[data-theme="light"] .sh-lockmsg.bad { color: #c0303c; }
+:root[data-theme="light"] .sh-toast {
+  background: var(--panel);
+  border-color: var(--line2);
+  color: var(--txt);
+  box-shadow: 0 18px 40px -18px rgba(40, 33, 22, .42);
+}
+
+/* scrollbars (WebKit) — the pages hard-code a hover colour per page */
+:root[data-theme="light"] *::-webkit-scrollbar-thumb { background: var(--line2); }
+:root[data-theme="light"] *::-webkit-scrollbar-thumb:hover { background: var(--mut2); }
+
+/* ==========================================================================
+   3. LIGHT — GAMES  (blue / violet on a warm neutral paper)
+   ========================================================================== */
+:root[data-theme="light"] body[data-page="games"] {
+  --bg:      #f4f2ed;
+  --bg2:     #efece5;
+  --panel:   #fffdf8;
+  --panel2:  #f7f4ee;
+  --panel3:  #e9e5db;
+  --line:    #e3ded3;
+  --line2:   #cec7b8;
+  --txt:     #1b1a17;
+  --txt2:    #3e3c37;
+  --mut:     #5c584f;
+  --mut2:    #6f6a5d;
+  --acc:     #2563eb;
+  --acc2:    #6d28d9;
+  --accSoft: rgba(37, 99, 235, .13);
+  --good:    #0b7a4b;   /* also used as *text* in the modal, hence the depth */
+  --mid:     #9a6408;
+  --bad:     #c0303c;
+  --shadow:  0 16px 34px -18px rgba(38, 33, 25, .38);
+  --r:       16px;
+
+  --t-navbg:   rgba(249, 247, 243, .86);
+  --t-barbg:   rgba(244, 242, 237, .84);
+  --t-scrim:   rgba(42, 37, 29, .46);
+  --t-glass:   rgba(255, 253, 249, .84);
+  --t-glassbd: rgba(36, 31, 24, .2);
+  --t-cover:   #e9e4da;
+  --t-sk1:     #ebe8de;
+  --t-sk2:     #f7f4ed;
+  --t-tint:    #1d4ed8;
+
+  background:
+    radial-gradient(1100px 520px at 12% -8%, #d8e4fa 0%, transparent 60%),
+    radial-gradient(900px 520px at 92% -4%, #e6dcf8 0%, transparent 56%),
+    var(--bg);
+}
+:root[data-theme="light"] body[data-page="games"] .toolbar { background: var(--t-barbg); }
+:root[data-theme="light"] body[data-page="games"] h1 b {
+  background: linear-gradient(90deg, #17181c, #3a54b8);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+:root[data-theme="light"] body[data-page="games"] .logo { box-shadow: 0 8px 20px -8px rgba(37, 99, 235, .45); }
+:root[data-theme="light"] body[data-page="games"] .stat.acc .v { color: var(--acc); }
+:root[data-theme="light"] body[data-page="games"] .btn.on { box-shadow: 0 6px 16px -8px rgba(37, 99, 235, .55); }
+:root[data-theme="light"] body[data-page="games"] .chip.on { color: var(--t-tint); }
+/* re-declare the shorthand so the chevron picks up an ink-coloured stroke */
+:root[data-theme="light"] body[data-page="games"] select {
+  background: var(--panel2)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235c584f' stroke-width='2.5'><path d='M6 9l6 6 6-6'/></svg>")
+    no-repeat right 11px center;
+}
+:root[data-theme="light"] body[data-page="games"] .slider input::-webkit-slider-thumb {
+  box-shadow: 0 2px 6px rgba(40, 34, 26, .3);
+}
+:root[data-theme="light"] body[data-page="games"] .slider input::-moz-range-thumb {
+  box-shadow: 0 2px 6px rgba(40, 34, 26, .3);
+}
+/* cover art plate, shimmer, placeholder and the legibility gradient */
+:root[data-theme="light"] body[data-page="games"] .cover,
+:root[data-theme="light"] body[data-page="games"] .mhero { background: var(--t-cover); }
+:root[data-theme="light"] body[data-page="games"] .cover .sk {
+  background: linear-gradient(110deg, var(--t-sk1) 8%, var(--t-sk2) 18%, var(--t-sk1) 33%);
+  background-size: 220% 100%;
+}
+:root[data-theme="light"] body[data-page="games"] .ph {
+  background: linear-gradient(135deg, #e6ebf7, #d8dced);
+  color: #2b3350;
+}
+/* lighter scrim on artwork: the card body underneath is now paper, so a heavy
+   black band would read as a hard edge */
+:root[data-theme="light"] body[data-page="games"] .grad {
+  background: linear-gradient(180deg, transparent 60%, rgba(28, 24, 18, .3));
+}
+/* score badge keeps its red/amber/green semantics; the fill got deeper for
+   light mode, so the numeral flips to white to stay well above 4.5:1 */
+:root[data-theme="light"] body[data-page="games"] .mc,
+:root[data-theme="light"] body[data-page="games"] .mc.mid,
+:root[data-theme="light"] body[data-page="games"] .mc.bad {
+  color: #fff;
+  border-color: rgba(255, 255, 255, .6);
+  box-shadow: 0 5px 14px rgba(40, 34, 26, .35);
+}
+:root[data-theme="light"] body[data-page="games"] .verified {
+  color: #075c3c;
+  background: rgba(240, 253, 246, .92);
+  border-color: rgba(11, 122, 75, .5);
+}
+:root[data-theme="light"] body[data-page="games"] .fav,
+:root[data-theme="light"] body[data-page="games"] .mclose {
+  background: var(--t-glass);
+  border-color: var(--t-glassbd);
+  color: var(--txt2);
+}
+:root[data-theme="light"] body[data-page="games"] .mclose:hover { background: #fff; }
+:root[data-theme="light"] body[data-page="games"] .overlay { background: var(--t-scrim); }
+:root[data-theme="light"] body[data-page="games"] .mbtn.steam {
+  background: #e9f0f8; border-color: #b9cee1; color: #1b2838;
+}
+:root[data-theme="light"] body[data-page="games"] .mbtn.mc {
+  background: #eef3ea; border-color: #c6d6bd; color: #1d2a17;
+}
+
+/* ==========================================================================
+   4. LIGHT — BOOKS  (warm gold on cream paper)
+   ========================================================================== */
+:root[data-theme="light"] body[data-page="books"] {
+  --bg:      #f7f2e8;
+  --bg2:     #f1ebdf;
+  --panel:   #fffdf6;
+  --panel2:  #f8f3e9;
+  --panel3:  #ece3d2;
+  --line:    #e7ddc9;
+  --line2:   #d4c7ae;
+  --txt:     #241d13;
+  --txt2:    #463a2a;
+  --mut:     #6b5c46;
+  --mut2:    #786850;
+  --acc:     #8a5a12;
+  --acc2:    #a2481a;
+  --accSoft: rgba(138, 90, 18, .12);
+  --rose:    #a94442;
+  --good:    #2f6b3a;
+  --shadow:  0 18px 38px -18px rgba(60, 44, 20, .34);
+  --r:       14px;
+
+  --t-navbg:   rgba(252, 248, 240, .86);
+  --t-barbg:   rgba(247, 242, 232, .86);
+  --t-scrim:   rgba(48, 37, 21, .46);
+  --t-glass:   rgba(255, 252, 244, .85);
+  --t-glassbd: rgba(52, 40, 24, .2);
+  --t-cover:   #ece2ce;
+  --t-sk1:     #ece3d1;
+  --t-sk2:     #f8f2e5;
+  --t-tint:    #74490d;
+
+  background:
+    radial-gradient(1100px 520px at 12% -8%, #f7e9cd 0%, transparent 58%),
+    radial-gradient(900px 520px at 90% -6%, #f7e2d6 0%, transparent 55%),
+    var(--bg);
+}
+:root[data-theme="light"] body[data-page="books"] .toolbar { background: var(--t-barbg); }
+:root[data-theme="light"] body[data-page="books"] h1 b {
+  background: linear-gradient(90deg, #7a4d0d, #a2481a);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+:root[data-theme="light"] body[data-page="books"] .logo { box-shadow: 0 8px 20px -8px rgba(138, 90, 18, .45); }
+:root[data-theme="light"] body[data-page="books"] .btn.on {
+  color: #fff;
+  box-shadow: 0 6px 16px -8px rgba(138, 90, 18, .5);
+}
+:root[data-theme="light"] body[data-page="books"] .chip.on { color: var(--t-tint); }
+:root[data-theme="light"] body[data-page="books"] select {
+  background: var(--panel2)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b5c46' stroke-width='2.5'><path d='M6 9l6 6 6-6'/></svg>")
+    no-repeat right 11px center;
+}
+:root[data-theme="light"] body[data-page="books"] .slider input::-webkit-slider-thumb {
+  box-shadow: 0 2px 6px rgba(60, 44, 20, .3);
+}
+:root[data-theme="light"] body[data-page="books"] .slider input::-moz-range-thumb {
+  box-shadow: 0 2px 6px rgba(60, 44, 20, .3);
+}
+:root[data-theme="light"] body[data-page="books"] .coverwrap,
+:root[data-theme="light"] body[data-page="books"] .mcover { background: var(--t-cover); }
+:root[data-theme="light"] body[data-page="books"] .coverwrap {
+  box-shadow: 0 10px 22px -12px rgba(60, 44, 20, .45), inset 0 0 0 1px rgba(40, 28, 10, .07);
+}
+:root[data-theme="light"] body[data-page="books"] .card:hover .coverwrap {
+  box-shadow: 0 18px 32px -12px rgba(60, 44, 20, .5), 0 0 0 1px var(--line2);
+}
+:root[data-theme="light"] body[data-page="books"] .mcover { box-shadow: 0 14px 26px -12px rgba(60, 44, 20, .5); }
+/* the printed-spine shading stays, just softer against a light page */
+:root[data-theme="light"] body[data-page="books"] .coverwrap::before {
+  background: linear-gradient(90deg, rgba(40, 28, 10, .3), rgba(40, 28, 10, 0));
+}
+:root[data-theme="light"] body[data-page="books"] .cover .sk,
+:root[data-theme="light"] body[data-page="books"] .coverwrap .sk {
+  background: linear-gradient(110deg, var(--t-sk1) 8%, var(--t-sk2) 18%, var(--t-sk1) 33%);
+  background-size: 220% 100%;
+}
+:root[data-theme="light"] body[data-page="books"] .ph { background: linear-gradient(160deg, #f3e8d2, #e4d5b8); }
+:root[data-theme="light"] body[data-page="books"] .ph .pt { color: #3a2c16; }
+/* rating chip keeps the gold semantic but on a lighter fill for dark ink */
+:root[data-theme="light"] body[data-page="books"] .rate {
+  background: linear-gradient(135deg, #f6cf74, #dfa32b);
+  color: #2a1c08;
+  border: 1px solid rgba(90, 62, 10, .28);
+  box-shadow: 0 4px 10px rgba(60, 44, 20, .3);
+}
+:root[data-theme="light"] body[data-page="books"] .yearbadge,
+:root[data-theme="light"] body[data-page="books"] .fav,
+:root[data-theme="light"] body[data-page="books"] .mclose {
+  background: var(--t-glass);
+  border-color: var(--t-glassbd);
+  color: var(--txt2);
+}
+:root[data-theme="light"] body[data-page="books"] .mclose:hover { background: #fff; }
+/* empty half of the star bar: visible on cream, never louder than the fill */
+:root[data-theme="light"] body[data-page="books"] .starbar .bg { color: #cbbda1; }
+:root[data-theme="light"] body[data-page="books"] .overlay { background: var(--t-scrim); }
+:root[data-theme="light"] body[data-page="books"] .mbtn.primary { color: #fff; }
+:root[data-theme="light"] body[data-page="books"] .mbtn.gr {
+  background: #edf2e3; border-color: #c6d4ab; color: #2c3a17;
+}
+
+/* ==========================================================================
+   5. LIGHT — VOCAB  (cyan / indigo on a cool-neutral paper)
+   ========================================================================== */
+:root[data-theme="light"] body[data-page="vocab"] {
+  --bg:      #f2f4f4;
+  --bg2:     #e9edee;
+  --panel:   #fbfcfc;
+  --panel2:  #f2f5f5;
+  --panel3:  #e3e9ea;
+  --line:    #dde3e4;
+  --line2:   #c3cbcc;
+  --txt:     #161b1e;
+  --txt2:    #3a4247;
+  --mut:     #525a5e;
+  --mut2:    #616a6e;
+  --acc:     #0e7490;
+  --acc2:    #4f46e5;
+  --accSoft: rgba(14, 116, 144, .12);
+  --new:     #4c5fd7;
+  --learning:#9a6408;
+  --mastered:#0b7a4b;
+  --rose:    #c0303c;
+  --shadow:  0 18px 38px -18px rgba(22, 32, 38, .3);
+  --r:       14px;
+
+  --t-navbg:   rgba(248, 250, 250, .86);
+  --t-barbg:   rgba(242, 244, 244, .86);
+  --t-scrim:   rgba(26, 35, 39, .46);
+  --t-glass:   rgba(252, 253, 253, .85);
+  --t-glassbd: rgba(22, 32, 38, .18);
+  --t-cover:   #e4e9ea;
+  --t-sk1:     #e6ebec;
+  --t-sk2:     #f4f7f7;
+  --t-tint:    #0b5c73;
+
+  background:
+    radial-gradient(1000px 500px at 12% -8%, #dcf0f5 0%, transparent 58%),
+    radial-gradient(900px 500px at 90% -6%, #e6e5fb 0%, transparent 55%),
+    var(--bg);
+}
+:root[data-theme="light"] body[data-page="vocab"] .logo { box-shadow: 0 8px 20px -8px rgba(14, 116, 144, .45); }
+:root[data-theme="light"] body[data-page="vocab"] .vtab.on { box-shadow: 0 2px 6px rgba(22, 32, 38, .12); }
+:root[data-theme="light"] body[data-page="vocab"] .banner.info {
+  background: rgba(14, 116, 144, .07);
+  border-color: rgba(14, 116, 144, .28);
+}
+:root[data-theme="light"] body[data-page="vocab"] .banner.owner {
+  background: rgba(11, 122, 75, .08);
+  border-color: rgba(11, 122, 75, .32);
+}
+:root[data-theme="light"] body[data-page="vocab"] .ownerbtn.on { background: rgba(11, 122, 75, .09); }
+/* accent-filled buttons: the light accents are deep, so ink flips to white */
+:root[data-theme="light"] body[data-page="vocab"] .addbtn,
+:root[data-theme="light"] body[data-page="vocab"] .btn.accent { color: #fff; }
+:root[data-theme="light"] body[data-page="vocab"] .chip.on { color: var(--t-tint); }
+:root[data-theme="light"] body[data-page="vocab"] .tag {
+  color: var(--t-tint);
+  border-color: rgba(14, 116, 144, .3);
+}
+:root[data-theme="light"] body[data-page="vocab"] select {
+  background: var(--panel2)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23525a5e' stroke-width='2.5'><path d='M6 9l6 6 6-6'/></svg>")
+    no-repeat right 10px center;
+}
+:root[data-theme="light"] body[data-page="vocab"] .fld select {
+  background: var(--bg2)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23525a5e' stroke-width='2.5'><path d='M6 9l6 6 6-6'/></svg>")
+    no-repeat right 10px center;
+}
+:root[data-theme="light"] body[data-page="vocab"] .overlay { background: var(--t-scrim); }
+
+/* ==========================================================================
+   6. LIGHT — HOME (index.html uses its own token names)
+   ========================================================================== */
+:root[data-theme="light"] body[data-page="home"] {
+  --bg:      #f5f3ef;
+  --bg2:     #efece5;
+  --panel:   #fffdfa;
+  --panel2:  #f7f4ee;
+  --panel3:  #eae6dc;
+  --line:    #e4dfd5;
+  --line2:   #cfc9bb;
+  --txt:     #1c1b18;
+  --txt2:    #3f3d38;
+  --mut:     #5c5850;
+  --mut2:    #6e6a60;
+  --games:   #2563eb;
+  --games2:  #6d28d9;
+  --books:   #8a5a12;
+  --books2:  #a2481a;
+  --words:   #0e7490;
+  --words2:  #4f46e5;
+  --acc:     #2563eb;   /* shared chrome (auth dialog, toasts) reads these */
+  --acc2:    #6d28d9;
+  --accSoft: rgba(37, 99, 235, .13);
+  --shadow:  0 16px 34px -18px rgba(38, 33, 25, .35);
+  --r:       18px;
+
+  --t-navbg:   rgba(250, 248, 244, .86);
+  --t-scrim:   rgba(44, 38, 30, .46);
+
+  background:
+    radial-gradient(1000px 520px at 8% -10%, #dbe6fa 0%, transparent 56%),
+    radial-gradient(900px 520px at 92% -6%, #f6e5cc 0%, transparent 53%),
+    radial-gradient(800px 500px at 50% 108%, #daeaf1 0%, transparent 55%),
+    var(--bg);
+}
+/* the page paints its soft panels with white alpha — invert to ink alpha */
+:root[data-theme="light"] body[data-page="home"] .step,
+:root[data-theme="light"] body[data-page="home"] .feat { background: rgba(28, 24, 18, .022); }
+:root[data-theme="light"] body[data-page="home"] .badge { background: rgba(28, 24, 18, .04); }
+:root[data-theme="light"] body[data-page="home"] .badge .dot {
+  background: #0b7a4b;
+  box-shadow: 0 0 8px rgba(11, 122, 75, .55);
+}
+:root[data-theme="light"] body[data-page="home"] .tool {
+  background: linear-gradient(180deg, var(--panel), var(--bg2));
+}
+:root[data-theme="light"] body[data-page="home"] .tool:hover {
+  box-shadow: 0 22px 44px -22px rgba(38, 33, 25, .4);
+}
+:root[data-theme="light"] body[data-page="home"] .step .n { color: #fff; }
+:root[data-theme="light"] body[data-page="home"] .tool li::before { color: var(--mut); }
+:root[data-theme="light"] body[data-page="home"] .note {
+  background: linear-gradient(180deg, rgba(28, 24, 18, .028), transparent);
+}
+:root[data-theme="light"] body[data-page="home"] h1 .g {
+  background: linear-gradient(100deg, var(--games), var(--games2) 45%, var(--words));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+:root[data-theme="light"] body[data-page="home"] ::selection { background: rgba(37, 99, 235, .18); }
+
+/* --------------------------------------------------------------------------
+   7. Small shared safety nets for light mode
+   -------------------------------------------------------------------------- */
+/* Focus visibility: the default UA ring can vanish on tinted panels.
+   (The favourite star keeps each page's own semantic colour — games uses
+   --mid, books uses --acc — both already re-declared above.) */
+:root[data-theme="light"] :focus-visible { outline-color: var(--acc); }

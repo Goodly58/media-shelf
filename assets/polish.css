@@ -1,0 +1,1306 @@
+/* ============================================================================
+   Shelf — polish.css
+   Visual refinement layer. Loads LAST, after site.css and every other module.
+
+   Rules of engagement for this file:
+   • Purely additive. It never changes DOM structure, IDs, or class semantics.
+     .grid.list stays a row layout, .chip.on stays visibly active, etc.
+   • It only re-declares properties that are safe to re-declare. Where a page's
+     inline <style> already sets something (e.g. the metascore badge background
+     is written inline by JS), we layer around it instead of fighting it.
+   • Everything is expressed through the existing custom properties, with a
+     literal fallback for every var() — index.html defines a *different*
+     (smaller) token set than games/books/vocab, so var(--acc) is undefined
+     there and an unguarded var() would silently drop the whole declaration.
+   • Selectors are scoped by body[data-page] wherever a class name is reused
+     across pages for different things (.meta, .note, .fav, .card, .mc …), so a
+     books rule can never leak onto a vocab element.
+   • !important appears only in the print block, the reduced-motion block, and
+     one mobile rule — i.e. only where it must beat an inline style, a page
+     @keyframes, or a more specific selector. Each use is annotated.
+   ========================================================================= */
+
+
+/* ---------------------------------------------------------------------------
+   1. TOKENS
+   A thin derived layer on top of the page palettes. Nothing here overrides a
+   page token; these are new names that resolve against whatever the page
+   defines, so games stays blue/violet, books stays gold, vocab stays cyan.
+   ------------------------------------------------------------------------ */
+:root{
+  /* palette bridges (with fallbacks for pages that lack the token) */
+  --pol-acc:   var(--acc,  #4f8cff);
+  --pol-acc2:  var(--acc2, #8b5cff);
+  --pol-soft:  var(--accSoft, rgba(79,140,255,.15));
+  --pol-panel: var(--panel, #12161d);
+  --pol-panel2:var(--panel2,#171d27);
+  --pol-line:  var(--line,  #242c39);
+  --pol-line2: var(--line2, #333d4d);
+  --pol-txt:   var(--txt,   #eef1f7);
+  --pol-txt2:  var(--txt2,  #c3cbd9);
+  --pol-mut:   var(--mut,   #8b94a8);
+  --pol-mut2:  var(--mut2,  #5f6878);
+
+  /* hairlines. A 1px top highlight is what separates "flat box with a border"
+     from "physical surface" — it reads as light catching the top edge. */
+  --pol-hair:  rgba(255,255,255,.055);
+  --pol-hair2: rgba(255,255,255,.10);
+
+  /* elevation: many small stops instead of one big blur, so shadows stay thin
+     and precise rather than smoky. */
+  --pol-e1: 0 1px 1px rgba(0,0,0,.20), 0 2px 4px -2px rgba(0,0,0,.26);
+  --pol-e2: 0 1px 1px rgba(0,0,0,.22), 0 4px 10px -4px rgba(0,0,0,.40),
+            0 12px 26px -14px rgba(0,0,0,.52);
+  --pol-e3: 0 2px 4px -2px rgba(0,0,0,.30), 0 14px 30px -12px rgba(0,0,0,.55),
+            0 36px 68px -30px rgba(0,0,0,.72);
+
+  /* focus */
+  --pol-ring: 0 0 0 3px var(--pol-soft);
+
+  /* control metrics — every input, select, button and segment uses these,
+     which is what makes the toolbar line up to the pixel. */
+  --pol-ch: 40px;   /* control height */
+  --pol-rc: 11px;   /* control radius */
+
+  /* motion */
+  --pol-fast: .15s;
+  --pol-med:  .22s;
+  --pol-ease: cubic-bezier(.2,.7,.3,1);
+}
+
+/* home page has its own accent names */
+body[data-page="home"]{
+  --pol-acc:  var(--games,  #4f8cff);
+  --pol-acc2: var(--games2, #8b5cff);
+  --pol-soft: rgba(79,140,255,.16);
+}
+
+/* If a future module introduces a light theme, these two overrides keep the
+   depth system correct (highlight goes near-white, shadows go softer). */
+:root[data-theme="light"], [data-theme="light"]{
+  --pol-hair:  rgba(255,255,255,.85);
+  --pol-hair2: rgba(255,255,255,1);
+  --pol-e1: 0 1px 1px rgba(16,20,28,.05), 0 2px 4px -2px rgba(16,20,28,.10);
+  --pol-e2: 0 1px 1px rgba(16,20,28,.06), 0 4px 10px -4px rgba(16,20,28,.12),
+            0 12px 26px -14px rgba(16,20,28,.16);
+  --pol-e3: 0 2px 4px -2px rgba(16,20,28,.10), 0 14px 30px -12px rgba(16,20,28,.16),
+            0 36px 68px -30px rgba(16,20,28,.22);
+}
+
+
+/* ---------------------------------------------------------------------------
+   2. GLOBAL TYPOGRAPHY & SURFACES
+   ------------------------------------------------------------------------ */
+html{
+  -webkit-text-size-adjust:100%;         /* stop iOS inflating text in landscape */
+  text-size-adjust:100%;
+  scrollbar-width:thin;
+  scrollbar-color:var(--pol-line2) transparent;
+}
+body{
+  /* Deliberately NOT text-rendering:optimizeLegibility — these lists grow to
+     2000+ cards and it is a measurable layout cost for no visible gain with
+     Inter, which already ships the kerning we want. */
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Fraunces is a variable optical-size face. Let the browser track opsz to the
+   rendered size everywhere; below we push it further on true display copy. */
+h1,h2,h3,h4,.mtitle,.bt,.term,.mh,.face .fterm,.stat .v,.hn .v{
+  font-optical-sizing:auto;
+}
+
+/* Headings: tighter tracking as size goes up, tighter leading, balanced ragging. */
+h1{ letter-spacing:-.022em; line-height:1.04; text-wrap:balance }
+h2,h3{ letter-spacing:-.016em; line-height:1.12; text-wrap:balance }
+h4{ letter-spacing:-.008em; line-height:1.25 }
+
+/* Long-form copy: avoid orphans, cap the measure so lines stay readable. */
+.lede,.tool p,.feat p,.step p,.note p,.mblurb,.empty .es,.msub,.sh-md .sub{
+  text-wrap:pretty;
+}
+.mblurb{ max-width:72ch }
+footer .wrap,footer .fbar > div{ max-width:92ch }
+
+/* Numerals. Anything that is a score, a count, a year or a stat gets tabular
+   figures so columns of numbers stop dancing as the list re-renders. */
+.stat .v,.stat .l,.hn .v,.pill,#shown,#avg,#activeFilters,.count,.loadmore,
+.cover .mc,.ign,.uscore,.rate,.yearbadge,.rc,.scorebox .val,.mrate .big,
+.range .vals,.range .vals span,.meta,.ba,.vtab .cnt,.studyprog,
+.search kbd,.sh-md kbd,.starbar{
+  font-variant-numeric:tabular-nums lining-nums;
+  font-feature-settings:'tnum' 1;
+}
+
+/* Selection: the page default (--accSoft) is too faint to see on dark panels. */
+::selection{ background:var(--pol-soft); color:var(--pol-txt); text-shadow:none }
+@supports (background:color-mix(in srgb,red,blue)){
+  ::selection{ background:color-mix(in srgb, var(--pol-acc) 32%, transparent) }
+}
+
+/* Scrollbars: thin, inset via a transparent border, invisible track. */
+*::-webkit-scrollbar{ width:11px; height:11px }
+*::-webkit-scrollbar-track{ background:transparent }
+*::-webkit-scrollbar-corner{ background:transparent }
+*::-webkit-scrollbar-thumb{
+  background:var(--pol-line2);
+  border:3px solid transparent;
+  background-clip:padding-box;
+  border-radius:99px;
+}
+*::-webkit-scrollbar-thumb:hover{
+  background:var(--pol-mut);
+  background-clip:padding-box;   /* the shorthand above resets clip — restate */
+}
+
+/* Focus. Cards, chips and stars are <div>s today; if any module makes them
+   focusable this is already handled. Keyboard-only, never on mouse click. */
+:focus-visible{
+  outline:2px solid var(--pol-acc);
+  outline-offset:2px;
+  border-radius:6px;
+}
+.card:focus-visible,.tool:focus-visible,.word:focus-visible{ outline-offset:3px }
+button,select,input,textarea,a,.chip,.fav,.card{ -webkit-tap-highlight-color:transparent }
+
+/* Cover art is decorative and lives inside a click target — dragging it away
+   mid-click is never what the user meant. */
+.cover img,.coverwrap img,.mcover img,.mhero img{
+  -webkit-user-drag:none; user-select:none;
+}
+
+/* kbd */
+.search kbd,.sh-md kbd{
+  font-weight:700; line-height:1.6;
+  border-radius:6px;
+  box-shadow:inset 0 1px 0 var(--pol-hair2), 0 1px 0 rgba(0,0,0,.35);
+}
+.search kbd{
+  background:var(--pol-panel);
+  border-color:var(--pol-line2);
+  color:var(--pol-mut);
+  padding:2px 7px;
+  font-size:11px;
+}
+
+
+/* ---------------------------------------------------------------------------
+   3. SHARED CHROME (injected by site.js)
+   Unify the nav to one control height and tint it with the page background so
+   the warm books palette doesn't sit under a cold black bar.
+   ------------------------------------------------------------------------ */
+.sitenav{
+  background:rgba(8,10,14,.86);
+  border-bottom-color:rgba(255,255,255,.07);
+  box-shadow:0 1px 0 rgba(255,255,255,.03), 0 10px 30px -24px rgba(0,0,0,.9);
+}
+@supports (background:color-mix(in srgb,red,blue)){
+  .sitenav{ background:color-mix(in srgb, var(--bg,#080a0f) 84%, transparent) }
+}
+.sn-home,.sn-links a,.sn-btn,.sn-acct{
+  height:34px;
+  padding-block:0;
+  border-radius:10px;
+  letter-spacing:-.005em;
+  transition:background var(--pol-fast), color var(--pol-fast),
+             border-color var(--pol-fast), transform var(--pol-fast) var(--pol-ease);
+}
+.sn-home{
+  padding-inline:12px 13px;
+  box-shadow:inset 0 1px 0 var(--pol-hair2);
+}
+.sn-home:hover{ transform:none; border-color:rgba(255,255,255,.30); background:rgba(255,255,255,.10) }
+.sn-home:hover .ar{ transform:translateX(-2px) }
+.sn-home .ar{ transition:transform var(--pol-med) var(--pol-ease) }
+.sn-links a{ padding-inline:12px }
+.sn-links a.cur{ box-shadow:inset 0 1px 0 var(--pol-hair2) }
+.sn-btn{
+  padding-inline:12px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+.sn-btn:hover{ background:rgba(255,255,255,.10) }
+.sn-btn:active{ transform:translateY(1px) }
+/* Derive the nav hover wash from the text colour so it inverts correctly if a
+   theme module ever swaps the palette to light. Falls back to the rules above. */
+@supports (background:color-mix(in srgb,red,blue)){
+  .sn-home:hover,.sn-btn:hover{
+    background:color-mix(in srgb, var(--txt,#fff) 10%, transparent);
+  }
+}
+.sn-acct{ border-radius:999px; padding-inline:4px 12px }
+.sn-acct .av{ width:26px; height:26px }
+
+/* overlays created by site.js — map the hard-coded greys onto page tokens so
+   the dialog belongs to whatever page it opens on. */
+.sh-ov{ background:rgba(4,6,10,.72); backdrop-filter:blur(10px) saturate(1.1) }
+.sh-md{
+  background:linear-gradient(180deg, var(--panel2,#161c25), var(--panel,#12161d));
+  border-color:var(--line2,#2b3543);
+  border-radius:18px;
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e3);
+  overscroll-behavior:contain;
+}
+.sh-md h3{ letter-spacing:-.02em; line-height:1.15 }
+.sh-md .sub{ line-height:1.6; color:var(--mut,#8b94a8) }
+.sh-row{ border-bottom-color:var(--line,#212936) }
+.sh-md kbd{
+  background:var(--bg2,#1d2431);
+  border-color:var(--line2,#333d4d);
+  min-width:26px;
+}
+.sh-field input,.sh-primary,.sh-ghost,.sh-close{ border-radius:var(--pol-rc) }
+.sh-field input{
+  background:var(--bg2,#0c1016);
+  border-color:var(--line2,#333d4d);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.28);
+  transition:border-color var(--pol-fast), box-shadow var(--pol-fast);
+}
+.sh-field input:focus{
+  border-color:var(--pol-acc);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.28), var(--pol-ring);
+}
+.sh-primary,.sh-close{
+  background:linear-gradient(135deg, var(--acc,#4f8cff), var(--acc2,#8b5cff));
+  box-shadow:0 6px 18px -8px var(--pol-soft), inset 0 1px 0 rgba(255,255,255,.28);
+  letter-spacing:-.01em;
+}
+.sh-ghost{
+  background:var(--panel2,#171d27);
+  border-color:var(--line,#2b3543);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+}
+.sh-ghost:hover{ border-color:var(--line2,#3c485a) }
+.sh-note{ border-top-color:var(--line,#212936) }
+
+/* toast (site.js) */
+.sh-toast{
+  background:linear-gradient(180deg, var(--panel3,#232b3a), var(--panel2,#1a2130));
+  border-color:var(--line2,#3a4557);
+  border-radius:12px;
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e3);
+  letter-spacing:-.005em;
+}
+
+
+/* ---------------------------------------------------------------------------
+   4. PAGE HEADER
+   ------------------------------------------------------------------------ */
+.brandrow{ align-items:flex-end }
+.logo{
+  box-shadow:0 8px 22px -8px var(--pol-soft), inset 0 1px 0 rgba(255,255,255,.28);
+}
+.tagline{ line-height:1.5; max-width:56ch; letter-spacing:-.002em }
+
+.stat{
+  border-radius:13px;
+  background:linear-gradient(180deg, var(--pol-panel2), var(--pol-panel));
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair), var(--pol-e1);
+}
+.stat .v{ letter-spacing:-.03em; line-height:1.05 }
+.stat .l{ letter-spacing:.09em; color:var(--pol-mut2) }
+
+
+/* ---------------------------------------------------------------------------
+   5. TOOLBAR & CONTROLS
+   One height (--pol-ch) for search / select / button / segment, and the row
+   is bottom-aligned so labelled and unlabelled controls sit on one baseline.
+   ------------------------------------------------------------------------ */
+.toolbar{
+  border-top-color:var(--pol-line);
+  border-bottom-color:var(--pol-line);
+  box-shadow:0 1px 0 var(--pol-hair) inset, 0 14px 26px -26px rgba(0,0,0,.95);
+}
+.toolbar .row{ align-items:flex-end; gap:10px 12px }
+.ctl{ gap:6px; min-width:0; position:relative }   /* relative: anchors .range .vals */
+.ctl label{
+  line-height:1;
+  letter-spacing:.085em;
+  color:var(--pol-mut2);
+  font-size:9.5px;
+  padding-left:1px;
+}
+
+/* search */
+.search input{
+  height:var(--pol-ch);
+  padding:0 46px 0 40px;
+  border-radius:var(--pol-rc);
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair), inset 0 2px 6px -4px rgba(0,0,0,.6);
+  transition:border-color var(--pol-fast), box-shadow var(--pol-fast), background var(--pol-fast);
+}
+.search input::placeholder{ color:var(--pol-mut2); opacity:1 }
+.search input:hover{ border-color:var(--pol-line2) }
+.search input:focus{
+  border-color:var(--pol-acc);
+  box-shadow:inset 0 1px 0 var(--pol-hair), var(--pol-ring);
+}
+.search svg{ color:var(--pol-mut); opacity:1; transition:color var(--pol-fast) }
+.search:focus-within svg{ color:var(--pol-acc) }
+
+/* selects — only the ones in the toolbar; .statusSel and modal .fld selects
+   are intentionally small and must keep their own metrics. */
+.toolbar select{
+  height:var(--pol-ch);
+  padding-block:0;
+  border-radius:var(--pol-rc);
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  letter-spacing:-.005em;
+  transition:border-color var(--pol-fast), box-shadow var(--pol-fast);
+}
+.toolbar select:hover{ border-color:var(--pol-line2) }
+.toolbar select:focus-visible{
+  border-color:var(--pol-acc);
+  box-shadow:inset 0 1px 0 var(--pol-hair), var(--pol-ring);
+  outline:none;
+}
+
+/* buttons */
+.btn{
+  min-height:var(--pol-ch);
+  padding:0 14px;
+  border-radius:var(--pol-rc);
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  letter-spacing:-.005em;
+  transition:color var(--pol-fast), border-color var(--pol-fast),
+             background var(--pol-fast), transform var(--pol-fast) var(--pol-ease),
+             box-shadow var(--pol-fast);
+}
+.btn:hover{ transform:none; border-color:var(--pol-line2); box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e1) }
+.btn:active{ transform:translateY(1px); box-shadow:inset 0 1px 2px rgba(0,0,0,.35) }
+.btn.on,.btn.accent{
+  box-shadow:0 6px 18px -8px var(--pol-soft), inset 0 1px 0 rgba(255,255,255,.28);
+}
+.btn.on:hover,.btn.accent:hover{
+  filter:brightness(1.06);
+  box-shadow:0 8px 20px -8px var(--pol-soft), inset 0 1px 0 rgba(255,255,255,.34);
+}
+.btn:disabled{ box-shadow:none }
+
+/* segmented control — a real track with a raised active segment */
+.seg{
+  height:var(--pol-ch);
+  padding:3px;
+  gap:2px;
+  border-radius:var(--pol-rc);
+  border-color:var(--pol-line);
+  background:var(--pol-panel2);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+}
+.seg button{
+  height:100%;
+  padding:0 12px;
+  border-radius:8px;
+  background:transparent;
+  transition:color var(--pol-fast), background var(--pol-fast), box-shadow var(--pol-fast);
+}
+.seg button:hover{ color:var(--pol-txt2) }
+.seg button.on{
+  background:var(--panel3, rgba(255,255,255,.09));
+  color:var(--pol-txt);
+  box-shadow:0 1px 2px rgba(0,0,0,.35), inset 0 1px 0 var(--pol-hair2);
+}
+.seg button:focus-visible{ outline-offset:-2px }
+
+/* dual-range slider ------------------------------------------------------ */
+/* The range control is the one toolbar item with two stacked parts, which is
+   why it used to sit taller than everything else and push its own label out of
+   line. Lifting the value read-out onto the label row makes the whole column
+   exactly as tall as a labelled select (10 + 6 + 40), so every label lines up
+   AND every control centre-line lines up. */
+.range{ padding:0; height:var(--pol-ch) }
+.range .vals{
+  position:absolute;
+  top:0; right:0; left:auto;
+  width:auto;
+  margin:0;
+  gap:0;
+  line-height:1;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.015em;
+  color:var(--pol-txt2);
+}
+.range .vals #yrminLbl::after{      /* en-dash reads as a range, not two numbers */
+  content:'\2013';
+  color:var(--pol-mut2);
+  margin:0 2px;
+}
+.slider{ height:var(--pol-ch) }              /* taller = easier to grab */
+.slider .track,.slider .fill{
+  top:50%;
+  transform:translateY(-50%);
+  height:5px;
+  border-radius:99px;
+}
+.slider .track{
+  background:var(--pol-line);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.45), 0 1px 0 var(--pol-hair);
+}
+.slider .fill{
+  box-shadow:0 0 12px -4px var(--pol-soft);
+}
+.slider input{ height:var(--pol-ch) }
+.slider input::-webkit-slider-thumb{
+  width:16px; height:16px;
+  border-width:3px;
+  box-shadow:0 1px 3px rgba(0,0,0,.55), 0 0 0 0 var(--pol-soft);
+  transition:box-shadow var(--pol-fast), transform var(--pol-fast) var(--pol-ease);
+}
+.slider input::-moz-range-thumb{
+  width:16px; height:16px;
+  border-width:3px;
+  box-shadow:0 1px 3px rgba(0,0,0,.55);
+  transition:box-shadow var(--pol-fast);
+}
+.slider input:hover::-webkit-slider-thumb{ box-shadow:0 1px 3px rgba(0,0,0,.55), 0 0 0 5px var(--pol-soft) }
+.slider input:active::-webkit-slider-thumb{ transform:scale(1.06); cursor:grabbing }
+.slider input:focus-visible::-webkit-slider-thumb{ box-shadow:0 1px 3px rgba(0,0,0,.55), 0 0 0 5px var(--pol-soft) }
+.slider input:hover::-moz-range-thumb,
+.slider input:focus-visible::-moz-range-thumb{ box-shadow:0 1px 3px rgba(0,0,0,.55), 0 0 0 5px var(--pol-soft) }
+.slider input:focus{ outline:none }
+
+/* chips ------------------------------------------------------------------ */
+.chips{
+  gap:8px;
+  scrollbar-width:thin;
+  scrollbar-color:transparent transparent;
+  -webkit-overflow-scrolling:touch;
+  scroll-padding-inline:4px;
+}
+.chips:hover{ scrollbar-color:var(--pol-line2) transparent }
+.chips::-webkit-scrollbar{ height:6px }
+.chips::-webkit-scrollbar-thumb{ background:transparent; border:0; border-radius:99px }
+.chips:hover::-webkit-scrollbar-thumb{ background:var(--pol-line2) }
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:2px;
+  min-height:32px;
+  padding:0 13px;
+  letter-spacing:-.005em;
+  background:linear-gradient(180deg, var(--pol-panel2), var(--pol-panel));
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  transition:color var(--pol-fast), border-color var(--pol-fast),
+             background var(--pol-fast), box-shadow var(--pol-fast);
+}
+.chip:hover{ border-color:var(--pol-line2); box-shadow:inset 0 1px 0 var(--pol-hair2) }
+.chip:active{ transform:translateY(1px) }
+.chip.on{
+  border-color:var(--pol-acc);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10), 0 0 0 1px var(--pol-soft),
+             0 4px 14px -8px var(--pol-soft);
+}
+.chip .n{ font-variant-numeric:tabular-nums; margin-left:5px; font-size:.92em }
+
+/* status line ------------------------------------------------------------ */
+.statusrow{ gap:10px 14px; letter-spacing:-.005em }
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  border-radius:999px;
+  border-color:var(--pol-line);
+  background:linear-gradient(180deg, var(--pol-panel2), var(--pol-panel));
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  letter-spacing:.005em;
+}
+
+
+/* ---------------------------------------------------------------------------
+   6. CARDS — GAMES
+   Scoped per page: books' .card is a bare, borderless cover stack and must not
+   inherit the games card surface.
+   ------------------------------------------------------------------------ */
+body[data-page="games"] .card{
+  background:linear-gradient(180deg, var(--pol-panel) 0%, var(--bg2,#0d1017) 100%);
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair), var(--pol-e1);
+  transition:transform var(--pol-med) var(--pol-ease),
+             border-color var(--pol-med),
+             box-shadow var(--pol-med);
+}
+body[data-page="games"] .card:hover{
+  transform:translateY(-3px);
+  border-color:var(--pol-line2);
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e3);
+}
+body[data-page="games"] .card:active{ transform:translateY(-1px) }
+
+/* cover: a slow, tiny push-in on hover reads as depth without feeling animated */
+body[data-page="games"] .cover img{
+  transition:opacity .35s ease, transform .6s var(--pol-ease);
+}
+body[data-page="games"] .card:hover .cover img{ transform:scale(1.035) }
+
+/* .grad is painted *below* the badges in DOM order, so it is the right place
+   for the top scrim that makes the score badge and star legible on any art. */
+.grad{
+  background:linear-gradient(180deg,
+      rgba(4,6,11,.52) 0%,
+      rgba(4,6,11,.14) 17%,
+      rgba(4,6,11,0)   40%,
+      rgba(6,8,13,.62) 100%);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);
+}
+
+/* metascore badge: background colour is written inline by card(), so we only
+   add the ring + shadow that let it survive a bright cover.
+   Deliberately scoped to `.cover .mc` — see the .mbtn.mc repair in §8. */
+.cover .mc{
+  top:9px; right:9px;
+  width:40px; height:40px;
+  border-radius:12px;
+  font-size:16.5px;
+  letter-spacing:-.035em;
+  border:1.5px solid rgba(255,255,255,.26);
+  box-shadow:0 0 0 1px rgba(0,0,0,.35),
+             0 2px 5px rgba(0,0,0,.45),
+             0 8px 18px -8px rgba(0,0,0,.75),
+             inset 0 1px 0 rgba(255,255,255,.35);
+}
+.verified{
+  top:19px;            /* optically centred against the 40px badge */
+  right:57px;          /* 9 (badge inset) + 40 (badge) + 8 (gap) */
+  letter-spacing:.06em;
+  border-radius:6px;
+  box-shadow:0 2px 6px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.10);
+  backdrop-filter:blur(3px);
+}
+
+/* favourite star.
+   Scoped to the ones that sit ON cover art — vocab also has a `.fav`, but it is
+   an .iconbtn on a panel and must keep the panel treatment. */
+.cover .fav,.coverwrap .fav{
+  width:32px; height:32px;
+  border-radius:10px;
+  background:rgba(6,8,13,.55);
+  backdrop-filter:blur(6px) saturate(1.2);
+  border-color:rgba(255,255,255,.16);
+  box-shadow:0 2px 8px -2px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.10);
+  transition:color var(--pol-fast), border-color var(--pol-fast),
+             transform var(--pol-fast) var(--pol-ease), background var(--pol-fast);
+}
+.cover .fav:hover,.coverwrap .fav:hover{ transform:scale(1.06); background:rgba(6,8,13,.72) }
+.cover .fav:active,.coverwrap .fav:active{ transform:scale(.96) }
+.cover .fav.on,.coverwrap .fav.on{ background:rgba(6,8,13,.7) }
+
+/* card body */
+body[data-page="games"] .body{ padding:12px 13px 14px; gap:8px }
+.ttl{ font-size:15px; line-height:1.3; letter-spacing:-.014em }
+body[data-page="games"] .meta{ font-size:11.8px; gap:7px; letter-spacing:.005em }
+.scores{ gap:6px }
+.ign,.uscore{
+  height:20px;
+  padding:0 7px;
+  border-radius:6px;
+  font-size:11px;
+  letter-spacing:.01em;
+  align-items:center;
+}
+.ign{ box-shadow:inset 0 1px 0 rgba(255,255,255,.22), 0 1px 3px -1px rgba(0,0,0,.5) }
+.uscore{ box-shadow:inset 0 1px 0 var(--pol-hair) }
+.blurb{ font-size:12.5px; line-height:1.5; color:var(--pol-mut) }
+
+/* list view: rows, not floating tiles. No lift, a clear cover/body divide,
+   and a longer measure for the blurb. */
+body[data-page="games"] .grid.list{ gap:8px }
+body[data-page="games"] .grid.list .card{ border-radius:12px }
+body[data-page="games"] .grid.list .card:hover{
+  transform:none;
+  border-color:var(--pol-line2);
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e2);
+}
+body[data-page="games"] .grid.list .cover{
+  border-right:1px solid rgba(0,0,0,.45);
+}
+/* the list view hides .grad, but the score badge still sits on raw art — put a
+   short top scrim back so it stays legible. */
+body[data-page="games"] .grid.list .grad{
+  display:block;
+  background:linear-gradient(180deg, rgba(4,6,11,.55) 0%, rgba(4,6,11,0) 46%);
+  box-shadow:none;
+}
+body[data-page="games"] .grid.list .body{
+  padding:13px 18px;
+  gap:7px;
+  justify-content:center;
+}
+body[data-page="games"] .grid.list .ttl{ font-size:16.5px }
+body[data-page="games"] .grid.list .blurb{ max-width:96ch }
+
+
+/* ---------------------------------------------------------------------------
+   7. CARDS — BOOKS
+   ------------------------------------------------------------------------ */
+body[data-page="books"] .card{
+  transition:transform var(--pol-med) var(--pol-ease);
+}
+body[data-page="books"] .card:hover{ transform:translateY(-4px) }
+.coverwrap{
+  box-shadow:0 2px 6px -2px rgba(0,0,0,.55),
+             0 12px 26px -14px rgba(0,0,0,.8),
+             inset 0 0 0 1px rgba(255,255,255,.07);
+  transition:box-shadow var(--pol-med) var(--pol-ease);
+}
+.card:hover .coverwrap{
+  box-shadow:0 4px 10px -4px rgba(0,0,0,.6),
+             0 22px 40px -16px rgba(0,0,0,.85),
+             inset 0 0 0 1px rgba(255,255,255,.12);
+}
+.coverwrap img{ transition:opacity .35s ease, transform .6s var(--pol-ease) }
+.card:hover .coverwrap img{ transform:scale(1.03) }
+
+/* rating chip — a ring keeps gold-on-cream covers readable */
+.rate{
+  border-radius:7px;
+  letter-spacing:-.01em;
+  box-shadow:0 0 0 1px rgba(0,0,0,.35),
+             0 2px 6px rgba(0,0,0,.5),
+             inset 0 1px 0 rgba(255,255,255,.45);
+}
+.yearbadge{
+  letter-spacing:.03em;
+  border-color:rgba(255,255,255,.14);
+  box-shadow:0 2px 6px -1px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);
+}
+body[data-page="books"] .coverwrap .fav{ width:30px; height:30px; border-radius:9px }
+
+.info{ gap:4px }
+.bt{ line-height:1.25; letter-spacing:-.008em }
+.ba{ letter-spacing:-.003em }
+.stars{ margin-top:3px }
+.starbar{ letter-spacing:.08em }
+
+/* list view */
+body[data-page="books"] .grid.list .card{
+  padding:8px;
+  border-radius:12px;
+  background:linear-gradient(180deg, var(--pol-panel), var(--bg2,#15110d));
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair), var(--pol-e1);
+  gap:15px;
+}
+body[data-page="books"] .grid.list .card:hover{
+  transform:none;
+  border-color:var(--pol-line2);
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e2);
+}
+/* A 74px thumbnail almost entirely covered by a rating chip and a year chip
+   shows no book. The year is already spelled out in .ba, so drop it here, make
+   the rating compact, and give the art a little more room. */
+body[data-page="books"] .grid.list .coverwrap{ width:82px; flex:0 0 82px }
+body[data-page="books"] .grid.list .yearbadge{ display:none }
+body[data-page="books"] .grid.list .rate{
+  top:5px; right:5px;
+  gap:2px;
+  padding:2px 5px;
+  font-size:10.5px;
+  border-radius:6px;
+}
+body[data-page="books"] .grid.list .coverwrap .fav{
+  width:26px; height:26px;
+  top:5px; left:5px;
+  font-size:13px;
+  border-radius:7px;
+}
+body[data-page="books"] .grid.list .info{ padding:4px 8px 4px 0; gap:5px }
+body[data-page="books"] .grid.list .bt{ font-size:17px; letter-spacing:-.014em }
+body[data-page="books"] .grid.list .lblurb{ max-width:92ch }
+
+/* grid never overflows its container, even at 320px */
+body[data-page="games"] .grid{
+  grid-template-columns:repeat(auto-fill, minmax(min(244px,100%), 1fr));
+}
+body[data-page="books"] .grid{
+  grid-template-columns:repeat(auto-fill, minmax(min(178px,100%), 1fr));
+}
+body[data-page="games"] .grid.list,
+body[data-page="books"] .grid.list{ grid-template-columns:1fr }
+
+/* surprise flash: keep the highlight, soften the ring */
+.card.flash{ outline-width:2px; outline-offset:4px }
+
+
+/* ---------------------------------------------------------------------------
+   8. MODALS
+   ------------------------------------------------------------------------ */
+.overlay{
+  background:rgba(4,6,10,.76);
+  backdrop-filter:blur(10px) saturate(1.05);
+  overscroll-behavior:contain;
+}
+.modal{
+  border-radius:20px;
+  border-color:var(--pol-line2);
+  background:linear-gradient(180deg, var(--pol-panel2) 0%, var(--pol-panel) 220px);
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e3);
+  overscroll-behavior:contain;                /* don't scroll the page behind */
+  scrollbar-width:thin;
+}
+@supports (height:1dvh){
+  .modal{ max-height:88dvh }
+  .overlay{ padding:20px }
+}
+
+.mclose{
+  width:36px; height:36px;
+  border-radius:10px;
+  background:rgba(6,8,13,.55);
+  border-color:rgba(255,255,255,.16);
+  box-shadow:0 2px 8px -2px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.12);
+  backdrop-filter:blur(8px) saturate(1.2);
+  transition:background var(--pol-fast), border-color var(--pol-fast), transform var(--pol-fast);
+}
+.mclose:hover{ border-color:rgba(255,255,255,.34) }
+.mclose:active{ transform:scale(.94) }
+
+/* games hero: a dark top scrim for the close button, then a long fade into the
+   panel so the crop never ends on a hard line. */
+.mhero{ height:clamp(180px, 26vw, 250px) }
+.mhero .fade{
+  background:
+    linear-gradient(180deg, rgba(4,6,11,.55) 0%, rgba(4,6,11,0) 30%),
+    linear-gradient(180deg, transparent 24%,
+                            var(--pol-panel) 94%);
+}
+
+.mtitle{
+  font-size:clamp(21px, 3.2vw, 28px);
+  letter-spacing:-.026em;
+  line-height:1.08;
+  text-wrap:balance;
+}
+.mmeta{ gap:8px; letter-spacing:-.003em }
+.mscores{ gap:12px; margin:20px 0 22px }
+.scorebox{
+  border-radius:13px;
+  border-color:var(--pol-line);
+  background:linear-gradient(180deg, var(--pol-panel2), var(--pol-panel));
+  box-shadow:inset 0 1px 0 var(--pol-hair), var(--pol-e1);
+  padding:13px 15px;
+}
+.scorebox .k{ letter-spacing:.09em; color:var(--pol-mut2) }
+.scorebox .val{ font-size:29px; letter-spacing:-.035em; line-height:1.05; margin-top:6px }
+.scorebox .sub{ color:var(--pol-mut) }
+.mblurb{ line-height:1.65 }
+.mactions{ gap:10px }
+.mbtn{
+  min-height:42px;
+  padding:0 17px;
+  border-radius:var(--pol-rc);
+  border-color:var(--pol-line2);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  letter-spacing:-.008em;
+  transition:transform var(--pol-fast) var(--pol-ease), border-color var(--pol-fast),
+             box-shadow var(--pol-fast), filter var(--pol-fast);
+}
+.mbtn:hover{ transform:translateY(-1px); box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e2) }
+.mbtn:active{ transform:translateY(0) }
+.mbtn.primary{
+  box-shadow:0 8px 20px -10px var(--pol-soft), inset 0 1px 0 rgba(255,255,255,.28);
+}
+.mbtn.primary:hover{ filter:brightness(1.06) }
+
+/* Class-collision repair (games.html).
+   `.mc` is used for two unrelated things: the metascore badge on a cover AND
+   the "View on Metacritic" action in the modal. Because `.mbtn` never declares
+   position/width/height, the badge rule (position:absolute; 42x42; grid) wins
+   on the button, and the third modal action renders as a small square pinned
+   to the modal's top-right corner, on top of the hero. This restores it to a
+   normal button. Pure CSS — no markup or JS change required. */
+.mbtn.mc{
+  position:static;
+  width:auto; height:auto;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:42px;
+  padding:0 17px;
+  border-width:1px;
+  border-radius:var(--pol-rc);
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:-.008em;
+  color:var(--pol-txt);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+}
+.mbtn.mc:hover{ box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e2) }
+
+/* books modal */
+.mtop{ padding:26px 26px 18px; gap:22px }
+.mcover{
+  box-shadow:0 4px 10px -4px rgba(0,0,0,.6),
+             0 20px 38px -16px rgba(0,0,0,.85),
+             inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.mauthor{ letter-spacing:-.008em }
+.mrate .big{ letter-spacing:-.03em; font-variant-numeric:tabular-nums }
+
+
+/* ---------------------------------------------------------------------------
+   9. EMPTY / LOADING / FOOTER
+   ------------------------------------------------------------------------ */
+/* NB: never touch .empty's display — the page JS toggles it. */
+.empty{
+  max-width:440px;
+  margin-inline:auto;
+  line-height:1.6;
+  letter-spacing:-.003em;
+}
+.empty .big{
+  display:grid;
+  place-items:center;
+  width:64px; height:64px;
+  margin:0 auto 16px;
+  border-radius:18px;
+  background:linear-gradient(180deg, var(--pol-panel2), var(--pol-panel));
+  border:1px solid var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair), var(--pol-e1);
+  color:var(--pol-mut);
+}
+.empty .big .ic{ width:26px; height:26px; opacity:.85 }
+.empty .eh{ letter-spacing:-.012em }
+
+.loadmore{ letter-spacing:.01em; padding-top:6px }
+
+/* skeleton shimmer: slightly calmer sweep */
+.cover .sk{ animation-duration:1.6s }
+
+footer{ border-top-color:var(--pol-line); letter-spacing:-.002em }
+
+
+/* ---------------------------------------------------------------------------
+   10. HOME (index.html)
+   ------------------------------------------------------------------------ */
+body[data-page="home"] .badge{
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e1);
+  letter-spacing:-.004em;
+}
+body[data-page="home"] .hero h1{ letter-spacing:-.03em; line-height:1.02 }
+body[data-page="home"] .lede{ line-height:1.6; letter-spacing:-.005em }
+body[data-page="home"] .hn .v{ letter-spacing:-.03em }
+body[data-page="home"] .hn .l{ letter-spacing:.11em; color:var(--pol-mut2) }
+
+body[data-page="home"] .tool{
+  border-radius:var(--r,18px);
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair), var(--pol-e1);
+  transition:transform var(--pol-med) var(--pol-ease),
+             box-shadow var(--pol-med), border-color var(--pol-med);
+}
+body[data-page="home"] .tool::before{ height:2px; opacity:1 }
+body[data-page="home"] .tool:hover{
+  transform:translateY(-4px);
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e3);
+}
+body[data-page="home"] .tool h2{ letter-spacing:-.022em }
+body[data-page="home"] .tool .cnt{ letter-spacing:.06em; color:var(--pol-mut2); font-variant-numeric:tabular-nums }
+body[data-page="home"] .tool p{ line-height:1.6 }
+body[data-page="home"] .tool li::before{ color:var(--pol-mut) }
+body[data-page="home"] .tool .go{ letter-spacing:-.01em }
+
+body[data-page="home"] .jump{
+  min-height:var(--pol-ch);
+  padding:0 15px;
+  border-radius:var(--pol-rc);
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  transition:color var(--pol-fast), border-color var(--pol-fast),
+             transform var(--pol-fast) var(--pol-ease), box-shadow var(--pol-fast);
+}
+body[data-page="home"] .jump:hover{
+  transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e1);
+}
+body[data-page="home"] .jump:active{ transform:translateY(0) }
+
+/* Token-driven rather than a white overlay: a rgba(255,255,255,…) wash is
+   invisible if a theme module ever flips the page to a light palette. */
+body[data-page="home"] .feat,
+body[data-page="home"] .step{
+  background:linear-gradient(180deg, var(--pol-panel2), var(--pol-panel));
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  border-radius:14px;
+}
+body[data-page="home"] .feat h4,
+body[data-page="home"] .step h4{ letter-spacing:-.012em }
+body[data-page="home"] .step .n{
+  box-shadow:0 4px 12px -6px var(--pol-soft), inset 0 1px 0 rgba(255,255,255,.3);
+  font-variant-numeric:tabular-nums;
+}
+body[data-page="home"] .note{
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  border-radius:13px;
+}
+body[data-page="home"] .sech h3{ letter-spacing:-.022em }
+body[data-page="home"] footer a{ text-underline-offset:3px; text-decoration-thickness:1px }
+
+/* Fraunces has a real display cut — push opsz past the automatic value only
+   where the type is genuinely large. Both the span and the <em> restate wght
+   because font-variation-settings inherits and would otherwise flatten the
+   italic 600 back to 900. */
+@media (min-width:760px){
+  body[data-page="home"] .hero h1{ font-variation-settings:'opsz' 110, 'wght' 900 }
+  body[data-page="home"] .hero h1 em{ font-variation-settings:'opsz' 110, 'wght' 600 }
+}
+
+
+/* ---------------------------------------------------------------------------
+   11. VOCAB
+   ------------------------------------------------------------------------ */
+body[data-page="vocab"] .vtabs{
+  border-radius:13px;
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+}
+body[data-page="vocab"] .vtab{ height:34px; padding:0 15px; letter-spacing:-.008em }
+body[data-page="vocab"] .vtab.on{ box-shadow:0 1px 3px rgba(0,0,0,.4), inset 0 1px 0 var(--pol-hair2) }
+body[data-page="vocab"] .vtab .cnt{ font-variant-numeric:tabular-nums }
+body[data-page="vocab"] .ownerbtn{
+  min-height:var(--pol-ch);
+  padding:0 14px;
+  border-radius:var(--pol-rc);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+}
+
+body[data-page="vocab"] .banner{ box-shadow:inset 0 1px 0 var(--pol-hair); line-height:1.6 }
+
+body[data-page="vocab"] .addbar{
+  border-radius:16px;
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e2);
+}
+body[data-page="vocab"] .addbar input{
+  height:46px;
+  padding-block:0;
+  border-radius:var(--pol-rc);
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.35);
+  transition:border-color var(--pol-fast), box-shadow var(--pol-fast);
+}
+body[data-page="vocab"] .addbar input:focus{
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.35), var(--pol-ring);
+}
+body[data-page="vocab"] .addbtn{
+  height:46px;
+  padding:0 22px;
+  border-radius:var(--pol-rc);
+  letter-spacing:-.012em;
+  box-shadow:0 8px 20px -10px var(--pol-soft), inset 0 1px 0 rgba(255,255,255,.3);
+}
+body[data-page="vocab"] .addbtn:hover{ transform:none; filter:brightness(1.06) }
+body[data-page="vocab"] .addbtn:active{ transform:translateY(1px) }
+
+body[data-page="vocab"] .word{
+  border-radius:var(--r,14px);
+  border-color:var(--pol-line);
+  box-shadow:inset 0 1px 0 var(--pol-hair), var(--pol-e1);
+  transition:border-color var(--pol-fast), box-shadow var(--pol-fast), transform var(--pol-fast) var(--pol-ease);
+}
+body[data-page="vocab"] .word:hover{
+  border-color:var(--pol-line2);
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e2);
+}
+body[data-page="vocab"] .term{ letter-spacing:-.028em; line-height:1.1 }
+body[data-page="vocab"] .def{ line-height:1.55 }
+body[data-page="vocab"] .ex{ line-height:1.55 }
+body[data-page="vocab"] .spk,
+body[data-page="vocab"] .iconbtn{
+  height:30px;
+  min-width:32px;
+  border-radius:8px;
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  transition:color var(--pol-fast), border-color var(--pol-fast), background var(--pol-fast);
+}
+/* .iconbtn is display:grid, which stacks a hydrated icon above its label in
+   two rows — the "+ Copy" button ends up two lines tall inside a 28px box.
+   A single-line flex row is what it was always meant to be. */
+body[data-page="vocab"] .iconbtn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  white-space:nowrap;
+}
+body[data-page="vocab"] .iconbtn.copy{ padding:0 11px }
+body[data-page="vocab"] .syn .s{
+  border-radius:7px;
+  padding:3px 9px;
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  transition:color var(--pol-fast), border-color var(--pol-fast);
+}
+body[data-page="vocab"] .tag{ letter-spacing:.005em; box-shadow:inset 0 1px 0 rgba(255,255,255,.07) }
+body[data-page="vocab"] .note{ line-height:1.55 }
+body[data-page="vocab"] .count{ letter-spacing:-.003em }
+body[data-page="vocab"] .statusSel{ height:26px; padding:0 26px 0 8px; background-position:right 7px center }
+
+body[data-page="vocab"] #toast{
+  border-radius:12px;
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e3);
+}
+body[data-page="vocab"] .mh{ letter-spacing:-.022em }
+body[data-page="vocab"] .fld input,
+body[data-page="vocab"] .fld textarea,
+body[data-page="vocab"] .fld select{
+  border-radius:10px;
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.3);
+  transition:border-color var(--pol-fast), box-shadow var(--pol-fast);
+}
+body[data-page="vocab"] .fld input:focus,
+body[data-page="vocab"] .fld textarea:focus,
+body[data-page="vocab"] .fld select:focus{
+  box-shadow:inset 0 1px 3px rgba(0,0,0,.3), var(--pol-ring);
+}
+body[data-page="vocab"] .face{
+  border-radius:18px;
+  box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e2);
+}
+body[data-page="vocab"] .face .fterm{ letter-spacing:-.03em; line-height:1.08 }
+body[data-page="vocab"] .sbtn{
+  min-height:44px;
+  padding:0 20px;
+  border-radius:var(--pol-rc);
+  box-shadow:inset 0 1px 0 var(--pol-hair);
+  transition:transform var(--pol-fast) var(--pol-ease), border-color var(--pol-fast), box-shadow var(--pol-fast);
+}
+body[data-page="vocab"] .sbtn:hover{ box-shadow:inset 0 1px 0 var(--pol-hair2), var(--pol-e1) }
+
+
+/* ---------------------------------------------------------------------------
+   12. RESPONSIVE — 360px to 640px is a first-class target, not an afterthought
+   ------------------------------------------------------------------------ */
+
+/* Below 700px the sticky filter bar would occupy well over half of a phone
+   screen (three wrapped control rows + chips, under a 52px nav). Releasing it
+   is the honest fix; nothing in the page JS depends on its position. */
+@media (max-width:700px){
+  .toolbar{ position:static; margin-top:12px }
+}
+
+/* The nav link strip is a horizontal scroller. Without a cue, a half-clipped
+   label just reads as a broken layout — fade the trailing edge instead. */
+@media (max-width:720px){
+  .sn-links{
+    -webkit-mask-image:linear-gradient(90deg,#000 0 calc(100% - 18px),transparent);
+    mask-image:linear-gradient(90deg,#000 0 calc(100% - 18px),transparent);
+  }
+}
+@media (max-width:480px){
+  /* The nav simply cannot fit four labelled links plus three actions at 360px.
+     Label the section you are in, reduce the rest to their icons, and shrink
+     the back button to its arrow. Everything stays clickable and the strip
+     still scrolls if a longer label lands here later. */
+  a.sn-home > span:last-child{ display:none }   /* only the "back" variant; the
+                                                   home page keeps its wordmark */
+  a.sn-home{ padding-inline:9px }
+  .sn-links a:not(.cur) > span{ display:none }
+  .sn-links a{ padding-inline:9px }
+  .sn-links{ gap:2px }
+  .sitenav{ padding-inline:10px; gap:6px }
+  .sn-right{ gap:5px }
+  .sn-btn{ padding-inline:7px }
+  /* 4 stats as a tidy 2x2 instead of 3 + 1 orphan */
+  .stats{ display:grid; grid-template-columns:1fr 1fr; gap:8px; width:100% }
+  .stat{ min-width:0 }
+}
+
+@media (max-width:640px){
+  :root{ --pol-ch:44px }              /* comfortable touch target */
+
+  .wrap{ padding:0 16px }
+  header{ padding:20px 0 12px }
+  .brandrow{ align-items:flex-start; gap:16px }
+  .logo{ width:42px; height:42px; border-radius:12px }
+  .logo .ic{ width:21px; height:21px }
+  .tagline{ font-size:13px }
+  .stats{ gap:8px; width:100% }
+  .stat{ flex:1 1 auto; text-align:center }
+
+  /* toolbar: search on its own line, filters two-up, actions share a row */
+  .toolbar .row{ gap:8px 10px; padding:11px 0 }
+  .search{ flex:1 1 100%; min-width:0 }
+  .search kbd{ display:none }         /* no physical keyboard to hint at */
+  .ctl{ flex:1 1 calc(50% - 5px) }
+  .ctl > select{ width:100% }
+  .ctl:has(.range){ flex:1 1 100% }   /* graceful: without :has it sits half-width */
+  .range{ width:100% }
+  .slider input::-webkit-slider-thumb{ width:20px; height:20px }
+  .slider input::-moz-range-thumb{ width:20px; height:20px }
+  .seg{ flex:0 0 auto }
+  .seg button{ padding:0 16px }
+  .toolbar .btn{ flex:1 1 auto; justify-content:center }
+
+  .chips{ padding-bottom:11px }
+  .chip{ min-height:38px; padding:0 14px; font-size:13px }
+
+  .statusrow{ padding:12px 0 2px; font-size:12.5px }
+
+  /* cards */
+  .cover .fav,.coverwrap .fav{ width:36px; height:36px }
+  body[data-page="books"] .coverwrap .fav{ width:34px; height:34px }
+  .cover .mc{ width:38px; height:38px; font-size:15.5px; border-radius:11px }
+  .verified{ top:18px; right:53px }
+  body[data-page="games"] .grid{ gap:14px; padding-bottom:36px }
+  body[data-page="games"] .grid.list .body{ padding:11px 13px }
+  body[data-page="games"] .grid.list .ttl{ font-size:15px }
+  body[data-page="books"] .grid.list .coverwrap{ width:70px; flex:0 0 70px }
+  body[data-page="books"] .grid.list .bt{ font-size:15.5px }
+  body[data-page="books"] .grid.list .coverwrap .fav{ width:30px; height:30px }
+
+  /* modal: full-bleed-ish sheet with finger-sized actions */
+  .overlay{ padding:14px }
+  .modal{ border-radius:18px }
+  .mclose{ width:40px; height:40px }
+  .mhero{ height:clamp(150px, 38vw, 200px) }
+  .mbody{ padding-inline:18px }
+  .mtop{ padding:22px 18px 14px; gap:18px }
+  .mscores{ gap:9px; margin:16px 0 18px }
+  .scorebox{ min-width:104px; padding:11px 13px }
+  .scorebox .val{ font-size:25px }
+  .mblurb{ font-size:14.5px }
+  .mactions{ gap:9px }
+  .mbtn{ flex:1 1 180px; justify-content:center; min-height:46px }
+
+  /* vocab */
+  body[data-page="vocab"] .addbar{ padding:13px; gap:9px }
+  body[data-page="vocab"] .addbar .wordin,
+  body[data-page="vocab"] .addbar .srcin{ flex:1 1 100%; min-width:0 }
+  body[data-page="vocab"] .addbtn{ width:100% }
+  body[data-page="vocab"] .word{ padding:14px 15px }
+  body[data-page="vocab"] .spk,
+  body[data-page="vocab"] .iconbtn{ height:38px; min-width:40px }
+  body[data-page="vocab"] .vtab{ height:38px; padding:0 13px }
+  body[data-page="vocab"] .toolbar .btn{ flex:1 1 auto; justify-content:center }
+
+  /* home */
+  body[data-page="home"] .tools{ padding-top:32px; gap:16px }
+  body[data-page="home"] .tool{ padding:24px 20px 22px }
+  body[data-page="home"] .sec{ padding-top:44px }
+  body[data-page="home"] .jump{ flex:1 1 100%; justify-content:flex-start }
+}
+
+/* The narrowest realistic phone. Everything stacks; nothing may overflow. */
+@media (max-width:420px){
+  .wrap{ padding:0 14px }
+  .toolbar .btn{ flex:1 1 calc(50% - 5px) }
+  .seg{ flex:1 1 100% }
+  .seg button{ flex:1 }
+  /* #activeFilters carries an inline margin-left:auto — at this width it needs
+     to start a new line instead of being shoved to the right edge. */
+  #activeFilters{ margin-left:0 !important; width:100% }
+  .stat{ min-width:0; padding:9px 10px }
+  .stat .v{ font-size:16px }
+  .stat .l{ font-size:9.5px; letter-spacing:.06em }
+  .empty .big{ width:56px; height:56px; border-radius:16px }
+  body[data-page="books"] .grid{ gap:16px 12px }
+  .mbtn{ flex:1 1 100% }
+}
+
+/* Wide screens: let list rows breathe instead of stretching one long line. */
+@media (min-width:1200px){
+  body[data-page="games"] .grid.list .cover{ width:230px; flex:0 0 230px }
+  body[data-page="games"] .grid.list .body{ padding:15px 22px }
+}
+
+/* Coarse pointers get no hover lift (it fires on tap and looks like a glitch)
+   and larger hit areas on the small overlay controls. */
+@media (hover:none){
+  .card:hover,.tool:hover,.btn:hover,.mbtn:hover,.jump:hover,.sn-home:hover{ transform:none }
+  .card:hover .cover img,.card:hover .coverwrap img{ transform:none }
+  .cover .fav,.coverwrap .fav{ width:38px; height:38px }
+  body[data-page="books"] .coverwrap .fav{ width:34px; height:34px }
+}
+
+
+/* ---------------------------------------------------------------------------
+   13. REDUCED MOTION
+   Required. Kill transforms and loops, keep state changes instant but visible.
+   ------------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto }
+  *,*::before,*::after{
+    animation-duration:.01ms !important;      /* beats page @keyframes */
+    animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;
+    transition-delay:0s !important;
+    scroll-behavior:auto !important;
+  }
+  /* No lift, no zoom, no scale — hover still reads through colour and border. */
+  .card:hover,.tool:hover,.btn:hover,.mbtn:hover,.jump:hover,
+  .fav:hover,.chip:active,.sn-home:hover,.sbtn:hover,.addbtn:hover{ transform:none }
+  .card:hover .cover img,.card:hover .coverwrap img{ transform:none }
+  /* the shimmer would freeze mid-sweep; make it a plain surface instead */
+  .cover .sk{ animation:none; background:var(--panel2,#161b27) }
+  /* the flash ring is animation-driven; keep the static outline as the cue */
+  .card.flash::after{ animation:none; box-shadow:none }
+  .inner{ transition:none }
+}
+
+
+/* ---------------------------------------------------------------------------
+   14. PRINT
+   A catalogue is something people print. Drop the chrome, go to ink on paper,
+   never break a card across a page.
+   ------------------------------------------------------------------------ */
+@page{ margin:14mm }
+
+@media print{
+  /* interactive chrome has no meaning on paper */
+  .sitenav,.toolbar,.chips,.overlay,.sh-ov,.sh-toast,#toast,#sentinel,
+  .loadmore,.empty,.fav,.iconbtn,.spk,.mclose,.seg,.addbar,.vaultbar,.banner,
+  footer,.cover .sk,.grad,.mhero,.mhero .fade{
+    display:none !important;                  /* beats .overlay.show{display:flex} */
+  }
+  html,body{
+    background:#fff !important;
+    color:#111 !important;
+  }
+  body{ font-size:10.5pt; -webkit-print-color-adjust:economy; print-color-adjust:economy }
+  .wrap{ max-width:none; padding:0 }
+  header{ padding:0 0 10pt }
+  h1,h2,h3,.mtitle,.bt,.ttl,.term{ color:#000 !important }
+  /* gradient-clipped words ("GAME <b>INDEX</b>") are transparent text — on
+     white they vanish, so give them real ink back. */
+  h1 b,h1 em,h1 .g,.stat .v{
+    background:none !important;
+    -webkit-text-fill-color:#000 !important;
+    color:#000 !important;
+  }
+  .statusrow,.statusrow b,.pill,.count,.count b,footer b{ color:#111 !important }
+  .tagline,.blurb,.meta,.ba,.def,.ex,.rc,.stat .l{ color:#444 !important }
+  .stat,.pill,.card,.word,.coverwrap,.cover,.step,.feat,.tool,.scorebox,.ph{
+    background:#fff !important;
+    border:1px solid #ddd !important;
+    box-shadow:none !important;
+    break-inside:avoid;
+    page-break-inside:avoid;
+  }
+  .ph{ color:#333 !important }
+  /* !important is required here: the per-page grid rules above are more
+     specific (body[data-page=…] .grid) and would otherwise win. */
+  body[data-page="games"] .grid{ grid-template-columns:repeat(2,1fr) !important }
+  body[data-page="books"] .grid{ grid-template-columns:repeat(3,1fr) !important }
+  .grid{ gap:10pt !important; padding-bottom:0 !important }
+  .grid.list{ grid-template-columns:1fr !important }
+  /* badges carry their colour inline (the metascore is a JS-written style), so
+     these need !important to become ink-on-paper rather than white-on-dark. */
+  .cover .mc,.rate,.yearbadge,.ign,.uscore,.verified{
+    background:#fff !important;
+    box-shadow:none !important;
+    border:1px solid #999 !important;
+    color:#000 !important;
+    backdrop-filter:none !important;
+  }
+  /* spell out destinations that a printed page can't click */
+  a[href^="http"]::after{
+    content:" (" attr(href) ")";
+    font-size:8pt;
+    color:#666;
+    word-break:break-all;
+  }
+}

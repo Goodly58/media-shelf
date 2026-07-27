@@ -1,0 +1,53 @@
+{
+  "name": "Shelf — games, books & words",
+  "short_name": "Shelf",
+  "description": "Browse PC games ranked by Metacritic and IGN, books ranked by rating, and build a personal vocabulary vault. Fast, filterable, no sign-up.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#080a0f",
+  "theme_color": "#080a0f",
+  "categories": ["books", "education", "entertainment", "utilities"],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-mono.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "monochrome"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Games",
+      "short_name": "Games",
+      "description": "Browse PC games by Metacritic and IGN score",
+      "url": "games.html",
+      "icons": [{ "src": "assets/icon-games.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Books",
+      "short_name": "Books",
+      "description": "Browse books by rating, author and year",
+      "url": "books.html",
+      "icons": [{ "src": "assets/icon-books.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Words",
+      "short_name": "Words",
+      "description": "Open your personal vocabulary vault",
+      "url": "vocab.html",
+      "icons": [{ "src": "assets/icon-words.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}

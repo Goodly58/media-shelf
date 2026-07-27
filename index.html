@@ -3,251 +3,986 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shelf — browse great games, books &amp; build your vocabulary</title>
-<meta name="description" content="Shelf: browse PC games ranked by Metacritic &amp; IGN, books ranked by Goodreads rating, and build a personal vocabulary vault. Free, no sign-up.">
-<meta property="og:title" content="Shelf — games, books & words">
-<meta property="og:description" content="Browse PC games and books by rating, and build your own vocabulary. Fast, filterable, no sign-up.">
+<script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
+
+<title>Shelf — a fast, filterable catalogue of games, books and words</title>
+<meta name="description" content="Browse PC games ranked by Metacritic and IGN, books ranked by Goodreads, and keep a personal vocabulary vault. Free, no sign-up, nothing to install.">
+<link rel="canonical" href="https://goodly58.github.io/shelf/">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="theme-color" content="#080a0f">
+<meta name="color-scheme" content="dark">
+
+<!-- Open Graph / Twitter. No og:image is declared on purpose: the site ships no
+     raster assets, and a link to a non-existent image renders a broken card.
+     Add assets/og.png (1200x630) plus og:image + twitter:image and switch
+     twitter:card to summary_large_image if one is ever created. -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Shelf">
+<meta property="og:url" content="https://goodly58.github.io/shelf/">
+<meta property="og:title" content="Shelf — games, books &amp; words">
+<meta property="og:description" content="Three catalogues, built to be searched fast. Critic scores where they exist, verified where it matters.">
+<meta property="og:locale" content="en_GB">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shelf — games, books &amp; words">
+<meta name="twitter:description" content="Three catalogues, built to be searched fast. Critic scores where they exist, verified where it matters.">
+
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,600;9..144,0,900;9..144,1,600&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Shelf",
+  "alternateName": "Shelf — games, books and words",
+  "url": "https://goodly58.github.io/shelf/",
+  "description": "A fast, filterable catalogue of PC games and books, plus a personal vocabulary vault. Static, free and account-free.",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "hasPart": [
+    { "@type": "CollectionPage", "name": "Game Index", "url": "https://goodly58.github.io/shelf/games.html" },
+    { "@type": "CollectionPage", "name": "Book Index", "url": "https://goodly58.github.io/shelf/books.html" },
+    { "@type": "WebApplication", "name": "Lexicon Vault", "url": "https://goodly58.github.io/shelf/vocab.html", "applicationCategory": "EducationalApplication", "operatingSystem": "Any" }
+  ]
+}
+</script>
+
 <style>
-  :root{
-    --bg:#080a0f; --panel:#11151d; --panel2:#171d27; --line:#232b38; --line2:#333d4d;
-    --txt:#eef1f7; --txt2:#c3cbd9; --mut:#8b94a8; --mut2:#5f6878;
-    --games:#4f8cff; --games2:#8b5cff; --books:#e6b54a; --books2:#d98a3d; --words:#22d3ee; --words2:#818cf8;
-    --r:18px;
+/* =====================================================================
+   SHELF — landing page (index.html)
+   Page-specific styles only. assets/site.css loads after this file and
+   owns the shared chrome (top nav, overlays, .ic icon sizing), so any
+   rule that has to beat site.css is written with extra specificity
+   (e.g. `.tool .ic`, never a bare `.ic`).
+
+   Sections
+     1  Design tokens
+     2  Base + utilities
+     3  Animated backdrop
+     4  Section rhythm
+     5  Hero
+     6  Shelf cards
+     7  Quick jumps
+     8  How it works
+     9  Craft grid
+    10  Honest-data note
+    11  Footer
+    12  Motion safety net
+    13  Reduced motion + print
+   ===================================================================== */
+
+
+/* ---------- 1. Design tokens -------------------------------------- */
+/* The full contract token set is declared here so that layers loading
+   later (theme.css / palette.css) can re-point them and every colour on
+   this page follows automatically. Product accents chain off --acc so a
+   palette swap tints the games shelf without touching this file.        */
+:root{
+  color-scheme: dark;
+
+  --bg:#080a0f;      --bg2:#0b0e15;
+  --panel:#11151d;   --panel2:#161b25;  --panel3:#1e2431;
+  --line:#232b38;    --line2:#333d4d;
+  --txt:#eef1f7;     --txt2:#c3cbd9;    --mut:#8b94a8;  --mut2:#5f6878;
+  --acc:#4f8cff;     --acc2:#8b5cff;    --accSoft:rgba(79,140,255,.14);
+  --shadow:0 26px 60px -24px rgba(0,0,0,.85);
+  --r:18px;
+
+  /* landing-only product accents */
+  --games:var(--acc);  --games2:var(--acc2);
+  --books:#e8b866;     --books2:#d9873d;
+  --words:#22d3ee;     --words2:#818cf8;
+  --ok:#34d399;
+
+  --maxw:1140px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+
+/* ---------- 2. Base + utilities ----------------------------------- */
+*,*::before,*::after{box-sizing:border-box}
+html{
+  -webkit-text-size-adjust:100%;
+  scroll-behavior:smooth;
+  /* NB: never set overflow-x here or on body — it would break the
+     position:sticky top nav injected by site.js. The backdrop clips
+     its own overflow instead. */
+}
+body{
+  margin:0; min-height:100vh; color:var(--txt); background:var(--bg);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+}
+a{color:inherit;text-decoration:none}
+p{margin:0}
+::selection{background:rgba(79,140,255,.28)}
+
+:where(a,button):focus-visible{
+  outline:2px solid var(--acc); outline-offset:3px; border-radius:8px;
+}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+
+/* Skip link — site.js inserts the nav as the first body child, so this
+   sits just after it, which is still the first thing a keyboard user hits
+   after the nav itself. */
+.skip{
+  position:fixed; top:8px; left:50%; transform:translate(-50%,-160%);
+  z-index:300; padding:10px 18px; border-radius:10px;
+  background:var(--panel2); border:1px solid var(--line2);
+  font-size:13.5px; font-weight:700; color:var(--txt);
+  transition:transform .18s var(--ease);
+}
+.skip:focus{transform:translate(-50%,0)}
+
+/* Numbers that come from assets/stats.json. They ship as an em dash and
+   simply stay that way if the file cannot be read. */
+.num{font-variant-numeric:tabular-nums}
+html[data-stats="off"] .num{opacity:.6}
+
+
+/* ---------- 3. Animated backdrop ---------------------------------- */
+/* Three soft radial "orbs" drifting very slowly, over a masked hairline
+   grid. No blur filters, no JS, no repaints outside the fixed layer —
+   cheap enough for a mid-range phone. */
+.bgfx{
+  position:fixed; inset:0; z-index:-1;
+  overflow:hidden; pointer-events:none;
+}
+.bgfx .orb{
+  position:absolute; display:block; aspect-ratio:1; border-radius:50%;
+  will-change:transform;
+}
+.bgfx .o1{
+  width:min(92vw,880px); top:-30vh; left:-14vw;
+  background:radial-gradient(circle at 50% 50%,rgba(79,140,255,.30),rgba(79,140,255,0) 68%);
+  animation:drift-a 52s var(--ease) infinite alternate;
+}
+.bgfx .o2{
+  width:min(84vw,780px); top:-24vh; right:-16vw;
+  background:radial-gradient(circle at 50% 50%,rgba(217,135,61,.22),rgba(217,135,61,0) 68%);
+  animation:drift-b 67s var(--ease) infinite alternate;
+}
+.bgfx .o3{
+  width:min(96vw,960px); bottom:-46vh; left:22%;
+  background:radial-gradient(circle at 50% 50%,rgba(34,211,238,.16),rgba(34,211,238,0) 70%);
+  animation:drift-c 81s var(--ease) infinite alternate;
+}
+.bgfx .mesh{
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.030) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.030) 1px,transparent 1px);
+  background-size:66px 66px;
+  -webkit-mask-image:radial-gradient(130% 78% at 50% -4%,#000 0%,transparent 74%);
+          mask-image:radial-gradient(130% 78% at 50% -4%,#000 0%,transparent 74%);
+}
+@keyframes drift-a{ from{transform:translate3d(0,0,0) scale(1)}      to{transform:translate3d(7vw,5vh,0) scale(1.12)} }
+@keyframes drift-b{ from{transform:translate3d(0,0,0) scale(1.08)}   to{transform:translate3d(-6vw,7vh,0) scale(.94)} }
+@keyframes drift-c{ from{transform:translate3d(0,0,0) scale(.96)}    to{transform:translate3d(-9vw,-4vh,0) scale(1.14)} }
+
+
+/* ---------- 4. Section rhythm ------------------------------------- */
+.sec{
+  padding:clamp(50px,7.5vw,84px) 0 0;
+  /* clear the sticky nav when a hash link lands here */
+  scroll-margin-top:calc(var(--navh,52px) + 20px);
+}
+.sech{margin-bottom:clamp(20px,2.6vw,28px)}
+.sech .kicker{
+  display:flex; align-items:center; gap:12px;
+  font-size:11px; font-weight:800; letter-spacing:.17em; text-transform:uppercase;
+  color:var(--mut2);
+}
+.sech .kicker::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.sech h2{
+  font-family:'Fraunces',Georgia,'Times New Roman',serif;
+  font-size:clamp(23px,3.4vw,31px); font-weight:900; letter-spacing:-.022em;
+  line-height:1.14; margin:12px 0 0;
+}
+.sech .sub{margin-top:9px;color:var(--mut);font-size:14.5px;max-width:58ch;text-wrap:pretty}
+
+
+/* ---------- 5. Hero ----------------------------------------------- */
+.hero{
+  position:relative; isolation:isolate; text-align:center;
+  padding:clamp(54px,9.5vw,108px) 0 clamp(8px,2vw,20px);
+}
+/* Soft spotlight behind the headline. Width is capped at 100% of the
+   hero (i.e. the viewport) so the glow can never push a horizontal
+   scrollbar on a narrow phone. */
+.hero::before{
+  content:''; position:absolute; z-index:-1; pointer-events:none;
+  left:50%; top:-6%; width:min(1100px,100%); height:min(560px,84%);
+  transform:translateX(-50%);
+  background:radial-gradient(50% 50% at 50% 50%,rgba(79,140,255,.15),transparent 72%);
+}
+
+.badge{
+  display:inline-flex; align-items:center; gap:9px;
+  padding:7px 15px 7px 12px; border-radius:999px;
+  font-size:12.5px; font-weight:650; letter-spacing:.005em; color:var(--txt2);
+  background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.028));
+  border:1px solid var(--line2);
+}
+.badge .dot{
+  width:7px; height:7px; border-radius:50%; background:var(--ok);
+  box-shadow:0 0 0 0 rgba(52,211,153,.5);
+  animation:pulse 3s ease-out infinite;
+}
+@keyframes pulse{
+  0%{box-shadow:0 0 0 0 rgba(52,211,153,.5)}
+  70%,100%{box-shadow:0 0 0 9px rgba(52,211,153,0)}
+}
+
+.hero h1{
+  font-family:'Fraunces',Georgia,'Times New Roman',serif;
+  font-size:clamp(38px,7.4vw,72px); font-weight:900;
+  letter-spacing:-.034em; line-height:1.03;
+  margin:clamp(20px,3vw,30px) 0 0;
+}
+/* Blocks rather than <br> so the three-line break is guaranteed. */
+.hero h1 .ln{display:inline}
+.hero h1 em{font-style:italic;font-weight:600;letter-spacing:-.02em}
+.grad{
+  background:linear-gradient(97deg,var(--games) 0%,var(--words2) 46%,var(--books) 100%);
+  -webkit-background-clip:text; background-clip:text;
+  color:transparent; -webkit-text-fill-color:transparent;
+}
+/* If background-clip:text is unavailable the text must not vanish. */
+@supports not ((-webkit-background-clip:text) or (background-clip:text)){
+  .grad{color:var(--acc);-webkit-text-fill-color:currentColor;background:none}
+}
+
+.lede{
+  margin:clamp(16px,2.2vw,22px) auto 0; max-width:60ch;
+  font-size:clamp(15.5px,1.55vw,18px); line-height:1.62; color:var(--txt2);
+  text-wrap:pretty;
+}
+
+.cta{display:flex;justify-content:center;flex-wrap:wrap;gap:11px;margin-top:clamp(24px,3.4vw,34px)}
+.btn{
+  display:inline-flex; align-items:center; gap:9px;
+  padding:12px 20px; border-radius:12px; border:1px solid transparent;
+  font-size:14.5px; font-weight:750; letter-spacing:.002em;
+  transition:transform .2s var(--ease),box-shadow .2s var(--ease),border-color .2s,background .2s,color .2s;
+}
+.btn .ic{width:16px;height:16px}
+.btn.primary{
+  color:#07101f;
+  background:linear-gradient(135deg,var(--games),var(--games2));
+  box-shadow:0 12px 30px -14px rgba(79,140,255,.9);
+}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 18px 38px -14px rgba(79,140,255,.95)}
+.btn.ghost{color:var(--txt2);background:rgba(255,255,255,.05);border-color:var(--line2)}
+.btn.ghost:hover{color:var(--txt);border-color:var(--mut2);transform:translateY(-2px)}
+
+/* headline numbers */
+.hstats{
+  margin:clamp(34px,5vw,54px) auto 0; max-width:700px;
+  display:grid; grid-template-columns:repeat(3,1fr);
+  border:1px solid var(--line); border-radius:16px; overflow:hidden;
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.014));
+  box-shadow:var(--shadow);
+}
+.hn{
+  display:block; padding:20px 12px 18px; text-align:center;
+  transition:background .18s;
+}
+.hn + .hn{border-left:1px solid var(--line)}
+.hn:hover{background:rgba(255,255,255,.045)}
+.hn .v{
+  display:block;
+  font-family:'Fraunces',Georgia,serif; font-weight:900;
+  font-size:clamp(23px,4.6vw,34px); line-height:1; letter-spacing:-.025em;
+}
+.hn .l{
+  display:block; margin-top:9px;
+  font-size:10.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--mut);
+}
+.hn.g .v{color:var(--games)}
+.hn.b .v{color:var(--books)}
+.hn.v-ok .v{color:var(--ok)}
+
+
+/* ---------- 6. Shelf cards ---------------------------------------- */
+.tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(288px,1fr));gap:18px}
+.tool{
+  position:relative; isolation:isolate; overflow:hidden;
+  display:flex; flex-direction:column; gap:14px;
+  padding:26px 24px 22px; border-radius:var(--r);
+  border:1px solid var(--line);
+  background:linear-gradient(180deg,var(--panel) 0%,rgba(8,10,15,.92) 100%);
+  transition:transform .24s var(--ease),border-color .24s,box-shadow .24s;
+}
+/* per-shelf accent, consumed by everything inside the card */
+.tool.g{--c1:var(--games);--c2:var(--games2);--tint:rgba(79,140,255,.16);--edge:rgba(79,140,255,.5)}
+.tool.b{--c1:var(--books);--c2:var(--books2);--tint:rgba(232,184,102,.14);--edge:rgba(232,184,102,.5)}
+.tool.w{--c1:var(--words);--c2:var(--words2);--tint:rgba(34,211,238,.14);--edge:rgba(34,211,238,.5)}
+.tool::before{
+  content:''; position:absolute; inset:0 0 auto 0; height:2px;
+  background:linear-gradient(90deg,var(--c1),var(--c2));
+}
+.tool::after{
+  content:''; position:absolute; inset:0; z-index:-1; opacity:0;
+  background:radial-gradient(64% 52% at 50% 0%,var(--tint),transparent 72%);
+  transition:opacity .28s var(--ease);
+}
+.tool:hover,.tool:focus-visible{transform:translateY(-5px);border-color:var(--edge);box-shadow:var(--shadow)}
+.tool:hover::after,.tool:focus-visible::after{opacity:1}
+
+.tool .tile{
+  width:46px; height:46px; border-radius:13px;
+  display:grid; place-items:center; color:var(--c1);
+  border:1px solid var(--line2);
+  background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.02));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07);
+}
+.tool .tile .ic{width:23px;height:23px;stroke-width:1.8}
+.tool h3{
+  font-family:'Fraunces',Georgia,serif; font-size:24px; font-weight:900;
+  letter-spacing:-.028em; margin:0; line-height:1.1;
+}
+.tool .lead{color:var(--txt2);font-size:14.3px;line-height:1.58;text-wrap:pretty}
+.tool ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.tool li{
+  display:flex; gap:10px; align-items:flex-start;
+  font-size:13.2px; line-height:1.5; color:var(--mut);
+}
+.tool li::before{
+  content:''; flex:0 0 auto; width:5px; height:5px; margin-top:7px;
+  border-radius:50%; background:var(--c1); opacity:.85;
+}
+.tool .go{
+  margin-top:auto; padding-top:4px;
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:14px; font-weight:800; color:var(--c1);
+}
+.tool .go .ic{width:15px;height:15px}
+.tool .go .ar{display:inline-flex;transition:transform .22s var(--ease)}
+.tool:hover .go .ar,.tool:focus-visible .go .ar{transform:translateX(4px)}
+
+/* small fact pills (all values come from stats.json) */
+.facts{display:flex;flex-wrap:wrap;gap:7px}
+.fact{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 10px; border-radius:999px;
+  font-size:11.5px; font-weight:650; color:var(--mut);
+  background:rgba(255,255,255,.045); border:1px solid var(--line);
+}
+.fact b{color:var(--txt2);font-weight:800}
+.fact .ic{width:12px;height:12px;opacity:.72}
+
+
+/* ---------- 7. Quick jumps ---------------------------------------- */
+.jumps{display:flex;flex-wrap:wrap;gap:9px}
+.jump{
+  display:inline-flex; align-items:center; gap:9px;
+  padding:10px 15px; border-radius:11px;
+  font-size:13.4px; font-weight:650; color:var(--txt2);
+  background:var(--panel2); border:1px solid var(--line);
+  transition:transform .18s var(--ease),border-color .18s,background .18s,color .18s;
+}
+.jump .ic{width:15px;height:15px;color:var(--jc,var(--mut))}
+.jump:hover{transform:translateY(-2px);color:var(--txt);background:var(--panel3);border-color:var(--line2)}
+.jump.j-g{--jc:var(--games)}
+.jump.j-b{--jc:var(--books)}
+.jump.j-w{--jc:var(--words)}
+
+
+/* ---------- 8. How it works --------------------------------------- */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:16px}
+.step{
+  position:relative; padding:22px 21px; border-radius:15px;
+  border:1px solid var(--line); background:rgba(255,255,255,.024);
+  transition:border-color .2s,background .2s;
+}
+.step:hover{border-color:var(--line2);background:rgba(255,255,255,.04)}
+.step .n{
+  width:28px; height:28px; border-radius:9px; display:grid; place-items:center;
+  font-size:12.5px; font-weight:900; color:#07101f;
+  background:linear-gradient(135deg,var(--acc),var(--acc2));
+}
+.step h3{
+  display:flex; align-items:center; gap:9px;
+  margin:13px 0 7px; font-size:15.5px; font-weight:800; letter-spacing:-.012em;
+}
+.step h3 .ic{width:17px;height:17px;color:var(--acc)}
+.step p{color:var(--mut);font-size:13.3px;line-height:1.6;text-wrap:pretty}
+.step b{color:var(--txt2);font-weight:700}
+@media(min-width:900px){
+  .steps{grid-template-columns:repeat(3,1fr)}
+  /* hairline connector between the numbered cards */
+  .step:not(:last-child)::after{
+    content:''; position:absolute; top:36px; right:-16px; width:16px; height:1px;
+    background:linear-gradient(90deg,var(--line2),transparent);
   }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{margin:0;min-height:100vh;color:var(--txt);
-    font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-    background:
-      radial-gradient(1000px 520px at 8% -10%, #16243a 0%, transparent 55%),
-      radial-gradient(900px 520px at 92% -6%, #2a1e10 0%, transparent 52%),
-      radial-gradient(800px 500px at 50% 108%, #101f2b 0%, transparent 55%),
-      var(--bg);}
-  a{text-decoration:none;color:inherit}
-  ::selection{background:rgba(79,140,255,.25)}
-  .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+}
 
-  .ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:0 0 auto}
-  [data-icon]{display:inline-flex;align-items:center;justify-content:center;line-height:1}
-  .tool .ic{width:30px;height:30px;stroke-width:1.7}
-  .feat .fi .ic{width:20px;height:20px}
-  .jump .e .ic{width:16px;height:16px}
-  .badge .ic{width:14px;height:14px}
 
-  /* how it works */
-  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-  .step{position:relative;background:rgba(255,255,255,.022);border:1px solid var(--line);border-radius:14px;padding:20px 19px}
-  .step .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;font-size:13px;font-weight:800;
-    color:#0a1016;background:linear-gradient(135deg,var(--games),var(--games2));margin-bottom:11px}
-  .step h4{margin:0 0 6px;font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
-  .step p{margin:0;color:var(--mut);font-size:13.2px;line-height:1.58}
-  .step b{color:var(--txt2)}
+/* ---------- 9. Craft grid ----------------------------------------- */
+/* 288px keeps six tiles at a balanced 3x2 on desktop rather than 4+2. */
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(288px,1fr));gap:14px}
+.feat{
+  padding:19px 18px; border-radius:14px;
+  border:1px solid var(--line); background:rgba(255,255,255,.024);
+  transition:transform .2s var(--ease),border-color .2s,background .2s;
+}
+.feat:hover{transform:translateY(-3px);border-color:var(--line2);background:rgba(255,255,255,.042)}
+.feat .fi{
+  width:32px; height:32px; border-radius:10px; display:grid; place-items:center;
+  color:var(--acc); background:var(--accSoft); border:1px solid rgba(255,255,255,.07);
+  margin-bottom:12px;
+}
+.feat .fi .ic{width:17px;height:17px}
+.feat h3{margin:0 0 6px;font-size:14.6px;font-weight:800;letter-spacing:-.01em}
+.feat p{color:var(--mut);font-size:13.1px;line-height:1.56;text-wrap:pretty}
+.feat kbd{
+  display:inline-block; min-width:19px; text-align:center;
+  padding:1px 5px; margin:0 1px; border-radius:5px;
+  background:var(--panel3); border:1px solid var(--line2); border-bottom-width:2px;
+  font-family:inherit; font-size:11.5px; font-weight:800; color:var(--txt2);
+}
 
-  /* hero */
-  .hero{padding:76px 0 30px;text-align:center}
-  .badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--txt2);
-    background:rgba(255,255,255,.05);border:1px solid var(--line2);border-radius:999px;padding:7px 16px;margin-bottom:26px}
-  .badge .dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 10px #34d399}
-  h1{font-family:'Fraunces',Georgia,serif;font-size:clamp(38px,7vw,66px);font-weight:900;letter-spacing:-1.8px;
-    line-height:1.02;margin:0 0 20px}
-  h1 .g{background:linear-gradient(100deg,var(--games),var(--games2) 45%,var(--words));-webkit-background-clip:text;background-clip:text;color:transparent}
-  h1 em{font-style:italic;font-weight:600}
-  .lede{font-size:clamp(16px,2.1vw,19px);color:var(--txt2);max-width:640px;margin:0 auto;line-height:1.62}
-  .lede b{color:var(--txt);font-weight:700}
-  .heronums{display:flex;justify-content:center;gap:34px;flex-wrap:wrap;margin-top:34px}
-  .hn .v{font-family:'Fraunces',serif;font-size:30px;font-weight:900;letter-spacing:-.6px}
-  .hn:nth-child(1) .v{color:var(--games)} .hn:nth-child(2) .v{color:var(--books)} .hn:nth-child(3) .v{color:var(--words)}
-  .hn .l{font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:1px;font-weight:700;margin-top:3px}
 
-  /* tool cards */
-  .tools{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;padding:46px 0 10px}
-  .tool{position:relative;background:linear-gradient(180deg,var(--panel),#0b0e14);border:1px solid var(--line);
-    border-radius:var(--r);padding:28px 26px 24px;display:flex;flex-direction:column;gap:13px;transition:.2s;overflow:hidden}
-  .tool::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;opacity:.9}
-  .tool.g::before{background:linear-gradient(90deg,var(--games),var(--games2))}
-  .tool.b::before{background:linear-gradient(90deg,var(--books),var(--books2))}
-  .tool.w::before{background:linear-gradient(90deg,var(--words),var(--words2))}
-  .tool:hover{transform:translateY(-6px);box-shadow:0 26px 54px -18px rgba(0,0,0,.8)}
-  .tool.g:hover{border-color:var(--games)} .tool.b:hover{border-color:var(--books)} .tool.w:hover{border-color:var(--words)}
-  .tool .ic{font-size:34px;line-height:1}
-  .tool h2{font-family:'Fraunces',serif;font-size:25px;font-weight:900;margin:0;letter-spacing:-.4px}
-  .tool .cnt{font-size:12.5px;font-weight:700;color:var(--mut);letter-spacing:.3px}
-  .tool p{color:var(--txt2);font-size:14.3px;line-height:1.58;margin:0}
-  .tool ul{margin:2px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px}
-  .tool li{font-size:13.2px;color:var(--mut);display:flex;gap:9px;align-items:flex-start;line-height:1.45}
-  .tool li::before{content:'✓';color:var(--txt2);font-weight:800;font-size:12px;margin-top:1px}
-  .tool .go{margin-top:auto;padding-top:16px;font-weight:800;font-size:14.5px;display:inline-flex;align-items:center;gap:8px}
-  .tool.g .go{color:var(--games)} .tool.b .go{color:var(--books)} .tool.w .go{color:var(--words)}
-  .tool:hover .go .ar{transform:translateX(4px)}
-  .go .ar{transition:.2s;display:inline-block}
+/* ---------- 10. Honest-data note ---------------------------------- */
+.note{
+  margin-top:clamp(50px,7vw,80px);
+  display:flex; gap:16px; align-items:flex-start;
+  padding:22px 24px; border-radius:16px;
+  border:1px solid var(--line); border-left:3px solid var(--books);
+  background:linear-gradient(180deg,rgba(232,184,102,.055),rgba(255,255,255,.012));
+}
+.note .ni{flex:0 0 auto;color:var(--books);margin-top:1px}
+.note .ni .ic{width:20px;height:20px}
+.note h2{margin:0 0 8px;font-size:15px;font-weight:800;letter-spacing:-.01em}
+.note p{color:var(--mut);font-size:13.4px;line-height:1.68;max-width:78ch;text-wrap:pretty}
+.note b{color:var(--txt2);font-weight:700}
+.vf{
+  display:inline-block; padding:0 6px; border-radius:5px;
+  background:rgba(52,211,153,.14); border:1px solid rgba(52,211,153,.34);
+  color:var(--ok); font-weight:800; font-size:12px; line-height:1.5;
+}
 
-  /* quick jumps */
-  .sec{padding:56px 0 0}
-  .sech{display:flex;align-items:baseline;gap:12px;margin-bottom:18px;flex-wrap:wrap}
-  .sech h3{font-family:'Fraunces',serif;font-size:23px;font-weight:900;margin:0;letter-spacing:-.4px}
-  .sech .s{color:var(--mut);font-size:13.5px}
-  .jumps{display:flex;gap:10px;flex-wrap:wrap}
-  .jump{display:inline-flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--line);
-    border-radius:11px;padding:11px 15px;font-size:13.5px;font-weight:600;color:var(--txt2);transition:.15s}
-  .jump:hover{border-color:var(--line2);color:var(--txt);transform:translateY(-2px)}
-  .jump .e{font-size:15px}
 
-  /* features */
-  .feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:16px}
-  .feat{background:rgba(255,255,255,.022);border:1px solid var(--line);border-radius:14px;padding:19px 18px}
-  .feat .fi{font-size:21px;margin-bottom:9px}
-  .feat h4{margin:0 0 6px;font-size:14.8px;font-weight:800}
-  .feat p{margin:0;color:var(--mut);font-size:13.2px;line-height:1.55}
+/* ---------- 11. Footer -------------------------------------------- */
+.foot{
+  margin-top:clamp(58px,8vw,96px);
+  border-top:1px solid var(--line);
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.016));
+}
+.fin{
+  display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+  gap:28px; padding:32px 0 26px;
+}
+.flogo{
+  display:inline-flex; align-items:center; gap:9px;
+  font-family:'Fraunces',Georgia,serif; font-size:19px; font-weight:900; letter-spacing:-.02em;
+}
+.flogo .ic{width:18px;height:18px;color:var(--acc)}
+.fin p{margin-top:11px;color:var(--mut);font-size:13.2px;line-height:1.65;max-width:46ch}
+.fupd{color:var(--mut2)}
+.fnav{display:flex;gap:44px;flex-wrap:wrap}
+.fcol{display:flex;flex-direction:column;gap:9px}
+.fh{font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--mut2)}
+.fcol a{color:var(--mut);font-size:13.4px;font-weight:600;transition:color .15s}
+.fcol a:hover{color:var(--txt)}
+.fbar{
+  display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+  padding:16px 0 46px; border-top:1px solid var(--line);
+  color:var(--mut2); font-size:12.4px; line-height:1.6;
+}
 
-  /* note */
-  .note{margin:56px 0 0;background:linear-gradient(180deg,rgba(255,255,255,.03),transparent);
-    border:1px solid var(--line);border-left:3px solid var(--books);border-radius:12px;padding:20px 22px}
-  .note h4{margin:0 0 8px;font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:8px}
-  .note p{margin:0;color:var(--mut);font-size:13.4px;line-height:1.65}
-  .note b{color:var(--txt2)}
 
-  footer{margin-top:64px;border-top:1px solid var(--line);padding:26px 0 54px;color:var(--mut2);font-size:12.8px;line-height:1.7}
-  footer a{color:var(--mut);text-decoration:underline;text-underline-offset:3px}
-  footer a:hover{color:var(--txt)}
-  .fbar{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
-  @media(max-width:640px){ .hero{padding:44px 0 20px} .heronums{gap:24px} }
+/* ---------- 12. Motion safety net --------------------------------- */
+/* If motion.css hides .tool/.feat/.step/.jump before reveal but motion.js
+   never runs, the page would be blank. The inline script detects that and
+   sets this class. The `html` prefix keeps it winning over later layers. */
+html.motion-fallback .tool,
+html.motion-fallback .feat,
+html.motion-fallback .step,
+html.motion-fallback .jump{
+  opacity:1 !important; visibility:visible !important;
+  transform:none !important; clip-path:none !important; filter:none !important;
+}
+
+
+/* ---------- 13. Responsive, reduced motion, print ----------------- */
+@media(max-width:720px){
+  .wrap{padding:0 17px}
+  .hstats{max-width:none}
+  .hn{padding:16px 8px 14px}
+  .hn .l{font-size:9.5px;letter-spacing:.1em}
+  .fin{grid-template-columns:1fr;gap:26px;padding-top:28px}
+  .fnav{gap:34px}
+  .note{flex-direction:column;gap:12px;padding:20px}
+}
+@media(min-width:760px){
+  .hero h1 .ln{display:block}
+}
+@media(max-width:400px){
+  .cta .btn{flex:1 1 100%;justify-content:center}
+}
+
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+    scroll-behavior:auto !important;
+  }
+  /* keep the backdrop, just hold it still */
+  .bgfx .orb{animation:none}
+}
+
+@media print{
+  .bgfx,.skip,.cta,.sitenav{display:none !important}
+  body{background:#fff;color:#000}
+  .tool,.feat,.step,.note{border-color:#ccc;background:none;box-shadow:none}
+}
 </style>
-</head>
-<body data-page="home">
-
-<div class="wrap">
-  <section class="hero">
-    <div class="badge"><span class="dot"></span> Free · no sign-up · nothing to install</div>
-    <h1>Everything worth<br><span class="g">reading, playing</span> &amp; <em>remembering</em></h1>
-    <p class="lede">Three fast, filterable catalogs. Find your next game, your next book, and keep every new word you meet.</p>
-    <div class="heronums" id="heronums">
-      <div class="hn"><div class="v" data-stat="games">—</div><div class="l">PC games</div></div>
-      <div class="hn"><div class="v" data-stat="books">—</div><div class="l">Books</div></div>
-      <div class="hn"><div class="v">∞</div><div class="l">Your words</div></div>
-    </div>
-  </section>
-
-  <section class="tools">
-    <a class="tool g" href="games.html">
-      <div class="ic" data-icon="gamepad-2"></div>
-      <h2>Game Index</h2>
-      <div class="cnt" data-line="games">METACRITIC &amp; IGN</div>
-      <ul>
-        <li>Metacritic &amp; IGN scores, many verified</li>
-        <li>Filter by genre, year and score</li>
-        <li>Cover art and Steam links</li>
-      </ul>
-      <span class="go">Browse games <span class="ar">→</span></span>
-    </a>
-
-    <a class="tool b" href="books.html">
-      <div class="ic" data-icon="book-open"></div>
-      <h2>Book Index</h2>
-      <div class="cnt" data-line="books">GOODREADS RATINGS</div>
-      <ul>
-        <li>Goodreads ratings and popularity</li>
-        <li>Literary, fantasy, sci-fi, memoir and more</li>
-        <li>Cover art and Goodreads links</li>
-      </ul>
-      <span class="go">Browse books <span class="ar">→</span></span>
-    </a>
-
-    <a class="tool w" href="vocab.html">
-      <div class="ic" data-icon="notebook-pen"></div>
-      <h2>Lexicon Vault</h2>
-      <div class="cnt">YOUR PERSONAL WORD COLLECTION</div>
-      <ul>
-        <li>Definitions fetched automatically</li>
-        <li>Tag and track your progress</li>
-        <li>Flashcard study mode</li>
-      </ul>
-      <span class="go">Start collecting <span class="ar">→</span></span>
-    </a>
-  </section>
-
-  <section class="sec">
-    <div class="sech"><h3>Jump straight in</h3></div>
-    <div class="jumps">
-      <a class="jump" href="games.html#minmc=90&sort=mc-desc"><span class="e" data-icon="trophy"></span> Best games ever (90+)</a>
-      <a class="jump" href="games.html#yrmin=2025&sort=year-desc"><span class="e" data-icon="clock"></span> Newest game releases</a>
-      <a class="jump" href="games.html#g=Horror%20%2F%20Survival&sort=mc-desc"><span class="e" data-icon="ghost"></span> Top horror games</a>
-      <a class="jump" href="books.html#minrate=4.3&sort=rate-desc"><span class="e" data-icon="star"></span> Highest-rated books</a>
-      <a class="jump" href="books.html#g=Science%20Fiction&sort=rate-desc"><span class="e" data-icon="rocket"></span> Best sci-fi reads</a>
-      <a class="jump" href="books.html#sort=pop-desc"><span class="e" data-icon="flame"></span> What everyone's reading</a>
-      <a class="jump" href="vocab.html"><span class="e" data-icon="sparkles"></span> Build a word list</a>
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="sech"><h3>Built to be pleasant</h3></div>
-    <div class="feats">
-      <div class="feat"><div class="fi" data-icon="link-2"></div><h4>Shareable views</h4><p>Send a link that reopens your exact filters.</p></div>
-      <div class="feat"><div class="fi" data-icon="keyboard"></div><h4>Keyboard first</h4><p><b>/</b> search, <b>G</b>/<b>L</b> layout, <b>R</b> random, <b>?</b> all.</p></div>
-      <div class="feat"><div class="fi" data-icon="dice-5"></div><h4>Can't decide?</h4><p>Surprise picks something from your filters.</p></div>
-      <div class="feat"><div class="fi" data-icon="star"></div><h4>Save favourites</h4><p>Star anything. No account needed.</p></div>
-      <div class="feat"><div class="fi" data-icon="smartphone"></div><h4>Works everywhere</h4><p>Phone, tablet or desktop — lazy-loaded and smooth.</p></div>
-      <div class="feat"><div class="fi" data-icon="shield-check"></div><h4>Private by default</h4><p>Nothing is tracked, uploaded, or leaves your device.</p></div>
-    </div>
-  </section>
-
-
-  <section class="sec">
-    <div class="sech"><h3>How it works</h3></div>
-    <div class="steps">
-      <div class="step">
-        <div class="n">1</div>
-        <h4><span data-icon="globe"></span> Gather</h4>
-        <p>We sweep public sources for notable titles across <b>every genre, era and niche</b> — blockbusters and deep cuts alike.</p>
-      </div>
-      <div class="step">
-        <div class="n">2</div>
-        <h4><span data-icon="star"></span> Score</h4>
-        <p>Each entry gets its critic rating: <b>Metacritic and IGN</b> for games, <b>Goodreads</b> ratings and vote counts for books.</p>
-      </div>
-      <div class="step">
-        <div class="n">3</div>
-        <h4><span data-icon="check-check"></span> Verify &amp; merge</h4>
-        <p>Top scores are checked <b>against Metacritic directly</b> and earn a ✓. Duplicates merge instead of piling up.</p>
-      </div>
-    </div>
-  </section>
-
-  <div class="note">
-    <h4><span data-icon="shield-check"></span> About the data — honestly</h4>
-    <p>Catalogues were compiled with AI assistance from public sources. Scores carrying a <b>✓</b> were verified against Metacritic; the rest, including IGN and Goodreads figures, are close approximations. A discovery tool, not a citation source. Cover art © its respective publishers.</p>
-  </div>
-
-  <footer>
-    <div class="fbar">
-      <div>Made as a personal project · <a href="https://github.com/Goodly58/shelf" target="_blank" rel="noopener">source on GitHub</a></div>
-      <div>Not affiliated with Metacritic, IGN, Goodreads, Steam or Open Library.</div>
-    </div>
-  </footer>
-</div>
 
 <link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/theme.css">
+<link rel="stylesheet" href="assets/palette.css">
+<link rel="stylesheet" href="assets/features.css">
+<link rel="stylesheet" href="assets/motion.css">
+<link rel="stylesheet" href="assets/polish.css">
+<link rel="stylesheet" href="assets/a11y.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Shelf">
+<link rel="apple-touch-icon" href="assets/icon.svg">
+</head>
+
+<body data-page="home">
+
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- Purely decorative; hidden from assistive tech. -->
+<div class="bgfx" aria-hidden="true">
+  <span class="orb o1"></span>
+  <span class="orb o2"></span>
+  <span class="orb o3"></span>
+  <span class="mesh"></span>
+</div>
+
+<main id="main">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero">
+    <div class="wrap">
+      <p class="badge"><span class="dot"></span> Free · no sign-up · nothing to install</p>
+
+      <h1>
+        <span class="ln">Everything worth</span>
+        <span class="ln"><span class="grad">playing, reading</span></span>
+        <span class="ln">and <em>remembering</em>.</span>
+      </h1>
+
+      <p class="lede">Three catalogues, built to be searched fast. Critic scores where they exist, verified where it matters. Your favourites and your words stay in this browser.</p>
+
+      <div class="cta">
+        <a class="btn primary" href="#shelves">Open the shelves <span data-icon="arrow-right"></span></a>
+        <a class="btn ghost" href="#how">How it works</a>
+      </div>
+
+      <!-- Headline figures. Each number appears exactly once on this page. -->
+      <div class="hstats">
+        <a class="hn g" href="games.html">
+          <span class="v num" data-stat="games" data-count>—</span>
+          <span class="l">PC games</span>
+        </a>
+        <a class="hn b" href="books.html">
+          <span class="v num" data-stat="books" data-count>—</span>
+          <span class="l">Books</span>
+        </a>
+        <a class="hn v-ok" href="#how">
+          <span class="v num" data-stat="gamesVerified" data-count>—</span>
+          <span class="l">Verified scores</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================== SHELVES =========================== -->
+  <section class="sec" id="shelves">
+    <div class="wrap">
+      <header class="sech">
+        <p class="kicker">The shelves</p>
+        <h2>Pick one and start filtering</h2>
+        <p class="sub">Everything loads from a single static page. No spinner, no login, no waiting.</p>
+      </header>
+
+      <div class="tools">
+
+        <a class="tool g" href="games.html">
+          <span class="tile" aria-hidden="true"><span data-icon="gamepad-2"></span></span>
+          <h3>Game Index</h3>
+          <div class="facts">
+            <span class="fact"><b class="num" data-stat="gamesGenres">—</b> genres</span>
+            <span class="fact"><span data-icon="clock"></span><b class="num" data-range="games">—</b></span>
+          </div>
+          <p class="lead">PC releases worth a look, with Metacritic and IGN side by side.</p>
+          <ul>
+            <li>Filter by genre, year and score</li>
+            <li>Blend both critic scores into one ranking</li>
+            <li>Cover art and Steam links on every card</li>
+          </ul>
+          <span class="go">Browse games <span class="ar" data-icon="arrow-right"></span></span>
+        </a>
+
+        <a class="tool b" href="books.html">
+          <span class="tile" aria-hidden="true"><span data-icon="book-open"></span></span>
+          <h3>Book Index</h3>
+          <div class="facts">
+            <span class="fact"><b class="num" data-stat="booksGenres">—</b> genres</span>
+            <span class="fact"><b class="num" data-stat="booksAuthors">—</b> authors</span>
+            <span class="fact"><span data-icon="clock"></span><b class="num" data-range="books">—</b></span>
+          </div>
+          <p class="lead">Fiction, non-fiction and the very old stuff, ranked by Goodreads.</p>
+          <ul>
+            <li>Sort by rating, popularity or author</li>
+            <li>Rating and vote count on every entry</li>
+            <li>Covers, Goodreads and Open Library links</li>
+          </ul>
+          <span class="go">Browse books <span class="ar" data-icon="arrow-right"></span></span>
+        </a>
+
+        <a class="tool w" href="vocab.html">
+          <span class="tile" aria-hidden="true"><span data-icon="notebook-pen"></span></span>
+          <h3>Lexicon Vault</h3>
+          <div class="facts">
+            <span class="fact"><span data-icon="lock"></span><b>Yours alone</b></span>
+            <span class="fact"><span data-icon="graduation-cap"></span><b>Flashcards</b></span>
+          </div>
+          <p class="lead">Keep every word you meet, with its definition attached.</p>
+          <ul>
+            <li>Definitions and parts of speech fill themselves in</li>
+            <li>Track each word from new, to learning, to mastered</li>
+            <li>Study mode, plus export and import as a file</li>
+          </ul>
+          <span class="go">Start collecting <span class="ar" data-icon="arrow-right"></span></span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================= QUICK JUMPS ========================= -->
+  <section class="sec" id="jump">
+    <div class="wrap">
+      <header class="sech">
+        <p class="kicker">Shortcuts</p>
+        <h2>Or skip straight to the good part</h2>
+        <p class="sub">Each link opens a shelf with the filters already applied.</p>
+      </header>
+
+      <div class="jumps">
+        <a class="jump j-g" href="games.html#minmc=90&amp;sort=mc-desc"><span data-icon="trophy"></span> Best-reviewed games</a>
+        <!-- href is upgraded with a real lower bound once stats.json loads -->
+        <a class="jump j-g" href="games.html#sort=year-desc" data-recent="games"><span data-icon="clock"></span> Just released</a>
+        <a class="jump j-g" href="games.html#g=Horror%20%2F%20Survival&amp;sort=mc-desc"><span data-icon="ghost"></span> Horror picks</a>
+        <a class="jump j-g" href="games.html#g=Strategy%20%2F%204X%20%2F%20RTS&amp;sort=mc-desc"><span data-icon="layers"></span> Strategy &amp; 4X</a>
+        <a class="jump j-b" href="books.html#minrate=4.5&amp;sort=rate-desc"><span data-icon="star"></span> Highest-rated books</a>
+        <a class="jump j-b" href="books.html#sort=pop-desc"><span data-icon="flame"></span> Most-read books</a>
+        <a class="jump j-b" href="books.html#g=Science%20Fiction&amp;sort=rate-desc"><span data-icon="rocket"></span> Science fiction</a>
+        <a class="jump j-b" href="books.html#g=Classics&amp;sort=year-asc"><span data-icon="library"></span> Oldest classics first</a>
+        <a class="jump j-w" href="vocab.html"><span data-icon="sparkles"></span> Start a word list</a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ========================= HOW IT WORKS ======================== -->
+  <section class="sec" id="how">
+    <div class="wrap">
+      <header class="sech">
+        <p class="kicker">How it works</p>
+        <h2>Gathered, scored, then checked</h2>
+        <p class="sub">Three passes stand between a public listing and a card on these shelves.</p>
+      </header>
+
+      <div class="steps">
+        <div class="step">
+          <div class="n">1</div>
+          <h3><span data-icon="globe"></span> Gather</h3>
+          <p>Titles are collected from <b>public sources</b> across every genre, era and niche — blockbusters and deep cuts alike.</p>
+        </div>
+        <div class="step">
+          <div class="n">2</div>
+          <h3><span data-icon="star"></span> Score</h3>
+          <p>Each entry picks up its critic rating: <b>Metacritic and IGN</b> for games, <b>Goodreads</b> ratings and vote counts for books.</p>
+        </div>
+        <div class="step">
+          <div class="n">3</div>
+          <h3><span data-icon="check-check"></span> Verify &amp; merge</h3>
+          <p>Top scores are re-checked <b>against Metacritic</b> and earn a <span class="vf">✓</span>. Duplicate entries are merged rather than stacked.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- =========================== THE CRAFT ========================= -->
+  <section class="sec" id="craft">
+    <div class="wrap">
+      <header class="sech">
+        <p class="kicker">Details</p>
+        <h2>Small things, done properly</h2>
+      </header>
+
+      <div class="feats">
+        <div class="feat">
+          <div class="fi" aria-hidden="true"><span data-icon="link-2"></span></div>
+          <h3>Shareable views</h3>
+          <p>Copy a link that reopens your exact filters, sort and search.</p>
+        </div>
+        <div class="feat">
+          <div class="fi" aria-hidden="true"><span data-icon="keyboard"></span></div>
+          <h3>Keyboard first</h3>
+          <p>Press <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> to hop between shelves. Inside one, <kbd>/</kbd> searches and <kbd>?</kbd> lists the rest.</p>
+        </div>
+        <div class="feat">
+          <div class="fi" aria-hidden="true"><span data-icon="dice-5"></span></div>
+          <h3>Surprise me</h3>
+          <p>Can't decide? Get one pick from whatever you have filtered to.</p>
+        </div>
+        <div class="feat">
+          <div class="fi" aria-hidden="true"><span data-icon="star"></span></div>
+          <h3>Favourites</h3>
+          <p>Star anything. It is saved on this device the moment you click.</p>
+        </div>
+        <div class="feat">
+          <div class="fi" aria-hidden="true"><span data-icon="smartphone"></span></div>
+          <h3>Any screen</h3>
+          <p>Readable at 360px. Covers load lazily as you scroll, in batches.</p>
+        </div>
+        <div class="feat">
+          <div class="fi" aria-hidden="true"><span data-icon="shield-check"></span></div>
+          <h3>Nothing tracked</h3>
+          <p>No analytics, no ads, no account. Your lists never leave the browser.</p>
+        </div>
+      </div>
+
+      <aside class="note">
+        <span class="ni" aria-hidden="true"><span data-icon="sparkles"></span></span>
+        <div>
+          <h2>About the data — honestly</h2>
+          <p>These catalogues were compiled <b>with AI assistance</b> from public sources. Scores marked <span class="vf">✓</span> were checked against Metacritic directly. Everything else — IGN numbers, Goodreads ratings, release years, blurbs — is a close approximation and may be wrong in the details. Shelf is a discovery tool, not a citation source. Cover art belongs to its respective publishers.</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+</main>
+
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="fin">
+      <div>
+        <span class="flogo"><span data-icon="library"></span> Shelf</span>
+        <p>A personal project: three catalogues on one small static site. No back end, no database, no accounts.</p>
+        <p class="fupd">Catalogue last updated <time data-updated>—</time>.</p>
+      </div>
+      <nav class="fnav" aria-label="Footer">
+        <div class="fcol">
+          <span class="fh">Browse</span>
+          <a href="games.html">Games</a>
+          <a href="books.html">Books</a>
+          <a href="vocab.html">Words</a>
+        </div>
+        <div class="fcol">
+          <span class="fh">Project</span>
+          <a href="#how">How it works</a>
+          <a href="https://github.com/Goodly58/shelf" target="_blank" rel="noopener noreferrer">Source on GitHub</a>
+        </div>
+      </nav>
+    </div>
+    <div class="fbar">
+      <span>Not affiliated with Metacritic, IGN, Goodreads, Steam or Open Library.</span>
+      <span>Built to be fast, quiet and free.</span>
+    </div>
+  </div>
+</footer>
+
+
 <script>
-/* Counts are loaded from assets/stats.json so nothing is hard-coded in the page.
-   If the file is unavailable (e.g. opened straight from disk) the numbers simply
-   stay hidden rather than showing something stale. */
-fetch('assets/stats.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(s=>{
-  if(!s) return;
-  const fmt=n=>Number(n).toLocaleString();
-  document.querySelectorAll('[data-stat]').forEach(el=>{
-    const v=s[el.dataset.stat]; if(v!=null) el.textContent=fmt(v);
-  });
-  const yr=v=>v<0?Math.abs(v)+' BC':v;
-  const gl=document.querySelector('[data-line="games"]');
-  if(gl&&s.gamesFrom) gl.textContent=yr(s.gamesFrom)+'–'+s.gamesTo+' · '+s.gamesGenres+' GENRES';
-  const bl=document.querySelector('[data-line="books"]');
-  if(bl&&s.booksFrom) bl.textContent=yr(s.booksFrom)+'–'+s.booksTo+' · '+s.booksGenres+' GENRES';
-}).catch(()=>{});
+/* =====================================================================
+   Landing page behaviour. Self-contained: runs before any deferred
+   script, assumes nothing about window.Shelf, motion.js or theme.js.
+
+   Responsibilities
+     1. Fill every number on the page from assets/stats.json.
+     2. Count the three hero figures up (unless motion is reduced).
+     3. Give the "Just released" deep link a real year bound.
+     4. Rescue the page if a motion layer hides content and never
+        reveals it.
+   ===================================================================== */
+(function () {
+  'use strict';
+
+  var docEl = document.documentElement;
+  docEl.classList.add('js');
+
+  var REDUCED = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+  function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+  function isNum(v) { return typeof v === 'number' && isFinite(v); }
+
+  /* ---- formatting ---------------------------------------------------
+     Counts are grouped (2,164). Years never are (1976, not 1,976), and a
+     negative year is rendered as an era: -700 -> "700 BC".              */
+  function fmtInt(n) {
+    try { return Number(n).toLocaleString('en-US'); }
+    catch (e) { return String(n); }
+  }
+  function fmtYear(y) { return y < 0 ? String(Math.abs(y)) + ' BC' : String(y); }
+  function fmtRange(a, b) {
+    if (!isNum(a) || !isNum(b)) return null;
+    var lo = Math.min(a, b), hi = Math.max(a, b);
+    return lo === hi ? fmtYear(lo) : fmtYear(lo) + '–' + fmtYear(hi);
+  }
+
+  /* ---- reveal-triggered count-up ------------------------------------
+     Runs fn once, when the element first comes into view. A hard timeout
+     backs the observer up: in a background tab IntersectionObserver
+     reports nothing until the tab is looked at, and a figure must never
+     be left sitting on its em dash.                                     */
+  function whenVisible(el, fn) {
+    if (!('IntersectionObserver' in window)) { fn(); return; }
+    var done = false;
+    function once() { if (done) return; done = true; clearTimeout(t); io.disconnect(); fn(); }
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) if (entries[i].isIntersecting) { once(); return; }
+    }, { rootMargin: '0px 0px -8% 0px' });
+    io.observe(el);
+    var t = setTimeout(once, 1500);
+  }
+
+  function countUp(el, target) {
+    var finalTxt = fmtInt(target);
+    // Skip the animation when motion is reduced, when the tab is hidden
+    // (requestAnimationFrame is parked there), or when the number is too
+    // small for a count-up to read as anything but a glitch.
+    if (REDUCED || !window.requestAnimationFrame || document.hidden || target < 25) {
+      el.textContent = finalTxt;
+      return;
+    }
+    var DUR = 900, start = 0;
+    function frame(ts) {
+      if (!start) start = ts;
+      var p = Math.min(1, (ts - start) / DUR);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmtInt(Math.round(target * eased));
+      if (p < 1) requestAnimationFrame(frame);
+      else el.textContent = finalTxt;
+    }
+    requestAnimationFrame(frame);
+    // If rAF is throttled mid-flight (tab hidden after we started), land
+    // on the real value anyway.
+    setTimeout(function () { el.textContent = finalTxt; }, DUR + 500);
+  }
+
+  /* ---- apply stats.json --------------------------------------------- */
+  function applyStats(s) {
+    if (!s || typeof s !== 'object') return false;
+    var touched = false;
+
+    // plain counts
+    each(document.querySelectorAll('[data-stat]'), function (el) {
+      var v = s[el.getAttribute('data-stat')];
+      if (!isNum(v)) return;                       // leave the em dash alone
+      touched = true;
+      if (el.hasAttribute('data-count')) whenVisible(el, function () { countUp(el, v); });
+      else el.textContent = fmtInt(v);
+    });
+
+    // "<from>–<to>" year ranges, e.g. data-range="books" -> booksFrom/booksTo
+    each(document.querySelectorAll('[data-range]'), function (el) {
+      var k = el.getAttribute('data-range');
+      var r = fmtRange(s[k + 'From'], s[k + 'To']);
+      if (r) { el.textContent = r; touched = true; }
+    });
+
+    // Deep link for recent releases. The year is never in the markup; it is
+    // derived here so the link stays correct as the catalogue grows.
+    each(document.querySelectorAll('[data-recent]'), function (a) {
+      var k = a.getAttribute('data-recent');
+      var from = s[k + 'From'], to = s[k + 'To'];
+      if (!isNum(from) || !isNum(to)) return;
+      var lo = Math.max(from, to - 1);
+      a.setAttribute('href', k + '.html#yrmin=' + lo + '&sort=year-desc');
+      touched = true;
+    });
+
+    // last-updated stamp
+    var t = document.querySelector('[data-updated]');
+    if (t && typeof s.updated === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s.updated)) {
+      var d = new Date(s.updated + 'T00:00:00Z');
+      if (!isNaN(d.getTime())) {
+        t.setAttribute('datetime', s.updated);
+        try {
+          t.textContent = new Intl.DateTimeFormat('en-GB', {
+            day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'
+          }).format(d);
+        } catch (e) { t.textContent = s.updated; }
+        touched = true;
+      }
+    }
+
+    return touched;
+  }
+
+  if (window.fetch) {
+    fetch('assets/stats.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (s) { docEl.setAttribute('data-stats', applyStats(s) ? 'ready' : 'off'); })
+      .catch(function () { docEl.setAttribute('data-stats', 'off'); });
+  } else {
+    // Opened from file:// or a very old browser — the em dashes stay put.
+    docEl.setAttribute('data-stats', 'off');
+  }
+
+  /* ---- motion safety net --------------------------------------------
+     motion.css may set an initial hidden state on .tool/.feat/.step/.jump
+     that motion.js clears on intersection. If that script is absent or
+     throws, the page would read as empty. A single check, well after
+     load, restores anything still invisible while on screen. Elements
+     below the fold are legitimately hidden and are not touched.         */
+  function safetyNet() {
+    var nodes = document.querySelectorAll('.tool,.feat,.step,.jump');
+    if (!nodes.length) return;
+    var vh = window.innerHeight || docEl.clientHeight, stuck = false;
+    each(nodes, function (el) {
+      if (stuck) return;
+      var r = el.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= vh) return;               // off screen
+      var cs = window.getComputedStyle(el);
+      if (parseFloat(cs.opacity) < 0.05 || cs.visibility === 'hidden') stuck = true;
+    });
+    if (stuck) docEl.classList.add('motion-fallback');
+  }
+  window.addEventListener('load', function () { setTimeout(safetyNet, 2600); });
+})();
 </script>
+
 <script src="assets/site.js" defer></script>
+<script src="assets/theme.js" defer></script>
+<script src="assets/motion.js" defer></script>
+<script src="assets/palette.js" defer></script>
+<script src="assets/features.js" defer></script>
+<script src="assets/pwa.js" defer></script>
+<script src="assets/a11y.js" defer></script>
 </body>
 </html>
