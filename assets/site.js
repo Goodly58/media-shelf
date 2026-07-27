@@ -16,12 +16,68 @@
   'use strict';
 
   var PAGES = [
-    { id: 'games', href: 'games.html', label: 'Games', icon: '🎮' },
-    { id: 'books', href: 'books.html', label: 'Books', icon: '📚' },
-    { id: 'vocab', href: 'vocab.html', label: 'Words', icon: '📖' }
+    { id: 'games', href: 'games.html', label: 'Games', icon: 'gamepad-2' },
+    { id: 'books', href: 'books.html', label: 'Books', icon: 'book-open' },
+    { id: 'vocab', href: 'vocab.html', label: 'Words', icon: 'notebook-pen' }
   ];
   var page = document.body.getAttribute('data-page') || '';
   var isHome = page === 'home';
+
+  /* ================= icons (Lucide, ISC licence, inlined) =================
+     Inlined rather than pulled from a CDN so the site stays self-contained and
+     icons never flash in late. Use data-icon="name" in markup, or
+     Shelf.icon('name') for dynamically built content.                      */
+  var ICONS = {
+    "gamepad-2": "<line x1=\"6\" x2=\"10\" y1=\"11\" y2=\"11\"/><line x1=\"8\" x2=\"8\" y1=\"9\" y2=\"13\"/><line x1=\"15\" x2=\"15.01\" y1=\"12\" y2=\"12\"/><line x1=\"18\" x2=\"18.01\" y1=\"10\" y2=\"10\"/><path d=\"M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z\"/>",
+    "book-open": "<path d=\"M12 7v14\"/><path d=\"M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z\"/>",
+    "notebook-pen": "<path d=\"M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4\"/><path d=\"M2 6h4\"/><path d=\"M2 10h4\"/><path d=\"M2 14h4\"/><path d=\"M2 18h4\"/><path d=\"M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z\"/>",
+    "library": "<path d=\"m16 6 4 14\"/><path d=\"M12 6v14\"/><path d=\"M8 8v12\"/><path d=\"M4 4v16\"/>",
+    "arrow-left": "<path d=\"m12 19-7-7 7-7\"/><path d=\"M19 12H5\"/>",
+    "arrow-right": "<path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/>",
+    "link-2": "<path d=\"M9 17H7A5 5 0 0 1 7 7h2\"/><path d=\"M15 7h2a5 5 0 1 1 0 10h-2\"/><line x1=\"8\" x2=\"16\" y1=\"12\" y2=\"12\"/>",
+    "keyboard": "<path d=\"M10 8h.01\"/><path d=\"M12 12h.01\"/><path d=\"M14 8h.01\"/><path d=\"M16 12h.01\"/><path d=\"M18 8h.01\"/><path d=\"M6 8h.01\"/><path d=\"M7 16h10\"/><path d=\"M8 12h.01\"/><rect width=\"20\" height=\"16\" x=\"2\" y=\"4\" rx=\"2\"/>",
+    "user": "<path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/>",
+    "search": "<circle cx=\"11\" cy=\"11\" r=\"8\"/><path d=\"m21 21-4.3-4.3\"/>",
+    "dice-5": "<rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"/><path d=\"M16 8h.01\"/><path d=\"M8 8h.01\"/><path d=\"M8 16h.01\"/><path d=\"M16 16h.01\"/><path d=\"M12 12h.01\"/>",
+    "star": "<path d=\"M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 20.99a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.774a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z\"/>",
+    "layout-grid": "<rect width=\"7\" height=\"7\" x=\"3\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"3\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"14\" y=\"14\" rx=\"1\"/><rect width=\"7\" height=\"7\" x=\"3\" y=\"14\" rx=\"1\"/>",
+    "list": "<path d=\"M3 12h.01\"/><path d=\"M3 18h.01\"/><path d=\"M3 6h.01\"/><path d=\"M8 12h13\"/><path d=\"M8 18h13\"/><path d=\"M8 6h13\"/>",
+    "rotate-ccw": "<path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"/><path d=\"M3 3v5h5\"/>",
+    "download": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"7 10 12 15 17 10\"/><line x1=\"12\" x2=\"12\" y1=\"15\" y2=\"3\"/>",
+    "upload": "<path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\"/><polyline points=\"17 8 12 3 7 8\"/><line x1=\"12\" x2=\"12\" y1=\"3\" y2=\"15\"/>",
+    "graduation-cap": "<path d=\"M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z\"/><path d=\"M22 10v6\"/><path d=\"M6 12.5V16a6 3 0 0 0 12 0v-3.5\"/>",
+    "lock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 10 0v4\"/>",
+    "unlock": "<rect width=\"18\" height=\"11\" x=\"3\" y=\"11\" rx=\"2\"/><path d=\"M7 11V7a5 5 0 0 1 9.9-1\"/>",
+    "sparkles": "<path d=\"M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z\"/>",
+    "trophy": "<path d=\"M6 9H4.5a2.5 2.5 0 0 1 0-5H6\"/><path d=\"M18 9h1.5a2.5 2.5 0 0 0 0-5H18\"/><path d=\"M4 22h16\"/><path d=\"M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22\"/><path d=\"M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22\"/><path d=\"M18 2H6v7a6 6 0 0 0 12 0V2Z\"/>",
+    "clock": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><polyline points=\"12 6 12 12 16 14\"/>",
+    "ghost": "<path d=\"M9 10h.01\"/><path d=\"M15 10h.01\"/><path d=\"M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z\"/>",
+    "rocket": "<path d=\"M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91 0z\"/><path d=\"m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z\"/><path d=\"M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0\"/><path d=\"M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5\"/>",
+    "flame": "<path d=\"M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z\"/>",
+    "smartphone": "<rect width=\"14\" height=\"20\" x=\"5\" y=\"2\" rx=\"2\"/><path d=\"M12 18h.01\"/>",
+    "shield-check": "<path d=\"M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z\"/><path d=\"m9 12 2 2 4-4\"/>",
+    "globe": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\"/><path d=\"M2 12h20\"/>",
+    "layers": "<path d=\"M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\"/><path d=\"m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65\"/><path d=\"m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65\"/>",
+    "check-check": "<path d=\"M18 6 7 17l-5-5\"/><path d=\"m22 10-7.5 7.5L13 16\"/>",
+    "plus": "<path d=\"M5 12h14\"/><path d=\"M12 5v14\"/>",
+    "volume-2": "<path d=\"M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.384 3.383A.705.705 0 0 0 11 19.298z\"/><path d=\"M16 9a5 5 0 0 1 0 6\"/><path d=\"M19.364 18.364a9 9 0 0 0 0-12.728\"/>",
+    "pencil": "<path d=\"M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z\"/><path d=\"m15 5 4 4\"/>",
+    "trash-2": "<path d=\"M3 6h18\"/><path d=\"M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6\"/><path d=\"M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2\"/><line x1=\"10\" x2=\"10\" y1=\"11\" y2=\"17\"/><line x1=\"14\" x2=\"14\" y1=\"11\" y2=\"17\"/>",
+    "archive": "<rect width=\"20\" height=\"5\" x=\"2\" y=\"3\" rx=\"1\"/><path d=\"M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8\"/><path d=\"M10 12h4\"/>"
+  };
+  function svgIcon(name, cls){
+    var p = ICONS[name];
+    if (!p) return '';
+    return '<svg class="ic ' + (cls || '') + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+      'stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + p + '</svg>';
+  }
+  function hydrateIcons(root){
+    (root || document).querySelectorAll('[data-icon]').forEach(function (el) {
+      if (el.getAttribute('data-icon-done')) return;
+      var s = svgIcon(el.getAttribute('data-icon'));
+      if (s) { el.innerHTML = s; el.setAttribute('data-icon-done', '1'); }
+    });
+  }
 
   /* ================= auth (entirely local, no server) ================= */
   var AKEY = 'shelf_profile';
@@ -87,17 +143,17 @@
     var nav = document.createElement('div');
     nav.className = 'sitenav';
     var links = PAGES.map(function (p) {
-      return '<a href="' + p.href + '"' + (p.id === page ? ' class="cur"' : '') + '>' + p.icon + ' ' + p.label + '</a>';
+      return '<a href="' + p.href + '"' + (p.id === page ? ' class="cur"' : '') + '>' + svgIcon(p.icon) + '<span>' + p.label + '</span></a>';
     }).join('');
     nav.innerHTML =
       '<div class="sn-in">' +
         (isHome
-          ? '<span class="sn-home" style="cursor:default"><span>📚</span> Shelf</span>'
-          : '<a class="sn-home" href="index.html" title="Back to Shelf home"><span class="ar">←</span> Shelf</a>') +
+          ? '<span class="sn-home" style="cursor:default">' + svgIcon('library') + '<span>Shelf</span></span>'
+          : '<a class="sn-home" href="index.html" title="Back to Shelf home">' + svgIcon('arrow-left','ar') + '<span>Shelf</span></a>') +
         '<nav class="sn-links">' + links + '</nav>' +
         '<div class="sn-right">' +
-          (isHome ? '' : '<button class="sn-btn" id="shShare" title="Copy a link to exactly this view">🔗 <span class="lbl">Share view</span></button>') +
-          '<button class="sn-btn" id="shHelp" title="Keyboard shortcuts (?)">⌨ <span class="lbl">Shortcuts</span></button>' +
+          (isHome ? '' : '<button class="sn-btn" id="shShare" title="Copy a link to exactly this view">' + svgIcon('link-2') + '<span class="lbl">Share view</span></button>') +
+          '<button class="sn-btn" id="shHelp" title="Keyboard shortcuts (?)">' + svgIcon('keyboard') + '<span class="lbl">Shortcuts</span></button>' +
           '<button class="sn-acct" id="shAcct" title="Profile"></button>' +
         '</div>' +
       '</div>';
@@ -112,8 +168,8 @@
     var initial = p ? p.name.trim().charAt(0).toUpperCase() : '·';
     b.className = 'sn-acct' + (p ? ' in' : '') + (cur ? ' cur' : '');
     b.innerHTML = p
-      ? '<span class="av">' + initial + '</span><span class="nm">' + escapeHtml(p.name) + (cur ? ' <span class="crown">★</span>' : '') + '</span>'
-      : '<span class="av guest">👤</span><span class="nm">Sign in</span>';
+      ? '<span class="av">' + initial + '</span><span class="nm">' + escapeHtml(p.name) + (cur ? '<span class="crown">' + svgIcon('star') + '</span>' : '') + '</span>'
+      : '<span class="av guest">' + svgIcon('user') + '</span><span class="nm">Sign in</span>';
     b.title = p ? (p.name + (cur ? ' — curator mode' : '') + ' · click for profile options') : 'Optional — browsing works fine as a guest';
   }
   function escapeHtml(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
@@ -357,6 +413,8 @@
 
   /* ================= public API ================= */
   window.Shelf = {
+    icon: svgIcon,
+    hydrateIcons: hydrateIcons,
     profile: profile,
     name: displayName,
     isCurator: isCurator,
@@ -370,7 +428,7 @@
 
   /* ================= boot ================= */
   function init() {
-    buildNav(); buildHelp(); wireShare(); wireKeys();
+    buildNav(); buildHelp(); wireShare(); wireKeys(); hydrateIcons();
     if (!isHome) setTimeout(applyStateFromHash, 60);
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);

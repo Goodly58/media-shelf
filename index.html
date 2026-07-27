@@ -32,6 +32,22 @@
   ::selection{background:rgba(79,140,255,.25)}
   .wrap{max-width:1180px;margin:0 auto;padding:0 24px}
 
+  .ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:0 0 auto}
+  [data-icon]{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+  .tool .ic{width:30px;height:30px;stroke-width:1.7}
+  .feat .fi .ic{width:20px;height:20px}
+  .jump .e .ic{width:16px;height:16px}
+  .badge .ic{width:14px;height:14px}
+
+  /* how it works */
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+  .step{position:relative;background:rgba(255,255,255,.022);border:1px solid var(--line);border-radius:14px;padding:20px 19px}
+  .step .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:8px;font-size:13px;font-weight:800;
+    color:#0a1016;background:linear-gradient(135deg,var(--games),var(--games2));margin-bottom:11px}
+  .step h4{margin:0 0 6px;font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+  .step p{margin:0;color:var(--mut);font-size:13.2px;line-height:1.58}
+  .step b{color:var(--txt2)}
+
   /* hero */
   .hero{padding:76px 0 30px;text-align:center}
   .badge{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--txt2);
@@ -118,7 +134,7 @@
 
   <section class="tools">
     <a class="tool g" href="games.html">
-      <div class="ic">🎮</div>
+      <div class="ic" data-icon="gamepad-2"></div>
       <h2>Game Index</h2>
       <div class="cnt" data-line="games">METACRITIC &amp; IGN</div>
       <ul>
@@ -130,7 +146,7 @@
     </a>
 
     <a class="tool b" href="books.html">
-      <div class="ic">📚</div>
+      <div class="ic" data-icon="book-open"></div>
       <h2>Book Index</h2>
       <div class="cnt" data-line="books">GOODREADS RATINGS</div>
       <ul>
@@ -142,7 +158,7 @@
     </a>
 
     <a class="tool w" href="vocab.html">
-      <div class="ic">📖</div>
+      <div class="ic" data-icon="notebook-pen"></div>
       <h2>Lexicon Vault</h2>
       <div class="cnt">YOUR PERSONAL WORD COLLECTION</div>
       <ul>
@@ -157,30 +173,52 @@
   <section class="sec">
     <div class="sech"><h3>Jump straight in</h3></div>
     <div class="jumps">
-      <a class="jump" href="games.html#minmc=90&sort=mc-desc"><span class="e">🏆</span> Best games ever (90+)</a>
-      <a class="jump" href="games.html#yrmin=2025&sort=year-desc"><span class="e">🆕</span> Newest game releases</a>
-      <a class="jump" href="games.html#g=Horror%20%2F%20Survival&sort=mc-desc"><span class="e">👻</span> Top horror games</a>
-      <a class="jump" href="books.html#minrate=4.3&sort=rate-desc"><span class="e">⭐</span> Highest-rated books</a>
-      <a class="jump" href="books.html#g=Science%20Fiction&sort=rate-desc"><span class="e">🚀</span> Best sci-fi reads</a>
-      <a class="jump" href="books.html#sort=pop-desc"><span class="e">🔥</span> What everyone's reading</a>
-      <a class="jump" href="vocab.html"><span class="e">✨</span> Build a word list</a>
+      <a class="jump" href="games.html#minmc=90&sort=mc-desc"><span class="e" data-icon="trophy"></span> Best games ever (90+)</a>
+      <a class="jump" href="games.html#yrmin=2025&sort=year-desc"><span class="e" data-icon="clock"></span> Newest game releases</a>
+      <a class="jump" href="games.html#g=Horror%20%2F%20Survival&sort=mc-desc"><span class="e" data-icon="ghost"></span> Top horror games</a>
+      <a class="jump" href="books.html#minrate=4.3&sort=rate-desc"><span class="e" data-icon="star"></span> Highest-rated books</a>
+      <a class="jump" href="books.html#g=Science%20Fiction&sort=rate-desc"><span class="e" data-icon="rocket"></span> Best sci-fi reads</a>
+      <a class="jump" href="books.html#sort=pop-desc"><span class="e" data-icon="flame"></span> What everyone's reading</a>
+      <a class="jump" href="vocab.html"><span class="e" data-icon="sparkles"></span> Build a word list</a>
     </div>
   </section>
 
   <section class="sec">
     <div class="sech"><h3>Built to be pleasant</h3></div>
     <div class="feats">
-      <div class="feat"><div class="fi">🔗</div><h4>Shareable views</h4><p>Send a link that reopens your exact filters.</p></div>
-      <div class="feat"><div class="fi">⌨️</div><h4>Keyboard first</h4><p><b>/</b> search, <b>G</b>/<b>L</b> layout, <b>R</b> random, <b>?</b> all.</p></div>
-      <div class="feat"><div class="fi">🎲</div><h4>Can't decide?</h4><p>Surprise picks something from your filters.</p></div>
-      <div class="feat"><div class="fi">⭐</div><h4>Save favourites</h4><p>Star anything. No account needed.</p></div>
-      <div class="feat"><div class="fi">📱</div><h4>Works everywhere</h4><p>Phone, tablet or desktop — lazy-loaded and smooth.</p></div>
-      <div class="feat"><div class="fi">🔒</div><h4>Private by default</h4><p>Nothing is tracked, uploaded, or leaves your device.</p></div>
+      <div class="feat"><div class="fi" data-icon="link-2"></div><h4>Shareable views</h4><p>Send a link that reopens your exact filters.</p></div>
+      <div class="feat"><div class="fi" data-icon="keyboard"></div><h4>Keyboard first</h4><p><b>/</b> search, <b>G</b>/<b>L</b> layout, <b>R</b> random, <b>?</b> all.</p></div>
+      <div class="feat"><div class="fi" data-icon="dice-5"></div><h4>Can't decide?</h4><p>Surprise picks something from your filters.</p></div>
+      <div class="feat"><div class="fi" data-icon="star"></div><h4>Save favourites</h4><p>Star anything. No account needed.</p></div>
+      <div class="feat"><div class="fi" data-icon="smartphone"></div><h4>Works everywhere</h4><p>Phone, tablet or desktop — lazy-loaded and smooth.</p></div>
+      <div class="feat"><div class="fi" data-icon="shield-check"></div><h4>Private by default</h4><p>Nothing is tracked, uploaded, or leaves your device.</p></div>
+    </div>
+  </section>
+
+
+  <section class="sec">
+    <div class="sech"><h3>How it works</h3></div>
+    <div class="steps">
+      <div class="step">
+        <div class="n">1</div>
+        <h4><span data-icon="globe"></span> Gather</h4>
+        <p>We sweep public sources for notable titles across <b>every genre, era and niche</b> — blockbusters and deep cuts alike.</p>
+      </div>
+      <div class="step">
+        <div class="n">2</div>
+        <h4><span data-icon="star"></span> Score</h4>
+        <p>Each entry gets its critic rating: <b>Metacritic and IGN</b> for games, <b>Goodreads</b> ratings and vote counts for books.</p>
+      </div>
+      <div class="step">
+        <div class="n">3</div>
+        <h4><span data-icon="check-check"></span> Verify &amp; merge</h4>
+        <p>Top scores are checked <b>against Metacritic directly</b> and earn a ✓. Duplicates merge instead of piling up.</p>
+      </div>
     </div>
   </section>
 
   <div class="note">
-    <h4>📋 About the data — honestly</h4>
+    <h4><span data-icon="shield-check"></span> About the data — honestly</h4>
     <p>Catalogues were compiled with AI assistance from public sources. Scores carrying a <b>✓</b> were verified against Metacritic; the rest, including IGN and Goodreads figures, are close approximations. A discovery tool, not a citation source. Cover art © its respective publishers.</p>
   </div>
 

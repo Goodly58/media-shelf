@@ -178,6 +178,12 @@
     .grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:18px 14px}
     .mtop{flex-direction:column} .mcover{width:120px;flex:none}
   }
+  .ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:0 0 auto}
+  [data-icon]{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+  .seg button{display:inline-flex;align-items:center;justify-content:center}
+  .seg button .ic{width:16px;height:16px}
+  .logo .ic{width:24px;height:24px}
+  .empty .big .ic{width:40px;height:40px;opacity:.7}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -186,7 +192,7 @@
   <div class="wrap">
     <div class="brandrow">
       <div class="brand">
-        <div class="logo">📚</div>
+        <div class="logo" data-icon="book-open"></div>
         <div>
           <h1>BOOK <b>INDEX</b></h1>
           <div class="tagline">A curated library — ranked by Goodreads ratings &amp; reader popularity</div>
@@ -230,11 +236,11 @@
         </div>
       </div>
       <div class="seg" title="View mode">
-        <button id="gridBtn" class="on">▦</button><button id="listBtn">☰</button>
+        <button id="gridBtn" class="on" data-icon="layout-grid"></button><button id="listBtn" data-icon="list"></button>
       </div>
-      <button class="btn" id="surpriseBtn" title="Random highly-rated pick">🎲 Surprise</button>
-      <button class="btn" id="favBtn" title="Show favorites only">★ Shelf</button>
-      <button class="btn" id="resetBtn" title="Clear filters">⟲ Reset</button>
+      <button class="btn" id="surpriseBtn" title="Random highly-rated pick"><span data-icon="dice-5"></span> Surprise</button>
+      <button class="btn" id="favBtn" title="Show favorites only"><span data-icon="star"></span> Shelf</button>
+      <button class="btn" id="resetBtn" title="Clear filters"><span data-icon="rotate-ccw"></span> Reset</button>
     </div>
     <div class="chips" id="chips"></div>
   </div>
@@ -250,7 +256,7 @@
   <div class="grid" id="grid"></div>
   <div id="sentinel"></div>
   <div class="loadmore" id="loadmore"></div>
-  <div class="empty" id="empty"><div class="big">📖</div>No books match your filters.<br><span style="font-size:13px">Try widening the year range or lowering the minimum rating.</span></div>
+  <div class="empty" id="empty"><div class="big" data-icon="search"></div>No books match your filters.<br><span style="font-size:13px">Try widening the year range or lowering the minimum rating.</span></div>
 </div>
 
 <footer>

@@ -67,6 +67,14 @@
 .sh-close{margin-top:18px;width:100%;cursor:pointer;font-family:inherit;font-size:14px;font-weight:700;
   color:#0a1016;background:linear-gradient(135deg,#4f8cff,#8b5cff);border:0;border-radius:11px;padding:12px}
 
+/* ---------- inline icons ---------- */
+.ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:0 0 auto}
+[data-icon]{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+.sitenav .ic{width:16px;height:16px}
+.sn-home .ic{width:17px;height:17px}
+.sn-links a{display:inline-flex;align-items:center;gap:7px}
+.sn-btn{display:inline-flex;align-items:center;gap:7px}
+
 /* ---------- account chip ---------- */
 .sn-acct{
   display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-family:inherit;font-size:13px;font-weight:700;

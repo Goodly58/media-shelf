@@ -204,6 +204,13 @@
     h1{font-size:21px} .stat{min-width:78px;padding:9px 12px} .stat .v{font-size:17px}
     .mbody{padding:6px 18px 22px} .mtitle{font-size:22px}
   }
+  .ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:0 0 auto}
+  [data-icon]{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+  .seg button{display:inline-flex;align-items:center;justify-content:center}
+  .seg button .ic{width:16px;height:16px}
+  .logo .ic{width:24px;height:24px}
+  .empty .big .ic{width:40px;height:40px;opacity:.7}
+  .uscore .ic{width:12px;height:12px}
 </style>
 <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -213,7 +220,7 @@
     <div class="brandrow">
       <div>
         <div class="brand">
-          <div class="logo">🎮</div>
+          <div class="logo" data-icon="gamepad-2"></div>
           <div>
             <h1>GAME <b>INDEX</b></h1>
             <div class="tagline">Ranked by Metacritic &amp; IGN — filter, sort and find your next game.</div>
@@ -261,12 +268,12 @@
         </div>
       </div>
       <div class="seg" title="View mode">
-        <button id="gridBtn" class="on" aria-label="Grid view">▦</button>
-        <button id="listBtn" aria-label="List view">☰</button>
+        <button id="gridBtn" class="on" aria-label="Grid view" data-icon="layout-grid"></button>
+        <button id="listBtn" aria-label="List view" data-icon="list"></button>
       </div>
-      <button class="btn" id="surpriseBtn" title="Random highly-rated pick">🎲 Surprise</button>
-      <button class="btn" id="favBtn" title="Show favorites only">★ Favorites</button>
-      <button class="btn" id="resetBtn" title="Clear filters">⟲ Reset</button>
+      <button class="btn" id="surpriseBtn" title="Random highly-rated pick"><span data-icon="dice-5"></span> Surprise</button>
+      <button class="btn" id="favBtn" title="Show favorites only"><span data-icon="star"></span> Favourites</button>
+      <button class="btn" id="resetBtn" title="Clear filters"><span data-icon="rotate-ccw"></span> Reset</button>
     </div>
     <div class="chips" id="chips"></div>
   </div>
@@ -282,7 +289,7 @@
   <div class="grid" id="grid"></div>
   <div id="sentinel"></div>
   <div class="loadmore" id="loadmore"></div>
-  <div class="empty" id="empty"><div class="big">🔍</div>No games match your filters.<br><span style="font-size:13px">Try widening the year range or lowering the minimum score.</span></div>
+  <div class="empty" id="empty"><div class="big" data-icon="search"></div>No games match your filters.<br><span style="font-size:13px">Try widening the year range or lowering the minimum score.</span></div>
 </div>
 
 <footer>
@@ -393,7 +400,7 @@ function card(g){
        <div class="ph">${g.title}</div>`
     : `<div class="ph" style="display:flex">${g.title}</div>`;
   const ign = g.ign!=null ? `<span class="ign">IGN ${(+g.ign).toFixed(1)}</span>` : '';
-  const us = g.userScore!=null ? `<span class="uscore">👤 ${(+g.userScore).toFixed(1)}</span>` : '';
+  const us = g.userScore!=null ? `<span class="uscore">${window.Shelf?window.Shelf.icon('user'):''} ${(+g.userScore).toFixed(1)}</span>` : '';
   const vf = g.verified ? `<div class="verified">✓ VERIFIED</div>` : '';
   el.innerHTML=`
     <div class="cover">
@@ -441,6 +448,7 @@ function render(){
   $('#activeFilters').innerHTML = af.length?`<span style="color:var(--mut2)">filters:</span> ${af.map(x=>`<span class="pill" style="padding:3px 9px;font-size:12px">${x}</span>`).join(' ')}`:'';
 }
 new IntersectionObserver(es=>{ if(es[0].isIntersecting && rendered<currentList.length) renderBatch(); },{rootMargin:'700px'}).observe($('#sentinel'));
+function reIcon(){ if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydrateIcons(); }
 
 /* ---------- modal ---------- */
 function openModal(g){

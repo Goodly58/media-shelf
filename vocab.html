@@ -190,6 +190,13 @@
   footer{border-top:1px solid var(--line);color:var(--mut2);font-size:12px;padding:20px 0 44px;line-height:1.6}
   footer b{color:var(--mut)}
   @media(max-width:560px){.term{font-size:20px}.face .fterm{font-size:27px}.card3d{height:300px}.ownerbtn{margin-left:0}}
+  .ic{width:1em;height:1em;display:inline-block;vertical-align:-.14em;flex:0 0 auto}
+  [data-icon]{display:inline-flex;align-items:center;justify-content:center;line-height:1}
+  .logo .ic{width:24px;height:24px}
+  .vtab{gap:7px}
+  .empty .big .ic{width:42px;height:42px;opacity:.7}
+  .note .ic{width:13px;height:13px;opacity:.8}
+  .banner .bi .ic{width:17px;height:17px}
 </style>
 </head>
 <body data-page="vocab">
@@ -197,7 +204,7 @@
   <div class="wrap">
     <div class="brandrow">
       <div class="brand">
-        <div class="logo">📖</div>
+        <div class="logo" data-icon="notebook-pen"></div>
         <div>
           <h1>Lexicon <b>Vault</b></h1>
           <div class="tagline">Type a word — the definition arrives automatically and stays in your collection.</div>
@@ -208,10 +215,10 @@
 
     <div class="vaultbar">
       <div class="vtabs">
-        <button class="vtab on" id="tabMine">🗃️ My Vault <span class="cnt" id="cntMine">0</span></button>
-        <button class="vtab" id="tabCur">✨ Curator's Picks <span class="cnt" id="cntCur">0</span></button>
+        <button class="vtab on" id="tabMine"><span data-icon="archive"></span> My Vault <span class="cnt" id="cntMine">0</span></button>
+        <button class="vtab" id="tabCur"><span data-icon="sparkles"></span> Curator's Picks <span class="cnt" id="cntCur">0</span></button>
       </div>
-      <button class="ownerbtn" id="ownerBtn" title="Curator sign-in">🔒 Curator</button>
+      <button class="ownerbtn" id="ownerBtn" title="Curator sign-in"><span data-icon="lock"></span> <span>Curator</span></button>
     </div>
 
     <div class="banner info" id="banner"></div>
@@ -239,9 +246,9 @@
       <option value="status">By status</option>
     </select>
     <select id="posFilter"><option value="">All parts of speech</option></select>
-    <button class="btn accent" id="studyBtn">🎴 Study</button>
-    <button class="btn" id="exportBtn">⤓ Export</button>
-    <button class="btn" id="importBtn">⤒ Import</button>
+    <button class="btn accent" id="studyBtn"><span data-icon="graduation-cap"></span> Study</button>
+    <button class="btn" id="exportBtn"><span data-icon="download"></span> Export</button>
+    <button class="btn" id="importBtn"><span data-icon="upload"></span> Import</button>
     <input type="file" id="importFile" accept="application/json" style="display:none">
   </div>
   <div class="chips" id="chips"></div>
@@ -321,7 +328,7 @@ function paintOwner(){
   const b=$('#ownerBtn'); if(!b) return;
   const on=ownerActive();
   b.classList.toggle('on',on);
-  b.textContent=on?'🔓 Curator mode':'🔒 Curator';
+  b.innerHTML=(window.Shelf?window.Shelf.icon(on?'unlock':'lock'):'')+' <span>'+(on?'Curator mode':'Curator')+'</span>';
   b.title=on?'Curator mode active — click for profile options':'Sign in to edit the shared collection';
 }
 function openOwner(){ if(window.Shelf) window.Shelf.openCurator(); else toast('Sign-in unavailable','err'); }
@@ -398,10 +405,10 @@ function buildBanner(){
     b.style.display='none';                       // explained once, in the welcome dialog
   } else if(ownerActive()){
     b.style.display=''; b.className='banner owner';
-    b.innerHTML='<span class="bi">🔓</span><div><b>Curator mode.</b> Edits here change the shared starter collection. Session ends an hour after sign-in.</div>';
+    b.innerHTML='<span class="bi">'+(window.Shelf?window.Shelf.icon('unlock'):'')+'</span><div><b>Curator mode.</b> Edits here change the shared starter collection. Session ends an hour after sign-in.</div>';
   } else {
     b.style.display=''; b.className='banner info';
-    b.innerHTML='<span class="bi">✨</span><div><b>Read-only starter set.</b> Hit <b>＋Copy</b> on any word to add it to your own vault.</div>';
+    b.innerHTML='<span class="bi">'+(window.Shelf?window.Shelf.icon('sparkles'):'')+'</span><div><b>Read-only starter set.</b> Hit <b>＋Copy</b> on any word to add it to your own vault.</div>';
   }
   $('#addbar').style.display = canEdit()?'flex':'none';
 }
@@ -411,11 +418,11 @@ const INTRO_KEY='lex_seen_intro';
 function maybeShowIntro(){
   if(localStorage.getItem(INTRO_KEY)) return;
   $('#modal').innerHTML=`
-    <h3 class="mh">Welcome to your vault 📖</h3>
+    <h3 class="mh">Welcome to your vault</h3>
     <p class="msub">Type any word and its definition, pronunciation and synonyms are fetched for you.</p>
     <p class="msub" style="margin-bottom:20px"><b>Everything stays in this browser.</b> Nobody else can see or change your words — and nothing is uploaded. New here? <b>Curator's Picks</b> has a starter set you can copy from.</p>
     <div class="mactions" style="justify-content:stretch">
-      <button class="btn" id="introPicks" style="flex:1;justify-content:center">✨ See Curator's Picks</button>
+      <button class="btn" id="introPicks" style="flex:1;justify-content:center"><span data-icon="sparkles"></span> See Curator's Picks</button>
       <button class="btn accent" id="introGo" style="flex:1;justify-content:center">Start adding words</button>
     </div>`;
   showOverlay();
@@ -465,22 +472,22 @@ function wordCard(w){
   const syn=(w.synonyms||[]).length?`<div class="syn">${w.synonyms.map(s=>`<span class="s" data-syn="${esc(s)}">${esc(s)}</span>`).join('')}</div>`:'';
   const tags=(w.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('');
   const src=w.source?`<span class="src">from <b>${esc(w.source)}</b></span>`:'';
-  const note=w.note?`<div class="note">📝 ${esc(w.note)}</div>`:'';
+  const note=w.note?`<div class="note">${window.Shelf?window.Shelf.icon('pencil'):''} ${esc(w.note)}</div>`:'';
   const date=new Date(w.dateAdded).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
   const actions = editable
     ? `<select class="statusSel" title="Status">
-         <option value="new"${w.status==='new'?' selected':''}>🔵 New</option>
-         <option value="learning"${w.status==='learning'?' selected':''}>🟡 Learning</option>
-         <option value="mastered"${w.status==='mastered'?' selected':''}>🟢 Mastered</option></select>
+         <option value="new"${w.status==='new'?' selected':''}>New</option>
+         <option value="learning"${w.status==='learning'?' selected':''}>Learning</option>
+         <option value="mastered"${w.status==='mastered'?' selected':''}>Mastered</option></select>
        <span class="iconbtn fav ${w.favorite?'on':''}" title="Favourite">${w.favorite?'★':'☆'}</span>
-       <span class="iconbtn edit" title="Edit">✎</span>
-       <span class="iconbtn del" title="Delete">🗑</span>`
-    : `<span class="iconbtn copy" title="Copy to My Vault">＋ Copy</span>`;
+       <span class="iconbtn edit" title="Edit" data-icon="pencil"></span>
+       <span class="iconbtn del" title="Delete" data-icon="trash-2"></span>`
+    : `<span class="iconbtn copy" title="Copy to My Vault"><span data-icon="plus"></span> Copy</span>`;
   el.innerHTML=`
     <div class="wtop">
       <span class="term">${esc(w.word)}</span>
       ${w.phonetic?`<span class="phon">${esc(w.phonetic)}</span>`:''}
-      <span class="spk" title="Pronounce">🔊</span>
+      <span class="spk" title="Pronounce" data-icon="volume-2"></span>
       <span class="spacer"></span>
       <div class="wact">${actions}</div>
     </div>
@@ -508,17 +515,18 @@ function render(){
   if(total===0){
     emp.style.display='block';
     emp.innerHTML=view==='mine'
-      ? `<div class="big">📚</div><div class="eh">Your vault is empty</div>
+      ? `<div class="big" data-icon="notebook-pen"></div><div class="eh">Your vault is empty</div>
          <div class="es">Add the first word you're curious about above — the definition, pronunciation and synonyms are fetched for you.</div>
-         <button class="btn accent" id="goCur">✨ Browse Curator's Picks</button>`
-      : `<div class="big">✨</div><div class="eh">No curated words</div><div class="es">The starter collection is empty.</div>`;
+         <button class="btn accent" id="goCur"><span data-icon="sparkles"></span> Browse Curator's Picks</button>`
+      : `<div class="big" data-icon="sparkles"></div><div class="eh">No curated words</div><div class="es">The starter collection is empty.</div>`;
     const g=$('#goCur'); if(g) g.onclick=()=>switchView('curated');
   } else if(arr.length===0){
     emp.style.display='block';
-    emp.innerHTML=`<div class="big">🔍</div><div class="eh">No matches</div><div class="es">Nothing fits those filters. Try clearing the search or status chips.</div>`;
+    emp.innerHTML=`<div class="big" data-icon="search"></div><div class="eh">No matches</div><div class="es">Nothing fits those filters. Try clearing the search or status chips.</div>`;
   } else emp.style.display='none';
 }
-function renderAll(){ buildStats(); buildBanner(); buildChips(); render(); paintOwner(); }
+function renderAll(){ buildStats(); buildBanner(); buildChips(); render(); paintOwner();
+  if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydrateIcons(); }
 
 function switchView(v){
   view=v; activeStatus=''; activeTag=''; $('#search').value='';
@@ -566,7 +574,7 @@ function openStudy(){
   function draw(){
     const w=deck[idx], d=(w.defs||[])[0]||{};
     $('#modal').innerHTML=`
-      <h3 class="mh" style="text-align:center">🎴 Study session</h3>
+      <h3 class="mh" style="text-align:center">Study session</h3>
       <div class="card3d" id="flashcard"><div class="inner" id="inner">
         <div class="face front"><div class="fterm">${esc(w.word)}</div>
           ${w.phonetic?`<div class="fphon">${esc(w.phonetic)}</div>`:''}
@@ -577,7 +585,7 @@ function openStudy(){
       </div></div>
       <div class="studybar">
         <button class="sbtn again" id="sAgain">↻ Still learning</button>
-        <button class="sbtn" id="sSpeak">🔊 Hear it</button>
+        <button class="sbtn" id="sSpeak">${window.Shelf?window.Shelf.icon('volume-2'):''} Hear it</button>
         <button class="sbtn know" id="sKnow">✓ I know it</button>
       </div>
       <div class="studyprog">Card ${idx+1} of ${deck.length} · ${known} known${writable?'':' · progress not saved for read-only picks'}</div>`;
@@ -591,7 +599,7 @@ function openStudy(){
     idx++;
     if(idx>=deck.length){
       renderAll();
-      $('#modal').innerHTML=`<h3 class="mh" style="text-align:center">🎉 Session complete</h3>
+      $('#modal').innerHTML=`<h3 class="mh" style="text-align:center">Session complete</h3>
         <p class="msub" style="text-align:center">You reviewed <b>${deck.length}</b> ${deck.length===1?'card':'cards'} and marked <b style="color:var(--mastered)">${known}</b> as known.</p>
         <div class="mactions" style="justify-content:center"><button class="btn" id="sClose">Done</button><button class="btn accent" id="sAgain2">Study again</button></div>`;
       $('#sClose').onclick=closeOverlay; $('#sAgain2').onclick=openStudy;
