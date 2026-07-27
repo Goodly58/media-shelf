@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
-<meta name="shelf-build" content="0738886323">
+<meta name="shelf-build" content="08619958c3">
 <title>Series Index — browse TV shows by Metacritic, IMDb & Rotten Tomatoes</title>
 <meta name="description" content="Browse notable TV series ranked by Metacritic, IMDb and Rotten Tomatoes. Filter by genre, year and score. Free, no sign-up.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📺</text></svg>">
@@ -363,13 +363,32 @@ async function wikiArt(x){
   pcache[key]=null; psave(); return null;
 }
 
+/* If the observer never delivers (hidden tab, prerender, no compositing), the
+   grid would show title cards forever. Kick off the first screenful anyway. */
+let artFallbackDone=false;
+function artFallback(){
+  if(artFallbackDone) return; artFallbackDone=true;
+  [...grid.querySelectorAll('.card')].slice(0,24).forEach(el=>{
+    if(el.__artStarted || !el.__item) return;
+    el.__artStarted=1;
+    penqueue(async ()=>{
+      const src=await wikiArt(el.__item);
+      if(!src||!el.isConnected) return;
+      const img=el.querySelector('img.lazyart'); if(!img) return;
+      img.src=src; img.onload=()=>img.classList.add('ok');
+    });
+  });
+}
+setTimeout(artFallback, 2500);
+
 /* Resolve artwork for a card once it is close to the viewport. */
 const artObserver=new IntersectionObserver(es=>{
   es.forEach(e=>{
     if(!e.isIntersecting) return;
     artObserver.unobserve(e.target);
     const el=e.target, x=el.__item;
-    if(!x) return;
+    if(!x || el.__artStarted) return;
+    el.__artStarted=1;
     penqueue(async ()=>{
       const src=await wikiArt(x);
       if(!src || !el.isConnected) return;

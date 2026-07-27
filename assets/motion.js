@@ -437,6 +437,16 @@
     }
     el.textContent = info.pre + fmtNum(0, info.dec, info.grouped) + info.suf;
     raf(frame);
+
+    /* Safety net. The tick starts by writing 0 and relies on rAF to count up,
+       but rAF is paused in a hidden or backgrounded tab — so a page opened in
+       a background tab (or in an environment that never composites) would sit
+       showing "0", which reads as real data rather than an unfinished
+       animation. A wall-clock timer, which keeps running regardless, snaps the
+       true value in if the animation has not finished on time. */
+    setTimeout(safe(function () {
+      if (el.classList.contains('sm-ticking')) stop(true);
+    }), TICK_MS + 1200);
   }
 
   function tickNumbers(root) {
