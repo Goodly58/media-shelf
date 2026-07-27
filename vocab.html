@@ -395,16 +395,33 @@ function buildStats(){
 function buildBanner(){
   const b=$('#banner');
   if(view==='mine'){
-    b.className='banner info';
-    b.innerHTML='<span class="bi">🗃️</span><div><b>This vault is yours alone.</b> Words you add are saved in this browser only — nobody else can see or change them. New here? Open <b>Curator\'s Picks</b> for a starter set you can copy from.</div>';
+    b.style.display='none';                       // explained once, in the welcome dialog
   } else if(ownerActive()){
-    b.className='banner owner';
-    b.innerHTML='<span class="bi">🔓</span><div><b>Curator mode active.</b> You\'re editing the shared starter collection. Use <b>Export</b> to save it, then commit the file to publish. Session ends in 1 hour.</div>';
+    b.style.display=''; b.className='banner owner';
+    b.innerHTML='<span class="bi">🔓</span><div><b>Curator mode.</b> Edits here change the shared starter collection. Session ends an hour after sign-in.</div>';
   } else {
-    b.className='banner info';
-    b.innerHTML='<span class="bi">✨</span><div><b>A starter collection, read-only.</b> Browse or study these, and hit <b>＋Copy</b> on any word to add it to your own vault. Only the curator can change this list.</div>';
+    b.style.display=''; b.className='banner info';
+    b.innerHTML='<span class="bi">✨</span><div><b>Read-only starter set.</b> Hit <b>＋Copy</b> on any word to add it to your own vault.</div>';
   }
   $('#addbar').style.display = canEdit()?'flex':'none';
+}
+
+/* Shown once per browser, never again. */
+const INTRO_KEY='lex_seen_intro';
+function maybeShowIntro(){
+  if(localStorage.getItem(INTRO_KEY)) return;
+  $('#modal').innerHTML=`
+    <h3 class="mh">Welcome to your vault 📖</h3>
+    <p class="msub">Type any word and its definition, pronunciation and synonyms are fetched for you.</p>
+    <p class="msub" style="margin-bottom:20px"><b>Everything stays in this browser.</b> Nobody else can see or change your words — and nothing is uploaded. New here? <b>Curator's Picks</b> has a starter set you can copy from.</p>
+    <div class="mactions" style="justify-content:stretch">
+      <button class="btn" id="introPicks" style="flex:1;justify-content:center">✨ See Curator's Picks</button>
+      <button class="btn accent" id="introGo" style="flex:1;justify-content:center">Start adding words</button>
+    </div>`;
+  showOverlay();
+  const done=()=>{ localStorage.setItem(INTRO_KEY,'1'); closeOverlay(); };
+  $('#introGo').onclick=()=>{ done(); $('#wordIn').focus(); };
+  $('#introPicks').onclick=()=>{ done(); switchView('curated'); };
 }
 function buildChips(){
   const list=collection(), tags={};
@@ -626,6 +643,7 @@ $('#importFile').onchange=e=>{ if(e.target.files[0]) importJSON(e.target.files[0
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeOverlay(); });
 
 renderAll();
+maybeShowIntro();
 if(window.Shelf) window.Shelf.onChange(renderAll);
 else document.addEventListener('DOMContentLoaded',()=>{ if(window.Shelf) window.Shelf.onChange(renderAll); });
 </script>
