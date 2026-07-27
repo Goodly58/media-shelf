@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="4783fc750f">
+<meta name="shelf-build" content="b2593d8592">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 
 <title>Shelf — a fast, filterable catalogue of games, books and words</title>
@@ -248,14 +248,18 @@ html[data-stats="off"] .num{opacity:.6}
 /* Blocks rather than <br> so the three-line break is guaranteed. */
 .hero h1 .ln{display:inline}
 .hero h1 em{font-style:italic;font-weight:600;letter-spacing:-.02em}
-.grad{
+/* NOTE: this used to be called .grad, which collides with the cover-image
+   scrim class of the same name on games/books — polish.css styles that one
+   unscoped, so it replaced this gradient with a dark overlay and reset
+   background-clip, rendering the line invisible. Hence the distinct name. */
+.hero-grad{
   background:linear-gradient(97deg,var(--games) 0%,var(--words2) 46%,var(--books) 100%);
   -webkit-background-clip:text; background-clip:text;
   color:transparent; -webkit-text-fill-color:transparent;
 }
 /* If background-clip:text is unavailable the text must not vanish. */
 @supports not ((-webkit-background-clip:text) or (background-clip:text)){
-  .grad{color:var(--acc);-webkit-text-fill-color:currentColor;background:none}
+  .hero-grad{color:var(--acc);-webkit-text-fill-color:currentColor;background:none}
 }
 
 .lede{
@@ -595,7 +599,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
 
       <h1>
         <span class="ln">Everything worth</span>
-        <span class="ln"><span class="grad">playing, reading</span></span>
+        <span class="ln"><span class="hero-grad">playing, reading</span></span>
         <span class="ln">and <em>remembering</em>.</span>
       </h1>
 
