@@ -232,6 +232,22 @@
       el.classList.add('sm-rv');    // cancels the CSS failsafe; JS owns it now
       io.observe(el);
     });
+
+    /* Safety net. Adding .sm-rv above cancels the CSS failsafe animation, so
+       from this point the ONLY thing that can un-hide these elements is the
+       observer. In a few real situations the observer never delivers an entry
+       — a background/prerendered tab, some embedded webviews, or a page that
+       is never composited — and the content would stay at opacity:0 forever.
+       Content must never be lost to a decorative effect, so after a short
+       grace period anything still unrevealed is shown unconditionally. */
+    setTimeout(safe(function () {
+      els.forEach(function (el) {
+        if (!el.classList.contains('sm-rv-in') && !el.classList.contains('sm-rv-done')) {
+          try { io.unobserve(el); } catch (_) {}
+          finishReveal(el);           // straight to visible, no animation
+        }
+      });
+    }), 1600);
   }
 
   /* ==========================================================================
