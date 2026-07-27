@@ -17,7 +17,7 @@
      version: it is appended to the worker URL, which (a) forces the browser to
      see a byte-different registration and (b) is forwarded by the root shim to
      assets/sw.js, where it names the cache. */
-  var SW_VERSION = '457c9e76d5';
+  var SW_VERSION = 'd8c5413545';
 
   var LS_DISMISS = 'shelf.pwa.install-dismissed';
   var UPDATE_CHECK_MS = 30 * 60 * 1000;   // re-check for a new worker at most this often

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="shelf-build" content="d8c5413545">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <title>Lexicon Vault — save every word worth keeping</title>
 <meta name="description" content="Type a word, get the definition automatically, and build a personal vocabulary collection with tags, study flashcards and export. Free, private, no sign-up.">
@@ -205,6 +206,16 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Shelf">
 <link rel="apple-touch-icon" href="assets/icon.svg">
+<script>/* SW self-heal: the page is always fresh, so let it repair a stale worker. */
+(function(){if(!('serviceWorker'in navigator))return;var el=document.querySelector('meta[name="shelf-build"]');var want=el&&el.content;if(!want)return;
+navigator.serviceWorker.getRegistrations().then(function(rs){if(!rs.length)return;var sw=rs[0].active||rs[0].waiting||rs[0].installing;if(!sw)return;
+var got=(sw.scriptURL.match(/[?&]v=([^&]+)/)||[])[1];if(got===want)return;
+var k='shelf_heal_'+want;if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1');
+Promise.all(rs.map(function(r){return r.unregister();})).then(function(){
+return (window.caches?caches.keys():Promise.resolve([])).then(function(ns){
+return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;}).map(function(n){return caches.delete(n);}));});
+}).then(function(){location.reload();}).catch(function(){});});})();
+</script>
 </head>
 <body data-page="vocab">
 <header>
