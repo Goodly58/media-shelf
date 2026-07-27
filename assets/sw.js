@@ -66,6 +66,8 @@ var SHELL = [
   'games.html',
   'books.html',
   'vocab.html',
+  'movies.html',
+  'shows.html',
   'manifest.webmanifest',
   /* Shared chrome */
   'assets/site.css',
@@ -100,7 +102,9 @@ var IMG_HOSTS = [
   'shared.cloudflare.steamstatic.com',
   'cdn.akamai.steamstatic.com',
   'shared.akamai.steamstatic.com',
-  'covers.openlibrary.org'
+  'covers.openlibrary.org',
+  'upload.wikimedia.org',
+  'image.tmdb.org'
 ];
 
 /* Web fonts — cache-first, they are immutable and tiny in number. */

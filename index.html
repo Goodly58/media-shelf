@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="b2593d8592">
+<meta name="shelf-build" content="0738886323">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 
 <title>Shelf — a fast, filterable catalogue of games, books and words</title>
@@ -327,6 +327,8 @@ html[data-stats="off"] .num{opacity:.6}
 /* per-shelf accent, consumed by everything inside the card */
 .tool.g{--c1:var(--games);--c2:var(--games2);--tint:rgba(79,140,255,.16);--edge:rgba(79,140,255,.5)}
 .tool.b{--c1:var(--books);--c2:var(--books2);--tint:rgba(232,184,102,.14);--edge:rgba(232,184,102,.5)}
+.tool.m{--c1:#f05a5a;--c2:#f0a13c;--tint:rgba(240,90,90,.13)}
+.tool.s{--c1:#6f7bff;--c2:#22c1a6;--tint:rgba(111,123,255,.13)}
 .tool.w{--c1:var(--words);--c2:var(--words2);--tint:rgba(34,211,238,.14);--edge:rgba(34,211,238,.5)}
 .tool::before{
   content:''; position:absolute; inset:0 0 auto 0; height:2px;
@@ -673,6 +675,38 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
           <span class="go">Browse books <span class="ar" data-icon="arrow-right"></span></span>
         </a>
 
+        <a class="tool m" href="movies.html">
+          <span class="tile" aria-hidden="true"><span data-icon="clapperboard"></span></span>
+          <h3>Film Index</h3>
+          <div class="facts">
+            <span class="fact"><b class="num" data-stat="movies">—</b> films</span>
+            <span class="fact"><b class="num" data-stat="moviesGenres">—</b> genres</span>
+          </div>
+          <p class="lead">Cinema worth your evening, ranked by the critics who watched it.</p>
+          <ul>
+            <li>Metacritic, IMDb and Rotten Tomatoes side by side</li>
+            <li>Filter by genre, decade and minimum score</li>
+            <li>Posters, runtimes and links straight out</li>
+          </ul>
+          <span class="go">Browse films <span class="ar" data-icon="arrow-right"></span></span>
+        </a>
+
+        <a class="tool s" href="shows.html">
+          <span class="tile" aria-hidden="true"><span data-icon="tv"></span></span>
+          <h3>Series Index</h3>
+          <div class="facts">
+            <span class="fact"><b class="num" data-stat="shows">—</b> series</span>
+            <span class="fact"><b class="num" data-stat="showsGenres">—</b> genres</span>
+          </div>
+          <p class="lead">Your next binge, from prestige drama to comfort sitcom.</p>
+          <ul>
+            <li>Critic and audience scores for every entry</li>
+            <li>Season counts, creators and episode runtimes</li>
+            <li>Sort by best overall, IMDb or newest</li>
+          </ul>
+          <span class="go">Browse series <span class="ar" data-icon="arrow-right"></span></span>
+        </a>
+
         <a class="tool w" href="vocab.html">
           <span class="tile" aria-hidden="true"><span data-icon="notebook-pen"></span></span>
           <h3>Lexicon Vault</h3>
@@ -711,6 +745,8 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
         <a class="jump j-g" href="games.html#g=Strategy%20%2F%204X%20%2F%20RTS&amp;sort=mc-desc"><span data-icon="layers"></span> Strategy &amp; 4X</a>
         <a class="jump j-b" href="books.html#minrate=4.5&amp;sort=rate-desc"><span data-icon="star"></span> Highest-rated books</a>
         <a class="jump j-b" href="books.html#sort=pop-desc"><span data-icon="flame"></span> Most-read books</a>
+      <a class="jump j-m" href="movies.html#minmc=90&sort=best-desc"><span class="e" data-icon="clapperboard"></span> Best films ever</a>
+      <a class="jump j-s" href="shows.html#minmc=85&sort=best-desc"><span class="e" data-icon="tv"></span> Top-rated series</a>
         <a class="jump j-b" href="books.html#g=Science%20Fiction&amp;sort=rate-desc"><span data-icon="rocket"></span> Science fiction</a>
         <a class="jump j-b" href="books.html#g=Classics&amp;sort=year-asc"><span data-icon="library"></span> Oldest classics first</a>
         <a class="jump j-w" href="vocab.html"><span data-icon="sparkles"></span> Start a word list</a>

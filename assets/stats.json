@@ -1,4 +1,12 @@
 {
+  "movies": 778,
+  "moviesFrom": 1922,
+  "moviesTo": 2025,
+  "moviesGenres": 12,
+  "shows": 688,
+  "showsFrom": 1959,
+  "showsTo": 2025,
+  "showsGenres": 12,
   "games": 2164,
   "gamesFrom": 2010,
   "gamesTo": 2026,

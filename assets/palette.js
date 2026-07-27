@@ -95,6 +95,14 @@
     try { if (typeof BOOKS !== 'undefined' && BOOKS && BOOKS.length) return BOOKS; } catch (e) {}
     return (window.BOOKS && window.BOOKS.length) ? window.BOOKS : [];
   }
+  function getMovies() {
+    try { if (typeof MOVIES !== 'undefined' && MOVIES && MOVIES.length) return MOVIES; } catch (e) {}
+    return (window.MOVIES && window.MOVIES.length) ? window.MOVIES : [];
+  }
+  function getShows() {
+    try { if (typeof SHOWS !== 'undefined' && SHOWS && SHOWS.length) return SHOWS; } catch (e) {}
+    return (window.SHOWS && window.SHOWS.length) ? window.SHOWS : [];
+  }
   function getOpenModal() {
     try { if (typeof openModal === 'function') return openModal; } catch (e) {}
     return (typeof window.openModal === 'function') ? window.openModal : null;
@@ -319,7 +327,7 @@
   }
 
   function buildIndex() {
-    var games = [], books = [], i, o, sub, item;
+    var games = [], books = [], movies = [], shows = [], i, o, sub, item;
 
     var G = getGames();
     for (i = 0; i < G.length; i++) {
@@ -351,7 +359,43 @@
       books.push(item);
     }
 
-    INDEX = { games: games, books: books };
+    /* Films and series carry three possible scores; rank on whichever exists so
+       a title with only an IMDb rating is still ordered sensibly. */
+    var best = function (o) {
+      return o.metacritic != null ? o.metacritic
+           : o.imdb != null ? Math.round(o.imdb * 10)
+           : o.rt != null ? o.rt : 0;
+    };
+    var M = getMovies();
+    for (i = 0; i < M.length; i++) {
+      o = M[i];
+      if (!o || !o.title) continue;
+      sub = [o.creator, o.genre, o.year].filter(Boolean).join(' · ');
+      item = mkDataItem(
+        'movie', String(o.title), sub, o,
+        Math.max(0, Math.min(1, best(o) / 100)),
+        (o.metacritic != null ? String(o.metacritic) : (o.imdb != null ? '★ ' + trimNum(+o.imdb) : '')),
+        'clapperboard', String(o.title) + '|' + (o.year == null ? '' : o.year)
+      );
+      item.mask = maskOf(item.hay);
+      movies.push(item);
+    }
+    var S = getShows();
+    for (i = 0; i < S.length; i++) {
+      o = S[i];
+      if (!o || !o.title) continue;
+      sub = [o.creator, o.genre, o.year].filter(Boolean).join(' · ');
+      item = mkDataItem(
+        'show', String(o.title), sub, o,
+        Math.max(0, Math.min(1, best(o) / 100)),
+        (o.metacritic != null ? String(o.metacritic) : (o.imdb != null ? '★ ' + trimNum(+o.imdb) : '')),
+        'tv', String(o.title) + '|' + (o.year == null ? '' : o.year)
+      );
+      item.mask = maskOf(item.hay);
+      shows.push(item);
+    }
+
+    INDEX = { games: games, books: books, movies: movies, shows: shows };
     return INDEX;
   }
   function ensureIndex() { return INDEX || buildIndex(); }
@@ -402,6 +446,8 @@
     { id: 'go-home',  href: 'index.html', label: 'Home',  page: 'home',  icon: 'library',       sub: 'Shelf overview',            kw: 'index start front' },
     { id: 'go-games', href: 'games.html', label: 'Games', page: 'games', icon: 'gamepad-2',     sub: 'Browse the game index',     kw: 'pc metacritic ign steam play' },
     { id: 'go-books', href: 'books.html', label: 'Books', page: 'books', icon: 'book-open',     sub: 'Browse the book shelf',     kw: 'read author goodreads library' },
+    { id: 'go-movies', href: 'movies.html', label: 'Films', page: 'movies', icon: 'clapperboard', sub: 'Browse the film index',    kw: 'movie cinema imdb rotten tomatoes watch' },
+    { id: 'go-shows', href: 'shows.html', label: 'Series', page: 'shows', icon: 'tv',            sub: 'Browse the series index',  kw: 'tv show television binge episodes' },
     { id: 'go-vocab', href: 'vocab.html', label: 'Words', page: 'vocab', icon: 'notebook-pen',  sub: 'Your vocabulary vault',     kw: 'vocabulary vocab dictionary study' }
   ];
 
@@ -568,6 +614,8 @@
     var targets = [
       { page: 'games', href: 'games.html', label: 'Games', has: function () { return getGames().length > 0; } },
       { page: 'books', href: 'books.html', label: 'Books', has: function () { return getBooks().length > 0; } },
+      { page: 'movies', href: 'movies.html', label: 'Films', has: function () { return getMovies().length > 0; } },
+      { page: 'shows', href: 'shows.html', label: 'Series', has: function () { return getShows().length > 0; } },
       { page: 'vocab', href: 'vocab.html', label: 'Words', has: function () { return PAGE === 'vocab'; } }
     ];
     targets.forEach(function (t) {
@@ -695,6 +743,8 @@
     pack('actions', 'Actions', A.actions, GROUP_CAP);
     pack('games', 'Games', idx.games, GROUP_CAP);
     pack('books', 'Books', idx.books, GROUP_CAP);
+    pack('movies', 'Films', idx.movies, GROUP_CAP);
+    pack('shows', 'Series', idx.shows, GROUP_CAP);
 
     /* Navigation = matched nav entries + always-on cross-page search */
     var navRanked = rank(A.nav, q, qm, GROUP_CAP);

@@ -18,6 +18,8 @@
   var PAGES = [
     { id: 'games', href: 'games.html', label: 'Games', icon: 'gamepad-2' },
     { id: 'books', href: 'books.html', label: 'Books', icon: 'book-open' },
+    { id: 'movies', href: 'movies.html', label: 'Films', icon: 'clapperboard' },
+    { id: 'shows', href: 'shows.html', label: 'Series', icon: 'tv' },
     { id: 'vocab', href: 'vocab.html', label: 'Words', icon: 'notebook-pen' }
   ];
   var page = document.body.getAttribute('data-page') || '';
