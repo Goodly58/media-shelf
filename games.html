@@ -367,9 +367,13 @@ function initSlider(){
 }
 
 /* ---------- filtering / sorting ---------- */
+/* Perf: the search haystack is built once per item instead of being re-lowercased
+   for every item on every keystroke, and the query is read once per render pass
+   rather than from the DOM inside the filter loop. */
+GAMES.forEach(g=>{ g._hay=(g.title+' '+(g.blurb||'')+' '+g.genre).toLowerCase(); });
+let _q='';
 function passes(g){
-  const q = $('#search').value.trim().toLowerCase();
-  if(q && !(norm(g.title).includes(q) || (g.blurb||'').toLowerCase().includes(q) || g.genre.toLowerCase().includes(q))) return false;
+  if(_q && !g._hay.includes(_q)) return false;
   if(g.metacritic < +$('#minmc').value) return false;
   if(g.year < +$('#yrmin').value || g.year > +$('#yrmax').value) return false;
   if(activeGenres.size && !activeGenres.has(g.genre)) return false;
@@ -432,6 +436,7 @@ function renderBatch(){
   if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydrateIcons(grid);
 }
 function render(){
+  _q=$('#search').value.trim().toLowerCase();
   currentList=sortGames(GAMES.filter(passes));
   grid.innerHTML=''; rendered=0; renderBatch();
   {const _p=$('#shown').parentElement;
@@ -489,7 +494,10 @@ function closeModal(){ $('#overlay').classList.remove('show'); document.body.sty
 $('#overlay').addEventListener('click',e=>{ if(e.target===$('#overlay')) closeModal(); });
 
 /* ---------- controls wiring ---------- */
-['#search','#sort','#minmc'].forEach(s=>{$(s).addEventListener('input',render);$(s).addEventListener('change',render);});
+let _t=null;
+const debouncedRender=()=>{ clearTimeout(_t); _t=setTimeout(render,110); };
+$('#search').addEventListener('input',debouncedRender);
+['#sort','#minmc'].forEach(s=>{$(s).addEventListener('input',render);$(s).addEventListener('change',render);});
 $('#gridBtn').onclick=()=>{grid.classList.remove('list');$('#gridBtn').classList.add('on');$('#listBtn').classList.remove('on');};
 $('#listBtn').onclick=()=>{grid.classList.add('list');$('#listBtn').classList.add('on');$('#gridBtn').classList.remove('on');};
 $('#favBtn').onclick=function(){favOnly=!favOnly;this.classList.toggle('on',favOnly);render();};

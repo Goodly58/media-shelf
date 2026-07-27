@@ -327,9 +327,11 @@ function initSlider(){
   a.addEventListener('input',upd);b.addEventListener('input',upd);upd.call(a);
 }
 
+/* Perf: see games.html — haystack precomputed once, query cached per render. */
+BOOKS.forEach(b=>{ b._hay=((b.title||'')+' '+(b.author||'')+' '+(b.blurb||'')+' '+(b.genre||'')).toLowerCase(); });
+let _q='';
 function passes(b){
-  const q=$('#search').value.trim().toLowerCase();
-  if(q && !((b.title||'').toLowerCase().includes(q) || (b.author||'').toLowerCase().includes(q) || (b.blurb||'').toLowerCase().includes(q))) return false;
+  if(_q && !b._hay.includes(_q)) return false;
   if(b.rating < +$('#minrate').value) return false;
   if(b.year < +$('#yrmin').value || b.year > +$('#yrmax').value) return false;
   if(activeGenres.size && !activeGenres.has(b.genre)) return false;
@@ -388,6 +390,7 @@ function renderBatch(){
   $('#loadmore').textContent = rendered<currentList.length ? `Showing ${rendered} of ${currentList.length} — scroll for more` : (currentList.length?`All ${currentList.length} shown`:'');
 }
 function render(){
+  _q=$('#search').value.trim().toLowerCase();
   currentList=sortBooks(BOOKS.filter(passes));
   grid.innerHTML='';rendered=0;renderBatch();
   {const _p=$('#shown').parentElement;
@@ -438,7 +441,10 @@ function openModal(b){
 function closeModal(){$('#overlay').classList.remove('show');document.body.style.overflow='';}
 $('#overlay').addEventListener('click',e=>{if(e.target===$('#overlay'))closeModal();});
 
-['#search','#sort','#minrate'].forEach(s=>{$(s).addEventListener('input',render);$(s).addEventListener('change',render);});
+let _t=null;
+const debouncedRender=()=>{ clearTimeout(_t); _t=setTimeout(render,110); };
+$('#search').addEventListener('input',debouncedRender);
+['#sort','#minrate'].forEach(s=>{$(s).addEventListener('input',render);$(s).addEventListener('change',render);});
 $('#gridBtn').onclick=()=>{grid.classList.remove('list');$('#gridBtn').classList.add('on');$('#listBtn').classList.remove('on');};
 $('#listBtn').onclick=()=>{grid.classList.add('list');$('#listBtn').classList.add('on');$('#gridBtn').classList.remove('on');};
 $('#favBtn').onclick=function(){favOnly=!favOnly;this.classList.toggle('on',favOnly);render();};
