@@ -328,7 +328,8 @@ function paintOwner(){
   const b=$('#ownerBtn'); if(!b) return;
   const on=ownerActive();
   b.classList.toggle('on',on);
-  b.innerHTML=(window.Shelf?window.Shelf.icon(on?'unlock':'lock'):'')+' <span>'+(on?'Curator mode':'Curator')+'</span>';
+  b.innerHTML='<span data-icon="'+(on?'unlock':'lock')+'"></span> <span>'+(on?'Curator mode':'Curator')+'</span>';
+  if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydrateIcons(b);
   b.title=on?'Curator mode active — click for profile options':'Sign in to edit the shared collection';
 }
 function openOwner(){ if(window.Shelf) window.Shelf.openCurator(); else toast('Sign-in unavailable','err'); }
@@ -405,10 +406,10 @@ function buildBanner(){
     b.style.display='none';                       // explained once, in the welcome dialog
   } else if(ownerActive()){
     b.style.display=''; b.className='banner owner';
-    b.innerHTML='<span class="bi">'+(window.Shelf?window.Shelf.icon('unlock'):'')+'</span><div><b>Curator mode.</b> Edits here change the shared starter collection. Session ends an hour after sign-in.</div>';
+    b.innerHTML='<span class="bi" data-icon="unlock"></span><div><b>Curator mode.</b> Edits here change the shared starter collection. Session ends an hour after sign-in.</div>';
   } else {
     b.style.display=''; b.className='banner info';
-    b.innerHTML='<span class="bi">'+(window.Shelf?window.Shelf.icon('sparkles'):'')+'</span><div><b>Read-only starter set.</b> Hit <b>＋Copy</b> on any word to add it to your own vault.</div>';
+    b.innerHTML='<span class="bi" data-icon="sparkles"></span><div><b>Read-only starter set.</b> Hit <b>＋Copy</b> on any word to add it to your own vault.</div>';
   }
   $('#addbar').style.display = canEdit()?'flex':'none';
 }
@@ -472,7 +473,7 @@ function wordCard(w){
   const syn=(w.synonyms||[]).length?`<div class="syn">${w.synonyms.map(s=>`<span class="s" data-syn="${esc(s)}">${esc(s)}</span>`).join('')}</div>`:'';
   const tags=(w.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join('');
   const src=w.source?`<span class="src">from <b>${esc(w.source)}</b></span>`:'';
-  const note=w.note?`<div class="note">${window.Shelf?window.Shelf.icon('pencil'):''} ${esc(w.note)}</div>`:'';
+  const note=w.note?`<div class="note"><span data-icon="pencil"></span> ${esc(w.note)}</div>`:'';
   const date=new Date(w.dateAdded).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
   const actions = editable
     ? `<select class="statusSel" title="Status">
@@ -585,7 +586,7 @@ function openStudy(){
       </div></div>
       <div class="studybar">
         <button class="sbtn again" id="sAgain">↻ Still learning</button>
-        <button class="sbtn" id="sSpeak">${window.Shelf?window.Shelf.icon('volume-2'):''} Hear it</button>
+        <button class="sbtn" id="sSpeak"><span data-icon="volume-2"></span> Hear it</button>
         <button class="sbtn know" id="sKnow">✓ I know it</button>
       </div>
       <div class="studyprog">Card ${idx+1} of ${deck.length} · ${known} known${writable?'':' · progress not saved for read-only picks'}</div>`;
@@ -631,7 +632,8 @@ function importJSON(file){
 }
 
 /* ============================ overlay ============================ */
-function showOverlay(){ $('#overlay').classList.add('show'); document.body.style.overflow='hidden'; }
+function showOverlay(){ $('#overlay').classList.add('show'); document.body.style.overflow='hidden';
+  if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydrateIcons($('#modal')); }
 function closeOverlay(){ $('#overlay').classList.remove('show'); document.body.style.overflow=''; clearInterval(lockTimer); }
 $('#overlay').addEventListener('click',e=>{ if(e.target===$('#overlay')) closeOverlay(); });
 

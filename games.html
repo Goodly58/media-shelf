@@ -400,7 +400,7 @@ function card(g){
        <div class="ph">${g.title}</div>`
     : `<div class="ph" style="display:flex">${g.title}</div>`;
   const ign = g.ign!=null ? `<span class="ign">IGN ${(+g.ign).toFixed(1)}</span>` : '';
-  const us = g.userScore!=null ? `<span class="uscore">${window.Shelf?window.Shelf.icon('user'):''} ${(+g.userScore).toFixed(1)}</span>` : '';
+  const us = g.userScore!=null ? `<span class="uscore"><span data-icon="user"></span> ${(+g.userScore).toFixed(1)}</span>` : '';
   const vf = g.verified ? `<div class="verified">✓ VERIFIED</div>` : '';
   el.innerHTML=`
     <div class="cover">
@@ -429,6 +429,7 @@ function renderBatch(){
   currentList.slice(rendered,rendered+BATCH).forEach(g=>frag.appendChild(card(g)));
   grid.appendChild(frag); rendered=Math.min(rendered+BATCH,currentList.length);
   $('#loadmore').textContent = rendered<currentList.length ? `Showing ${rendered} of ${currentList.length} — scroll for more` : (currentList.length?`All ${currentList.length} shown`:'');
+  if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydrateIcons(grid);
 }
 function render(){
   currentList=sortGames(GAMES.filter(passes));
@@ -479,6 +480,7 @@ function openModal(g){
       </div>
     </div>`;
   $('#overlay').classList.add('show'); document.body.style.overflow='hidden';
+  if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydrateIcons($('#modal'));
   $('#mclose').onclick=closeModal;
   $('#mfav').onclick=function(){ const k=favKey(g); favs.has(k)?favs.delete(k):favs.add(k); saveFavs();
     this.textContent=favs.has(k)?'★ Favorited':'☆ Add to favorites'; buildStats(); render(); };
