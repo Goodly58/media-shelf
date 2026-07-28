@@ -474,7 +474,7 @@
 
   /* A page loaded in a background tab skips its tick (see runTick). Re-scan
      when it first becomes visible so the animation still happens for real. */
-  D.addEventListener(visibilitychange, function () {
+  D.addEventListener('visibilitychange', function () {
     if (!D.hidden) { tickDone = {}; scheduleTickScan(); }
   });
 

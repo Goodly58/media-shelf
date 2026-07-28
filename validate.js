@@ -120,6 +120,59 @@ for (const p of PAGES) {
 }
 ok.push('no hard-coded counts in copy');
 
+/* ---------- 7b. modules must actually RUN, not merely parse ----------
+   Parsing is not enough: `addEventListener(visibilitychange, …)` — a missing
+   pair of quotes — parses perfectly and then throws a ReferenceError at load,
+   which killed the whole motion module on every page while every check here
+   still passed. Executing each module against a permissive DOM stub catches
+   that class of error. The stub answers almost anything, so a failure here
+   means a genuine top-level throw rather than a missing browser feature. */
+{
+  const stub = () => {
+    const any = new Proxy(function () {}, {
+      get: (t, k) => {
+        if (k === Symbol.toPrimitive || k === 'toString') return () => '';
+        if (k === 'length') return 0;
+        if (k === Symbol.iterator) return function* () {};
+        // Every module opens with `if (window.ShelfX) return;` to avoid double
+        // installing. A blanket-truthy proxy would satisfy that guard and the
+        // module would return before running a single line — so these must read
+        // as undefined or this whole check silently tests nothing.
+        if (typeof k === 'string' && /^Shelf/.test(k)) return undefined;
+        return any;
+      },
+      set: () => true,
+      apply: () => any,
+      construct: () => any,
+      has: () => true
+    });
+    return any;
+  };
+  // Browser globals the modules legitimately reference bare (not via window.*).
+  const GLOBALS = ['window', 'document', 'self', 'globalThis', 'navigator', 'location',
+    'localStorage', 'sessionStorage', 'MutationObserver', 'IntersectionObserver',
+    'requestAnimationFrame', 'cancelAnimationFrame', 'matchMedia', 'fetch', 'caches',
+    'performance', 'Event', 'CustomEvent', 'KeyboardEvent', 'URL', 'URLSearchParams',
+    'TextEncoder', 'crypto', 'Audio', 'Image', 'Blob', 'FileReader', 'DOMParser',
+    'speechSynthesis', 'SpeechSynthesisUtterance', 'getComputedStyle', 'history', 'screen'];
+  const modules = ['site.js', 'theme.js', 'motion.js', 'palette.js', 'features.js', 'a11y.js', 'theme-fix.js', 'pwa.js'];
+  for (const m of modules) {
+    const f = 'assets/' + m;
+    if (!has(f)) continue;
+    try {
+      const args = GLOBALS.map(() => stub());
+      new Function(...GLOBALS, '"use strict";' + read(f))(...args);
+    } catch (e) {
+      if (e instanceof ReferenceError || e instanceof SyntaxError) {
+        fail.push(`${f} throws on load — ${e.constructor.name}: ${e.message}`);
+      } else {
+        warn.push(`${f} threw under the DOM stub (${e.constructor.name}: ${e.message}) — likely a stub gap, check manually`);
+      }
+    }
+  }
+  ok.push(`${modules.length} modules execute`);
+}
+
 /* ---------- 8. every data-icon used in markup actually exists ----------
    A missing icon renders nothing at all — silently. Both new page logos and
    their nav entries were invisible for a while because two icons were never
