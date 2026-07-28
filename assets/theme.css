@@ -287,6 +287,16 @@
   background: linear-gradient(135deg, #e6ebf7, #d8dced);
   color: #2b3350;
 }
+/* The title card's own type is hard-coded pale for the dark plate it was drawn
+   on. It is the FALLBACK a card keeps whenever no free source has art for the
+   title, so leaving it pale on the light plate hides the only thing the card
+   carries. Measured 11.4 : 1 and 5.1 : 1 on #dfe4f0. */
+:root[data-theme="light"] body[data-page="games"] .ph .pt { color: #1d2333; }
+:root[data-theme="light"] body[data-page="games"] .ph .pa { color: #515b73; }
+/* The hairline texture was drawn as white-on-dark; on paper it must darken. */
+:root[data-theme="light"] body[data-page="games"] .ph::before {
+  background: repeating-linear-gradient(115deg, rgba(20, 28, 51, .06) 0 1px, transparent 1px 7px);
+}
 /* lighter scrim on artwork: the card body underneath is now paper, so a heavy
    black band would read as a hard edge */
 :root[data-theme="light"] body[data-page="games"] .grad {
@@ -401,6 +411,9 @@
 }
 :root[data-theme="light"] body[data-page="books"] .ph { background: linear-gradient(160deg, #f3e8d2, #e4d5b8); }
 :root[data-theme="light"] body[data-page="books"] .ph .pt { color: #3a2c16; }
+/* The author line inherits --mut, which is tuned for the dark panel and lands
+   around 2.9 : 1 on the paper plate. It is half of what the title card says. */
+:root[data-theme="light"] body[data-page="books"] .ph .pa { color: #5c4a2c; }
 /* rating chip keeps the gold semantic but on a lighter fill for dark ink */
 :root[data-theme="light"] body[data-page="books"] .rate {
   background: linear-gradient(135deg, #f6cf74, #dfa32b);
@@ -684,6 +697,12 @@
 :root[data-theme="light"] body[data-page="shows"]  .ph .pt { color: #211d1a; }
 :root[data-theme="light"] body[data-page="movies"] .ph .pa,
 :root[data-theme="light"] body[data-page="shows"]  .ph .pa { color: #574c46; }
+/* The hairline texture was drawn as white-on-dark, which is invisible on the
+   light plate and leaves the title card flatter than its dark counterpart. */
+:root[data-theme="light"] body[data-page="movies"] .ph::before,
+:root[data-theme="light"] body[data-page="shows"]  .ph::before {
+  background: repeating-linear-gradient(115deg, rgba(40, 26, 24, .055) 0 1px, transparent 1px 7px);
+}
 /* The scrim over the plate is left alone deliberately. `.ph` is always present
    and merely hidden, so a sibling selector cannot tell a title card from a real
    poster — and the scrim is what keeps the score badge and star legible on

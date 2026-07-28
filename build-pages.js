@@ -52,7 +52,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
 
 const CSS_LINKS = ['site','theme','palette','features','motion','polish','a11y','theme-patch']
   .map(n => `<link rel="stylesheet" href="assets/${n}.css">`).join('\n');
-const JS_TAGS = ['site','theme','motion','palette','features','pwa','a11y','theme-fix']
+const JS_TAGS = ['site','theme','motion','palette','features','covers','pwa','a11y','theme-fix']
   .map(n => `<script src="assets/${n}.js" defer></script>`).join('\n');
 
 const PWA_HEAD = `<link rel="manifest" href="manifest.webmanifest">
@@ -177,14 +177,16 @@ ${THEME_SNIPPET}
   .cover .sk{position:absolute;inset:0;background:linear-gradient(110deg,#161b27 8%,#1e2433 18%,#161b27 33%);
     background-size:220% 100%;animation:sh 1.3s linear infinite}
   @keyframes sh{to{background-position:-220% 0}}
-  .cover img{position:relative;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .35s}
+  .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .35s}
   .cover img.ok{opacity:1}
-  .cover img.lazyart.ok{opacity:1}
-  /* Title card, shown when no artwork exists. A fair number of film and TV
-     posters are non-free images that Wikipedia's API will not serve, so this is
-     a permanent state for some entries, not a loading failure — it is designed
-     to look like a deliberate typographic poster rather than a broken image. */
-  .ph{position:absolute;inset:0;display:none;flex-direction:column;justify-content:flex-end;
+  /* A wordmark is the whole artwork some long-running series have; cropping it
+     to fill a 2:3 frame leaves an abstract corner of a letter. */
+  .cover img.logo{object-fit:contain;padding:14px 14px 42px}
+  /* Title card. It sits under the artwork layer, always present and always
+     visible, so it is what shows before a poster arrives and — for the titles
+     no free source carries a poster for — permanently. It is drawn to look
+     like a deliberate typographic poster, not a loading failure. */
+  .ph{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
     gap:6px;text-align:left;padding:16px 15px;overflow:hidden;
     background:
       radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--acc) 26%, transparent), transparent 70%),
@@ -261,8 +263,10 @@ ${THEME_SNIPPET}
     background:rgba(8,10,15,.6);color:#fff;font-size:18px;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px)}
   .mclose:hover{background:rgba(8,10,15,.9)}
   .mtop{display:flex;gap:22px;padding:26px 26px 20px}
-  .mposter{flex:0 0 160px;aspect-ratio:2/3;border-radius:12px;overflow:hidden;background:#0f1219;box-shadow:0 16px 30px -10px rgba(0,0,0,.8)}
-  .mposter img{width:100%;height:100%;object-fit:cover}
+  .mposter{position:relative;flex:0 0 160px;aspect-ratio:2/3;border-radius:12px;overflow:hidden;background:#0f1219;box-shadow:0 16px 30px -10px rgba(0,0,0,.8)}
+  .mposter img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s}
+  .mposter img.ok{opacity:1}
+  .mposter img.logo{object-fit:contain;padding:12px}
   .minfo{flex:1;min-width:0}
   .mtitle{font-family:'Fraunces',serif;font-size:25px;font-weight:900;letter-spacing:-.4px;line-height:1.12}
   .mcreator{color:var(--acc);font-size:14.5px;font-weight:600;margin-top:6px}
@@ -368,7 +372,7 @@ ${HEAL}
 
 <footer>
   <div class="wrap">
-    Entries marked <b>✓ Verified</b> had their Metascore read directly from metacritic.com. Remaining Metascores, along with all IMDb and Rotten Tomatoes figures, are compiled from public sources and are close approximations. Posters come from TMDB and Wikipedia; a number of them are non-free images that cannot be served, so those titles show a typographic card instead. Not affiliated with Metacritic, IMDb, Rotten Tomatoes or TMDB.
+    Entries marked <b>✓ Verified</b> had their Metascore read directly from metacritic.com. Remaining Metascores, along with all IMDb and Rotten Tomatoes figures, are compiled from public sources and are close approximations. Posters come from TMDB and Wikipedia; a handful of titles have no poster in either, so those show a typographic card instead. Not affiliated with Metacritic, IMDb, Rotten Tomatoes or TMDB.
   </div>
 </footer>
 
@@ -396,126 +400,11 @@ const mcColor = v => v>=75?'var(--good)':v>=50?'var(--mid)':'var(--bad)';
 const poster = x => x.posterPath ? 'https://image.tmdb.org/t/p/w342'+x.posterPath : '';
 
 /* ---- artwork resolution -------------------------------------------------
-   Only a minority of entries ship a TMDB poster path (a guessed path renders a
-   broken image, so they were left null deliberately). For everything else the
-   artwork is resolved at runtime from Wikipedia's REST summary endpoint, which
-   is free, keyless and CORS-enabled. Results — including misses, stored as
-   null — are cached in localStorage so each title is looked up at most once,
-   and lookups only fire for cards that actually scroll into view.           */
-const PKEY='${c.page}_art_v1';
-let pcache={}; try{ pcache=JSON.parse(localStorage.getItem(PKEY)||'{}'); }catch(e){}
-let psaveT=null;
-function psave(){ clearTimeout(psaveT); psaveT=setTimeout(()=>{
-  try{ localStorage.setItem(PKEY,JSON.stringify(pcache)); }catch(e){/* quota — harmless */} },800); }
-
-let inflight=0; const pqueue=[];
-function pnext(){
-  if(inflight>=4 || !pqueue.length) return;
-  const job=pqueue.shift(); inflight++;
-  job().catch(()=>{}).then(()=>{ inflight--; pnext(); });
-}
-function penqueue(fn){ pqueue.push(fn); pnext(); }
-
-/* Pull the image out of a Wikipedia summary payload, upscaled a little.
-   Thumbnails come back around 200-320px wide, which looks soft on a 2:3 card. */
-function artFrom(j){
-  if(!j || j.type==='disambiguation') return null;
-  const src=(j.thumbnail&&j.thumbnail.source)||(j.originalimage&&j.originalimage.source);
-  if(!src) return null;
-  return src.replace(/\\/\\d+px-/,'/420px-');
-}
-async function wikiSummary(title){
-  try{
-    const r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+
-      encodeURIComponent(title.replace(/ /g,'_')));
-    if(!r.ok) return null;
-    return await r.json();
-  }catch(e){ return null; }
-}
-
-async function wikiArt(x){
-  const key=x.title+'|'+x.year;
-  if(key in pcache) return pcache[key];
-  const kind=${isShow} ? 'TV series' : 'film';
-  /* Wikipedia disambiguates by kind and year, and the exact form varies a lot
-     ("Dune (2021 film)", "Severance (TV series)", "Poor Things (film)"), so try
-     the common shapes before falling back to a real search. */
-  const cands=[
-    x.title+' ('+x.year+' '+kind+')',
-    x.title+' ('+kind+')',
-    ${isShow}
-      ? x.title+' ('+x.year+' American TV series)'
-      : x.title+' ('+x.year+' American film)',
-    x.title
-  ];
-  for(const t of cands){
-    const art=artFrom(await wikiSummary(t));
-    if(art){ pcache[key]=art; psave(); return art; }
-  }
-  /* Nothing matched by guessing the title. Ask the search index, which copes
-     with renames, foreign titles and odd disambiguators. This endpoint returns
-     the page image directly, so one request covers both search and artwork.
-     origin=* is required for CORS from the browser. */
-  try{
-    const u='https://en.wikipedia.org/w/api.php?action=query&generator=search'+
-      '&gsrsearch='+encodeURIComponent(x.title+' '+kind+' '+x.year)+'&gsrlimit=3'+
-      '&prop=pageimages&piprop=thumbnail&pithumbsize=420&format=json&origin=*';
-    const r=await fetch(u);
-    if(r.ok){
-      const j=await r.json();
-      const pages=Object.values((j.query&&j.query.pages)||{});
-      const stem=x.title.toLowerCase().slice(0,Math.min(12,x.title.length));
-      for(const p of pages){
-        if(!p||!p.thumbnail||!p.thumbnail.source) continue;
-        /* guard against the search drifting onto a loosely related article */
-        if(!(p.title||'').toLowerCase().includes(stem)) continue;
-        pcache[key]=p.thumbnail.source; psave(); return pcache[key];
-      }
-    }
-  }catch(e){}
-  /* Cache the miss so we never ask again. Note that a fair few film and TV
-     posters are non-free images, which Wikipedia's API deliberately does not
-     expose — those titles can never resolve here and keep their title card. */
-  pcache[key]=null; psave(); return null;
-}
-
-/* If the observer never delivers (hidden tab, prerender, no compositing), the
-   grid would show title cards forever. Kick off the first screenful anyway. */
-let artFallbackDone=false;
-function artFallback(){
-  if(artFallbackDone) return; artFallbackDone=true;
-  [...grid.querySelectorAll('.card')].slice(0,24).forEach(el=>{
-    if(el.__artStarted || !el.__item) return;
-    el.__artStarted=1;
-    penqueue(async ()=>{
-      const src=await wikiArt(el.__item);
-      if(!src||!el.isConnected) return;
-      const img=el.querySelector('img.lazyart'); if(!img) return;
-      img.src=src; img.onload=()=>img.classList.add('ok');
-    });
-  });
-}
-setTimeout(artFallback, 2500);
-
-/* Resolve artwork for a card once it is close to the viewport. */
-const artObserver=new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(!e.isIntersecting) return;
-    artObserver.unobserve(e.target);
-    const el=e.target, x=el.__item;
-    if(!x || el.__artStarted) return;
-    el.__artStarted=1;
-    penqueue(async ()=>{
-      const src=await wikiArt(x);
-      if(!src || !el.isConnected) return;
-      const img=el.querySelector('img.lazyart');
-      const ph=el.querySelector('.ph');
-      if(!img) return;
-      img.src=src;
-      img.onload=()=>{ img.classList.add('ok'); if(ph) ph.style.display='none'; };
-    });
-  });
-},{rootMargin:'400px'});
+   Only a minority of entries ship a TMDB poster path, and a large share of the
+   ones that do now point at images TMDB has since removed. Both cases — no
+   path, and a path that 404s — are handed to assets/covers.js, which resolves
+   artwork from Wikipedia lazily as cards approach the viewport and caches the
+   answer. See that file for why the obvious approaches did not work.        */
 
 /* Perf: build the search haystack once instead of lowercasing every field on
    every keystroke, and read the query once per render rather than per item. */
@@ -589,15 +478,13 @@ function card(x){
   const el=document.createElement('div'); el.className='card';
   const isFav=favs.has(favKey(x));
   const p=poster(x);
-  const cov = p
-    ? \`<div class="sk"></div><img loading="lazy" src="\${p}" alt=""
-         onload="this.classList.add('ok');this.previousElementSibling.style.display='none'"
-         onerror="this.style.display='none';this.previousElementSibling.style.display='none';this.nextElementSibling.style.display='flex'">
-       <div class="ph"><div class="pmark"><span data-icon="${c.iconName}"></span></div><div class="pt">\${esc(x.title)}</div><div class="pa">\${esc(x.creator||'')}</div></div>\`
-    : /* No TMDB path: show the title card immediately, then let the observer
-         swap in Wikipedia artwork on top of it if any is found. */
-      \`<div class="ph" style="display:flex"><div class="pmark"><span data-icon="${c.iconName}"></span></div><div class="pt">\${esc(x.title)}</div><div class="pa">\${esc(x.creator||'')}</div></div>
-       <img class="lazyart" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s">\`;
+  /* The title card is always in the DOM and always visible; the poster simply
+     covers it once it arrives. Nothing has to be hidden on failure, which is
+     why a removed TMDB path or a dropped connection still leaves a finished
+     card rather than a hole. */
+  const cov = \`<div class="ph"><div class="pmark"><span data-icon="${c.iconName}"></span></div><div class="pt">\${esc(x.title)}</div><div class="pa">\${esc(x.creator||'')}</div></div>
+       \${p ? '<div class="sk"></div>' : ''}
+       <img class="lazyart" loading="lazy" alt="">\`;
   const sc=bestScore(x);
   const imdb = x.imdb!=null ? \`<span class="imdb">IMDb \${(+x.imdb).toFixed(1)}</span>\` : '';
   const rt = x.rt!=null ? \`<span class="rt \${x.rt<60?'':'rotten'}">\${x.rt}%</span>\` : '';
@@ -621,7 +508,7 @@ function card(x){
     favs.has(k)?favs.delete(k):favs.add(k); saveFavs(); buildStats(); render();
   });
   el.addEventListener('click',()=>openModal(x));
-  if(!p){ el.__item=x; artObserver.observe(el); }   // resolve artwork when near view
+  (window.ShelfCoverQueue=window.ShelfCoverQueue||[]).push([el.querySelector('.cover'), ${isShow ? "'tv'" : "'film'"}, x, p||null]);
   return el;
 }
 
@@ -655,7 +542,7 @@ new IntersectionObserver(es=>{ if(es[0].isIntersecting && rendered<currentList.l
 
 function openModal(x){
   const p=poster(x);
-  const cov=p?\`<img src="\${p}" alt="">\`:\`<div class="ph" style="display:flex"><div class="pt">\${esc(x.title)}</div></div>\`;
+  const cov=\`<div class="ph"><div class="pmark"><span data-icon="${c.iconName}"></span></div><div class="pt">\${esc(x.title)}</div><div class="pa">\${esc(x.creator||'')}</div></div><img class="lazyart" alt="">\`;
   const q=encodeURIComponent(x.title+' '+x.year);
   const imdbUrl = x.imdbId ? 'https://www.imdb.com/title/'+x.imdbId+'/' : 'https://www.imdb.com/find/?q='+q;
   const rtUrl='https://www.rottentomatoes.com/search?search='+q;
@@ -688,6 +575,7 @@ function openModal(x){
       </div>
     </div>\`;
   $('#overlay').classList.add('show'); document.body.style.overflow='hidden';
+  (window.ShelfCoverQueue=window.ShelfCoverQueue||[]).push([$('#modal').querySelector('.mposter'), ${isShow ? "'tv'" : "'film'"}, x, p||null]);
   if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydrateIcons($('#modal'));
   $('#mclose').onclick=closeModal;
   $('#mfav').onclick=function(){ const k=favKey(x); favs.has(k)?favs.delete(k):favs.add(k); saveFavs();

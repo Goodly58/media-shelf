@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="a78f7af5f7">
+<meta name="shelf-build" content="519754e7fa">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <title>Game Index — browse PC games by Metacritic &amp; IGN</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
@@ -119,11 +119,27 @@
   .cover .sk{position:absolute;inset:0;background:linear-gradient(110deg,#161b27 8%,#1e2433 18%,#161b27 33%);
     background-size:220% 100%;animation:sh 1.3s linear infinite}
   @keyframes sh{to{background-position:-220% 0}}
-  .cover img{position:relative;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .35s}
+  .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .35s}
   .cover img.ok{opacity:1}
-  .ph{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;
-    padding:14px;font-weight:700;font-size:15px;color:#c8d1e6;
-    background:linear-gradient(135deg,#202942,#141826)}
+  /* Wikipedia has box art where Steam has a 460x215 banner. Cropping portrait
+     box art to a banner frame keeps a horizontal sliver of it and throws the
+     rest away, so resolved art is fitted whole onto the title card's plate. */
+  .cover img.resolved{object-fit:contain}
+  /* Title card. It is what a card shows before artwork arrives and, for the
+     titles no free source carries, permanently — so it is drawn as a
+     deliberate typographic cover rather than a placeholder. */
+  .ph{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end;
+    gap:4px;padding:13px 14px;overflow:hidden;
+    background:
+      radial-gradient(120% 95% at 50% 0%, color-mix(in srgb, var(--acc) 22%, transparent), transparent 72%),
+      linear-gradient(135deg,#202942,#141826)}
+  .ph::before{content:'';position:absolute;inset:0;opacity:.5;
+    background:repeating-linear-gradient(115deg, rgba(255,255,255,.05) 0 1px, transparent 1px 7px);
+    -webkit-mask-image:radial-gradient(95% 85% at 50% 0%,#000,transparent 78%);
+            mask-image:radial-gradient(95% 85% at 50% 0%,#000,transparent 78%)}
+  .ph .pt{position:relative;font-weight:800;font-size:15px;line-height:1.2;letter-spacing:-.2px;color:#dfe6f7;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .ph .pa{position:relative;font-size:11px;letter-spacing:.3px;color:#93a0bb}
   .grad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(8,10,15,.55));pointer-events:none}
   /* metascore badge */
   .mc{position:absolute;top:10px;right:10px;width:42px;height:42px;border-radius:11px;display:grid;place-items:center;
@@ -179,6 +195,9 @@
   .overlay.show .modal{transform:none}
   .mhero{position:relative;height:230px;overflow:hidden;background:#0f1219}
   .mhero img{width:100%;height:100%;object-fit:cover}
+  .mhero img.lazyart{position:absolute;inset:0;opacity:0;transition:opacity .35s}
+  .mhero img.lazyart.ok{opacity:1}
+  .mhero img.resolved{object-fit:contain}
   .mhero .fade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,var(--panel))}
   .mclose{position:absolute;top:14px;right:14px;z-index:5;width:38px;height:38px;border-radius:10px;border:1px solid var(--line2);
     background:rgba(8,10,15,.6);color:#fff;font-size:18px;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px)}
@@ -320,7 +339,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
 <footer>
   <div class="wrap">
         Metacritic scores for the top titles are verified against live metacritic.com data (look for the ✓ badge); remaining scores and all IGN figures are compiled from public knowledge and are approximate.
-    Cover art © respective publishers, served via Steam's CDN. Click any game for details. This is a fan-made reference tool, not affiliated with Metacritic or IGN.
+    Cover art © respective publishers, served via Steam's CDN, or via Wikipedia for titles Steam does not carry. Click any game for details. This is a fan-made reference tool, not affiliated with Metacritic or IGN.
   </div>
 </footer>
 
@@ -422,15 +441,16 @@ function sortGames(arr){
 function card(g){
   const el=document.createElement('div'); el.className='card';
   const isFav=favs.has(favKey(g));
-  const cover = g.steamAppId
-    ? `<div class="sk"></div><img loading="lazy" src="${steamHeader(g.steamAppId)}"
-         onload="this.classList.add('ok');this.previousElementSibling.style.display='none'"
-         onerror="this.style.display='none';this.previousElementSibling.style.display='none';this.nextElementSibling.style.display='flex'">
-       <div class="ph">${g.title}</div>`
-    : `<div class="ph" style="display:flex">${g.title}</div>`;
+  /* The title card is always in the DOM and always visible; artwork simply
+     covers it once it arrives. Nothing has to be hidden on failure, which is
+     why a dead Steam id or a dropped connection still leaves a finished-looking
+     card instead of a hole. */
+  const cover = `<div class="ph"><div class="pt">${g.title}</div><div class="pa">${g.year}</div></div>
+       ${g.steamAppId ? '<div class="sk"></div>' : ''}
+       <img class="lazyart" loading="lazy" alt="">`;
   const ign = g.ign!=null ? `<span class="ign">IGN ${(+g.ign).toFixed(1)}</span>` : '';
   const us = g.userScore!=null ? `<span class="uscore"><span data-icon="user"></span> ${(+g.userScore).toFixed(1)}</span>` : '';
-  const vf = g.verified ? `<div class="verified">✓ VERIFIED</div>` : '';
+  const vf = g.verified ? `<div class="verified" title="Metascore verified against metacritic.com">✓ VERIFIED</div>` : '';
   el.innerHTML=`
     <div class="cover">
       <div class="fav ${isFav?'on':''}" title="Favorite">${isFav?'★':'☆'}</div>
@@ -448,6 +468,11 @@ function card(g){
     favs.has(k)?favs.delete(k):favs.add(k); saveFavs(); buildStats(); render();
   });
   el.addEventListener('click',()=>openModal(g));
+  /* Roughly one game in five is not on Steam at all, and a handful of the ids
+     that are here point at delisted apps. Both cases fall through to the
+     shared resolver instead of stopping at the title card. */
+  (window.ShelfCoverQueue=window.ShelfCoverQueue||[]).push([el.querySelector('.cover'), 'game', g,
+    g.steamAppId ? steamHeader(g.steamAppId) : null]);
   return el;
 }
 
@@ -483,11 +508,15 @@ function reIcon(){ if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydr
 
 /* ---------- modal ---------- */
 function openModal(g){
+  /* With a Steam id the hero falls back to the smaller header, which exists for
+     far more apps than library_hero does. Without one there is no Steam art at
+     all, so the resolver gets a turn before the title card is the final word. */
   const heroImg = g.steamAppId
     ? `<img src="${steamHero(g.steamAppId)}" onerror="this.onerror=null;this.src='${steamHeader(g.steamAppId)}'">`
-    : `<div class="ph" style="display:flex;font-size:24px">${g.title}</div>`;
-  const us = g.userScore!=null ? `<div class="scorebox"><div class="k">User Score</div><div class="val">${(+g.userScore).toFixed(1)}</div><div class="sub">metacritic users</div></div>`:'';
-  const ign = g.ign!=null ? `<div class="scorebox"><div class="k">IGN</div><div class="val" style="color:#ff6b5e">${(+g.ign).toFixed(1)}</div><div class="sub">out of 10</div></div>`:'';
+    : `<div class="ph"><div class="pt">${g.title}</div><div class="pa">${g.year}</div></div>
+       <img class="lazyart" alt="">`;
+  const us = g.userScore!=null ? `<div class="scorebox"><div class="k">User Score</div><div class="val">${(+g.userScore).toFixed(1)}</div><div class="sub">metacritic users &middot; unverified</div></div>`:'';
+  const ign = g.ign!=null ? `<div class="scorebox"><div class="k">IGN</div><div class="val" style="color:#ff6b5e">${(+g.ign).toFixed(1)}</div><div class="sub">out of 10 &middot; unverified</div></div>`:'';
   const steamUrl = g.steamAppId?`https://store.steampowered.com/app/${g.steamAppId}/`:`https://store.steampowered.com/search/?term=${encodeURIComponent(g.title)}`;
   const mcUrl = `https://www.metacritic.com/search/${encodeURIComponent(g.title)}/`;
   const isFav=favs.has(favKey(g));
@@ -497,7 +526,7 @@ function openModal(g){
     <div class="mbody">
       <div class="mtitle">${g.title}</div>
       <div class="mmeta"><span>${g.year}</span><span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--mut2)"></span>
-        <span>${g.genre}</span>${g.verified?'<span class="verified" style="position:static">✓ VERIFIED</span>':''}</div>
+        <span>${g.genre}</span>${g.verified?'<span class="verified" style="position:static" title="The Metascore was read off metacritic.com. The IGN and user scores were not checked.">✓ METASCORE VERIFIED</span>':''}</div>
       <div class="mscores">
         <div class="scorebox"><div class="k">Metacritic</div><div class="val" style="color:${mcColor(g.metacritic)}">${g.metacritic}</div><div class="sub">${g.verified?'verified ✓':'approximate'}</div></div>
         ${ign}${us}
@@ -510,6 +539,7 @@ function openModal(g){
       </div>
     </div>`;
   $('#overlay').classList.add('show'); document.body.style.overflow='hidden';
+  if(!g.steamAppId) (window.ShelfCoverQueue=window.ShelfCoverQueue||[]).push([$('#modal').querySelector('.mhero'), 'game', g, null]);
   if(window.Shelf&&window.Shelf.hydrateIcons) window.Shelf.hydrateIcons($('#modal'));
   $('#mclose').onclick=closeModal;
   $('#mfav').onclick=function(){ const k=favKey(g); favs.has(k)?favs.delete(k):favs.add(k); saveFavs();
@@ -556,6 +586,7 @@ buildStats(); buildChips(); initSlider(); render();
 <script src="assets/motion.js" defer></script>
 <script src="assets/palette.js" defer></script>
 <script src="assets/features.js" defer></script>
+<script src="assets/covers.js" defer></script>
 <script src="assets/pwa.js" defer></script>
 <script src="assets/a11y.js" defer></script>
 <script src="assets/theme-fix.js" defer></script>

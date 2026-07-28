@@ -1286,7 +1286,8 @@ body[data-page="vocab"] .sbtn:hover{ box-shadow:inset 0 1px 0 var(--pol-hair2), 
     break-inside:avoid;
     page-break-inside:avoid;
   }
-  .ph{ color:#333 !important }
+  .ph, .ph .pt{ color:#333 !important }
+  .ph .pa{ color:#555 !important }
   /* !important is required here: the per-page grid rules above are more
      specific (body[data-page=…] .grid) and would otherwise win. */
   body[data-page="games"] .grid{ grid-template-columns:repeat(2,1fr) !important }

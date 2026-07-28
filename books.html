@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="a78f7af5f7">
+<meta name="shelf-build" content="519754e7fa">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <title>BOOK INDEX — Ratings &amp; Discovery</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
@@ -104,9 +104,12 @@
     background:linear-gradient(90deg,rgba(0,0,0,.45),rgba(0,0,0,0))}
   .cover .sk{position:absolute;inset:0;background:linear-gradient(110deg,#1a1510 8%,#241d14 18%,#1a1510 33%);background-size:220% 100%;animation:sh 1.3s linear infinite}
   @keyframes sh{to{background-position:-220% 0}}
-  .coverwrap img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .35s}
+  .coverwrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .35s}
   .coverwrap img.ok{opacity:1}
-  .ph{position:absolute;inset:0;display:none;flex-direction:column;justify-content:center;gap:8px;text-align:center;padding:16px;
+  /* Title card. It is what a book shows before its jacket arrives and, for the
+     editions no free source has scanned, permanently — so it is drawn as a
+     deliberate typographic jacket rather than a placeholder. */
+  .ph{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:8px;text-align:center;padding:16px;
     background:linear-gradient(160deg,#2c2316,#16110b)}
   .ph .pt{font-family:'Fraunces',serif;font-weight:900;font-size:16px;color:#efe3cd;line-height:1.2}
   .ph .pa{font-size:12px;color:var(--mut)}
@@ -155,8 +158,9 @@
     background:rgba(8,6,4,.6);color:#fff;font-size:18px;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px)}
   .mclose:hover{background:rgba(8,6,4,.95)}
   .mtop{display:flex;gap:22px;padding:26px 26px 20px}
-  .mcover{flex:0 0 150px;aspect-ratio:2/3;border-radius:10px;overflow:hidden;background:#0c0a08;box-shadow:0 16px 30px -10px rgba(0,0,0,.8)}
-  .mcover img{width:100%;height:100%;object-fit:cover}
+  .mcover{position:relative;flex:0 0 150px;aspect-ratio:2/3;border-radius:10px;overflow:hidden;background:#0c0a08;box-shadow:0 16px 30px -10px rgba(0,0,0,.8)}
+  .mcover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s}
+  .mcover img.ok{opacity:1}
   .minfo{flex:1;min-width:0}
   .mtitle{font-family:'Fraunces',serif;font-size:25px;font-weight:900;letter-spacing:-.4px;line-height:1.12}
   .mauthor{color:var(--acc);font-size:15px;font-weight:600;margin-top:6px}
@@ -286,7 +290,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
 
 <footer>
   <div class="wrap">
-        Ratings reflect approximate Goodreads averages and rating counts compiled from public knowledge. Cover images via the Open Library Covers API (a placeholder shows when no cover is found). Click any book for details and links. Fan-made reference tool, not affiliated with Goodreads or Open Library.
+        Ratings reflect approximate Goodreads averages and rating counts compiled from public knowledge. Cover images via the Open Library Covers API, by ISBN where one is known and by title and author otherwise (a typographic card shows when neither finds one). Click any book for details and links. Fan-made reference tool, not affiliated with Goodreads or Open Library.
   </div>
 </footer>
 
@@ -380,12 +384,12 @@ function card(b){
   const el=document.createElement('div'); el.className='card';
   const isFav=favs.has(favKey(b));
   const url=coverUrl(b);
-  const cov = url
-    ? `<div class="sk"></div><img loading="lazy" src="${url}"
-         onload="this.classList.add('ok');this.previousElementSibling.style.display='none'"
-         onerror="this.style.display='none';this.previousElementSibling.style.display='none';this.nextElementSibling.style.display='flex'">
-       <div class="ph"><div class="pt">${b.title}</div><div class="pa">${b.author}</div></div>`
-    : `<div class="ph" style="display:flex"><div class="pt">${b.title}</div><div class="pa">${b.author}</div></div>`;
+  /* The title card is always in the DOM and always visible; the jacket simply
+     covers it once it arrives. Nothing has to be hidden on failure, so a
+     missing ISBN or a dropped connection still leaves a finished-looking card. */
+  const cov = `<div class="ph"><div class="pt">${b.title}</div><div class="pa">${b.author}</div></div>
+       ${url ? '<div class="sk"></div>' : ''}
+       <img class="lazyart" loading="lazy" alt="">`;
   const rc=fmtCount(b.ratingsCount);
   el.innerHTML=`
     <div class="coverwrap">
@@ -404,6 +408,10 @@ function card(b){
     e.stopPropagation();const k=favKey(b);favs.has(k)?favs.delete(k):favs.add(k);saveFavs();buildStats();render();
   });
   el.addEventListener('click',()=>openModal(b));
+  /* Cover-by-ISBN only knows the exact edition it was given, so reprints,
+     translations and the manga shelf come back empty. Those fall through to
+     Open Library's search index rather than stopping at the title card. */
+  (window.ShelfCoverQueue=window.ShelfCoverQueue||[]).push([el.querySelector('.cover'), 'book', b, url||null]);
   return el;
 }
 
@@ -435,7 +443,7 @@ new IntersectionObserver(es=>{ if(es[0].isIntersecting && rendered<currentList.l
 
 function openModal(b){
   const url=coverUrl(b);
-  const cov=url?`<img src="${url}" onerror="this.parentElement.innerHTML='<div class=ph style=display:flex><div class=pt>'+${JSON.stringify(b.title)}+'</div></div>'">`:`<div class="ph" style="display:flex"><div class="pt">${b.title}</div></div>`;
+  const cov=`<div class="ph"><div class="pt">${b.title}</div><div class="pa">${b.author}</div></div><img class="lazyart" alt="">`;
   const grUrl=`https://www.goodreads.com/search?q=${encodeURIComponent(b.title+' '+b.author)}`;
   const olUrl=`https://openlibrary.org/search?q=${encodeURIComponent(b.title+' '+b.author)}`;
   const isFav=favs.has(favKey(b));
@@ -460,6 +468,7 @@ function openModal(b){
       </div>
     </div>`;
   $('#overlay').classList.add('show');document.body.style.overflow='hidden';
+  (window.ShelfCoverQueue=window.ShelfCoverQueue||[]).push([$('#modal').querySelector('.mcover'), 'book', b, url||null]);
   $('#mclose').onclick=closeModal;
   $('#mfav').onclick=function(){const k=favKey(b);favs.has(k)?favs.delete(k):favs.add(k);saveFavs();this.textContent=favs.has(k)?'★ On your shelf':'☆ Add to shelf';buildStats();render();};
 }
@@ -501,6 +510,7 @@ buildStats();buildChips();initSlider();render();
 <script src="assets/motion.js" defer></script>
 <script src="assets/palette.js" defer></script>
 <script src="assets/features.js" defer></script>
+<script src="assets/covers.js" defer></script>
 <script src="assets/pwa.js" defer></script>
 <script src="assets/a11y.js" defer></script>
 <script src="assets/theme-fix.js" defer></script>

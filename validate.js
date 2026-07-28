@@ -155,7 +155,7 @@ ok.push('no hard-coded counts in copy');
     'performance', 'Event', 'CustomEvent', 'KeyboardEvent', 'URL', 'URLSearchParams',
     'TextEncoder', 'crypto', 'Audio', 'Image', 'Blob', 'FileReader', 'DOMParser',
     'speechSynthesis', 'SpeechSynthesisUtterance', 'getComputedStyle', 'history', 'screen'];
-  const modules = ['site.js', 'theme.js', 'motion.js', 'palette.js', 'features.js', 'a11y.js', 'theme-fix.js', 'pwa.js'];
+  const modules = ['site.js', 'theme.js', 'motion.js', 'palette.js', 'features.js', 'covers.js', 'a11y.js', 'theme-fix.js', 'pwa.js'];
   for (const m of modules) {
     const f = 'assets/' + m;
     if (!has(f)) continue;
