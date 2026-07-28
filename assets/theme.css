@@ -556,8 +556,184 @@
 }
 :root[data-theme="light"] body[data-page="home"] ::selection { background: rgba(37, 99, 235, .18); }
 
+/* ==========================================================================
+   7. LIGHT — FILMS & SERIES  (added later than the rest, hence this section)
+   ==========================================================================
+   Films and series shipped after light mode was written, so they had NO light
+   block at all — they fell through to the page-agnostic fallback in §2 while
+   keeping every hard-coded dark colour their own <style> sets. In practice that
+   meant a near-black filter bar across a cream page (near-black label text on
+   it measured 1.12 : 1) and a wordmark whose gradient still ran from #fff, so
+   its first letter was paper-on-paper and "FILM INDEX" read as "FILM NDEX".
+
+   The two pages are structurally identical to games — same card, cover, badge
+   and modal markup — so the rules are shared and only the palette differs:
+   films keep their cinema red, series their periwinkle. Both accents are
+   deepened for a light ground; the dark-mode #f05a5a and #6f7bff are far too
+   light to carry text on cream.
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] body[data-page="movies"],
+:root[data-theme="light"] body[data-page="shows"] {
+  --bg:      #f4f2ed;
+  --bg2:     #efece5;
+  --panel:   #fffdf8;
+  --panel2:  #f7f4ee;
+  --panel3:  #e9e5db;
+  --line:    #e3ded3;
+  --line2:   #cec7b8;
+  --txt:     #1b1a17;
+  --txt2:    #3e3c37;
+  --mut:     #5c584f;
+  --mut2:    #6f6a5d;
+  --good:    #0b7a4b;
+  --mid:     #9a6408;
+  --bad:     #c0303c;
+  --shadow:  0 16px 34px -18px rgba(38, 33, 25, .38);
+  --r:       16px;
+
+  --t-navbg:   rgba(249, 247, 243, .86);
+  --t-barbg:   rgba(244, 242, 237, .84);
+  --t-scrim:   rgba(42, 37, 29, .46);
+  --t-glass:   rgba(255, 253, 249, .84);
+  --t-glassbd: rgba(36, 31, 24, .2);
+  --t-cover:   #e9e4da;
+  --t-sk1:     #ebe8de;
+  --t-sk2:     #f7f4ed;
+}
+
+/* Films: cinema red, darkened from #f05a5a until it carries text on paper. */
+:root[data-theme="light"] body[data-page="movies"] {
+  --acc:     #c0342f;
+  --acc2:    #9a5a08;
+  --accSoft: rgba(192, 52, 47, .13);
+  --t-tint:  #a82a26;
+  background:
+    radial-gradient(1100px 520px at 12% -8%, #f7dfda 0%, transparent 60%),
+    radial-gradient(900px 520px at 92% -4%, #f6e6cf 0%, transparent 56%),
+    var(--bg);
+}
+/* Series: periwinkle, darkened from #6f7bff for the same reason. */
+:root[data-theme="light"] body[data-page="shows"] {
+  --acc:     #3f47c4;
+  --acc2:    #0d7a68;
+  --accSoft: rgba(63, 71, 196, .13);
+  --t-tint:  #343ba8;
+  background:
+    radial-gradient(1100px 520px at 12% -8%, #dde0fb 0%, transparent 60%),
+    radial-gradient(900px 520px at 92% -4%, #d6efe9 0%, transparent 56%),
+    var(--bg);
+}
+
+/* The sticky filter bar. This is the dark strip the pages were showing. */
+:root[data-theme="light"] body[data-page="movies"] .toolbar,
+:root[data-theme="light"] body[data-page="shows"] .toolbar { background: var(--t-barbg); }
+
+/* Restate the wordmark gradient with an ink stop instead of #fff. */
+:root[data-theme="light"] body[data-page="movies"] h1 b,
+:root[data-theme="light"] body[data-page="shows"] h1 b {
+  background: linear-gradient(90deg, #17181c, var(--t-tint));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+:root[data-theme="light"] body[data-page="movies"] .logo { box-shadow: 0 8px 20px -8px rgba(192, 52, 47, .45); }
+:root[data-theme="light"] body[data-page="shows"]  .logo { box-shadow: 0 8px 20px -8px rgba(63, 71, 196, .45); }
+:root[data-theme="light"] body[data-page="movies"] .stat.acc .v,
+:root[data-theme="light"] body[data-page="shows"]  .stat.acc .v { color: var(--acc); }
+:root[data-theme="light"] body[data-page="movies"] .chip.on,
+:root[data-theme="light"] body[data-page="shows"]  .chip.on { color: var(--t-tint); }
+
+/* re-declare the shorthand so the chevron picks up an ink-coloured stroke */
+:root[data-theme="light"] body[data-page="movies"] select,
+:root[data-theme="light"] body[data-page="shows"] select {
+  background: var(--panel2)
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235c584f' stroke-width='2.5'><path d='M6 9l6 6 6-6'/></svg>")
+    no-repeat right 11px center;
+}
+:root[data-theme="light"] body[data-page="movies"] .slider input::-webkit-slider-thumb,
+:root[data-theme="light"] body[data-page="shows"]  .slider input::-webkit-slider-thumb {
+  box-shadow: 0 2px 6px rgba(40, 34, 26, .3);
+}
+:root[data-theme="light"] body[data-page="movies"] .slider input::-moz-range-thumb,
+:root[data-theme="light"] body[data-page="shows"]  .slider input::-moz-range-thumb {
+  box-shadow: 0 2px 6px rgba(40, 34, 26, .3);
+}
+
+/* Poster plate, shimmer and placeholder. Posters resolve lazily from Wikipedia,
+   so the plate is on screen for a moment on every card and a black rectangle
+   grid was the loudest thing on the page. */
+:root[data-theme="light"] body[data-page="movies"] .cover,
+:root[data-theme="light"] body[data-page="movies"] .mhero,
+:root[data-theme="light"] body[data-page="shows"]  .cover,
+:root[data-theme="light"] body[data-page="shows"]  .mhero { background: var(--t-cover); }
+:root[data-theme="light"] body[data-page="movies"] .cover .sk,
+:root[data-theme="light"] body[data-page="shows"]  .cover .sk {
+  background: linear-gradient(110deg, var(--t-sk1) 8%, var(--t-sk2) 18%, var(--t-sk1) 33%);
+  background-size: 220% 100%;
+}
+:root[data-theme="light"] body[data-page="movies"] .ph {
+  background: linear-gradient(135deg, #f6e7e4, #ecd9d5); color: #5c2b28;
+}
+:root[data-theme="light"] body[data-page="shows"] .ph {
+  background: linear-gradient(135deg, #e6e8f9, #d8dced); color: #2b3350;
+}
+/* The title card's own type is hard-coded near-white (#e9eefb) for the dark
+   plate it was drawn on. It is the FALLBACK shown until Wikipedia returns a
+   poster — which is most cards for the first moment and some cards forever — so
+   leaving it white on the light plate hides the one thing the card is for. */
+:root[data-theme="light"] body[data-page="movies"] .ph .pt,
+:root[data-theme="light"] body[data-page="shows"]  .ph .pt { color: #211d1a; }
+:root[data-theme="light"] body[data-page="movies"] .ph .pa,
+:root[data-theme="light"] body[data-page="shows"]  .ph .pa { color: #574c46; }
+/* The scrim over the plate is left alone deliberately. `.ph` is always present
+   and merely hidden, so a sibling selector cannot tell a title card from a real
+   poster — and the scrim is what keeps the score badge and star legible on
+   artwork. Ink on the scrimmed plate still measures ~6.8 : 1, so it costs
+   nothing to leave it. */
+
+/* A poster IS dark art, so the legibility scrim stays — just lighter, because
+   the card body under it is now paper and a heavy band reads as a hard edge. */
+:root[data-theme="light"] body[data-page="movies"] .grad,
+:root[data-theme="light"] body[data-page="shows"]  .grad {
+  background: linear-gradient(180deg, transparent 60%, rgba(28, 24, 18, .3));
+}
+
+:root[data-theme="light"] body[data-page="movies"] .mc,
+:root[data-theme="light"] body[data-page="movies"] .mc.mid,
+:root[data-theme="light"] body[data-page="movies"] .mc.bad,
+:root[data-theme="light"] body[data-page="shows"]  .mc,
+:root[data-theme="light"] body[data-page="shows"]  .mc.mid,
+:root[data-theme="light"] body[data-page="shows"]  .mc.bad {
+  color: #fff;
+  border-color: rgba(255, 255, 255, .6);
+  box-shadow: 0 5px 14px rgba(40, 34, 26, .35);
+}
+:root[data-theme="light"] body[data-page="movies"] .verified,
+:root[data-theme="light"] body[data-page="shows"]  .verified {
+  color: #075c3c;
+  background: rgba(240, 253, 246, .92);
+  border-color: rgba(11, 122, 75, .5);
+}
+:root[data-theme="light"] body[data-page="movies"] .yearbadge,
+:root[data-theme="light"] body[data-page="shows"]  .yearbadge {
+  color: var(--txt2);
+  background: rgba(255, 253, 249, .88);
+  border-color: var(--t-glassbd);
+}
+:root[data-theme="light"] body[data-page="movies"] .fav,
+:root[data-theme="light"] body[data-page="movies"] .mclose,
+:root[data-theme="light"] body[data-page="shows"]  .fav,
+:root[data-theme="light"] body[data-page="shows"]  .mclose {
+  background: var(--t-glass);
+  border-color: var(--t-glassbd);
+  color: var(--txt2);
+}
+:root[data-theme="light"] body[data-page="movies"] .mclose:hover,
+:root[data-theme="light"] body[data-page="shows"]  .mclose:hover { background: #fff; }
+:root[data-theme="light"] body[data-page="movies"] .overlay,
+:root[data-theme="light"] body[data-page="shows"]  .overlay { background: var(--t-scrim); }
+
 /* --------------------------------------------------------------------------
-   7. Small shared safety nets for light mode
+   8. Small shared safety nets for light mode
    -------------------------------------------------------------------------- */
 /* Focus visibility: the default UA ring can vanish on tinted panels.
    (The favourite star keeps each page's own semantic colour — games uses

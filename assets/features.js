@@ -1234,7 +1234,7 @@
     /* Never interrupt: if a dialog is genuinely on screen or the compare tray
        is docked, wait and try again. Crucially we do NOT burn the
        once-per-page flag while waiting — a tip the user never saw must not
-       count as shown. (vocab.html, for instance, can have #overlay.show up
+       count as shown. (a page can legitimately have #overlay.show up
        at load time.) */
     function blocked() {
       if (document.body.classList.contains('fx-tray-open')) return true;

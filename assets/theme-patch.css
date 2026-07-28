@@ -68,6 +68,23 @@
   background-image: linear-gradient(180deg, #fffdf8, #f3f0e9) !important;
 }
 
-/* The gradient wordmark is painted through the text; restate it or it clips a
-   dark-mode gradient over a light page. */
+/* The gradient wordmark is painted through the glyphs, so `color` is
+   `transparent` by design and the gradient itself carries the legibility. Each
+   page's light block in theme.css restates that gradient with an ink stop; all
+   that is needed here is the fill mode.
+
+   Note for anyone tempted to "fix" a pale wordmark from this file:
+   -webkit-text-fill-color cannot recolour a gradient. It only decides whether
+   the fill shows through. The gradient has to be restated. */
 :root[data-theme="light"] h1 b{ -webkit-text-fill-color: transparent; }
+
+/* If a browser cannot paint a gradient through text it falls back to `color` —
+   which the pages set to `transparent`, i.e. an invisible heading. Give those
+   solid ink instead of nothing. */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)){
+  :root[data-theme="light"] h1 b{
+    background-image: none !important;
+    color: var(--txt) !important;
+    -webkit-text-fill-color: var(--txt) !important;
+  }
+}

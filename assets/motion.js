@@ -283,7 +283,7 @@
           if (on && !t.__smOn) pop(t);
           t.__smOn = on;
         } else if (booted) {
-          // vocab.html rebuilds the whole chip row on every toggle.
+          // some pages rebuild the whole chip row on every toggle.
           for (j = 0; j < m.addedNodes.length; j++) {
             node = m.addedNodes[j];
             if (node.nodeType !== 1 || !matchesSel(node, '.chip')) continue;

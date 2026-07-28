@@ -9,7 +9,7 @@
    Load order note: this file is deferred and runs AFTER each page's inline
    script and after site.js, so page data (GAMES / BOOKS) and window.Shelf
    are already present — but every single read of them is still guarded,
-   because index.html and vocab.html have no dataset at all and a module
+   because index.html has no dataset at all and a module
    may be missing entirely.
 
    Exports: window.ShelfPalette = { open, close, toggle, isOpen, reindex }
@@ -448,7 +448,6 @@
     { id: 'go-books', href: 'books.html', label: 'Books', page: 'books', icon: 'book-open',     sub: 'Browse the book shelf',     kw: 'read author goodreads library' },
     { id: 'go-movies', href: 'movies.html', label: 'Films', page: 'movies', icon: 'clapperboard', sub: 'Browse the film index',    kw: 'movie cinema imdb rotten tomatoes watch' },
     { id: 'go-shows', href: 'shows.html', label: 'Series', page: 'shows', icon: 'tv',            sub: 'Browse the series index',  kw: 'tv show television binge episodes' },
-    { id: 'go-vocab', href: 'vocab.html', label: 'Words', page: 'vocab', icon: 'notebook-pen',  sub: 'Your vocabulary vault',     kw: 'vocabulary vocab dictionary study' }
   ];
 
   /* Built fresh on every search so labels track live page state
@@ -616,7 +615,6 @@
       { page: 'books', href: 'books.html', label: 'Books', has: function () { return getBooks().length > 0; } },
       { page: 'movies', href: 'movies.html', label: 'Films', has: function () { return getMovies().length > 0; } },
       { page: 'shows', href: 'shows.html', label: 'Series', has: function () { return getShows().length > 0; } },
-      { page: 'vocab', href: 'vocab.html', label: 'Words', has: function () { return PAGE === 'vocab'; } }
     ];
     targets.forEach(function (t) {
       if (t.page === PAGE || t.has()) return;         // searchable right here already

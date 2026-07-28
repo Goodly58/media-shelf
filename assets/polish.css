@@ -567,6 +567,12 @@ body[data-page="games"] .card:hover .cover img{ transform:scale(1.035) }
 .verified{
   top:19px;            /* optically centred against the 40px badge */
   right:57px;          /* 9 (badge inset) + 40 (badge) + 8 (gap) */
+  /* The page's own rule anchors this badge to `bottom:8px`. Moving it to the
+     top without releasing that leaves BOTH offsets set on an absolutely
+     positioned box, which is the one case where `height:auto` means "stretch
+     to fill" — so the badge grew into a green slab down the whole poster and
+     covered the artwork. */
+  bottom:auto;
   letter-spacing:.06em;
   border-radius:6px;
   box-shadow:0 2px 6px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.10);
@@ -1144,7 +1150,7 @@ body[data-page="vocab"] .sbtn:hover{ box-shadow:inset 0 1px 0 var(--pol-hair2), 
   .cover .fav,.coverwrap .fav{ width:36px; height:36px }
   body[data-page="books"] .coverwrap .fav{ width:34px; height:34px }
   .cover .mc{ width:38px; height:38px; font-size:15.5px; border-radius:11px }
-  .verified{ top:18px; right:53px }
+  .verified{ top:18px; right:53px; bottom:auto }
   body[data-page="games"] .grid{ gap:14px; padding-bottom:36px }
   body[data-page="games"] .grid.list .body{ padding:11px 13px }
   body[data-page="games"] .grid.list .ttl{ font-size:15px }

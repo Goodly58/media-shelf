@@ -1,7 +1,7 @@
 {
-  "name": "Shelf — games, books & words",
-  "short_name": "Shelf",
-  "description": "Browse PC games ranked by Metacritic and IGN, books ranked by rating, and build a personal vocabulary vault. Fast, filterable, no sign-up.",
+  "name": "Media Shelf — games, books, films & series",
+  "short_name": "Media Shelf",
+  "description": "Browse PC games ranked by Metacritic and IGN, books ranked by rating. Fast, filterable, no sign-up.",
   "lang": "en",
   "dir": "ltr",
   "start_url": ".",
@@ -41,13 +41,6 @@
       "description": "Browse books by rating, author and year",
       "url": "books.html",
       "icons": [{ "src": "assets/icon-books.svg", "sizes": "any", "type": "image/svg+xml" }]
-    },
-    {
-      "name": "Words",
-      "short_name": "Words",
-      "description": "Open your personal vocabulary vault",
-      "url": "vocab.html",
-      "icons": [{ "src": "assets/icon-words.svg", "sizes": "any", "type": "image/svg+xml" }]
     }
   ]
 }

@@ -19,8 +19,7 @@
     { id: 'games', href: 'games.html', label: 'Games', icon: 'gamepad-2' },
     { id: 'books', href: 'books.html', label: 'Books', icon: 'book-open' },
     { id: 'movies', href: 'movies.html', label: 'Films', icon: 'clapperboard' },
-    { id: 'shows', href: 'shows.html', label: 'Series', icon: 'tv' },
-    { id: 'vocab', href: 'vocab.html', label: 'Words', icon: 'notebook-pen' }
+    { id: 'shows', href: 'shows.html', label: 'Series', icon: 'tv' }
   ];
   var page = document.body.getAttribute('data-page') || '';
   var isHome = page === 'home';
@@ -374,7 +373,6 @@
   var SHORTCUTS = {
     games: [['/', 'Focus search'], ['G', 'Grid view'], ['L', 'List view'], ['R', 'Surprise me'], ['?', 'This help'], ['Esc', 'Close dialog']],
     books: [['/', 'Focus search'], ['G', 'Grid view'], ['L', 'List view'], ['R', 'Surprise me'], ['?', 'This help'], ['Esc', 'Close dialog']],
-    vocab: [['/', 'Focus the add-word box'], ['F', 'Focus search'], ['S', 'Study session'], ['?', 'This help'], ['Esc', 'Close dialog']],
     home:  [['1 / 2 / 3', 'Games / Books / Words'], ['?', 'This help']]
   };
   function buildHelp() {
@@ -403,7 +401,6 @@
       if (isHome) {
         if (k === '1') location.href = 'games.html';
         if (k === '2') location.href = 'books.html';
-        if (k === '3') location.href = 'vocab.html';
         return;
       }
       var click = function (sel) { var b = q(sel); if (b) { e.preventDefault(); b.click(); } };

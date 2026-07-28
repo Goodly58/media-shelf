@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="99aff15caa">
+<meta name="shelf-build" content="41e8060886">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 
 <title>Shelf — a fast, filterable catalogue of games, books, film, TV and words</title>
-<meta name="description" content="Browse PC games ranked by Metacritic and IGN, books ranked by Goodreads, films and series ranked by the critics — and keep a personal vocabulary vault. Free, no sign-up, nothing to install.">
+<meta name="description" content="Browse PC games ranked by Metacritic and IGN, books ranked by Goodreads, films and series ranked by the critics. Free, no sign-up, nothing to install.">
 <link rel="canonical" href="https://goodly58.github.io/shelf/">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="theme-color" content="#080a0f">
@@ -39,17 +39,14 @@
   "name": "Shelf",
   "alternateName": "Shelf — games, books, film, TV and words",
   "url": "https://goodly58.github.io/shelf/",
-  "description": "A fast, filterable catalogue of PC games, books, films and TV series, plus a personal vocabulary vault. Static, free and account-free.",
+  "description": "A fast, filterable catalogue of PC games, books, films and TV series. Static, free and account-free.",
   "inLanguage": "en",
   "isAccessibleForFree": true,
   "hasPart": [
     { "@type": "CollectionPage", "name": "Game Index", "url": "https://goodly58.github.io/shelf/games.html" },
     { "@type": "CollectionPage", "name": "Book Index", "url": "https://goodly58.github.io/shelf/books.html" },
     { "@type": "CollectionPage", "name": "Film Index", "url": "https://goodly58.github.io/shelf/movies.html" },
-    { "@type": "CollectionPage", "name": "Series Index", "url": "https://goodly58.github.io/shelf/shows.html" },
-    { "@type": "WebApplication", "name": "Lexicon Vault", "url": "https://goodly58.github.io/shelf/vocab.html", "applicationCategory": "EducationalApplication", "operatingSystem": "Any" }
-  ]
-}
+    { "@type": "CollectionPage", "name": "Series Index", "url": "https://goodly58.github.io/shelf/shows.html" }
 </script>
 
 <style>
@@ -774,7 +771,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
         <span class="ln">and <em>remembering</em>.</span>
       </h1>
 
-      <p class="lede">Five catalogues and a vocabulary vault, all built to be searched fast. Critic scores where they exist, verified where it matters. Your favourites and your words never leave this browser.</p>
+      <p class="lede">Four catalogues, all built to be searched fast. Critic scores where they exist, verified where it matters. Your favourites and your words never leave this browser.</p>
 
       <div class="cta">
         <a class="btn primary" href="#shelves">Open the shelves <span class="ar" data-icon="arrow-right"></span></a>
@@ -866,16 +863,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
             <span class="go">Browse series <span class="ar" data-icon="arrow-right"></span></span>
           </a>
 
-          <a class="tool" data-c="words" href="vocab.html">
-            <span class="tile" aria-hidden="true"><span data-icon="notebook-pen"></span></span>
-            <h3>Lexicon Vault</h3>
-            <p class="dek">Keep every word you meet, with its definition attached, then study it.</p>
-            <div class="facts">
-              <span class="fact"><span data-icon="lock" aria-hidden="true"></span><b>Yours alone</b></span>
-              <span class="fact"><span data-icon="graduation-cap" aria-hidden="true"></span><b>Flashcards</b></span>
-            </div>
-            <span class="go">Start collecting <span class="ar" data-icon="arrow-right"></span></span>
-          </a>
+          
 
         </div>
       </div>
@@ -916,11 +904,10 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
         </div>
 
         <div class="x-jgroup" data-c="screen">
-          <p class="x-jlabel"><span data-icon="clapperboard" aria-hidden="true"></span> Screen &amp; words</p>
+          <p class="x-jlabel"><span data-icon="clapperboard" aria-hidden="true"></span> Screen</p>
           <div class="jumps">
             <a class="jump j-m" href="movies.html#minmc=90&amp;sort=best-desc"><span data-icon="clapperboard" aria-hidden="true"></span> Best films ever <span class="x-ja" data-icon="arrow-right" aria-hidden="true"></span></a>
             <a class="jump j-s" href="shows.html#minmc=85&amp;sort=best-desc"><span data-icon="tv" aria-hidden="true"></span> Top-rated series <span class="x-ja" data-icon="arrow-right" aria-hidden="true"></span></a>
-            <a class="jump j-w" href="vocab.html"><span data-icon="sparkles" aria-hidden="true"></span> Start a word list <span class="x-ja" data-icon="arrow-right" aria-hidden="true"></span></a>
           </div>
         </div>
 
@@ -1056,7 +1043,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
     <div class="x-fin">
       <div>
         <span class="x-flogo"><span data-icon="library" aria-hidden="true"></span> Shelf</span>
-        <p>A personal project: five catalogues and a vocabulary vault on one small static site. No back end, no database, no accounts.</p>
+        <p>A personal project: four catalogues on one small static site. No back end, no database, no accounts.</p>
       </div>
       <nav class="x-fnav" aria-label="Footer">
         <div class="x-fcol">
@@ -1065,7 +1052,6 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
           <a href="books.html">Books</a>
           <a href="movies.html">Films</a>
           <a href="shows.html">Series</a>
-          <a href="vocab.html">Words</a>
         </div>
         <div class="x-fcol">
           <span class="x-fh">Project</span>

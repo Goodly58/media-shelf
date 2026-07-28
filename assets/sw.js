@@ -65,7 +65,6 @@ var SHELL = [
   'index.html',
   'games.html',
   'books.html',
-  'vocab.html',
   'movies.html',
   'shows.html',
   'manifest.webmanifest',
@@ -93,7 +92,6 @@ var SHELL = [
   'assets/icon-mono.svg',
   'assets/icon-games.svg',
   'assets/icon-books.svg',
-  'assets/icon-words.svg'
 ].map(abs);
 
 /* Remote cover art — cache-first with a cap. */

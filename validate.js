@@ -11,7 +11,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const PAGES = ['index.html', 'games.html', 'books.html', 'movies.html', 'shows.html', 'vocab.html'];
+const PAGES = ['index.html', 'games.html', 'books.html', 'movies.html', 'shows.html'];
 const fail = [];
 const warn = [];
 const ok = [];

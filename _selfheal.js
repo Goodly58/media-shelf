@@ -18,7 +18,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
 }).then(function(){location.reload();}).catch(function(){});});})();
 </script>`;
 
-const PAGES = ['index.html', 'games.html', 'books.html', 'vocab.html', 'movies.html', 'shows.html'];
+const PAGES = ['index.html', 'games.html', 'books.html', 'movies.html', 'shows.html'];
 const version = (fs.readFileSync('assets/pwa.js', 'utf8').match(/var SW_VERSION\s*=\s*'([^']*)'/) || [])[1];
 if (!version) { console.error('could not read SW_VERSION'); process.exit(1); }
 
