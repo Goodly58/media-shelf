@@ -103,5 +103,5 @@ Source code is [MIT licensed](LICENSE).
 
 That covers the code only. Icons are Lucide (ISC), typefaces are served by
 Google Fonts (SIL OFL 1.1), and all cover art, posters and critic scores remain
-the property of their respective owners — see [LICENSE](LICENSE) for the full
-third-party notices.
+the property of their respective owners — see [NOTICE.md](NOTICE.md) for the
+full third-party notices.

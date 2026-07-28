@@ -19,26 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-THIRD-PARTY NOTICES
-
-The MIT licence above covers the source code of this project. It does not, and
-cannot, cover the following, which remain the property of their respective
-owners:
-
-- Icons are from Lucide (https://lucide.dev), used under the ISC Licence.
-  Copyright (c) 2022 Lucide Contributors.
-
-- Typefaces (Inter, Fraunces) are served by Google Fonts under the SIL Open
-  Font Licence 1.1.
-
-- Cover art and posters are fetched at runtime from Steam, Open Library, TMDB
-  and Wikimedia. None of it is stored in this repository, and all of it remains
-  copyright of the respective publishers and studios.
-
-- Critic scores and ratings referenced here originate with Metacritic, IGN,
-  Goodreads, IMDb and Rotten Tomatoes. The compiled dataset is provided for
-  personal, non-commercial discovery only. This project is not affiliated with,
-  endorsed by, or connected to any of those services.
