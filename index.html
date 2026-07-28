@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="76033113dc">
+<meta name="shelf-build" content="cf8ead0aa5">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 
 <title>Shelf — a fast, filterable catalogue of games, books and words</title>
@@ -476,6 +476,25 @@ html[data-stats="off"] .num{opacity:.6}
 }
 
 
+.nsub{
+  margin:18px 0 6px; font-size:14.5px; font-weight:800; letter-spacing:-.01em; color:var(--txt);
+}
+.crit{
+  margin:10px 0 0; padding:0; list-style:none;
+  display:flex; flex-direction:column; gap:6px;
+}
+.crit li{
+  position:relative; padding-left:16px;
+  font-size:13.4px; line-height:1.55; color:var(--mut);
+}
+.crit li::before{
+  content:''; position:absolute; left:2px; top:.62em;
+  width:4px; height:4px; border-radius:50%; background:var(--mut2);
+}
+.crit b{color:var(--txt2)}
+.refresh{margin-top:14px; font-size:13.2px; color:var(--mut)}
+.refresh b{color:var(--txt2)}
+
 /* ---------- 11. Footer -------------------------------------------- */
 .foot{
   margin-top:clamp(58px,8vw,96px);
@@ -831,6 +850,16 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
         <div>
           <h2>About the data — honestly</h2>
           <p>These catalogues were compiled <b>with AI assistance</b> from public sources. Scores marked <span class="vf">✓</span> were checked against Metacritic directly. Everything else — IGN numbers, Goodreads ratings, release years, blurbs — is a close approximation and may be wrong in the details. Shelf is a discovery tool, not a citation source. Cover art belongs to its respective publishers.</p>
+
+          <h3 class="nsub">What gets included</h3>
+          <p>This is a curated shelf, not an exhaustive database, so a title has to have been <b>noticed by the wider world</b> to appear. That is a popularity bar, not a quality one — poorly reviewed titles are welcome once they clear it.</p>
+          <ul class="crit">
+            <li><b>Games</b> — released on PC, and either carry a Metacritic score or have 1,000+ Steam reviews</li>
+            <li><b>Films</b> — a Metacritic score, 25+ Rotten Tomatoes critics, or 5,000+ IMDb votes</li>
+            <li><b>Series</b> — at least one season aired, plus a Metacritic score or 5,000+ IMDb votes</li>
+            <li><b>Books</b> — 1,000+ Goodreads ratings, a major prize listing, or a bestseller-list appearance</li>
+          </ul>
+          <p class="refresh">New releases are added automatically on the <b>2nd of every month</b><span data-updated></span>.</p>
         </div>
       </aside>
     </div>
@@ -947,6 +976,17 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
   }
 
   /* ---- apply stats.json --------------------------------------------- */
+  /* stats.json carries the date the catalogue was last rebuilt. Shown next to
+     the cadence so "updates monthly" is verifiable rather than a claim. */
+  function lastRefreshed(s) {
+    if (!s || !s.updated) return;
+    var d = new Date(s.updated + 'T00:00:00Z');
+    if (isNaN(d)) return;
+    var txt = ' — last refreshed ' + d.toLocaleDateString('en-GB',
+      { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+    each(document.querySelectorAll('[data-updated]'), function (el) { el.textContent = txt; });
+  }
+
   function applyStats(s) {
     if (!s || typeof s !== 'object') return false;
     var touched = false;
@@ -999,7 +1039,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
   if (window.fetch) {
     fetch('assets/stats.json', { cache: 'no-cache' })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (s) { docEl.setAttribute('data-stats', applyStats(s) ? 'ready' : 'off'); })
+      .then(function (s) { lastRefreshed(s); docEl.setAttribute('data-stats', applyStats(s) ? 'ready' : 'off'); })
       .catch(function () { docEl.setAttribute('data-stats', 'off'); });
   } else {
     // Opened from file:// or a very old browser — the em dashes stay put.
