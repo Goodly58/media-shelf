@@ -213,6 +213,14 @@ ${THEME_SNIPPET}
   .fav.on{color:var(--mid);border-color:var(--mid)}
   .yearbadge{position:absolute;bottom:8px;left:8px;z-index:3;font-size:11px;font-weight:700;color:var(--txt2);
     background:rgba(8,10,15,.72);backdrop-filter:blur(3px);border:1px solid var(--line2);border-radius:7px;padding:2px 7px}
+  /* Shown only when the Metascore was read off metacritic.com directly. */
+  .verified{position:absolute;bottom:8px;right:8px;z-index:3;display:inline-flex;align-items:center;gap:3px;
+    font-size:10px;font-weight:800;letter-spacing:.3px;color:#8ff3c8;background:rgba(0,40,26,.78);
+    backdrop-filter:blur(3px);border:1px solid rgba(0,206,124,.45);border-radius:7px;padding:2px 6px}
+  .verified .ic{width:11px;height:11px}
+  .mverified{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;color:#8ff3c8;
+    background:rgba(0,40,26,.6);border:1px solid rgba(0,206,124,.4);border-radius:7px;padding:3px 9px}
+  .mverified .ic{width:12px;height:12px}
   .body{display:flex;flex-direction:column;gap:5px;padding:0 2px}
   .ttl{font-size:14.5px;font-weight:700;line-height:1.25;letter-spacing:-.2px;
     display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -360,7 +368,7 @@ ${HEAL}
 
 <footer>
   <div class="wrap">
-    Scores are compiled from public sources (Metacritic, IMDb, Rotten Tomatoes) with AI assistance and are approximate — treat this as a discovery tool, not a citation source. Posters are served from TMDB; where none is available a title card is shown instead. Not affiliated with Metacritic, IMDb, Rotten Tomatoes or TMDB.
+    Entries marked <b>✓ Verified</b> had their Metascore read directly from metacritic.com. Remaining Metascores, along with all IMDb and Rotten Tomatoes figures, are compiled from public sources and are close approximations. Posters come from TMDB and Wikipedia; a number of them are non-free images that cannot be served, so those titles show a typographic card instead. Not affiliated with Metacritic, IMDb, Rotten Tomatoes or TMDB.
   </div>
 </footer>
 
@@ -523,7 +531,7 @@ function buildStats(){
   const cards=[
     {v:${c.dataVar}.length.toLocaleString(), l:'${c.unit}'},
     {v:avg, l:'Avg Metacritic', c:'good'},
-    {v:${c.dataVar}.filter(x=>x.imdb!=null).length.toLocaleString(), l:'With IMDb', c:'acc'},
+    {v:${c.dataVar}.filter(x=>x.verified).length.toLocaleString(), l:'Verified ✓', c:'acc'},
     {v:YMIN+'–'+String(YMAX).slice(2), l:'Years'}
   ];
   $('#stats').innerHTML = cards.map(x=>\`<div class="stat \${x.c||''}"><div class="v">\${x.v}</div><div class="l">\${x.l}</div></div>\`).join('');
@@ -600,6 +608,7 @@ function card(x){
       \${cov}<div class="grad"></div>
       \${x.metacritic!=null?\`<div class="mc \${mcClass(sc)}" style="background:\${mcColor(sc)}">\${x.metacritic}</div>\`:''}
       <div class="yearbadge">\${x.year}</div>
+      \${x.verified?'<div class="verified" title="Metascore checked against Metacritic"><span data-icon="check-check"></span>VERIFIED</div>':''}
     </div>
     <div class="body">
       <div class="ttl">\${esc(x.title)}</div>
@@ -663,7 +672,7 @@ function openModal(x){
         \${x.creator?\`<div class="mcreator">\${esc(x.creator)}</div>\`:''}
         <div class="mmeta"><span>\${x.year}</span><span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--mut2)"></span><span>\${x.genre}</span>\${sub?'<span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--mut2)"></span><span>'+sub+'</span>':''}</div>
         <div class="mscores">
-          \${box('Metacritic', x.metacritic, 'metascore', mcColor(x.metacritic||0))}
+          \${box('Metacritic', x.metacritic, x.verified?'verified ✓':'approximate', mcColor(x.metacritic||0))}
           \${box('IMDb', x.imdb!=null?(+x.imdb).toFixed(1):null, 'out of 10', '#f5c518')}
           \${box('Rotten Tomatoes', x.rt!=null?x.rt+'%':null, 'critics', x.rt>=60?'#0ac855':'#fa320a')}
         </div>
