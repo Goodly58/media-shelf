@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="cf8ead0aa5">
+<meta name="shelf-build" content="8ccdc2acbb">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 
 <title>Shelf — a fast, filterable catalogue of games, books and words</title>
@@ -859,7 +859,7 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
             <li><b>Series</b> — at least one season aired, plus a Metacritic score or 5,000+ IMDb votes</li>
             <li><b>Books</b> — 1,000+ Goodreads ratings, a major prize listing, or a bestseller-list appearance</li>
           </ul>
-          <p class="refresh">New releases are added automatically on the <b>2nd of every month</b><span data-updated></span>.</p>
+          <p class="refresh">New releases are added automatically on the <b>2nd of every month</b> — last refreshed <span data-refreshed>—</span>.</p>
         </div>
       </aside>
     </div>
@@ -982,9 +982,9 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
     if (!s || !s.updated) return;
     var d = new Date(s.updated + 'T00:00:00Z');
     if (isNaN(d)) return;
-    var txt = ' — last refreshed ' + d.toLocaleDateString('en-GB',
+    var txt = d.toLocaleDateString('en-GB',
       { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
-    each(document.querySelectorAll('[data-updated]'), function (el) { el.textContent = txt; });
+    each(document.querySelectorAll('[data-refreshed]'), function (el) { el.textContent = txt; });
   }
 
   function applyStats(s) {
