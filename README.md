@@ -3,7 +3,7 @@
 A fast, filterable catalogue of games, books, films and TV series — plus a
 personal vocabulary vault. Static site, no backend, no accounts, no tracking.
 
-**Live:** <https://goodly58.github.io/shelf/>
+**Live:** <https://goodly58.github.io/media-shelf/>
 
 | Page | What it is |
 | --- | --- |
