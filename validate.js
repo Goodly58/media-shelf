@@ -120,7 +120,38 @@ for (const p of PAGES) {
 }
 ok.push('no hard-coded counts in copy');
 
-/* ---------- 8. source data is intact ---------- */
+/* ---------- 8. every data-icon used in markup actually exists ----------
+   A missing icon renders nothing at all — silently. Both new page logos and
+   their nav entries were invisible for a while because two icons were never
+   added to the set. */
+{
+  const site = read('assets/site.js');
+  const block = site.match(/var ICONS = \{[\s\S]*?\n  \};/);
+  if (!block) fail.push('assets/site.js: ICONS block not found');
+  else {
+    const defined = new Set([...block[0].matchAll(/"([\w-]+)":/g)].map(m => m[1]));
+    const used = new Map();
+    for (const p of PAGES) {
+      if (!has(p)) continue;
+      for (const m of read(p).matchAll(/data-icon="([\w-]+)"/g)) {
+        if (!used.has(m[1])) used.set(m[1], p);
+      }
+    }
+    // icons referenced from JS (nav entries, dynamically built cards)
+    for (const f of ['assets/site.js', 'assets/palette.js']) {
+      if (!has(f)) continue;
+      for (const m of read(f).matchAll(/icon: '([\w-]+)'/g)) {
+        if (!used.has(m[1])) used.set(m[1], f);
+      }
+    }
+    for (const [name, where] of used) {
+      if (!defined.has(name)) fail.push(`icon "${name}" used in ${where} is not defined in site.js ICONS`);
+    }
+    ok.push(`${used.size} icons resolve`);
+  }
+}
+
+/* ---------- 9. source data is intact ---------- */
 for (const f of ['data/movies.json', 'data/shows.json']) {
   if (!has(f)) { warn.push(`${f} missing — movies/shows cannot be rebuilt from source`); continue; }
   try {

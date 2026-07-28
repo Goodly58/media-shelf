@@ -180,10 +180,28 @@ ${THEME_SNIPPET}
   .cover img{position:relative;width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .35s}
   .cover img.ok{opacity:1}
   .cover img.lazyart.ok{opacity:1}
-  .ph{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-    text-align:center;padding:16px;background:linear-gradient(160deg,#232a3d,#141826)}
-  .ph .pt{font-family:'Fraunces',serif;font-weight:900;font-size:15px;color:#dfe5f2;line-height:1.2}
-  .ph .pa{font-size:11.5px;color:var(--mut)}
+  /* Title card, shown when no artwork exists. A fair number of film and TV
+     posters are non-free images that Wikipedia's API will not serve, so this is
+     a permanent state for some entries, not a loading failure — it is designed
+     to look like a deliberate typographic poster rather than a broken image. */
+  .ph{position:absolute;inset:0;display:none;flex-direction:column;justify-content:flex-end;
+    gap:6px;text-align:left;padding:16px 15px;overflow:hidden;
+    background:
+      radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--acc) 26%, transparent), transparent 70%),
+      linear-gradient(165deg,#1c2333 0%,#12151f 55%,#0d1017 100%)}
+  .ph::before{content:'';position:absolute;inset:0;opacity:.55;
+    background:
+      repeating-linear-gradient(115deg, rgba(255,255,255,.045) 0 1px, transparent 1px 7px);
+    -webkit-mask-image:radial-gradient(90% 70% at 50% 0%,#000,transparent 76%);
+            mask-image:radial-gradient(90% 70% at 50% 0%,#000,transparent 76%)}
+  .ph .pmark{position:absolute;top:12px;left:14px;width:22px;height:22px;border-radius:6px;
+    display:grid;place-items:center;opacity:.5;
+    background:linear-gradient(135deg,var(--acc),var(--acc2))}
+  .ph .pmark .ic{width:13px;height:13px;color:#0a0d13}
+  .ph .pt{position:relative;font-family:'Fraunces',serif;font-weight:900;font-size:16px;
+    color:#e9eefb;line-height:1.18;letter-spacing:-.2px;
+    display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .ph .pa{position:relative;font-size:11px;color:var(--mut);letter-spacing:.2px}
   .grad{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(8,10,15,.55));pointer-events:none}
   .mc{position:absolute;top:9px;right:9px;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
     font-weight:800;font-size:15px;color:#08130d;box-shadow:0 5px 14px rgba(0,0,0,.55);border:2px solid rgba(255,255,255,.18)}
@@ -390,21 +408,66 @@ function pnext(){
 }
 function penqueue(fn){ pqueue.push(fn); pnext(); }
 
+/* Pull the image out of a Wikipedia summary payload, upscaled a little.
+   Thumbnails come back around 200-320px wide, which looks soft on a 2:3 card. */
+function artFrom(j){
+  if(!j || j.type==='disambiguation') return null;
+  const src=(j.thumbnail&&j.thumbnail.source)||(j.originalimage&&j.originalimage.source);
+  if(!src) return null;
+  return src.replace(/\\/\\d+px-/,'/420px-');
+}
+async function wikiSummary(title){
+  try{
+    const r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+
+      encodeURIComponent(title.replace(/ /g,'_')));
+    if(!r.ok) return null;
+    return await r.json();
+  }catch(e){ return null; }
+}
+
 async function wikiArt(x){
   const key=x.title+'|'+x.year;
   if(key in pcache) return pcache[key];
   const kind=${isShow} ? 'TV series' : 'film';
-  const cands=[x.title+' ('+x.year+' '+kind+')', x.title+' ('+kind+')', x.title];
+  /* Wikipedia disambiguates by kind and year, and the exact form varies a lot
+     ("Dune (2021 film)", "Severance (TV series)", "Poor Things (film)"), so try
+     the common shapes before falling back to a real search. */
+  const cands=[
+    x.title+' ('+x.year+' '+kind+')',
+    x.title+' ('+kind+')',
+    ${isShow}
+      ? x.title+' ('+x.year+' American TV series)'
+      : x.title+' ('+x.year+' American film)',
+    x.title
+  ];
   for(const t of cands){
-    try{
-      const r=await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/'+encodeURIComponent(t.replace(/ /g,'_')));
-      if(!r.ok) continue;
-      const j=await r.json();
-      if(j.type==='disambiguation') continue;
-      const src=(j.thumbnail&&j.thumbnail.source)||(j.originalimage&&j.originalimage.source);
-      if(src){ pcache[key]=src.replace(/\\/\\d+px-/,'/400px-'); psave(); return pcache[key]; }
-    }catch(e){}
+    const art=artFrom(await wikiSummary(t));
+    if(art){ pcache[key]=art; psave(); return art; }
   }
+  /* Nothing matched by guessing the title. Ask the search index, which copes
+     with renames, foreign titles and odd disambiguators. This endpoint returns
+     the page image directly, so one request covers both search and artwork.
+     origin=* is required for CORS from the browser. */
+  try{
+    const u='https://en.wikipedia.org/w/api.php?action=query&generator=search'+
+      '&gsrsearch='+encodeURIComponent(x.title+' '+kind+' '+x.year)+'&gsrlimit=3'+
+      '&prop=pageimages&piprop=thumbnail&pithumbsize=420&format=json&origin=*';
+    const r=await fetch(u);
+    if(r.ok){
+      const j=await r.json();
+      const pages=Object.values((j.query&&j.query.pages)||{});
+      const stem=x.title.toLowerCase().slice(0,Math.min(12,x.title.length));
+      for(const p of pages){
+        if(!p||!p.thumbnail||!p.thumbnail.source) continue;
+        /* guard against the search drifting onto a loosely related article */
+        if(!(p.title||'').toLowerCase().includes(stem)) continue;
+        pcache[key]=p.thumbnail.source; psave(); return pcache[key];
+      }
+    }
+  }catch(e){}
+  /* Cache the miss so we never ask again. Note that a fair few film and TV
+     posters are non-free images, which Wikipedia's API deliberately does not
+     expose — those titles can never resolve here and keep their title card. */
   pcache[key]=null; psave(); return null;
 }
 
@@ -522,10 +585,10 @@ function card(x){
     ? \`<div class="sk"></div><img loading="lazy" src="\${p}" alt=""
          onload="this.classList.add('ok');this.previousElementSibling.style.display='none'"
          onerror="this.style.display='none';this.previousElementSibling.style.display='none';this.nextElementSibling.style.display='flex'">
-       <div class="ph"><div class="pt">\${esc(x.title)}</div><div class="pa">\${esc(x.creator||'')}</div></div>\`
+       <div class="ph"><div class="pmark"><span data-icon="${c.iconName}"></span></div><div class="pt">\${esc(x.title)}</div><div class="pa">\${esc(x.creator||'')}</div></div>\`
     : /* No TMDB path: show the title card immediately, then let the observer
          swap in Wikipedia artwork on top of it if any is found. */
-      \`<div class="ph" style="display:flex"><div class="pt">\${esc(x.title)}</div><div class="pa">\${esc(x.creator||'')}</div></div>
+      \`<div class="ph" style="display:flex"><div class="pmark"><span data-icon="${c.iconName}"></span></div><div class="pt">\${esc(x.title)}</div><div class="pa">\${esc(x.creator||'')}</div></div>
        <img class="lazyart" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .35s">\`;
   const sc=bestScore(x);
   const imdb = x.imdb!=null ? \`<span class="imdb">IMDb \${(+x.imdb).toFixed(1)}</span>\` : '';
