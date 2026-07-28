@@ -1,0 +1,3 @@
+# scratch / local only
+node_modules/
+*.log
