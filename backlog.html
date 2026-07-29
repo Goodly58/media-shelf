@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="e407960884">
+<meta name="shelf-build" content="d322801267">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <title>What next — rank your own backlog by what is good and what fits</title>
 <meta name="description" content="Drop in your Goodreads, Letterboxd or IMDb export and find out what to read, watch or play next: ranked by critics, filtered by the time you actually have. Nothing is uploaded.">
@@ -376,6 +376,11 @@ return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;})
     if (parsed.source && parsed.source.kind) {
       state.kind = parsed.source.kind;
       $('#kind').value = state.kind;
+      // The budgets are per medium, so they have to be rebuilt here too — not
+      // only in the selector's change handler, which this path never fires.
+      // Without it a dropped Letterboxd watchlist is offered a reading list's
+      // budgets and every film looks like it fits in "a sitting or two".
+      buildChips();
     }
     $('#intake').hidden = true;
     $('#workspace').hidden = false;
