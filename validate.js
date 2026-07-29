@@ -155,7 +155,7 @@ ok.push('no hard-coded counts in copy');
     'performance', 'Event', 'CustomEvent', 'KeyboardEvent', 'URL', 'URLSearchParams',
     'TextEncoder', 'crypto', 'Audio', 'Image', 'Blob', 'FileReader', 'DOMParser',
     'speechSynthesis', 'SpeechSynthesisUtterance', 'getComputedStyle', 'history', 'screen'];
-  const modules = ['site.js', 'theme.js', 'motion.js', 'palette.js', 'features.js', 'covers.js', 'a11y.js', 'theme-fix.js', 'pwa.js'];
+  const modules = ['site.js', 'theme.js', 'motion.js', 'palette.js', 'features.js', 'covers.js', 'a11y.js', 'theme-fix.js', 'pwa.js', 'similar.js'];
   for (const m of modules) {
     const f = 'assets/' + m;
     if (!has(f)) continue;
@@ -212,6 +212,45 @@ for (const f of ['data/movies.json', 'data/shows.json']) {
     if (!Array.isArray(a) || !a.length) fail.push(`${f} is empty`);
     else if (!a[0].title) fail.push(`${f} rows have no title field`);
   } catch (e) { fail.push(`${f} — ${e.message}`); }
+}
+
+/* ---------- 10. similar.json and backlog-index.json agree ----------
+   similar.json stores neighbours as POSITIONS into the catalogues, and the
+   browser reads the title and score for a position out of backlog-index.json.
+   The two are produced by different scripts from the same arrays, so nothing
+   but this check stops them drifting — and drift would not throw, it would
+   quietly put the wrong title on every recommendation. */
+if (has('data/similar.json') && has('data/backlog-index.json')) {
+  try {
+    const sim = JSON.parse(read('data/similar.json'));
+    const disp = JSON.parse(read('data/backlog-index.json'));
+    let n = 0;
+    for (const k of sim.kinds) {
+      const a = sim.counts[k];
+      const b = (disp.kinds[k] || []).length;
+      if (a !== b) fail.push(`similar.json says ${a} ${k} but backlog-index.json has ${b} — indices are misaligned`);
+      if (sim.offsets[k] !== n) fail.push(`similar.json offset for ${k} is ${sim.offsets[k]}, expected ${n}`);
+      n += a;
+    }
+    const want = n * sim.stride * 4;
+    if (sim.n.length !== want) {
+      fail.push(`similar.json neighbour string is ${sim.n.length} chars, expected ${want}`);
+    }
+    // Spot-check that every packed index is in range.
+    let bad = 0;
+    for (let p = 0; p + 4 <= sim.n.length; p += 4) {
+      const c = sim.n.substr(p, 4);
+      if (c === '0000') continue;
+      const j = parseInt(c.substr(0, 3), 36);
+      if (!(j >= 0 && j < n)) bad++;
+    }
+    if (bad) fail.push(`similar.json has ${bad} out-of-range neighbour indices`);
+    if (!fail.some(f => f.includes('similar.json'))) ok.push(`similar.json aligns with backlog-index.json (${n} items)`);
+  } catch (e) {
+    fail.push(`similar.json — ${e.message}`);
+  }
+} else if (has('assets/similar.js')) {
+  warn.push('assets/similar.js ships but data/similar.json is missing — run node build-similar.js');
 }
 
 /* ---------- report ---------- */

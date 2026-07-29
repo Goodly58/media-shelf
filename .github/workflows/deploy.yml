@@ -37,9 +37,11 @@ jobs:
 
       - name: Regenerate derived files
         run: |
-          node build-pages.js     # movies.html + shows.html from data/*.json
-          node build-stats.js     # assets/stats.json
-          node build-version.js   # SW_VERSION + per-page build stamps
+          node build-pages.js         # movies.html + shows.html from data/*.json
+          node build-stats.js         # assets/stats.json
+          node build-backlog-index.js # data/backlog-index.json
+          node build-similar.js       # data/similar.json — MUST run after the index
+          node build-version.js       # SW_VERSION + per-page build stamps
 
       - name: Validate before publishing
         run: node validate.js

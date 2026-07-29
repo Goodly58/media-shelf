@@ -1,0 +1,126 @@
+/* =====================================================================
+   similar.css — the "If you liked this" strip inside a detail modal.
+
+   Sits below the actions, so it never competes with the thing the reader
+   actually opened. Quiet until looked at.
+   ===================================================================== */
+
+.simwrap {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line, #262c3b);
+}
+
+.simhead {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+  font-weight: 800;
+  color: var(--mut, #8b94a8);
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.simhint {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 500;
+  font-size: 11.5px;
+  color: var(--mut2, #5f6878);
+}
+
+.simgrid {
+  margin-top: 11px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(212px, 1fr));
+  gap: 8px;
+}
+
+.simcard {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "kind score" "title score" "meta score";
+  align-items: center;
+  gap: 0 10px;
+  padding: 9px 11px;
+  border: 1px solid var(--line, #262c3b);
+  border-radius: 11px;
+  background: var(--panel2, #1a1e2a);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color .15s, background .15s, transform .15s;
+}
+.simcard:hover {
+  border-color: var(--acc, #3ddc97);
+  background: var(--panel3, #222736);
+  transform: translateY(-1px);
+}
+
+.simkind {
+  grid-area: kind;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  font-weight: 800;
+  color: var(--mut2, #5f6878);
+}
+.simtitle {
+  grid-area: title;
+  font-size: 13.5px;
+  font-weight: 650;
+  line-height: 1.3;
+  color: var(--txt, #eef1f7);
+  /* Titles run long and the card must not grow to fit the worst one. */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.simmeta {
+  grid-area: meta;
+  font-size: 11px;
+  color: var(--mut, #8b94a8);
+  margin-top: 1px;
+}
+.simscore {
+  grid-area: score;
+  font-size: 17px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.4px;
+}
+
+.simwhy,
+.simthin,
+.simadapt {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--mut, #8b94a8);
+  line-height: 1.5;
+}
+.simadapt a {
+  color: var(--acc, #3ddc97);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.simadapt a:hover { border-bottom-color: currentColor; }
+
+@media (max-width: 560px) {
+  .simgrid { grid-template-columns: 1fr; }
+}
+
+/* Light mode: the modal repaints, so the card must follow it rather than
+   stay a dark chip on cream. */
+:root[data-theme="light"] .simcard {
+  background: var(--panel2);
+  border-color: var(--line2, #cec7b8);
+}
+:root[data-theme="light"] .simcard:hover {
+  background: var(--panel);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .simcard { transition: none; }
+  .simcard:hover { transform: none; }
+}

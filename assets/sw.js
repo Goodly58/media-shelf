@@ -70,6 +70,11 @@ var SHELL = [
   'backlog.html',
   'assets/backlog.js',
   'data/backlog-index.json',
+  /* similar.json is NOT precached: it is only read when a reader opens a detail
+     modal, and 223 KB is too much to spend on every visitor for a panel most
+     will never scroll to. The runtime handler caches it on first use. */
+  'assets/similar.js',
+  'assets/similar.css',
   'manifest.webmanifest',
   /* Shared chrome */
   'assets/site.css',

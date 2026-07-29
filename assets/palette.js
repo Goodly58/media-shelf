@@ -1286,7 +1286,10 @@
   /* =================================================================== */
 
   function bootstrapOpenHash() {
-    if (PAGE !== 'games' && PAGE !== 'books') return;
+    /* Films and series were excluded here even though getMovies/getShows have
+       always existed. Cross-medium recommendations link by #open=, so the two
+       pages that could not answer one were exactly half the destinations. */
+    if (PAGE !== 'games' && PAGE !== 'books' && PAGE !== 'movies' && PAGE !== 'shows') return;
     var h = location.hash.replace(/^#/, '');
     if (!h || h.indexOf('open=') < 0) return;
 
@@ -1310,7 +1313,10 @@
       history.replaceState(null, '', location.pathname + location.search + (keep.length ? '#' + keep.join('&') : ''));
     } catch (e) {}
 
-    var list = PAGE === 'games' ? getGames() : getBooks();
+    var list = PAGE === 'games' ? getGames()
+      : PAGE === 'books' ? getBooks()
+      : PAGE === 'movies' ? getMovies()
+      : getShows();
     var lw = String(want).toLowerCase(), hit = null, i;
     for (i = 0; i < list.length; i++) {
       if (String(list[i].title).toLowerCase() === lw) { hit = list[i]; break; }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="shelf-build" content="d322801267">
+<meta name="shelf-build" content="7b3e45eab3">
 <script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <title>BOOK INDEX — Ratings &amp; Discovery</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
@@ -197,6 +197,7 @@
 <link rel="stylesheet" href="assets/features.css">
 <link rel="stylesheet" href="assets/motion.css">
 <link rel="stylesheet" href="assets/polish.css">
+<link rel="stylesheet" href="assets/similar.css">
 <link rel="stylesheet" href="assets/a11y.css">
 <link rel="stylesheet" href="assets/theme-patch.css">
 <link rel="manifest" href="manifest.webmanifest">
@@ -469,6 +470,7 @@ function openModal(b){
     </div>`;
   $('#overlay').classList.add('show');document.body.style.overflow='hidden';
   (window.ShelfCoverQueue=window.ShelfCoverQueue||[]).push([$('#modal').querySelector('.mcover'), 'book', b, url||null]);
+  if(window.ShelfSimilar) window.ShelfSimilar.mount($('#modal').querySelector('.mbody'), 'books', b);
   $('#mclose').onclick=closeModal;
   $('#mfav').onclick=function(){const k=favKey(b);favs.has(k)?favs.delete(k):favs.add(k);saveFavs();this.textContent=favs.has(k)?'★ On your shelf':'☆ Add to shelf';buildStats();render();};
 }
@@ -511,6 +513,7 @@ buildStats();buildChips();initSlider();render();
 <script src="assets/palette.js" defer></script>
 <script src="assets/features.js" defer></script>
 <script src="assets/covers.js" defer></script>
+<script src="assets/similar.js" defer></script>
 <script src="assets/pwa.js" defer></script>
 <script src="assets/a11y.js" defer></script>
 <script src="assets/theme-fix.js" defer></script>
