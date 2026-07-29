@@ -1,0 +1,12792 @@
+{
+ "report": {
+  "agreePc": 447,
+  "correctedToPc": 1108,
+  "headlineOnly": 172,
+  "noPcScore": 273,
+  "titleMismatch": [
+   "Defense Grid 2  ->  DG2: Defense Grid 2",
+   "STALKER 2: Heart of Chornobyl  ->  S.T.A.L.K.E.R. 2: Heart of Chornobyl"
+  ],
+  "yearMismatch": [
+   "Dwarf Fortress (2022)  ->  Dwarf Fortress (2006)",
+   "Overwatch (2016)  ->  Overwatch (2023)",
+   "Opus Magnum (2017)  ->  Opus Magnum (?)",
+   "N++ (2016)  ->  N+ (2004)",
+   "Selaco (2024)  ->  Selaco (?)",
+   "Valheim (2021)  ->  Valheim (2026)",
+   "Kerbal Space Program (2015)  ->  Kerbal Space Program (2011)",
+   "Cave Story+ (2011)  ->  Cave Story (2004)",
+   "Path of Exile 2 (2024)  ->  Path of Exile 2 (?)",
+   "Gran Turismo 7 (2025)  ->  Gran Turismo 7 (2022)",
+   "Kentucky Route Zero (2020)  ->  Kentucky Route Zero (2013)",
+   "Dyson Sphere Program (2021)  ->  Dyson Sphere Program (?)",
+   "ULTRAKILL (2020)  ->  ULTRAKILL (?)",
+   "Black Mesa (2020)  ->  Black Mesa (2012)",
+   "Lethal Company (2023)  ->  Lethal Company (?)",
+   "Slay the Spire 2 (2025)  ->  Slay the Spire 2 (?)",
+   "Schedule I (2025)  ->  Schedule I (?)",
+   "Old School RuneScape (2013)  ->  Old School RuneScape (2021)",
+   "VTOL VR (2020)  ->  VTOL VR (?)",
+   "Deadlock (2024)  ->  Deadlock (?)",
+   "Turing Complete (2021)  ->  Turing Complete (?)",
+   "Horizon Zero Dawn (2020)  ->  Horizon Zero Dawn (2017)",
+   "Derail Valley (2019)  ->  Derail Valley (?)",
+   "Spin Rhythm XD (2019)  ->  Spin Rhythm XD (2023)",
+   "RIFT (2011)  ->  RIFT (?)",
+   "The Forest (2018)  ->  The Forest (2023)",
+   "Assetto Corsa Competizione (2019)  ->  Assetto Corsa Competizione (?)",
+   "Manor Lords (2024)  ->  Manor Lords (?)",
+   "Kenshi (2018)  ->  Kenshi (2011)",
+   "CULTIC (2022)  ->  CULTIC (2025)",
+   "Cosmoteer: Starship Architect & Commander (2022)  ->  Cosmoteer: Starship Architect & Commander (?)",
+   "Besiege (2020)  ->  Besiege (2015)",
+   "Legion TD 2 (2021)  ->  Legion TD 2 (2017)",
+   "Resonance (2012)  ->  Resonance (?)",
+   "Nebulous: Fleet Command (2021)  ->  NEBULOUS: Fleet Command (?)",
+   "Nuclear Option (2024)  ->  Nuclear Option (?)",
+   "Gloomwood (2022)  ->  Gloomwood (?)",
+   "Splitgate (2021)  ->  Splitgate (?)",
+   "Songs of Syx (2023)  ->  Songs of Syx (?)",
+   "Tiny Rogues (2022)  ->  Tiny Rogues (?)",
+   "Underrail (2015)  ->  Underrail (2012)",
+   "Distance (2018)  ->  Distance (2026)",
+   "Gravity Rush Remastered (2024)  ->  Gravity Rush Remastered (2016)",
+   "Supplice (2024)  ->  Supplice (?)",
+   "Railroader (2023)  ->  Railroader (?)",
+   "My Summer Car (2016)  ->  My Summer Car (2025)",
+   "Barotrauma (2019)  ->  Barotrauma (2023)",
+   "Sailwind (2022)  ->  Sailwind (?)",
+   "Foxhole (2022)  ->  Foxhole (2017)",
+   "Eleven Table Tennis (2020)  ->  Eleven Table Tennis (2016)",
+   "Blade & Sorcery (2018)  ->  Blade and Sorcery (2024)",
+   "Vox Machinae (2022)  ->  Vox Machinae (2018)",
+   "The King of Fighters XIII (2014)  ->  The King of Fighters XIII (2011)",
+   "Memoria (2013)  ->  Memoria (2026)",
+   "Overboard! (2021)  ->  Overboard (?)",
+   "Going Medieval (2021)  ->  Going Medieval (2026)",
+   "Mashinky (2017)  ->  Mashinky (?)",
+   "Motor Town: Behind The Wheel (2021)  ->  Motor Town: Behind The Wheel (?)",
+   "From the Depths (2020)  ->  From the Depths (2014)",
+   "Rise to Ruins (2019)  ->  Rise to Ruins (2014)",
+   "Project Heartbeat (2021)  ->  Project Heartbeat (?)",
+   "The Spike - Volleyball Story (2024)  ->  The Spike - Volleyball Story (2021)",
+   "Sea Power: Naval Combat in the Missile Age (2024)  ->  Sea Power: Naval Combat in the Missile Age (?)",
+   "Gunner, HEAT, PC! (2023)  ->  Gunner, HEAT, PC! (?)",
+   "Slime Rancher 2 (2022)  ->  Slime Rancher 2 (2025)",
+   "Vessel (2012)  ->  Vessel (2025)",
+   "Hand of Fate (2015)  ->  Hand of Fate (?)",
+   "Aloft (2025)  ->  Aloft (?)",
+   "The Colonists (2018)  ->  The Colonists (2021)",
+   "Island (2018)  ->  Island (?)",
+   "Raft (2022)  ->  Raft (?)",
+   "Holstin (2025)  ->  Holstin (?)",
+   "Groove Coaster (2018)  ->  Groove Coaster (2011)",
+   "Contractors (2018)  ->  Contractors (?)",
+   "Arizona Sunshine (2016)  ->  Arizona Sunshine (?)",
+   "Compound (2022)  ->  COMPOUND (2018)",
+   "Turok: Dinosaur Hunter (2015)  ->  Turok: Dinosaur Hunter (1997)",
+   "Xenonauts (2014)  ->  Xenonauts (2011)",
+   "The Bridge (2013)  ->  The Bridge (2018)",
+   "Eco (2018)  ->  Eco (?)",
+   "Dinkum (2022)  ->  Dinkum (2025)",
+   "Project Warlock (2018)  ->  Project Warlock (2021)",
+   "The Citadel (2023)  ->  The Citadel (2020)",
+   "Fortune's Run (2023)  ->  Fortune's Run (?)",
+   "TCG Card Shop Simulator (2024)  ->  TCG Card Shop Simulator (?)",
+   "Melody's Escape 2 (2022)  ->  Melody's Escape 2 (2026)",
+   "Tennis Elbow 4 (2021)  ->  Tennis Elbow 4 (2026)",
+   "Golf It! (2017)  ->  Golf It! (?)",
+   "Mahjong Soul (2021)  ->  Mahjong Soul (2024)",
+   "Gorilla Tag (2023)  ->  Gorilla Tag (?)",
+   "ATOM RPG (2018)  ->  ATOM RPG (2022)",
+   "Layers of Fear (2016)  ->  Layers of Fear (2023)",
+   "Phasmophobia (2020)  ->  Phasmophobia (?)",
+   "Volcanoids (2022)  ->  Volcanoids (?)",
+   "KartKraft (2021)  ->  KartKraft (2018)",
+   "Stars in Shadow (2017)  ->  Stars in Shadow (?)",
+   "Space Run (2014)  ->  Space Run (2022)",
+   "Nobody - The Turnaround (2023)  ->  Nobody - The Turnaround (?)",
+   "Ghosts of Tabor (2023)  ->  Ghosts of Tabor (?)",
+   "GROUND BRANCH (2018)  ->  GROUND BRANCH (2026)",
+   "Chasm (2018)  ->  Chasm (2024)",
+   "Eufloria (2011)  ->  Eufloria (2008)",
+   "Len's Island (2021)  ->  Len's Island (2025)",
+   "Quake Champions (2017)  ->  Quake Champions (2022)",
+   "Recipe for Disaster (2022)  ->  Recipe For Disaster (2026)",
+   "Dark and Darker (2023)  ->  Dark and Darker (?)",
+   "Galaxy Trucker: Extended Edition (2014)  ->  Galaxy Trucker: Extended Edition (2019)",
+   "Hard Bullet (2020)  ->  Hard Bullet (?)",
+   "Death's Gambit: Afterlife (2018)  ->  Death's Gambit: Afterlife (2021)",
+   "Wolcen: Lords of Mayhem (2020)  ->  Wolcen: Lords of Mayhem (2016)",
+   "Nightingale (2024)  ->  Nightingale (?)",
+   "Wreckfest 2 (2025)  ->  Wreckfest 2 (?)",
+   "Osiris: New Dawn (2016)  ->  Osiris: New Dawn (2022)",
+   "Craftopia (2020)  ->  Craftopia (?)",
+   "Wronged Us (2024)  ->  Wronged Us (?)",
+   "Get to the Orange Door (2024)  ->  Get To The Orange Door (2017)",
+   "Spire of Sorcery (2022)  ->  Spire of Sorcery (?)",
+   "Predestination (2018)  ->  Predestination (2015)",
+   "Maximum Action (2024)  ->  Maximum Action (?)",
+   "Realms Beyond: Ashes of the Fallen (2024)  ->  Realms Beyond: Ashes of the Fallen (?)",
+   "Deck of Ashes (2020)  ->  Deck of Ashes (?)",
+   "inZOI (2025)  ->  inZOI (?)",
+   "Terra Mystica (2020)  ->  Terra Mystica (2017)",
+   "Construction Simulator (2022)  ->  Construction Simulator (2011)",
+   "The Infected (2021)  ->  The Infected (?)",
+   "Vanguard Princess (2014)  ->  Vanguard Princess (?)",
+   "UNO (2016)  ->  Uno (2006)",
+   "SolForge Fusion (2023)  ->  SolForge Fusion (?)",
+   "Gray Zone Warfare (2024)  ->  Gray Zone Warfare (?)",
+   "Space Empires V (2010)  ->  Space Empires V (2006)",
+   "Driftland: The Magic Revival (2019)  ->  Driftland: The Magic Revival (?)",
+   "Plane Mechanic Simulator (2019)  ->  Plane Mechanic Simulator (2024)",
+   "DayZ (2018)  ->  DayZ (2012)",
+   "Gothic 3 (2010)  ->  Gothic 3 (2006)",
+   "Mist Survival (2018)  ->  Mist Survival (?)",
+   "Hurtworld (2019)  ->  Hurtworld (2015)",
+   "Secret of Mana (2018)  ->  Secret of Mana (2010)",
+   "Six Days in Fallujah (2023)  ->  Six Days in Fallujah (?)",
+   "Horizon (2014)  ->  Horizon (2018)",
+   "Hellgate: London (2018)  ->  Hellgate: London (2007)",
+   "Hellbound (2020)  ->  HELLBOUND (2026)",
+   "Maximum Football (2024)  ->  Maximum-Football (2006)",
+   "Gothic 3: Forsaken Gods (2011)  ->  Gothic 3: Forsaken Gods (2008)"
+  ],
+  "notFound": [
+   "Divinity: Original Sin 2",
+   "Expeditions: Clair Obscur",
+   "Dragon Quest XI S: Definitive Edition",
+   "Civilization V",
+   "Tony Hawk's Pro Skater 1+2",
+   "Civilization VI",
+   "Hearthstone",
+   "Guilty Gear Strive",
+   "Halo: The Master Chief Collection",
+   "Rocksmith 2014",
+   "PUBG: Battlegrounds",
+   "Dragon Quest XI S: Echoes of an Elusive Age – Definitive Edition",
+   "Anno 1404 History Edition",
+   "Subarashiki Hibi: Wonderful Everyday",
+   "Walkabout Mini Golf",
+   "DOOM + DOOM II",
+   "Bravely Default: Flying Fairy",
+   "DiRT Rally 2.0",
+   "Catherine Classic",
+   "Marvel vs. Capcom Fighting Collection: Arcade Classics",
+   "Teenage Mutant Ninja Turtles: The Cowabunga Collection",
+   "Tales from the Borderlands",
+   "Splinter Cell: Conviction",
+   "Tony Hawk's Pro Skater 3+4",
+   "Final Fantasy XIV: A Realm Reborn",
+   "Nine Hours, Nine Persons, Nine Doors (999)",
+   "Atelier Sophie 2: The Alchemist of the Mysterious Dream",
+   "Gemini Rue",
+   "Runner2: Future Legend of Rhythm Alien",
+   "The Division 2",
+   "Splinter Cell: Blacklist",
+   "Vermintide 2",
+   "NieR Replicant ver.1.22474487139",
+   "Trails of Cold Steel",
+   "Umineko When They Cry",
+   "Pavlov VR",
+   "The Legend of Heroes: Trails in the Sky 1st Chapter",
+   "Ace Attorney Trilogy",
+   "Steins;Gate 0",
+   "Call of Duty: Black Ops 3",
+   "Danganronpa: Trigger Happy Havoc",
+   "BlazBlue: Centralfic Fiction",
+   "TrackMania (2020)",
+   "Oddworld: New 'n' Tasty!",
+   "Dawn of War II: Retribution",
+   "Banner Saga 2",
+   "VA-11 Hall-A",
+   "BeamNG.drive",
+   "Vintage Story",
+   "Planet Crafter",
+   "Little Busters! English Edition",
+   "G-senjou no Maou: The Devil on G-String",
+   "Higurashi When They Cry Hou - Ch.1 Onikakushi",
+   "Fata Morgana: A Requiem for Innocence",
+   "The Division",
+   "Ghost 1.0",
+   "The Talos-adjacent Recursed",
+   "Worms W.M.D",
+   "Dawncaster",
+   "Hedon Bloodrite",
+   "BlazBlue: Centralfiction",
+   "ATOM RPG Trudograd",
+   "Gothic II Complete",
+   "Defender's Quest: Valley of the Forgotten",
+   "Kingdom Rush: Alliance TD5",
+   "Through the Ages: A New Story of Civilization",
+   "Kingdom Hearts HD 1.5 + 2.5 ReMIX",
+   "BattleBit Remastered",
+   "Closure",
+   "Under Night In-Birth Exe:Late[st]",
+   "F.I.S.T.: Forged In Shadow Torch",
+   "Hatsune Miku: Project DIVA Mega Mix+",
+   "Overwatch 2",
+   "Metro Awakening",
+   "Project Wingman",
+   "Alien Swarm",
+   "Warhammer 40,000: Darktide",
+   "Warhammer 40,000: Rogue Trader",
+   "WRC 10",
+   "DNF Duel",
+   "Warhammer 40,000: Mechanicus",
+   "Zero Time Dilemma",
+   "Kara no Shoujo",
+   "The Witness-like Englishman: Taiji",
+   "Atelier Lydie & Suelle: The Alchemists and the Mysterious Paintings",
+   "Under Night In-Birth Exe:Late[cl-r]",
+   "Infinitode 2",
+   "Sherlock Holmes: Crimes & Punishments",
+   "Magic: The Gathering - Duels of the Planeswalkers 2013",
+   "Suikoden I & II HD Remaster: Gate Rune and Dunan Unification Wars",
+   "Telltale's The Walking Dead: The Final Season",
+   "Atelier Firis: The Alchemist and the Mysterious Journey",
+   "Hero's Adventure: Road to Passion",
+   "Metal Gear Solid V: Ground Zeroes",
+   "Warhammer 40,000: Boltgun",
+   "GRID (2019)",
+   "Pumping Iron with Absolute Drift",
+   "Disgaea 4 Complete+",
+   "ATOM RPG: Post-Apocalyptic Indie Game",
+   "Broken Sword 5: The Serpent's Curse",
+   "Rhythm Sprout: Sick Beats & Bad Sweets",
+   "Gujian 3",
+   "Nauticrawl",
+   "Sid Meier's Railroads alternative — Railway Empire",
+   "Sea of Thieves placeholder removed - using Sons of the Forest",
+   "Grisaia: Phantom Trigger",
+   "Stephen Lavelle's English Country Tune",
+   "Q.U.B.E. 2",
+   "MudRunner",
+   "Remnants of the Precursors",
+   "Slayers X: Terminal Aftermath",
+   "Fear & Hunger",
+   "Automation - The Car Company Tycoon Game",
+   "The Metronomicon",
+   "Borderlands: Game of the Year Enhanced",
+   "Cypher",
+   "Call of Duty: Black Ops 2",
+   "Gladius - Relics of War",
+   "Sea of Thieves alt - Dauntless",
+   "Republique",
+   "Robotics;Notes Elite",
+   "Tokyo Xanadu eX+",
+   "YU-NO: A Girl Who Chants Love at the Bound of this World",
+   "World End Economica Complete",
+   "Sanctum",
+   "Hyperdimension Neptunia Re;Birth1",
+   "Paladins",
+   "KARDS - The WWII Card Game",
+   "Rainbow Six Siege",
+   "The Dark Eye: Blackguards",
+   "The Age of Decadence",
+   "Monster Energy Supercross 6",
+   "Symphony",
+   "Final Fantasy Type-0 HD",
+   "The Walking Dead: A New Frontier",
+   "Aurora 4X",
+   "MXGP 2021",
+   "OMSI 2: Steam Edition",
+   "Demon Slayer -Kimetsu no Yaiba- The Hinokami Chronicles",
+   "Ascension: Deckbuilding Game",
+   "Skyrim VR",
+   "Ghost Recon Wildlands",
+   "Monster Energy Supercross",
+   "Warhammer 40,000: Gladius - Relics of War",
+   "At the Gates",
+   "Trüberbrook",
+   "Tannenberg",
+   "Trails of Cold Steel III",
+   "Sea of Thieves alt2 - Sea of Stars co-op",
+   "Capitalism Lab",
+   "The Dark Mod",
+   "Warhammer 40,000: Sanctus Reach",
+   "El Shaddai: Ascension of the Metatron HD",
+   "Barony",
+   "Spaceteam (PC)",
+   "Imperia 5X",
+   "Footsies",
+   "Hellsign",
+   "Saving Cookie",
+   "Deathtrap",
+   "Sword and Fairy 7",
+   "Justice Online",
+   "Magic Duels",
+   "The Cycle: Frontier",
+   "Call of Cthulhu",
+   "Spintires",
+   "Xuan-Yuan Sword VII",
+   "Paranormal HK",
+   "Agricola: All Creatures Big and Small",
+   "Z1 Battle Royale",
+   "Verdun",
+   "Death end re;Quest",
+   "Fishing Sim World: Pro Tour",
+   "Panzer Dragoon: Remake",
+   "Tartarus: The Beginning",
+   "Fernbus Simulator",
+   "Eight-Minute Empire: Legends",
+   "Warhammer 40,000: Warpforge",
+   "Warhammer 40,000: Inquisitor - Martyr",
+   "Animal Crossing-like: Hokko Life",
+   "Greedfall II: The Dying World",
+   "The Caligula Effect: Overdose",
+   "Pandemic: The Board Game",
+   "Surgeon Simulator",
+   "Saints Row (2022)",
+   "E.Y.E: Divine Cybermancy",
+   "Crucible",
+   "Harvest Days: My Dream Farm",
+   "Sword of the Stars II: Enhanced Edition",
+   "Necropolis: Brutal Edition",
+   "Blood Bowl 3"
+  ]
+ },
+ "updates": [
+  [
+   "Red Dead Redemption 2",
+   {
+    "score": 93,
+    "source": "pc",
+    "reviews": 109
+   }
+  ],
+  [
+   "Disco Elysium: The Final Cut",
+   {
+    "score": 97,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Baldur's Gate 3",
+   {
+    "score": 96,
+    "source": "pc",
+    "reviews": 119
+   }
+  ],
+  [
+   "Grand Theft Auto V",
+   {
+    "score": 96,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Elden Ring",
+   {
+    "score": 94,
+    "source": "pc",
+    "reviews": 93
+   }
+  ],
+  [
+   "Persona 5 Royal",
+   {
+    "score": 95,
+    "source": "pc",
+    "reviews": 74
+   }
+  ],
+  [
+   "Hades II",
+   {
+    "score": 94,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "Bioshock Infinite",
+   {
+    "score": 94,
+    "source": "pc",
+    "reviews": 68
+   }
+  ],
+  [
+   "Metaphor: ReFantazio",
+   {
+    "score": 92,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Cobalt Core",
+   {
+    "score": 94,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Half-Life: Alyx",
+   {
+    "score": 93,
+    "source": "pc",
+    "reviews": 78
+   }
+  ],
+  [
+   "Persona 4 Golden",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Resident Evil 4",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 133
+   }
+  ],
+  [
+   "Hades",
+   {
+    "score": 93,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "StarCraft II: Wings of Liberty",
+   {
+    "score": 93,
+    "source": "pc",
+    "reviews": 82
+   }
+  ],
+  [
+   "Metal Gear Solid V: The Phantom Pain",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 88
+   }
+  ],
+  [
+   "Braid",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Resident Evil Requiem",
+   {
+    "score": 92,
+    "source": "pc",
+    "reviews": 138
+   }
+  ],
+  [
+   "The Witcher 3: Wild Hunt",
+   {
+    "score": 93,
+    "source": "pc",
+    "reviews": 80
+   }
+  ],
+  [
+   "Celeste",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Rayman Legends",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Forza Horizon 4",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 89
+   }
+  ],
+  [
+   "Forza Horizon 5",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 110
+   }
+  ],
+  [
+   "A Monster's Expedition",
+   {
+    "score": 92,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Street Fighter 6",
+   {
+    "score": 92,
+    "source": "pc",
+    "reviews": 100
+   }
+  ],
+  [
+   "Final Fantasy VII Rebirth",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 151
+   }
+  ],
+  [
+   "Resident Evil 2",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 94
+   }
+  ],
+  [
+   "Batman: Arkham City",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 87
+   }
+  ],
+  [
+   "Satisfactory",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Death Stranding 2: On The Beach",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 153
+   }
+  ],
+  [
+   "Disco Elysium",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Chained Echoes",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Inside",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 92
+   }
+  ],
+  [
+   "Crusader Kings III",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Mina the Hollower",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Caves of Qud",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Against the Storm",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Dark Souls II",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 69
+   }
+  ],
+  [
+   "UFO 50",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Microsoft Flight Simulator",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Beat Saber",
+   {
+    "score": 93,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Into the Breach",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 63
+   }
+  ],
+  [
+   "Dave the Diver",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Hollow Knight",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Hollow Knight: Silksong",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "Factorio",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Assassin's Creed II",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 82
+   }
+  ],
+  [
+   "Dead Space 2",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 83
+   }
+  ],
+  [
+   "Sekiro: Shadows Die Twice",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 89
+   }
+  ],
+  [
+   "Marvel's Spider-Man 2",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 152
+   }
+  ],
+  [
+   "Forza Horizon 6",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 82
+   }
+  ],
+  [
+   "Balatro",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "The Stanley Parable: Ultra Deluxe",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Slay the Princess",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Bayonetta",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 86
+   }
+  ],
+  [
+   "Mark of the Ninja",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Animal Well",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Monster Hunter: World",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 100
+   }
+  ],
+  [
+   "Total War: Shogun 2",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 62
+   }
+  ],
+  [
+   "Ori and the Will of the Wisps",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 76
+   }
+  ],
+  [
+   "Super Meat Boy",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "The Room Three",
+   {
+    "score": 90,
+    "source": "headline",
+    "reviews": 14
+   }
+  ],
+  [
+   "Chicory: A Colorful Tale",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Tekken 8",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 98
+   }
+  ],
+  [
+   "The Legend of Heroes: Trails from Zero",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Dota 2",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Guild Wars 2",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 69
+   }
+  ],
+  [
+   "Tetris Effect: Connected",
+   {
+    "score": 93,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Lone Echo",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Dark Souls III",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "The Walking Dead: A Telltale Games Series",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Stardew Valley",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Pizza Tower",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Return of the Obra Dinn",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Kingdom Come: Deliverance II",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 79
+   }
+  ],
+  [
+   "Titanfall 2",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 64
+   }
+  ],
+  [
+   "Like a Dragon: Infinite Wealth",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 98
+   }
+  ],
+  [
+   "Nine Sols",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Final Fantasy VII Remake Intergrade",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "Pillars of Eternity",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Dead Space",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 96
+   }
+  ],
+  [
+   "Dead Cells",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Deus Ex: Human Revolution",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "XCOM: Enemy Unknown",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Neon White",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "Ghost of Tsushima Director's Cut",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 79
+   }
+  ],
+  [
+   "Borderlands 2",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "13 Sentinels: Aegis Rim",
+   {
+    "score": 85,
+    "source": "headline",
+    "reviews": 70
+   }
+  ],
+  [
+   "Slay the Spire",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "It Takes Two",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Battlefield 3",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Norco",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Apex Legends",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Fez",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Mass Effect 3",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 74
+   }
+  ],
+  [
+   "Schrodinger's Call",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Mewgenics",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "NieR: Automata",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 107
+   }
+  ],
+  [
+   "PRAGMATA",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 108
+   }
+  ],
+  [
+   "Ori and the Blind Forest",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 73
+   }
+  ],
+  [
+   "Doom Eternal",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 68
+   }
+  ],
+  [
+   "Cuphead",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 76
+   }
+  ],
+  [
+   "Far Cry 3",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Torchlight II",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 67
+   }
+  ],
+  [
+   "The Talos Principle 2",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "What Remains of Edith Finch",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 68
+   }
+  ],
+  [
+   "Assassin's Creed Brotherhood",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 81
+   }
+  ],
+  [
+   "DUSK",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Dishonored",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "The Witcher 2: Assassins of Kings",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 82
+   }
+  ],
+  [
+   "The Binding of Isaac: Rebirth",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "F1 2020",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "The Stanley Parable",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "Tetris Effect",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 76
+   }
+  ],
+  [
+   "Limbo",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 89
+   }
+  ],
+  [
+   "Pillars of Eternity II: Deadfire",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 77
+   }
+  ],
+  [
+   "Dead Cells: Return to Castlevania",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Mouthwashing",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Night in the Woods",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Lorelei and the Laser Eyes",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Guacamelee! Gold Edition",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "XCOM 2",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 107
+   }
+  ],
+  [
+   "Battlefield 1",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Owlboy",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "Unity of Command II",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Sid Meier's Civilization VI",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 91
+   }
+  ],
+  [
+   "Rogue Legacy 2",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Marvel's Spider-Man: Miles Morales",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 95
+   }
+  ],
+  [
+   "Diablo III",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 86
+   }
+  ],
+  [
+   "Rez Infinite",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "Final Fantasy Tactics: The Ivalice Chronicles",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 87
+   }
+  ],
+  [
+   "Astral Chain",
+   {
+    "score": 87,
+    "source": "headline",
+    "reviews": 98
+   }
+  ],
+  [
+   "Monster Hunter Stories 3: Twisted Reflection",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 63
+   }
+  ],
+  [
+   "RimWorld",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Hi-Fi Rush",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 63
+   }
+  ],
+  [
+   "Europa Universalis IV",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Persona 3 Reload",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Divinity: Original Sin",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "The Swapper",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Subnautica",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "Marvel's Spider-Man Remastered",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Rayman Origins",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "Tales of Arise",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 78
+   }
+  ],
+  [
+   "Shadowrun: Dragonfall - Director's Cut",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Shin Megami Tensei V: Vengeance",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "Zero Escape: The Nonary Games",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Tactical Breach Wizards",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Sea of Stars",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Devil May Cry 5",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 68
+   }
+  ],
+  [
+   "Spelunky 2",
+   {
+    "score": 91,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "Total War: Warhammer II",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 73
+   }
+  ],
+  [
+   "Dragon Ball FighterZ",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 78
+   }
+  ],
+  [
+   "Halo Infinite",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 110
+   }
+  ],
+  [
+   "Hitman 3",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Crypt of the NecroDancer",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Spelunky",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "Wolfenstein II: The New Colossus",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 73
+   }
+  ],
+  [
+   "The Witness",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 83
+   }
+  ],
+  [
+   "Hermit and Pig",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Titanium Court",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "DAVE THE DIVER: In the Jungle",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Day of the Tentacle Remastered",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Phoenix Wright: Ace Attorney Trilogy",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Okami HD",
+   {
+    "score": 92,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "80 Days",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Mixtape",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Cairn",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "SUPERHOT VR",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "The Messenger",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Brothers: A Tale of Two Sons",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "Infinifactory",
+   {
+    "score": 70,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Prince of Persia: The Lost Crown",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 84
+   }
+  ],
+  [
+   "Resident Evil 7: Biohazard",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 108
+   }
+  ],
+  [
+   "Desperados III",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 62
+   }
+  ],
+  [
+   "Star Ocean: The Second Story R",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Guilty Gear Xrd Rev 2",
+   {
+    "score": 86,
+    "source": "headline",
+    "reviews": 35
+   }
+  ],
+  [
+   "1000xResist",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Vampire Survivors",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Bastion",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 79
+   }
+  ],
+  [
+   "Killer Instinct",
+   {
+    "score": 73,
+    "source": "headline",
+    "reviews": 51
+   }
+  ],
+  [
+   "The Legend of Heroes: Trails to Azure",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Injustice 2",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 93
+   }
+  ],
+  [
+   "Devotion",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Monster Train",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Path of Exile",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Turbo Overkill",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Pentiment",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "Nioh 2",
+   {
+    "score": 85,
+    "source": "headline",
+    "reviews": 94
+   }
+  ],
+  [
+   "Nioh 2: The Complete Edition",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Need for Speed: Hot Pursuit",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 73
+   }
+  ],
+  [
+   "Dishonored 2",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 67
+   }
+  ],
+  [
+   "Wildermyth",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Returnal",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 126
+   }
+  ],
+  [
+   "Total War: Warhammer",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 79
+   }
+  ],
+  [
+   "Death Stranding",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 122
+   }
+  ],
+  [
+   "Dirt 3",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 81
+   }
+  ],
+  [
+   "Cyberpunk 2077",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 106
+   }
+  ],
+  [
+   "Saints Row IV",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Crysis 2",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 72
+   }
+  ],
+  [
+   "Gears of War 4",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 103
+   }
+  ],
+  [
+   "Forza Motorsport 7",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 80
+   }
+  ],
+  [
+   "Dragon's Dogma 2",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 91
+   }
+  ],
+  [
+   "Heroes of the Storm",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "DmC: Devil May Cry",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Gone Home",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "PlayerUnknown's Battlegrounds",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Diablo IV",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 96
+   }
+  ],
+  [
+   "Cult of the Lamb: Woolhaven",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Perfect Tides: Station to Station",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "OPUS: Prism Peak",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Valkyria Chronicles",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "The Great Ace Attorney Chronicles",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Vertigo 2",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 11
+   }
+  ],
+  [
+   "Tribes: Ascend",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "StarCraft: Remastered",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Mass Effect Legendary Edition",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "Metal Gear Solid Delta: Snake Eater",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 97
+   }
+  ],
+  [
+   "Nioh 3",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 105
+   }
+  ],
+  [
+   "Asgard's Wrath",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Outer Wilds",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Yakuza 0",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 94
+   }
+  ],
+  [
+   "Cities: Skylines",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "Doom",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 73
+   }
+  ],
+  [
+   "Inscryption",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "Amnesia: The Dark Descent",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "The Talos Principle",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Hotline Miami",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Shadow Tactics: Blades of the Shogun",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 41
+   }
+  ],
+  [
+   "Papers, Please",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Octopath Traveler II",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Final Fantasy X/X-2 HD Remaster",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Deep Rock Galactic",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Risk of Rain 2",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Shovel Knight",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Death's Door",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "The Forgotten City",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Assetto Corsa",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Valkyria Chronicles 4",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Rocket League",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "South Park: The Stick of Truth",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "Tunic",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Pyre",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Rogue Legacy",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Dirt Rally",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Wasteland 3",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Amid Evil",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Total War: Three Kingdoms",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 68
+   }
+  ],
+  [
+   "Frozen Synapse",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Among Us",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Dragon Age: Inquisition",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Destiny 2",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 104
+   }
+  ],
+  [
+   "Timberborn",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Esoteric Ebb",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "PARANORMASIGHT: The Mermaid's Curse",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "The Rise of the Golden Idol",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "The Legend of Heroes: Trails of Cold Steel III",
+   {
+    "score": 82,
+    "source": "headline",
+    "reviews": 30
+   }
+  ],
+  [
+   "Star Wars: The Old Republic",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 73
+   }
+  ],
+  [
+   "Legends of Runeterra",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Dark Souls II: Scholar of the First Sin",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "Dragon Quest III HD-2D Remake",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Yakuza Kiwami 2",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 72
+   }
+  ],
+  [
+   "Monkey Island 2 Special Edition: LeChuck's Revenge",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Riven",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Sonic X Shadow Generations",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 80
+   }
+  ],
+  [
+   "Teenage Mutant Ninja Turtles: Shredder's Revenge",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "Sayonara Wild Hearts",
+   {
+    "score": 84,
+    "source": "headline",
+    "reviews": 35
+   }
+  ],
+  [
+   "Age of Empires II: Definitive Edition",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Fallout: New Vegas",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 81
+   }
+  ],
+  [
+   "Patrick's Parabox",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "007 First Light",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 96
+   }
+  ],
+  [
+   "Dark Souls: Remastered",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "SOMA",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Resident Evil Village",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 119
+   }
+  ],
+  [
+   "SpaceChem",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Trine 2",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "FTL: Faster Than Light",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "Frostpunk",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Cocoon",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Blasphemous 2",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Planet Coaster",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Spiritfarer",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "The Binding of Isaac",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Saints Row: The Third",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Hyper Light Drifter",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Gorogoa",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Hogwarts Legacy",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 102
+   }
+  ],
+  [
+   "Crow Country",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Ys IX: Monstrum Nox",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 48
+   }
+  ],
+  [
+   "LEGO Batman: Legacy of the Dark Knight",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 86
+   }
+  ],
+  [
+   "Diablo IV: Lord of Hatred",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "Orcs Must Die! 2",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Darkest Dungeon",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Middle-earth: Shadow of Mordor",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 85
+   }
+  ],
+  [
+   "Guacamelee!",
+   {
+    "score": 84,
+    "source": "headline",
+    "reviews": 51
+   }
+  ],
+  [
+   "Ni no Kuni II: Revenant Kingdom",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 90
+   }
+  ],
+  [
+   "Hitman",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 41
+   }
+  ],
+  [
+   "Baba Is You",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Just Cause 2",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 74
+   }
+  ],
+  [
+   "The Case of the Golden Idol",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "F1 2019",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Axiom Verge",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Ultra Street Fighter IV",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Tactics Ogre: Reborn",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Vanquish",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Salt and Sanctuary",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "Football Manager 2024",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Project CARS 2",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Nioh",
+   {
+    "score": 88,
+    "source": "headline",
+    "reviews": 107
+   }
+  ],
+  [
+   "Nioh: Complete Edition",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Football Manager 2020",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Utawarerumono: Mask of Truth",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 22
+   }
+  ],
+  [
+   "Demon Tides",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Pistol Whip",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Sanabi",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "V Rising",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Football Manager 2021",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Super Mega Baseball 3",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Moss: Book II",
+   {
+    "score": 83,
+    "source": "headline",
+    "reviews": 40
+   }
+  ],
+  [
+   "Red Matter 2",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "The Room VR: A Dark Matter",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "PlanetSide 2",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "Resident Evil HD Remaster",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Homeworld Remastered Collection",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Gears of War: Reloaded",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "The Elder Scrolls IV: Oblivion Remastered",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "Final Fantasy VI Pixel Remaster",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Ghost Trick: Phantom Detective",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "Castlevania Advance Collection",
+   {
+    "score": 83,
+    "source": "headline",
+    "reviews": 17
+   }
+  ],
+  [
+   "Chants of Sennaar",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "World of Goo 2",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Door Kickers 2: Task Force North",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Sonic & All-Stars Racing Transformed",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Streets of Rage 4",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "Assassin's Creed Odyssey",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 95
+   }
+  ],
+  [
+   "F1 23",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Life is Strange",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "The Wolf Among Us",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Super Street Fighter IV: Arcade Edition",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Gunpoint",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Transistor",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Bulletstorm",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 83
+   }
+  ],
+  [
+   "Hearts of Iron IV",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Steins;Gate",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Two Point Hospital",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Muv-Luv Alternative",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Warhammer: Vermintide 2",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "Grim Dawn",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Deus Ex: Mankind Divided",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Final Fantasy IX",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Assassin's Creed IV: Black Flag",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Anno 2070",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Smite",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Mini Metro",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "This War of Mine",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 63
+   }
+  ],
+  [
+   "Dust: An Elysian Tail",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Tales of Vesperia: Definitive Edition",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Iconoclasts",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Cassette Beasts",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Gris",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Counter-Strike: Global Offensive",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Remnant II",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Octopath Traveler",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 87
+   }
+  ],
+  [
+   "Ys VIII: Lacrimosa of Dana",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Bloodstained: Ritual of the Night",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "Project CARS",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "MLB The Show 24",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 34
+   }
+  ],
+  [
+   "Life is Strange 2",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Cult of the Lamb",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 93
+   }
+  ],
+  [
+   "Loop Hero",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 63
+   }
+  ],
+  [
+   "The King of Fighters XV",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "Terraria",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Wargroove",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "Stray",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 106
+   }
+  ],
+  [
+   "Sons of the Forest",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Viewfinder",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "OlliOlli World",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Griftlands",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Tainted Grail: The Fall of Avalon",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Paradise Killer",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Mini Motorways",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "A Plague Tale: Requiem",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Yoku's Island Express",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Tinykin",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Shadowrun: Hong Kong",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Toki Tori 2+",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Yakuza: Like a Dragon",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "Guacamelee! 2",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Dragon's Dogma: Dark Arisen",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 63
+   }
+  ],
+  [
+   "Final Fantasy XII: The Zodiac Age",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 79
+   }
+  ],
+  [
+   "Pathfinder: Wrath of the Righteous",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Age of Wonders 4",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Prison Architect",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Metal Gear Rising: Revengeance",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Days Gone",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 122
+   }
+  ],
+  [
+   "Terra Invicta",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Ready or Not",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Ender Lilies: Quietus of the Knights",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "The End is Nigh",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Oxygen Not Included",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Don't Starve Together",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Parkitect",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Streets of Rogue",
+   {
+    "score": 82,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Tsukihime: A Piece of Blue Glass Moon",
+   {
+    "score": 90,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "Roboquest",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Stephen's Sausage Roll",
+   {
+    "score": 90,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "iRacing",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Songs of Conquest",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "The Cat Lady",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Signalis",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Dicey Dungeons",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Ys: The Oath in Felghana",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Record of Lodoss War: Deedlit in Wonder Labyrinth",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Hell Let Loose",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Roadwarden",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "In Stars and Time",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Dorfromantik",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "MIO: Memories in Orbit",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 53
+   }
+  ],
+  [
+   "Grim Fandango Remastered",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "The Legend of Heroes: Trails of Cold Steel",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Yakuza Kiwami",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 73
+   }
+  ],
+  [
+   "Horizon Zero Dawn Remastered",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "Sunless Skies",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Dragon Age: The Veilguard",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 77
+   }
+  ],
+  [
+   "Crusader Kings II",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Helldivers 2",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 69
+   }
+  ],
+  [
+   "Hitman 2",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 74
+   }
+  ],
+  [
+   "Grime",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "World of Warcraft: Midnight",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Metro: Last Light",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Invisible, Inc.",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Far Cry 4",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 83
+   }
+  ],
+  [
+   "Metro Exodus",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "Dragon Age II",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 75
+   }
+  ],
+  [
+   "Watch Dogs 2",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 99
+   }
+  ],
+  [
+   "Wreckfest",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Need for Speed: Most Wanted",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Tekken 7",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 81
+   }
+  ],
+  [
+   "Endless Legend",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "A Short Hike",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "The Outer Worlds",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 82
+   }
+  ],
+  [
+   "Need for Speed: Most Wanted (2012)",
+   {
+    "score": 82,
+    "source": "headline",
+    "reviews": 18
+   }
+  ],
+  [
+   "Tom Clancy's The Division 2",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 63
+   }
+  ],
+  [
+   "Sins of a Solar Empire: Rebellion",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Little Nightmares II",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Amnesia: The Bunker",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 63
+   }
+  ],
+  [
+   "art of rally",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Granblue Fantasy Versus: Rising",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Grounded",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Prey",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 76
+   }
+  ],
+  [
+   "Wargame: Red Dragon",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Antichamber",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Bayonetta Origins: Cereza and the Lost Demon",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 103
+   }
+  ],
+  [
+   "Avowed",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 86
+   }
+  ],
+  [
+   "Lovers in a Dangerous Spacetime",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Dredge",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Lil Gator Game",
+   {
+    "score": 84,
+    "source": "headline",
+    "reviews": 17
+   }
+  ],
+  [
+   "Toem",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Mediterranea Inferno",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "The Legend of Heroes: Trails beyond the Horizon",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "The First Berserker: Khazan",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "Dirt 4",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Citizen Sleeper",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "The Legend of Heroes: Trails into Reverie",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Enter the Gungeon",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Jagged Alliance 3",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Gears 5",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 98
+   }
+  ],
+  [
+   "Skullgirls 2nd Encore",
+   {
+    "score": 82,
+    "source": "headline",
+    "reviews": 18
+   }
+  ],
+  [
+   "Mortal Kombat 11",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 88
+   }
+  ],
+  [
+   "Endless Space 2",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "They Are Billions",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "El Paso, Elsewhere",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Abiotic Factor",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Raging Loop",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Danganronpa 2: Goodbye Despair",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "AI: The Somnium Files - nirvanA Initiative",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Darkwood",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Cryptmaster",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Ys Origin",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Drova - Forsaken Kin",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Eliza",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Shogun Showdown",
+   {
+    "score": 88,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Xenonauts 2",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Dungeon of the Endless",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Thronefall",
+   {
+    "score": 92,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Teamfight Tactics",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Zenless Zone Zero",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Persona 5 Strikers",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 77
+   }
+  ],
+  [
+   "Sakuna: Of Rice and Ruin",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Super Mega Baseball 4",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "What the Golf?",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Duelyst",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Thronebreaker: The Witcher Tales",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "Card Hunter",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Robo Recall",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Moss",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Demeo",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Stormland",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "System Shock 2: 25th Anniversary Remaster",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Wargame: AirLand Battle",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Rising Storm 2: Vietnam",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Rune Factory 4 Special",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "BattleBlock Theater",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Borderlands 3",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "Kingdoms of Amalur: Reckoning",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Star Wars Jedi: Fallen Order",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 81
+   }
+  ],
+  [
+   "Planet Zoo",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "Injustice: Gods Among Us",
+   {
+    "score": 81,
+    "source": "headline",
+    "reviews": 63
+   }
+  ],
+  [
+   "Katana ZERO",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Hellblade: Senua's Sacrifice",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Unpacking",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Firewatch",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 69
+   }
+  ],
+  [
+   "Mortal Kombat Komplete Edition",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Age of Wonders III",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Battlefield 4",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Wasteland 2",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Child of Light",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Castle Crashers",
+   {
+    "score": 82,
+    "source": "headline",
+    "reviews": 49
+   }
+  ],
+  [
+   "Wolfenstein: The New Order",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 73
+   }
+  ],
+  [
+   "Call of Duty: Black Ops",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 89
+   }
+  ],
+  [
+   "Far Cry 5",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 90
+   }
+  ],
+  [
+   "Call of Duty: Modern Warfare",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 85
+   }
+  ],
+  [
+   "Rage",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 77
+   }
+  ],
+  [
+   "Age of Empires IV",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 90
+   }
+  ],
+  [
+   "Frostpunk 2",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 87
+   }
+  ],
+  [
+   "Little Nightmares",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 53
+   }
+  ],
+  [
+   "F1 22",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Anno 1800",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Risk of Rain",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Skullgirls",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Hunt: Showdown",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Curse of the Dead Gods",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Carto",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Manifold Garden",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Sifu",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 83
+   }
+  ],
+  [
+   "Kena: Bridge of Spirits",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 86
+   }
+  ],
+  [
+   "Venba",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Torment: Tides of Numenera",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 76
+   }
+  ],
+  [
+   "The Outlast Trials",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Black Myth: Wukong",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 94
+   }
+  ],
+  [
+   "Marvel Rivals",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Slime Rancher",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Tales of Berseria",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Assassin's Creed Origins",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Detention",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Dishonored: Death of the Outsider",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Furi",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Battlefield V",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Pacific Drive",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Life is Strange: True Colors",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Alien: Isolation",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Marathon",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "The Walking Dead: Season Two",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "To the Moon",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "A Plague Tale: Innocence",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Skul: The Hero Slayer",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Persona 4 Arena Ultimax",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Battlerite",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Have a Nice Death",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Untitled Goose Game",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Wandersong",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Minit",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Wartales",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Battle Brothers",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Clannad",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Void Bastards",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Dustforce",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Bloodstained: Curse of the Moon",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Sokobond",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Lonely Mountains: Downhill",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Panzer Corps 2",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Stories Untold",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Stellar Blade",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 138
+   }
+  ],
+  [
+   "Ultimate Chicken Horse",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 6
+   }
+  ],
+  [
+   "Tainted Grail: Conquest",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Wildfrost",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Deep Rock Galactic: Survivor",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Luna Abyss",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Swan Song",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Loco Motive",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "The Artful Escape",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Genshin Impact",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Honkai: Star Rail",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Lost Ark",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "War Thunder",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "World of Warships",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Knockout City",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Sportsfriends",
+   {
+    "score": 82,
+    "source": "headline",
+    "reviews": 21
+   }
+  ],
+  [
+   "Uncharted: Legacy of Thieves Collection",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 84
+   }
+  ],
+  [
+   "Planescape: Torment: Enhanced Edition",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Door Kickers",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Overcooked! 2",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Broforce",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Helldivers",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "Sea of Thieves",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 78
+   }
+  ],
+  [
+   "Marvel's Guardians of the Galaxy",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 105
+   }
+  ],
+  [
+   "Gears Tactics",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 99
+   }
+  ],
+  [
+   "Immortals Fenyx Rising",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 53
+   }
+  ],
+  [
+   "Company of Heroes 2",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 82
+   }
+  ],
+  [
+   "The Legend of Heroes: Trails in the Sky SC",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Dragon Quest XI: Echoes of an Elusive Age",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 93
+   }
+  ],
+  [
+   "Sleeping Dogs",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "Mutant Year Zero: Road to Eden",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "The Walking Dead: Saints & Sinners",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Watch Dogs",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 80
+   }
+  ],
+  [
+   "Tom Clancy's The Division",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 67
+   }
+  ],
+  [
+   "Call of Duty: WWII",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 87
+   }
+  ],
+  [
+   "Sniper Elite 4",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "Lies of P",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Wo Long: Fallen Dynasty",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 76
+   }
+  ],
+  [
+   "Company of Heroes 3",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Homeworld: Deserts of Kharak",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "A Hat in Time",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 41
+   }
+  ],
+  [
+   "GRID Autosport",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Burnout Paradise Remastered",
+   {
+    "score": 82,
+    "source": "headline",
+    "reviews": 41
+   }
+  ],
+  [
+   "EA Sports WRC",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Two Point Campus",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 68
+   }
+  ],
+  [
+   "BlazBlue: Calamity Trigger",
+   {
+    "score": 86,
+    "source": "headline",
+    "reviews": 51
+   }
+  ],
+  [
+   "Granblue Fantasy: Versus",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 57
+   }
+  ],
+  [
+   "Ghostrunner",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 68
+   }
+  ],
+  [
+   "As Dusk Falls",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 79
+   }
+  ],
+  [
+   "Triangle Strategy",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 112
+   }
+  ],
+  [
+   "The Banner Saga",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 74
+   }
+  ],
+  [
+   "Prodeus",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Cyber Shadow",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Fights in Tight Spaces",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Shadow Warrior",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Tchia",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Monaco: What's Yours Is Mine",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "Renegade Ops",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Anomaly: Warzone Earth",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Waking Mars",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Lone Survivor",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Ultros",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Star Renegades",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Eastward",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "My Time at Sandrock",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "The Riftbreaker",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Strange Horticulture",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Outlast",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Trackmania Turbo",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Oxenfree",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 53
+   }
+  ],
+  [
+   "Moonlighter",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Samurai Shodown",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "Gravity Rush 2",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 100
+   }
+  ],
+  [
+   "Middle-earth: Shadow of War",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 73
+   }
+  ],
+  [
+   "Halo Wars 2",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 85
+   }
+  ],
+  [
+   "Age of Wonders: Planetfall",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "Tyranny",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 69
+   }
+  ],
+  [
+   "Heaven's Vault",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Old World",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Assassin's Creed Valhalla",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "Blasphemous",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Subnautica: Below Zero",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Last Epoch",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Atelier Ryza: Ever Darkness & the Secret Hideout",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Tooth and Tail",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Unravel Two",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "RIDE 4",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Transport Fever 2",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Plague Inc: Evolved",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Workers & Resources: Soviet Republic",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Gunfire Reborn",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 10
+   }
+  ],
+  [
+   "Wizard of Legend",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Brotato",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Guilty Gear Xrd -SIGN-",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Them's Fightin' Herds",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "Solasta: Crown of the Magister",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Fell Seal: Arbiter's Mark",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Symphony of War: The Nephilim Saga",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Coffee Talk",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Danganronpa V3: Killing Harmony",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Muv-Luv",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Severed Steel",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Cruelty Squad",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Electronic Super Joy",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "Slime-san",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Gato Roboto",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Momodora: Reverie Under the Moonlight",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Volgarr the Viking",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Rabi-Ribi",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 11
+   }
+  ],
+  [
+   "The Pedestrian",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Motorsport Manager",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Shadow Empire",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Field of Glory II",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Steel Division 2",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Ultimate General: Gettysburg",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Keep Talking and Nobody Explodes",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Heave Ho",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Ring of Pain",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Astrea: Six-Sided Oracles",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Children of the Sun",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "Botany Manor",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Star Traders: Frontiers",
+   {
+    "score": 90,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "The Legend of Nayuta: Boundless Trails",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Utawarerumono: Mask of Deception",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 22
+   }
+  ],
+  [
+   "Atelier Ryza 2: Lost Legends & the Secret Fairy",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "HROT",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "World of Horror",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Timespinner",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Islets",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Supraland",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Tevi",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Potion Craft: Alchemist Simulator",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "The Red Strings Club",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Mutazione",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Suzerain",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Saints Row: The Third Remastered",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "Shotgun King: The Final Checkmate",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Townscaper",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "A Little to the Left",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Wilmot's Warehouse",
+   {
+    "score": 85,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Bonfire Peaks",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "A Good Snowman Is Hard to Build",
+   {
+    "score": 93,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "Summerhouse",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Railbound",
+   {
+    "score": 81,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "The Last Clockwinder",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Dragon Quest VII Reimagined",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 67
+   }
+  ],
+  [
+   "REANIMAL",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 67
+   }
+  ],
+  [
+   "Fatal Frame II: Crimson Butterfly REMAKE",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "Space Engineers",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Revenge of the Titans",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Bloons TD 5",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Cataclismo",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Technobabylon",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "The Excavation of Hob's Barrow",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "The Sexy Brutale",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Synth Riders",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Retro/Grade",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 31
+   }
+  ],
+  [
+   "Muse Dash",
+   {
+    "score": 73,
+    "source": "headline",
+    "reviews": 11
+   }
+  ],
+  [
+   "Wandering Sword",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "WildStar",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Elite Dangerous",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "World of Tanks",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Pro Evolution Soccer 2019",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Legend Bowl",
+   {
+    "score": 69,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "WWE 2K24",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 64
+   }
+  ],
+  [
+   "Twilight Struggle",
+   {
+    "score": 93,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Into the Radius",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "I Expect You To Die",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Underdogs",
+   {
+    "score": 73,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Star Wars: Squadrons",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Alan Wake Remastered",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "Serious Sam HD: The Second Encounter",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Crisis Core: Final Fantasy VII Reunion",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 84
+   }
+  ],
+  [
+   "Romancing SaGa 2: Revenge of the Seven",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Live A Live",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 103
+   }
+  ],
+  [
+   "Mega Man Legacy Collection",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Wonder Boy: The Dragon's Trap",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 42
+   }
+  ],
+  [
+   "Capcom Fighting Collection",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "VA-11 Hall-A: Cyberpunk Bartender Action",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Analogue: A Hate Story",
+   {
+    "score": 62,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Wargame: European Escalation",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Fall Guys",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 53
+   }
+  ],
+  [
+   "Assault Android Cactus",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Hitman: Absolution",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "The Legend of Heroes: Trails in the Sky",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Resident Evil 3",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 90
+   }
+  ],
+  [
+   "The Evil Within 2",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "A Way Out",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Road 96",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "Still Wakes the Deep",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Scarlet Nexus",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Mount & Blade II: Bannerlord",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Hardspace: Shipbreaker",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Dungeon Defenders",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Payday 2",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Pathologic 2",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "BlazBlue: Cross Tag Battle",
+   {
+    "score": 76,
+    "source": "headline",
+    "reviews": 27
+   }
+  ],
+  [
+   "Ion Fury",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Cook, Serve, Delicious! 3?!",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Northgard",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "The Last of Us Part I",
+   {
+    "score": 59,
+    "source": "pc",
+    "reviews": 124
+   }
+  ],
+  [
+   "Garou: Mark of the Wolves",
+   {
+    "score": 77,
+    "source": "headline",
+    "reviews": 10
+   }
+  ],
+  [
+   "GTFO",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Druidstone: The Secret of the Menhir Forest",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Doki Doki Literature Club",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "The Entropy Centre",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "WRC Generations",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Mundaun",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Unrailed!",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Crawl",
+   {
+    "score": 76,
+    "source": "headline",
+    "reviews": 8
+   }
+  ],
+  [
+   "AI War 2",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Atelier Lulua: The Scion of Arland",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Labyrinth of Refrain: Coven of Dusk",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "Powerslave Exhumed",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "CONSCRIPT",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Moonstone Island",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Islanders",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Not For Broadcast",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Iron Marines",
+   {
+    "score": 90,
+    "source": "headline",
+    "reviews": 6
+   }
+  ],
+  [
+   "Primordia",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Lamplight City",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Strangeland",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "The Book of Unwritten Tales 2",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Creaks",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Ken Follett's The Pillars of the Earth",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Lumines Remastered",
+   {
+    "score": 83,
+    "source": "headline",
+    "reviews": 21
+   }
+  ],
+  [
+   "140",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Naraka: Bladepoint",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Infinity Nikki",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Windjammers 2",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Red Matter",
+   {
+    "score": 84,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Rick and Morty: Virtual Rick-ality",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Dead Rising Deluxe Remaster",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "Rise of the Triad: Ludicrous Edition",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Mega Man Battle Network Legacy Collection",
+   {
+    "score": 77,
+    "source": "headline",
+    "reviews": 31
+   }
+  ],
+  [
+   "Myst",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "7 Billion Humans",
+   {
+    "score": 77,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Tangle Tower",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Hidden Folks",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Bridge Constructor Portal",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Overcooked",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Lethal League Blaze",
+   {
+    "score": 82,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Call of Duty: Modern Warfare 3",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 81
+   }
+  ],
+  [
+   "Stellaris",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "BattleTech",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Nidhogg",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "AI: The Somnium Files",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 22
+   }
+  ],
+  [
+   "GRID 2",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Remnant: From the Ashes",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Mortal Shell",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Mafia: Definitive Edition",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "Dead Space 3",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 68
+   }
+  ],
+  [
+   "FIFA 23",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 75
+   }
+  ],
+  [
+   "NBA 2K23",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 59
+   }
+  ],
+  [
+   "Hotshot Racing",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Weird West",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "Sniper Elite 5",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "Visage",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Trepang2",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Expeditions: Rome",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Magicka",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "Black Book",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Giana Sisters: Twisted Dreams",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Greed Corp",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Iron Brigade",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Hot Wheels Unleashed",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "PowerWash Simulator",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Metal: Hellsinger",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 67
+   }
+  ],
+  [
+   "Grey Goo",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Observer",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Tropico 6",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Children of Morta",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "The King of Fighters XIV",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 55
+   }
+  ],
+  [
+   "Warhammer: End Times - Vermintide",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Humankind",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "Carrion",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 64
+   }
+  ],
+  [
+   "GRID",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "The Quarry",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 92
+   }
+  ],
+  [
+   "Back 4 Blood",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "Sable",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Snowrunner",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Insurgency: Sandstorm",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Fuga: Melodies of Steel",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Ashes of the Singularity: Escalation",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Project Hospital",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Detroit: Become Human",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 117
+   }
+  ],
+  [
+   "Heavy Rain",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 107
+   }
+  ],
+  [
+   "Tacoma",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 62
+   }
+  ],
+  [
+   "The Vanishing of Ethan Carter",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Everybody's Gone to the Rapture",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 91
+   }
+  ],
+  [
+   "Nidhogg 2",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Going Under",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Hob",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Per Aspera",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Pocket Bravery",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Gordian Quest",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Hard West 2",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 41
+   }
+  ],
+  [
+   "Core Keeper",
+   {
+    "score": 86,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Farthest Frontier",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Aokana: Four Rhythms Across the Blue",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 8
+   }
+  ],
+  [
+   "Post Void",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Aeterna Noctis",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Valdis Story: Abyssal City",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Filament",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Quern: Undying Thoughts",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Inertial Drift",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Circuit Superstars",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Distant Worlds 2",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Knights of Honor II: Sovereign",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Broken Arrow",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Buckshot Roulette",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Devil May Cry 4: Special Edition",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "The Wonderful 101: Remastered",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Tricky Towers",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Roguebook",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Trials of Fire",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Stacklands",
+   {
+    "score": 84,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Peglin",
+   {
+    "score": 76,
+    "source": "headline",
+    "reviews": 8
+   }
+  ],
+  [
+   "Dome Keeper",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Bo: Path of the Teal Lotus",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Islands of Insight",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Recettear: An Item Shop's Tale",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Thea: The Awakening",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Ys: Memories of Celceta",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "Nightmare Reaper",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "STASIS",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Sephonie",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "The Mummy Demastered",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Dandara",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Afterimage",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Littlewood",
+   {
+    "score": 81,
+    "source": "headline",
+    "reviews": 12
+   }
+  ],
+  [
+   "Wylde Flowers",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Atomicrops",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Lords of Xulima",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Orcs Must Die! 3",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Wayward Strand",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Necrobarista",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Luck be a Landlord",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "One Step From Eden",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Pikuniku",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Sticky Business",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "While True: learn()",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Wide Ocean Big Jacket",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "X-Morph: Defense",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 12
+   }
+  ],
+  [
+   "Kingdom Rush Vengeance",
+   {
+    "score": 88,
+    "source": "headline",
+    "reviews": 6
+   }
+  ],
+  [
+   "Cannon Brawl",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Full Throttle Remastered",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Syberia: The World Before",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Tsioque",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Sam & Max Save the World Remastered",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Rusty Lake: Roots",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Robobeat",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Audica",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Ragnarock",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Just Shapes & Beats",
+   {
+    "score": 83,
+    "source": "headline",
+    "reviews": 17
+   }
+  ],
+  [
+   "Fuser",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Amazing Cultivation Simulator",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Where Winds Meet",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Vindictus",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Sword of Convallaria",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Fortnite",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Palworld",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Fire Pro Wrestling World",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 19
+   }
+  ],
+  [
+   "Cursed to Golf",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Gremlins, Inc.",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Chess Ultra",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 8
+   }
+  ],
+  [
+   "The Elder Scrolls: Legends",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Faeria",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Boneworks",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "GORN",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Until You Fall",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "In Death",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "A Fisherman's Tale",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Chronos",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Down the Rabbit Hole",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Omega Strikers",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Age of Empires III: Definitive Edition",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "Blood: Fresh Supply",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Star Wars: Dark Forces Remaster",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Diablo II: Resurrected",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 47
+   }
+  ],
+  [
+   "Like a Dragon: Ishin!",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 80
+   }
+  ],
+  [
+   "Red Faction Guerrilla Re-Mars-tered",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Street Fighter 30th Anniversary Collection",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Need for Speed Hot Pursuit Remastered",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Baldur's Gate: Enhanced Edition",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Human Resource Machine",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Cultist Simulator",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Little Inferno",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Steel Division: Normandy 44",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Red Orchestra 2: Heroes of Stalingrad",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "HighFleet",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "IL-2 Sturmovik: Battle of Stalingrad",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Story of Seasons: Friends of Mineral Town",
+   {
+    "score": 77,
+    "source": "headline",
+    "reviews": 49
+   }
+  ],
+  [
+   "Cozy Grove",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Samurai Gunn",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Killer Queen Black",
+   {
+    "score": 83,
+    "source": "headline",
+    "reviews": 22
+   }
+  ],
+  [
+   "Before Your Eyes",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Transformers: Devastation",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Street Fighter V",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 85
+   }
+  ],
+  [
+   "Shadowrun Returns",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "MotoGP 21",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Amnesia: Rebirth",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 56
+   }
+  ],
+  [
+   "Bad North",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Batman: The Telltale Series",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Rain World",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Shadow Warrior 2",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 63
+   }
+  ],
+  [
+   "BPM: Bullets Per Minute",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Trine 4: The Nightmare Prince",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Roots of Pacha",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "The Inner World",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "AVICII Invector",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Wuthering Waves",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "The Legend of Tianding",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "TERA",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 41
+   }
+  ],
+  [
+   "NBA 2K25",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "TopSpin 2K25",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 53
+   }
+  ],
+  [
+   "Realm of the Mad God",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Age of Empires: Definitive Edition",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Yes, Your Grace",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Mortal Kombat 1",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 86
+   }
+  ],
+  [
+   "Total War: Rome II",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Spec Ops: The Line",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Noita",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Call of Duty: Black Ops Cold War",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "Kingdom Come: Deliverance",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "The Mortuary Assistant",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Rochard",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Outlast 2",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Tropico 5",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Surviving Mars",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Killing Floor 2",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Two Worlds II",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Tropico 4",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Sundered",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Prototype 2",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 69
+   }
+  ],
+  [
+   "Dying Light 2 Stay Human",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Victoria 3",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Watch Dogs: Legion",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 52
+   }
+  ],
+  [
+   "Mortal Kombat X",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 81
+   }
+  ],
+  [
+   "Call of Duty: Warzone",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Ghost of a Tale",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Iratus: Lord of the Dead",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Forever Skies",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Medieval Dynasty",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   " The Wandering Village",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Famicom Detective Club: The Missing Heir",
+   {
+    "score": 74,
+    "source": "headline",
+    "reviews": 68
+   }
+  ],
+  [
+   "They Bleed Pixels",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Superliminal",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Hue",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Field of Glory: Empires",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Yomawari: Night Alone",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 21
+   }
+  ],
+  [
+   "Sleeping Dogs: Definitive Edition",
+   {
+    "score": 77,
+    "source": "headline",
+    "reviews": 34
+   }
+  ],
+  [
+   "Boomerang Fu",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Nowhere Prophet",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Loddlenaut",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Cogs",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Polaris Sector",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Megadimension Neptunia VII",
+   {
+    "score": 71,
+    "source": "headline",
+    "reviews": 23
+   }
+  ],
+  [
+   "Forgive Me Father",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Dread Templar",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Nickelodeon All-Star Brawl 2",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "The Last Faith",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Haiku, the Robot",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Ghost Song",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Voidwrought",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Ooblets",
+   {
+    "score": 62,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Bear and Breakfast",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Serpent in the Staglands",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "World War Z: Aftermath",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Inkbound",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "House Flipper 2",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "SimplePlanes",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Job Simulator",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Ratropolis",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Anna's Quest",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Fran Bow",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Unforeseen Incidents",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "The Darkside Detective",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Beyond a Steel Sky",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Duck Detective: The Secret Salami",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Dropsy",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Beat Hazard",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Taiko no Tatsujin: The Drum Master!",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Vectronom",
+   {
+    "score": 82,
+    "source": "headline",
+    "reviews": 12
+   }
+  ],
+  [
+   "The Coma 2: Vicious Sisters",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Azure Striker Gunvolt",
+   {
+    "score": 77,
+    "source": "headline",
+    "reviews": 20
+   }
+  ],
+  [
+   "Football, Tactics & Glory",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Evolution: The Video Game",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Shadowhand",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Signs of the Sojourner",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Arizona Sunshine 2",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Star Trek: Bridge Crew",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Sairento VR",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Super Animal Royale",
+   {
+    "score": 73,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Resident Evil 0 HD Remaster",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "DOOM 64",
+   {
+    "score": 76,
+    "source": "headline",
+    "reviews": 10
+   }
+  ],
+  [
+   "Days Gone Remastered",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 57
+   }
+  ],
+  [
+   "Tomb Raider IV-VI Remastered",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Chernobylite",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "Ancestors Legacy",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Obduction",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Men of War: Assault Squad 2",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Lethal League",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Moving Out",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Dying Light",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "The Evil Within",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "EA Sports FC 24",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 76
+   }
+  ],
+  [
+   "Dear Esther",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "The Surge 2",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "I Am Setsuna",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 74
+   }
+  ],
+  [
+   "Hard Reset",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Warlock: Master of the Arcane",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Iron Harvest",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 55
+   }
+  ],
+  [
+   "Gigantic",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Othercide",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "GRID Legends",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Total War: Pharaoh",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "In Sound Mind",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Atomic Heart",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "My Time at Portia",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Telling Lies",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "The Invincible",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "Victor Vran",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "PGA Tour 2K23",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Ultimate Marvel vs. Capcom 3",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 48
+   }
+  ],
+  [
+   "Fantasy Strike",
+   {
+    "score": 76,
+    "source": "headline",
+    "reviews": 11
+   }
+  ],
+  [
+   "Volume",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Neon Abyss",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Phoenix Point",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Wildmender",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Foundation",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Chaos;Head Noah",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "WRATH: Aeon of Ruin",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Mothergunship",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Tormented Souls",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "We Were Here Together",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Move or Die",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Backpack Hero",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Cargo Commander",
+   {
+    "score": 63,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "The Alliance Alive HD Remastered",
+   {
+    "score": 74,
+    "source": "headline",
+    "reviews": 14
+   }
+  ],
+  [
+   "Cookie Cutter",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "The Spell Brigade",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "VirtuaVerse",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Pirates Outlaws",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Spilled!",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Shardlight",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "The Inner World: The Last Wind Monk",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Soundodger+",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Aaero",
+   {
+    "score": 80,
+    "source": "headline",
+    "reviews": 13
+   }
+  ],
+  [
+   "Drums Rock",
+   {
+    "score": 73,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Sands of Salzaar",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "BONELAB",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Blacklight: Retribution",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Dirty Bomb",
+   {
+    "score": 63,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Spellbreak",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Total War: ROME Remastered",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Shadow Man Remastered",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Trials of Mana",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "Coral Island",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Just Cause 3",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 53
+   }
+  ],
+  [
+   "Warhammer 40,000: Space Marine",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Binary Domain",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Tiny Glade",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Cris Tales",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Hard West",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Imperator: Rome",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Amnesia: A Machine for Pigs",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Game Dev Tycoon",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Planet Coaster 2",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Farming Simulator 22",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Phantom Doctrine",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Expeditions: Viking",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Banners of Ruin",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Breathedge",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Once Human",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Kingdoms and Castles",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Endzone: A World Apart",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Inbento",
+   {
+    "score": 76,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "Golf With Your Friends",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 12
+   }
+  ],
+  [
+   "Song of Horror",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Oriental Empires",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Mary Skelter: Nightmares",
+   {
+    "score": 76,
+    "source": "headline",
+    "reviews": 14
+   }
+  ],
+  [
+   "POSTAL: Brain Damaged",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Heartworm",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "RIDE 5",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 25
+   }
+  ],
+  [
+   "Grip: Combat Racing",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Minoria",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Souldiers",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Spirittea",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Fabledom",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "The Dungeon of Naheulbeuk: The Amulet of Chaos",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Mahokenshi",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Autonauts",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Expeditions: A MudRunner Game",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Anomaly 2",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "CastleStorm",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Unstoppable Gorg",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "PixelJunk Monsters 2",
+   {
+    "score": 72,
+    "source": "headline",
+    "reviews": 11
+   }
+  ],
+  [
+   "Diplomacy is Not an Option",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Age of Darkness: Final Stand",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Despot's Game",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "The Whispered World",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 41
+   }
+  ],
+  [
+   "Gibbous: A Cthulhu Adventure",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Chuchel",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Harold Halibut",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Genesis Noir",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Audioshield",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Audiosurf 2",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "FRACT OSC",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Everhood 2",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Anno: Mutationem",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Behind the Frame: The Finest Scenery",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Neverwinter",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Mutant Football League",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Pure Pool",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Steep",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Shredders",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Yu-Gi-Oh! Master Duel",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Chronicle: RuneScape Legends",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Budget Cuts",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Trover Saves the Universe",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Dauntless",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "The Thing: Remastered",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Shin Megami Tensei III Nocturne HD Remaster",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Destroy All Humans!",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Broken Sword - Shadow of the Templars: Reforged",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Mega Man X Legacy Collection",
+   {
+    "score": 84,
+    "source": "headline",
+    "reviews": 16
+   }
+  ],
+  [
+   "Quantum Conundrum",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "Insurgency",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Partisans 1941",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Kynseed",
+   {
+    "score": 89,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Wytchwood",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Fae Farm",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "Far Cry 6",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 64
+   }
+  ],
+  [
+   "Stranger of Paradise: Final Fantasy Origin",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 94
+   }
+  ],
+  [
+   "Shank",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Rage 2",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 64
+   }
+  ],
+  [
+   "Red Faction: Armageddon",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 74
+   }
+  ],
+  [
+   "Tom Clancy's Rainbow Six Siege",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Sanctum 2",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Capsized",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Greedfall",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Lords of the Fallen",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Mad Max",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 72
+   }
+  ],
+  [
+   "Banished",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Jurassic World Evolution 2",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Open Roads",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Pathfinder: Kingmaker",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Zombie Army 4: Dead War",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "Disney Dreamlight Valley",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Aragami",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Green Hell",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "MADiSON",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Fighting EX Layer",
+   {
+    "score": 73,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Encased: A Sci-Fi Post-Apocalyptic RPG",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Ninja Gaiden: Master Collection",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "Slave Zero X",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Tools Up!",
+   {
+    "score": 62,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Death Squared",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 25
+   }
+  ],
+  [
+   "Nine Parchments",
+   {
+    "score": 66,
+    "source": "headline",
+    "reviews": 15
+   }
+  ],
+  [
+   "Aggressors: Ancient Rome",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Galactic Civilizations IV",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Monark",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "SPRAWL",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Martha is Dead",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Vigil: The Longest Night",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Code Vein II",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 89
+   }
+  ],
+  [
+   "Edna & Harvey: Harvey's New Eyes",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Little Misfortune",
+   {
+    "score": 57,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Happy Game",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Wuchang: Fallen Feathers",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 92
+   }
+  ],
+  [
+   "Dragon Ball Xenoverse 2",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "Blood Bowl 2",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Emily is Away Too",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Interrogation: You will be deceived",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "The White Door",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "The Turing Test",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "The Surge",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "Serious Sam 3: BFE",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 53
+   }
+  ],
+  [
+   "Homeworld 3",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "The Medium",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 84
+   }
+  ],
+  [
+   "Need for Speed Heat",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Aragami 2",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Outward",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Goodbye Volcano High",
+   {
+    "score": 82,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "Strange Brigade",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Alpha Protocol",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 68
+   }
+  ],
+  [
+   "Survival: Fountain of Youth",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Sorcerer King: Rivals",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Millennia",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Dragon Star Varnir",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 15
+   }
+  ],
+  [
+   "Doomblade",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Dakar Desert Rally",
+   {
+    "score": 62,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Sker Ritual",
+   {
+    "score": 55,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "Dungeon Drafters",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "RoadCraft",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Mutropolis",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "The Journey Down: Chapter Three",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Willy Morgan and the Curse of Bone Town",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Beatbuddy: Tale of the Guardians",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Rhythm Fighter",
+   {
+    "score": 72,
+    "source": "headline",
+    "reviews": 10
+   }
+  ],
+  [
+   "ICEY",
+   {
+    "score": 84,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Albion Online",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "DC Universe Online",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "New Star Manager",
+   {
+    "score": 58,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Super Blood Hockey",
+   {
+    "score": 65,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "Lords of Waterdeep",
+   {
+    "score": 90,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "Pharaoh: A New Era",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Mind Scanners",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "The Shrouded Isle",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Headquarters: World War II",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Isonzo",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Story of Seasons: A Wonderful Life",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 26
+   }
+  ],
+  [
+   "Cattails",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 12
+   }
+  ],
+  [
+   "Grow: Song of the Evertree",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Everdream Valley",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 6
+   }
+  ],
+  [
+   "Project Winter",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 6
+   }
+  ],
+  [
+   "Mass Effect: Andromeda",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 67
+   }
+  ],
+  [
+   "Tom Clancy's Ghost Recon Wildlands",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "Dead by Daylight",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Styx: Shards of Darkness",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "The Saboteur",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 69
+   }
+  ],
+  [
+   "Vampyr",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 76
+   }
+  ],
+  [
+   "Until Dawn",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 58
+   }
+  ],
+  [
+   "Cities: Skylines II",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Twelve Minutes",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 64
+   }
+  ],
+  [
+   "Project CARS 3",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Soulstice",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Tower of Guns",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Code Vein",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 71
+   }
+  ],
+  [
+   "Styx: Master of Shadows",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Jurassic World Evolution",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Risen 2: Dark Waters",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Graveyard Keeper",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "ELEX",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "No Man's Sky",
+   {
+    "score": 61,
+    "source": "pc",
+    "reviews": 100
+   }
+  ],
+  [
+   "Lost Sphear",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 54
+   }
+  ],
+  [
+   "Conarium",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Sea of Solitude",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "AO Tennis 2",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Massive Chalice",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Dark Deity",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Aven Colony",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 21
+   }
+  ],
+  [
+   "Super Meat Boy Forever",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Gravel",
+   {
+    "score": 62,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Cake Bash",
+   {
+    "score": 76,
+    "source": "headline",
+    "reviews": 13
+   }
+  ],
+  [
+   "Pandora: First Contact",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Warlock 2: The Exiled",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "White Day: A Labyrinth Named School",
+   {
+    "score": 67,
+    "source": "headline",
+    "reviews": 32
+   }
+  ],
+  [
+   "Fatal Frame: Maiden of Black Water",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 60
+   }
+  ],
+  [
+   "Phantom Breaker: Omnia",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "Cooking Simulator",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Lake",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Sniper Ghost Warrior Contracts 2",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Car Mechanic Simulator 2021",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Farming Simulator 19",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Contraband Police",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Prime World: Defenders",
+   {
+    "score": 58,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "The Dark Eye: Chains of Satinav",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Silence: The Whispered World 2",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Deponia Doomsday",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Chinatown Detective Agency",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Pilgrims",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Tesla Effect: A Tex Murphy Adventure",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Nelly Cootalot: The Fowl Fleet",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Leisure Suit Larry: Wet Dreams Don't Dry",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Chime Sharp",
+   {
+    "score": 85,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Bright Memory: Infinite",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "Lost Soul Aside",
+   {
+    "score": 55,
+    "source": "pc",
+    "reviews": 62
+   }
+  ],
+  [
+   "Black Desert Online",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "ArcheAge",
+   {
+    "score": 80,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "The Elder Scrolls Online",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 64
+   }
+  ],
+  [
+   "Crossout",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Conan Exiles",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "The Golf Club 2019 featuring PGA Tour",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "theHunter: Call of the Wild",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Poker Night 2",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Guild of Dungeoneering",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Loadout",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Sonic Origins",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Death's Gambit",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Octodad: Dadliest Catch",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "Broken Lines",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Screencheat",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Magicka 2",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Divekick",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Batman: Arkham Knight",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 90
+   }
+  ],
+  [
+   "Thief",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 48
+   }
+  ],
+  [
+   "Just Cause 4",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Nickelodeon All-Star Brawl",
+   {
+    "score": 63,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "7 Days to Die",
+   {
+    "score": 47,
+    "source": "headline",
+    "reviews": 17
+   }
+  ],
+  [
+   "One Piece: Burning Blood",
+   {
+    "score": 66,
+    "source": "headline",
+    "reviews": 45
+   }
+  ],
+  [
+   "ARK: Survival Evolved",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Serial Cleaner",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Vigor",
+   {
+    "score": 61,
+    "source": "headline",
+    "reviews": 8
+   }
+  ],
+  [
+   "Punch Line",
+   {
+    "score": 66,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "Onikira: Demon Killer",
+   {
+    "score": 55,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Anuchard",
+   {
+    "score": 70,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Human: Fall Flat",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Disgaea 6 Complete",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Tales of Symphonia Remastered",
+   {
+    "score": 63,
+    "source": "headline",
+    "reviews": 26
+   }
+  ],
+  [
+   "RennSport",
+   {
+    "score": 53,
+    "source": "headline",
+    "reviews": 10
+   }
+  ],
+  [
+   "Mineko's Night Market",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Gas Station Simulator",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Drug Dealer Simulator",
+   {
+    "score": 59,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Fortified!",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Loopmancer",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Tales of Symphonia",
+   {
+    "score": 86,
+    "source": "headline",
+    "reviews": 60
+   }
+  ],
+  [
+   "New World",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 43
+   }
+  ],
+  [
+   "Wrestling Empire",
+   {
+    "score": 57,
+    "source": "headline",
+    "reviews": 6
+   }
+  ],
+  [
+   "Yu-Gi-Oh! Legacy of the Duelist: Link Evolution",
+   {
+    "score": 79,
+    "source": "headline",
+    "reviews": 13
+   }
+  ],
+  [
+   "HEX: Shards of Fate",
+   {
+    "score": 87,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Alien: Rogue Incursion",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Green Hell VR",
+   {
+    "score": 83,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Rogue Company",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Vampire: The Masquerade - Bloodhunt",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "Splitgate 2",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "A Mortician's Tale",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Radio Commander",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Story of Seasons: Pioneers of Olive Town",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 61
+   }
+  ],
+  [
+   "Farm Together",
+   {
+    "score": 77,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Sugardew Island",
+   {
+    "score": 55,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "The Callisto Protocol",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 94
+   }
+  ],
+  [
+   "Aliens: Fireteam Elite",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "The Sinking City",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "Warframe",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Rust",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Skater XL",
+   {
+    "score": 56,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Soundfall",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Shenmue I & II",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 36
+   }
+  ],
+  [
+   "The Beginner's Guide",
+   {
+    "score": 76,
+    "source": "pc",
+    "reviews": 37
+   }
+  ],
+  [
+   "Marvel's Avengers",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 100
+   }
+  ],
+  [
+   "ELEX II",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Astria Ascending",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Risen 3: Titan Lords",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Battlefield 2042",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 84
+   }
+  ],
+  [
+   "Gotham Knights",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 84
+   }
+  ],
+  [
+   "The Crew 2",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 57
+   }
+  ],
+  [
+   "Scorn",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 76
+   }
+  ],
+  [
+   "Seven: The Days Long Gone",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "Smalland: Survive the Wilds",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Patron",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Process of Elimination",
+   {
+    "score": 70,
+    "source": "headline",
+    "reviews": 8
+   }
+  ],
+  [
+   "Maquette",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 44
+   }
+  ],
+  [
+   "MX vs ATV All Out",
+   {
+    "score": 42,
+    "source": "headline",
+    "reviews": 6
+   }
+  ],
+  [
+   "NASCAR Heat 5",
+   {
+    "score": 69,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "Session: Skate Sim",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Maid of Sker",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Fallen Legion: Revenants",
+   {
+    "score": 54,
+    "source": "headline",
+    "reviews": 11
+   }
+  ],
+  [
+   "Catastronauts",
+   {
+    "score": 78,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Fairy Fencer F: Advent Dark Force",
+   {
+    "score": 71,
+    "source": "headline",
+    "reviews": 21
+   }
+  ],
+  [
+   "The Coma: Recut",
+   {
+    "score": 62,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "Infliction: Extended Cut",
+   {
+    "score": 64,
+    "source": "headline",
+    "reviews": 12
+   }
+  ],
+  [
+   "Post Trauma",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Waku Waku 7",
+   {
+    "score": 73,
+    "source": "headline",
+    "reviews": 6
+   }
+  ],
+  [
+   "Blade Strangers",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 17
+   }
+  ],
+  [
+   "Synced",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "House Flipper",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "911 Operator",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 8
+   }
+  ],
+  [
+   "This Is the Police",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 35
+   }
+  ],
+  [
+   "No Straight Roads",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Throne and Liberty",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Star Trek Online",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 34
+   }
+  ],
+  [
+   "Defiance",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 40
+   }
+  ],
+  [
+   "Undisputed",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Pro Cycling Manager 2024",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Disc Jam",
+   {
+    "score": 73,
+    "source": "headline",
+    "reviews": 10
+   }
+  ],
+  [
+   "Splendor",
+   {
+    "score": 76,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "Espire 1: VR Operative",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Wanderer",
+   {
+    "score": 81,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Firefall",
+   {
+    "score": 60,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Sniper Elite V2 Remastered",
+   {
+    "score": 61,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Destroy All Humans! 2 - Reprobed",
+   {
+    "score": 71,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Edge of Eternity",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Sudden Strike 4",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Rune Factory 5",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Palia",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Staxel",
+   {
+    "score": 61,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "NBA 2K21",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 50
+   }
+  ],
+  [
+   "Marvel vs. Capcom: Infinite",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 75
+   }
+  ],
+  [
+   "Aliens vs. Predator",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 64
+   }
+  ],
+  [
+   "State of Decay 2",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 78
+   }
+  ],
+  [
+   "Stranded Deep",
+   {
+    "score": 65,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "Cities in Motion 2",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "MultiVersus",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Root Letter",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 16
+   }
+  ],
+  [
+   "Strafe",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 41
+   }
+  ],
+  [
+   "Redeemer: Enhanced Edition",
+   {
+    "score": 66,
+    "source": "headline",
+    "reviews": 10
+   }
+  ],
+  [
+   "Legrand Legacy: Tale of the Fatebounds",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Lawn Mowing Simulator",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Mafia II: Definitive Edition",
+   {
+    "score": 72,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "Alone in the Dark",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 77
+   }
+  ],
+  [
+   "Final Fantasy XIII",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 83
+   }
+  ],
+  [
+   "Sword of the Stars: The Pit",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 7
+   }
+  ],
+  [
+   "Stronghold: Warlords",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 28
+   }
+  ],
+  [
+   "Trillion: God of Destruction",
+   {
+    "score": 65,
+    "source": "headline",
+    "reviews": 21
+   }
+  ],
+  [
+   "Encodya",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Runner3",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Vambrace: Cold Soul",
+   {
+    "score": 59,
+    "source": "pc",
+    "reviews": 16
+   }
+  ],
+  [
+   "Trove",
+   {
+    "score": 65,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "AEW Fight Forever",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 45
+   }
+  ],
+  [
+   "Talisman: Digital Edition",
+   {
+    "score": 51,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Darwin Project",
+   {
+    "score": 74,
+    "source": "pc",
+    "reviews": 11
+   }
+  ],
+  [
+   "Operation Flashpoint: Red River",
+   {
+    "score": 67,
+    "source": "pc",
+    "reviews": 64
+   }
+  ],
+  [
+   "Yonder: The Cloud Catcher Chronicles",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 39
+   }
+  ],
+  [
+   "Styx: Blades of Greed",
+   {
+    "score": 75,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Phantom Breaker: Battle Grounds",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "GRAVEN",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Train Station Renovation",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Hokko Life",
+   {
+    "score": 54,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Fishing: Barents Sea",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 5
+   }
+  ],
+  [
+   "Deemo Reborn",
+   {
+    "score": 75,
+    "source": "headline",
+    "reviews": 9
+   }
+  ],
+  [
+   "Tower of Fantasy",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Behold the Kickmen",
+   {
+    "score": 58,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Don Bradman Cricket 17",
+   {
+    "score": 83,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Fallout 4 VR",
+   {
+    "score": 78,
+    "source": "pc",
+    "reviews": 27
+   }
+  ],
+  [
+   "Hyper Scape",
+   {
+    "score": 68,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Remothered: Tormented Fathers",
+   {
+    "score": 77,
+    "source": "pc",
+    "reviews": 15
+   }
+  ],
+  [
+   "SimCity",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 75
+   }
+  ],
+  [
+   "Calico",
+   {
+    "score": 57,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Police Simulator: Patrol Officers",
+   {
+    "score": 58,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Carcassonne - Tiles & Tactics",
+   {
+    "score": 63,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Kitaria Fables",
+   {
+    "score": 69,
+    "source": "headline",
+    "reviews": 10
+   }
+  ],
+  [
+   "Gang Beasts",
+   {
+    "score": 68,
+    "source": "headline",
+    "reviews": 18
+   }
+  ],
+  [
+   "Of Orcs and Men",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Painkiller: Hell & Damnation",
+   {
+    "score": 64,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Shadwen",
+   {
+    "score": 53,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "King's Bounty II",
+   {
+    "score": 63,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Bus Simulator 21",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Matchpoint - Tennis Championships",
+   {
+    "score": 58,
+    "source": "pc",
+    "reviews": 17
+   }
+  ],
+  [
+   "Warhammer Quest",
+   {
+    "score": 55,
+    "source": "pc",
+    "reviews": 23
+   }
+  ],
+  [
+   "Tharsis",
+   {
+    "score": 61,
+    "source": "pc",
+    "reviews": 25
+   }
+  ],
+  [
+   "Front Mission 1st: Remake",
+   {
+    "score": 69,
+    "source": "headline",
+    "reviews": 23
+   }
+  ],
+  [
+   "Wolfenstein: Youngblood",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Mafia III",
+   {
+    "score": 62,
+    "source": "pc",
+    "reviews": 70
+   }
+  ],
+  [
+   "Saints Row",
+   {
+    "score": 63,
+    "source": "pc",
+    "reviews": 66
+   }
+  ],
+  [
+   "V-Rally 4",
+   {
+    "score": 58,
+    "source": "headline",
+    "reviews": 28
+   }
+  ],
+  [
+   "Mars: War Logs",
+   {
+    "score": 59,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "The Technomancer",
+   {
+    "score": 56,
+    "source": "pc",
+    "reviews": 38
+   }
+  ],
+  [
+   "Biomutant",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Planetary Annihilation",
+   {
+    "score": 62,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Death to Spies: Moment of Truth",
+   {
+    "score": 73,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Cricket 22",
+   {
+    "score": 63,
+    "source": "headline",
+    "reviews": 4
+   }
+  ],
+  [
+   "Routine",
+   {
+    "score": 79,
+    "source": "pc",
+    "reviews": 33
+   }
+  ],
+  [
+   "Omen of Sorrow",
+   {
+    "score": 64,
+    "source": "headline",
+    "reviews": 13
+   }
+  ],
+  [
+   "Concord",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "NBA 2K Playgrounds 2",
+   {
+    "score": 73,
+    "source": "headline",
+    "reviews": 29
+   }
+  ],
+  [
+   "Madden NFL 24",
+   {
+    "score": 65,
+    "source": "headline",
+    "reviews": 22
+   }
+  ],
+  [
+   "Big Rumble Boxing: Creed Champions",
+   {
+    "score": 67,
+    "source": "headline",
+    "reviews": 8
+   }
+  ],
+  [
+   "Cricket 24",
+   {
+    "score": 57,
+    "source": "headline",
+    "reviews": 7
+   }
+  ],
+  [
+   "Devil May Cry HD Collection",
+   {
+    "score": 77,
+    "source": "headline",
+    "reviews": 32
+   }
+  ],
+  [
+   "Vikings: Wolves of Midgard",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Summer in Mara",
+   {
+    "score": 63,
+    "source": "pc",
+    "reviews": 30
+   }
+  ],
+  [
+   "Cyberdimension Neptunia: 4 Goddesses Online",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 12
+   }
+  ],
+  [
+   "Generation Zero",
+   {
+    "score": 51,
+    "source": "pc",
+    "reviews": 31
+   }
+  ],
+  [
+   "Tennis World Tour 2",
+   {
+    "score": 60,
+    "source": "pc",
+    "reviews": 24
+   }
+  ],
+  [
+   "Achtung! Cthulhu Tactics",
+   {
+    "score": 56,
+    "source": "pc",
+    "reviews": 13
+   }
+  ],
+  [
+   "Lust for Darkness",
+   {
+    "score": 50,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Fight of Gods",
+   {
+    "score": 36,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "The Outbound Ghost",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "The First Descendant",
+   {
+    "score": 57,
+    "source": "pc",
+    "reviews": 22
+   }
+  ],
+  [
+   "Suicide Squad: Kill the Justice League",
+   {
+    "score": 63,
+    "source": "pc",
+    "reviews": 91
+   }
+  ],
+  [
+   "Sociable Soccer 24",
+   {
+    "score": 69,
+    "source": "pc",
+    "reviews": 6
+   }
+  ],
+  [
+   "Bound by Flame",
+   {
+    "score": 56,
+    "source": "pc",
+    "reviews": 42
+   }
+  ],
+  [
+   "Earthfall",
+   {
+    "score": 61,
+    "source": "pc",
+    "reviews": 19
+   }
+  ],
+  [
+   "Warcraft III: Reforged",
+   {
+    "score": 59,
+    "source": "pc",
+    "reviews": 53
+   }
+  ],
+  [
+   "Tom Clancy's Ghost Recon Breakpoint",
+   {
+    "score": 58,
+    "source": "pc",
+    "reviews": 59
+   }
+  ],
+  [
+   "Naruto to Boruto: Shinobi Striker",
+   {
+    "score": 66,
+    "source": "pc",
+    "reviews": 29
+   }
+  ],
+  [
+   "Monopoly Plus",
+   {
+    "score": 53,
+    "source": "headline",
+    "reviews": 17
+   }
+  ],
+  [
+   "Little Dragons Cafe",
+   {
+    "score": 70,
+    "source": "headline",
+    "reviews": 22
+   }
+  ],
+  [
+   "Jump Force",
+   {
+    "score": 60,
+    "source": "pc",
+    "reviews": 65
+   }
+  ],
+  [
+   "Worlds of Magic",
+   {
+    "score": 52,
+    "source": "pc",
+    "reviews": 10
+   }
+  ],
+  [
+   "Harvest Moon: Light of Hope",
+   {
+    "score": 62,
+    "source": "headline",
+    "reviews": 5
+   }
+  ],
+  [
+   "Kingdom Under Fire II",
+   {
+    "score": 62,
+    "source": "pc",
+    "reviews": 9
+   }
+  ],
+  [
+   "Rugby 22",
+   {
+    "score": 59,
+    "source": "headline",
+    "reviews": 6
+   }
+  ],
+  [
+   "Dawn of Andromeda",
+   {
+    "score": 70,
+    "source": "pc",
+    "reviews": 4
+   }
+  ],
+  [
+   "Homefront: The Revolution",
+   {
+    "score": 54,
+    "source": "pc",
+    "reviews": 51
+   }
+  ],
+  [
+   "FlatOut 4: Total Insanity",
+   {
+    "score": 52,
+    "source": "pc",
+    "reviews": 32
+   }
+  ],
+  [
+   "God of Rock",
+   {
+    "score": 62,
+    "source": "pc",
+    "reviews": 14
+   }
+  ],
+  [
+   "Fallout 76",
+   {
+    "score": 52,
+    "source": "pc",
+    "reviews": 49
+   }
+  ],
+  [
+   "Devil's Hunt",
+   {
+    "score": 47,
+    "source": "pc",
+    "reviews": 20
+   }
+  ],
+  [
+   "Star Wars: Battlefront Classic Collection",
+   {
+    "score": 65,
+    "source": "pc",
+    "reviews": 18
+   }
+  ],
+  [
+   "Yaiba: Ninja Gaiden Z",
+   {
+    "score": 49,
+    "source": "pc",
+    "reviews": 46
+   }
+  ],
+  [
+   "Syberia 3",
+   {
+    "score": 51,
+    "source": "pc",
+    "reviews": 34
+   }
+  ]
+ ]
+}
