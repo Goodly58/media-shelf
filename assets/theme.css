@@ -751,8 +751,64 @@
 :root[data-theme="light"] body[data-page="movies"] .overlay,
 :root[data-theme="light"] body[data-page="shows"]  .overlay { background: var(--t-scrim); }
 
+/* ==========================================================================
+   8. LIGHT — WHAT NEXT (the backlog page: green on the same warm paper)
+   ==========================================================================
+   Added with the page rather than after it, because the previous two pages
+   shipped without a light block and spent a while showing a near-black filter
+   bar and a wordmark whose gradient started at #fff — its first letter
+   paper-on-paper. A new page inherits that trap by default; the fix is to give
+   it a palette the moment it exists.
+   -------------------------------------------------------------------------- */
+:root[data-theme="light"] body[data-page="backlog"] {
+  --bg:      #f4f2ed;
+  --bg2:     #efece5;
+  --panel:   #fffdf8;
+  --panel2:  #f7f4ee;
+  --panel3:  #e9e5db;
+  --line:    #e3ded3;
+  --line2:   #cec7b8;
+  --txt:     #1b1a17;
+  --txt2:    #3e3c37;
+  --mut:     #5c584f;
+  --mut2:    #6f6a5d;
+  /* The dark page's #3ddc97 is a highlighter on paper; this is the same hue
+     taken down until it carries text. */
+  --acc:     #0f8a5f;
+  --acc2:    #10708c;
+  --accSoft: rgba(15, 138, 95, .13);
+  --good:    #0b7a4b;
+  --mid:     #9a6408;
+  --bad:     #c0303c;
+  --shadow:  0 16px 34px -18px rgba(38, 33, 25, .38);
+
+  background:
+    radial-gradient(1100px 520px at 12% -8%, #d8f0e4 0%, transparent 60%),
+    radial-gradient(900px 520px at 92% -4%, #d6ecf4 0%, transparent 56%),
+    var(--bg);
+}
+:root[data-theme="light"] body[data-page="backlog"] h1 b {
+  background: linear-gradient(90deg, #17181c, #0b6f4c);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+:root[data-theme="light"] body[data-page="backlog"] .logo {
+  box-shadow: 0 8px 20px -8px rgba(15, 138, 95, .45);
+}
+:root[data-theme="light"] body[data-page="backlog"] .intake { background: var(--panel); }
+:root[data-theme="light"] body[data-page="backlog"] .btn.primary { color: #f6fffb; }
+/* The provenance badges are read at a glance and must not all go grey on paper. */
+:root[data-theme="light"] body[data-page="backlog"] .b-critics {
+  color: #075c3c; background: rgba(240, 253, 246, .9); border-color: rgba(11, 122, 75, .45);
+}
+:root[data-theme="light"] body[data-page="backlog"] .b-shelf {
+  color: #7a4e04; background: rgba(255, 250, 235, .9); border-color: rgba(154, 100, 8, .4);
+}
+:root[data-theme="light"] body[data-page="backlog"] .b-community {
+  color: var(--mut); background: var(--panel2); border-color: var(--line2);
+}
+
 /* --------------------------------------------------------------------------
-   8. Small shared safety nets for light mode
+   9. Small shared safety nets for light mode
    -------------------------------------------------------------------------- */
 /* Focus visibility: the default UA ring can vanish on tinted panels.
    (The favourite star keeps each page's own semantic colour — games uses

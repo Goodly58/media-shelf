@@ -67,6 +67,9 @@ var SHELL = [
   'books.html',
   'movies.html',
   'shows.html',
+  'backlog.html',
+  'assets/backlog.js',
+  'data/backlog-index.json',
   'manifest.webmanifest',
   /* Shared chrome */
   'assets/site.css',

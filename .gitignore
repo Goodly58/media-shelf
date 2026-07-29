@@ -3,3 +3,6 @@ node_modules/
 *.log
 _verify_keys.json
 _verify_workflow.js.verify-cache/
+
+# verification fetch cache (regenerated on demand)
+.verify-cache/

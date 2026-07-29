@@ -19,7 +19,8 @@
     { id: 'games', href: 'games.html', label: 'Games', icon: 'gamepad-2' },
     { id: 'books', href: 'books.html', label: 'Books', icon: 'book-open' },
     { id: 'movies', href: 'movies.html', label: 'Films', icon: 'clapperboard' },
-    { id: 'shows', href: 'shows.html', label: 'Series', icon: 'tv' }
+    { id: 'shows', href: 'shows.html', label: 'Series', icon: 'tv' },
+    { id: 'backlog', href: 'backlog.html', label: 'What next', icon: 'target' }
   ];
   var page = document.body.getAttribute('data-page') || '';
   var isHome = page === 'home';
@@ -68,6 +69,7 @@
     "clapperboard": "<path d=\"M20.2 6 3 11.1a2 2 0 0 0-1.4 2.4l1.3 4.7a2 2 0 0 0 2.5 1.4l17.1-5a2 2 0 0 0 1.4-2.5l-1.3-4.7A2 2 0 0 0 20.2 6Z\"/><path d=\"m6.2 5.3 3.1 3.9\"/><path d=\"m12.4 3.4 3.1 4\"/><path d=\"M3 11.2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9\"/>",
     "tv": "<rect width=\"20\" height=\"15\" x=\"2\" y=\"7\" rx=\"2\" ry=\"2\"/><polyline points=\"17 2 12 7 7 2\"/>",
     "sun-moon": "<path d=\"M12 8a2.83 2.83 0 0 0 4 4 4 4 0 1 1-4-4\"/><path d=\"M12 2v2\"/><path d=\"M12 20v2\"/><path d=\"m4.9 4.9 1.4 1.4\"/><path d=\"m17.7 17.7 1.4 1.4\"/><path d=\"M2 12h2\"/><path d=\"M20 12h2\"/><path d=\"m6.3 17.7-1.4 1.4\"/><path d=\"m19.1 4.9-1.4 1.4\"/>",
+    "target": "<circle cx=\"12\" cy=\"12\" r=\"10\"/><circle cx=\"12\" cy=\"12\" r=\"6\"/><circle cx=\"12\" cy=\"12\" r=\"2\"/>",
     "arrow-up": "<path d=\"m5 12 7-7 7 7\"/><path d=\"M12 19V5\"/>"
   };
   function svgIcon(name, cls){

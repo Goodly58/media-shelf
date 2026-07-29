@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="shelf-build" content="e407960884">
+<script>(function(){try{var m=localStorage.getItem('shelf_theme')||'auto';if(m!=='light'&&m!=='dark'&&m!=='auto')m='auto';var r=m==='auto'?(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'):m;var e=document.documentElement;e.setAttribute('data-theme',r);e.setAttribute('data-theme-mode',m);e.style.colorScheme=r;}catch(_){document.documentElement.setAttribute('data-theme','dark');}})();</script>
+<title>What next — rank your own backlog by what is good and what fits</title>
+<meta name="description" content="Drop in your Goodreads, Letterboxd or IMDb export and find out what to read, watch or play next: ranked by critics, filtered by the time you actually have. Nothing is uploaded.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c11; --bg2:#0d1017; --panel:#13161f; --panel2:#1a1e2a; --panel3:#222736;
+    --line:#262c3b; --line2:#323a4d;
+    --txt:#eef1f7; --txt2:#c2c9d8; --mut:#8b94a8; --mut2:#5f6878;
+    --acc:#3ddc97; --acc2:#22a3c9; --accSoft:rgba(61,220,151,.14);
+    --good:#00ce7c; --mid:#ffc24b; --bad:#ff6874;
+    --shadow:0 18px 40px -12px rgba(0,0,0,.65);
+    --r:16px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  header{padding:38px 0 26px;background:linear-gradient(180deg,var(--bg2),var(--bg))}
+  .brandrow{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap}
+  .logo{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;flex:0 0 auto;
+    background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 8px 22px -6px var(--accSoft)}
+  .logo .ic{width:26px;height:26px}
+  h1{margin:0;font-size:25px;font-weight:800;letter-spacing:-.4px;line-height:1}
+  h1 b{background:linear-gradient(90deg,#fff,var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tagline{color:var(--mut);font-size:13.5px;margin-top:6px;font-weight:500;max-width:60ch}
+
+  main{padding:8px 0 60px}
+
+  /* ---------- the drop zone ---------- */
+  .intake{margin-top:22px;border:2px dashed var(--line2);border-radius:var(--r);background:var(--panel);
+    padding:34px 24px;text-align:center;transition:border-color .18s,background .18s}
+  .intake.over{border-color:var(--acc);background:var(--panel2)}
+  .intake h2{margin:0 0 6px;font-size:19px;font-weight:750;letter-spacing:-.2px}
+  .intake p{margin:0 auto 18px;color:var(--mut);font-size:13.5px;max-width:56ch}
+  .btn{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 18px;border-radius:11px;
+    border:1px solid var(--line2);background:var(--panel2);color:var(--txt);font:inherit;font-weight:600;
+    font-size:14px;cursor:pointer;transition:border-color .15s,background .15s}
+  .btn:hover{border-color:var(--acc)}
+  .btn.primary{background:linear-gradient(135deg,var(--acc),var(--acc2));border-color:transparent;color:#04140d}
+  .sources{margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .src{font-size:11.5px;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:4px 11px}
+
+  .privacy{margin-top:14px;font-size:12px;color:var(--mut2);display:flex;gap:7px;justify-content:center;align-items:center}
+
+  details.paste{margin-top:16px;text-align:left;max-width:560px;margin-left:auto;margin-right:auto}
+  details.paste summary{cursor:pointer;font-size:13px;color:var(--mut);text-align:center}
+  details.paste textarea{width:100%;margin-top:10px;min-height:120px;background:var(--panel2);color:var(--txt);
+    border:1px solid var(--line);border-radius:11px;padding:11px 13px;font:inherit;font-size:13.5px;resize:vertical}
+
+  /* ---------- controls ---------- */
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-top:20px}
+  .row{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end}
+  .ctl{display:flex;flex-direction:column;gap:7px;min-width:0}
+  .ctl label{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--mut);font-weight:700}
+  .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .chip{cursor:pointer;user-select:none;white-space:nowrap;padding:7px 13px;border-radius:999px;font-size:13px;
+    font-weight:600;border:1px solid var(--line);background:var(--panel2);color:var(--mut);transition:.15s}
+  .chip:hover{border-color:var(--line2);color:var(--txt2)}
+  .chip.on{background:var(--accSoft);border-color:var(--acc);color:var(--acc)}
+  select,input[type=range]{background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+    border-radius:11px;padding:9px 11px;font:inherit;font-size:14px}
+  input[type=range]{padding:0;height:34px;accent-color:var(--acc)}
+
+  .summary{margin-top:18px;font-size:13.5px;color:var(--mut)}
+  .summary b{color:var(--txt)}
+
+  /* ---------- results ---------- */
+  .results{margin-top:14px;display:grid;gap:10px}
+  .hit{display:flex;gap:14px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);
+    border-radius:14px;padding:14px 16px}
+  .rank{font-size:12px;font-weight:800;color:var(--mut2);min-width:26px;padding-top:3px;
+    font-variant-numeric:tabular-nums}
+  .hitbody{min-width:0;flex:1}
+  .hittitle{font-weight:700;font-size:15.5px;letter-spacing:-.15px}
+  .hitmeta{margin-top:3px;font-size:12.5px;color:var(--mut);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .hitblurb{margin-top:7px;font-size:13px;color:var(--txt2);max-width:78ch}
+  .badge{font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;border:1px solid}
+  .b-critics{color:#8ff3c8;border-color:rgba(0,206,124,.4);background:rgba(0,60,38,.4)}
+  .b-shelf{color:#ffd88a;border-color:rgba(255,194,75,.35);background:rgba(70,50,0,.35)}
+  .b-community{color:#a9b6cc;border-color:var(--line2);background:var(--panel2)}
+  .b-none{color:var(--mut2);border-color:var(--line)}
+  .score{font-size:22px;font-weight:800;font-variant-numeric:tabular-nums;min-width:44px;text-align:right;
+    letter-spacing:-.6px}
+  .mins{font-variant-numeric:tabular-nums}
+
+  .empty{text-align:center;padding:44px 20px;color:var(--mut);border:1px dashed var(--line2);
+    border-radius:var(--r);margin-top:14px}
+
+  footer{border-top:1px solid var(--line);padding:26px 0 46px;color:var(--mut2);font-size:12.5px}
+
+  @media (max-width:640px){
+    .hit{gap:10px;padding:12px 13px}
+    .score{font-size:19px;min-width:38px}
+    .row{gap:16px}
+  }
+</style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/site.css">
+<link rel="stylesheet" href="assets/theme.css">
+<link rel="stylesheet" href="assets/palette.css">
+<link rel="stylesheet" href="assets/features.css">
+<link rel="stylesheet" href="assets/motion.css">
+<link rel="stylesheet" href="assets/polish.css">
+<link rel="stylesheet" href="assets/a11y.css">
+<link rel="stylesheet" href="assets/theme-patch.css">
+<script>/* SW self-heal: the page is always fresh, so let it repair a stale worker. */
+(function(){if(!('serviceWorker'in navigator))return;var el=document.querySelector('meta[name="shelf-build"]');var want=el&&el.content;if(!want)return;
+navigator.serviceWorker.getRegistrations().then(function(rs){if(!rs.length)return;var sw=rs[0].active||rs[0].waiting||rs[0].installing;if(!sw)return;
+var got=(sw.scriptURL.match(/[?&]v=([^&]+)/)||[])[1];if(got===want)return;
+var k='shelf_heal_'+want;if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1');
+Promise.all(rs.map(function(r){return r.unregister();})).then(function(){
+return (window.caches?caches.keys():Promise.resolve([])).then(function(ns){
+return Promise.all(ns.filter(function(n){return n.indexOf('shelf-shell-')===0;}).map(function(n){return caches.delete(n);}));});
+}).then(function(){location.reload();}).catch(function(){});});})();
+</script>
+</head>
+<body data-page="backlog">
+
+<header>
+  <div class="wrap">
+    <div class="brandrow">
+      <div class="logo" data-icon="target"></div>
+      <div>
+        <h1>WHAT <b>NEXT</b></h1>
+        <div class="tagline">Your own backlog, ranked by what is actually good and filtered by the time you actually have. Goodreads knows your pile but not what is worth it; the critics know what is worth it but not your pile.</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <section class="intake" id="intake">
+      <h2>Drop your export here</h2>
+      <p>A CSV from Goodreads, Letterboxd or IMDb. It is read in your browser and matched against this site's catalogues — nothing is uploaded, because there is no server to upload it to.</p>
+      <button class="btn primary" id="pick" type="button"><span data-icon="upload" aria-hidden="true"></span> Choose a file</button>
+      <input type="file" id="file" accept=".csv,text/csv" hidden>
+      <div class="sources">
+        <span class="src">Goodreads → Settings → Export</span>
+        <span class="src">Letterboxd → Settings → Data</span>
+        <span class="src">IMDb → Your Ratings → Export</span>
+      </div>
+      <details class="paste">
+        <summary>No export? Paste a list instead</summary>
+        <textarea id="pasted" placeholder="One title per line, year optional&#10;Hades&#10;Disco Elysium (2019)&#10;Outer Wilds 2019"></textarea>
+        <div style="text-align:center;margin-top:10px"><button class="btn" id="usePasted" type="button">Use this list</button></div>
+      </details>
+      <div class="privacy"><span data-icon="lock" aria-hidden="true"></span> Nothing leaves this page. Reload and it is gone.</div>
+    </section>
+
+    <section id="workspace" hidden>
+      <div class="panel">
+        <div class="row">
+          <div class="ctl">
+            <label for="kind">Match against</label>
+            <select id="kind">
+              <option value="books">Books</option>
+              <option value="movies">Films</option>
+              <option value="shows">Series</option>
+              <option value="games">Games</option>
+            </select>
+          </div>
+          <div class="ctl" style="flex:1;min-width:260px">
+            <label>Time I have</label>
+            <div class="chips" id="timeChips"></div>
+          </div>
+          <div class="ctl">
+            <label for="status">Show</label>
+            <select id="status">
+              <option value="todo">Not done yet</option>
+              <option value="done">Already done</option>
+              <option value="any">Everything</option>
+            </select>
+          </div>
+          <div class="ctl" style="min-width:190px">
+            <label for="floor">At least <span id="floorVal">70</span></label>
+            <input type="range" id="floor" min="0" max="95" step="5" value="70">
+          </div>
+        </div>
+        <div class="summary" id="summary"></div>
+      </div>
+
+      <div class="results" id="results"></div>
+      <div id="none" class="empty" hidden></div>
+
+      <div style="margin-top:22px;text-align:center">
+        <button class="btn" id="reset" type="button">Use a different list</button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    Scores come from this site's catalogues where a title is matched — verified Metascores for games, films and series, compiled ratings for books. Where a title is not in the catalogue, the ranking falls back to the rating in your own export and says so. Lengths are runtime for film, an estimate of ten episodes a season for series, and your export's page count at roughly a page a minute for books; games have no reliable length source, so they are ranked on quality alone. Fan-made tool, not affiliated with Goodreads, Letterboxd, IMDb or Metacritic.
+  </div>
+</footer>
+
+<script src="assets/site.js" defer></script>
+<script src="assets/theme.js" defer></script>
+<script src="assets/motion.js" defer></script>
+<script src="assets/palette.js" defer></script>
+<script src="assets/backlog.js" defer></script>
+<script src="assets/pwa.js" defer></script>
+<script src="assets/a11y.js" defer></script>
+<script src="assets/theme-fix.js" defer></script>
+
+<script>
+(function(){
+  'use strict';
+  var $ = function (s) { return document.querySelector(s); };
+
+  /* The budgets worth one tap, and they are NOT the same question per medium.
+     "Can I finish it tonight" is the right question about a film and a silly
+     one about a novel — a two-hour budget on a reading list excludes every
+     book ever written. So films and series are framed as one sitting, and
+     books and games as total commitment. */
+  var TIMES = {
+    movies: [
+      { label: 'Any', mins: 0 },
+      { label: 'Under 90 min', mins: 90 },
+      { label: 'Under 2 hours', mins: 120 },
+      { label: 'Under 2½ hours', mins: 150 }
+    ],
+    shows: [
+      { label: 'Any', mins: 0 },
+      { label: 'A short run', mins: 480 },
+      { label: 'Under 20 hours', mins: 1200 },
+      { label: 'Under 50 hours', mins: 3000 }
+    ],
+    books: [
+      { label: 'Any', mins: 0 },
+      { label: 'A sitting or two', mins: 240 },
+      { label: 'Under 8 hours', mins: 480 },
+      { label: 'Under 15 hours', mins: 900 }
+    ],
+    // Games carry no length: HowLongToBeat's API is closed and nothing else
+    // covers 2,164 PC titles, so offering a time filter here would be a
+    // control that silently does nothing.
+    games: [{ label: 'No length data for games', mins: 0 }]
+  };
+
+  var state = { items: [], source: null, kind: 'books', mins: 0, floor: 70, status: 'todo' };
+  var INDEX = null;
+
+  /* The catalogue slice is fetched once, on demand — it is only needed after a
+     file has been dropped, and most visitors will never drop one. */
+  function loadIndex() {
+    if (INDEX) return Promise.resolve(INDEX);
+    return fetch('data/backlog-index.json')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { INDEX = j; return j; })
+      .catch(function () { return null; });
+  }
+
+  function fmtMins(m) {
+    if (m == null) return '—';
+    if (m < 60) return m + ' min';
+    var h = Math.floor(m / 60), r = m % 60;
+    if (h < 24) return r ? h + 'h ' + r + 'm' : h + 'h';
+    return Math.round(h) + 'h';
+  }
+
+  function scoreColour(s) {
+    if (s == null) return 'var(--mut2)';
+    if (s >= 80) return '#3ddc97';
+    if (s >= 60) return '#ffc24b';
+    return '#ff6874';
+  }
+
+  var BASIS_LABEL = {
+    critics:   ['critics',   'b-critics'],
+    shelf:     ['this site', 'b-shelf'],
+    community: ['your list', 'b-community'],
+    none:      ['unrated',   'b-none']
+  };
+
+  function render() {
+    if (!state.items.length) return;
+    var idx = INDEX && INDEX.kinds ? INDEX.kinds[state.kind] : null;
+    var isBooks = state.kind === 'books';
+    var catalogue = (idx || []).map(function (e) {
+      // Expand the short keys the index ships back into what the engine reads.
+      //
+      // Books go in as `rating` on the original 0-5 scale rather than as a
+      // Metascore. Both end up as the same 0-100 figure, but the field decides
+      // what the badge says, and a compiled Goodreads-style average is not a
+      // critic score — labelling it "critics" would be the same overclaim the
+      // verified badge used to make.
+      return {
+        title: e.t, year: e.y, genre: e.g, verified: !!e.v, runtime: e.m,
+        metacritic: isBooks ? null : e.s,
+        rating: isBooks && e.s != null ? e.s / 20 : null
+      };
+    });
+
+    var out = window.ShelfBacklog.build({
+      items: state.items,
+      catalogue: catalogue,
+      kind: state.kind,
+      minutes: state.mins,
+      minScore: state.floor,
+      status: state.status
+    });
+
+    var s = out.stats;
+    $('#summary').innerHTML =
+      '<b>' + s.total + '</b> in your list · <b>' + s.considered + '</b> ' +
+      (state.status === 'todo' ? 'not done yet' : state.status === 'done' ? 'already done' : 'total') +
+      ' · <b>' + s.matched + '</b> found in this catalogue · showing <b>' + s.shown + '</b>';
+
+    var box = $('#results');
+    var none = $('#none');
+    box.innerHTML = '';
+
+    if (!out.rows.length) {
+      none.hidden = false;
+      none.textContent = s.considered
+        ? 'Nothing clears that bar in that time. Lower the score, allow more time, or try another catalogue.'
+        : 'Nothing in this list is marked that way.';
+      return;
+    }
+    none.hidden = true;
+
+    var frag = document.createDocumentFragment();
+    out.rows.slice(0, 100).forEach(function (r, i) {
+      var el = document.createElement('div');
+      el.className = 'hit';
+      var basis = BASIS_LABEL[r.basis] || BASIS_LABEL.none;
+      el.innerHTML =
+        '<div class="rank">' + (i + 1) + '</div>' +
+        '<div class="hitbody">' +
+          '<div class="hittitle"></div>' +
+          '<div class="hitmeta">' +
+            (r.year ? '<span>' + r.year + '</span>' : '') +
+            (r.creator ? '<span>· <span class="cr"></span></span>' : '') +
+            (r.genre ? '<span>· ' + r.genre + '</span>' : '') +
+            (r.minutes != null ? '<span class="mins">· ' + fmtMins(r.minutes) + '</span>' : '') +
+            '<span class="badge ' + basis[1] + '">' + basis[0] + (r.verified ? ' ✓' : '') + '</span>' +
+          '</div>' +
+          (r.blurb ? '<div class="hitblurb"></div>' : '') +
+        '</div>' +
+        '<div class="score" style="color:' + scoreColour(r.score) + '">' + (r.score == null ? '—' : r.score) + '</div>';
+      // Titles, authors and blurbs are user data or catalogue prose; set them as
+      // text so a stray angle bracket cannot become markup.
+      el.querySelector('.hittitle').textContent = r.title;
+      if (r.creator) el.querySelector('.cr').textContent = r.creator;
+      if (r.blurb) el.querySelector('.hitblurb').textContent = r.blurb;
+      frag.appendChild(el);
+    });
+    box.appendChild(frag);
+    if (window.Shelf && window.Shelf.hydrateIcons) window.Shelf.hydrateIcons();
+  }
+
+  function adopt(parsed) {
+    if (!parsed.items.length) {
+      alert('No rows recognised in that file. If it is not a Goodreads, Letterboxd or IMDb export, paste a list instead.');
+      return;
+    }
+    state.items = parsed.items;
+    state.source = parsed.source;
+    // Guess the catalogue from what the file evidently is, so the first render
+    // is already right rather than making the reader pick.
+    if (parsed.source && parsed.source.kind) {
+      state.kind = parsed.source.kind;
+      $('#kind').value = state.kind;
+    }
+    $('#intake').hidden = true;
+    $('#workspace').hidden = false;
+    loadIndex().then(render);
+  }
+
+  function readFile(file) {
+    var fr = new FileReader();
+    fr.onload = function () { adopt(window.ShelfBacklog.readExport(String(fr.result || ''))); };
+    fr.onerror = function () { alert('That file could not be read.'); };
+    fr.readAsText(file);
+  }
+
+  /* ------------------------------- wiring ------------------------------- */
+
+  var chips = $('#timeChips');
+
+  /** Rebuilt whenever the catalogue changes, because the budgets differ by it. */
+  function buildChips() {
+    var list = TIMES[state.kind] || TIMES.movies;
+    state.mins = 0;
+    chips.innerHTML = '';
+    list.forEach(function (t, i) {
+      var c = document.createElement('button');
+      c.type = 'button';
+      c.className = 'chip' + (i === 0 ? ' on' : '');
+      c.textContent = t.label;
+      if (list.length === 1) c.disabled = true;
+      c.addEventListener('click', function () {
+        state.mins = t.mins;
+        chips.querySelectorAll('.chip').forEach(function (x) { x.classList.remove('on'); });
+        c.classList.add('on');
+        render();
+      });
+      chips.appendChild(c);
+    });
+  }
+  buildChips();
+
+  $('#pick').addEventListener('click', function () { $('#file').click(); });
+  $('#file').addEventListener('change', function (e) {
+    if (e.target.files && e.target.files[0]) readFile(e.target.files[0]);
+  });
+
+  var intake = $('#intake');
+  ['dragenter', 'dragover'].forEach(function (ev) {
+    intake.addEventListener(ev, function (e) { e.preventDefault(); intake.classList.add('over'); });
+  });
+  ['dragleave', 'drop'].forEach(function (ev) {
+    intake.addEventListener(ev, function (e) { e.preventDefault(); intake.classList.remove('over'); });
+  });
+  intake.addEventListener('drop', function (e) {
+    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+    if (f) readFile(f);
+  });
+
+  $('#usePasted').addEventListener('click', function () {
+    adopt(window.ShelfBacklog.readPasted($('#pasted').value));
+  });
+
+  $('#kind').addEventListener('change', function (e) { state.kind = e.target.value; buildChips(); render(); });
+  $('#status').addEventListener('change', function (e) { state.status = e.target.value; render(); });
+  $('#floor').addEventListener('input', function (e) {
+    state.floor = Number(e.target.value);
+    $('#floorVal').textContent = state.floor;
+    render();
+  });
+  $('#reset').addEventListener('click', function () {
+    state.items = [];
+    $('#workspace').hidden = true;
+    $('#intake').hidden = false;
+    $('#file').value = '';
+  });
+})();
+</script>
+</body>
+</html>

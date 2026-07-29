@@ -1,5 +1,5 @@
 {
-  "movies": 778,
+  "movies": 777,
   "moviesFrom": 1922,
   "moviesTo": 2025,
   "moviesGenres": 12,
@@ -12,10 +12,10 @@
   "gamesTo": 2026,
   "gamesVerified": 1555,
   "gamesGenres": 14,
-  "books": 2595,
+  "books": 2588,
   "booksFrom": -700,
   "booksTo": 2026,
   "booksGenres": 22,
-  "booksAuthors": 1992,
+  "booksAuthors": 1986,
   "updated": "2026-07-29"
 }

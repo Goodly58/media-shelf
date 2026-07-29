@@ -13,7 +13,7 @@ const fs = require('fs');
 const crypto = require('crypto');
 
 const FILES = [
-  'index.html', 'games.html', 'books.html', 'movies.html', 'shows.html',
+  'index.html', 'games.html', 'books.html', 'movies.html', 'shows.html', 'backlog.html',
   'manifest.webmanifest',
   'assets/site.css', 'assets/theme.css', 'assets/palette.css', 'assets/features.css',
   'assets/motion.css', 'assets/polish.css', 'assets/a11y.css', 'assets/theme-patch.css',
