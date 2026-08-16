@@ -12,3 +12,7 @@ _imdb-ratings.tsv
 _imdb-resolved.json
 _bad-imdb-ids.json
 _tags-cache.json
+_goodreads-cache.json
+_ign-cache.json
+_mcuser-cache.json
+_rt-cache.json
