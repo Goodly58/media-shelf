@@ -6,3 +6,9 @@ _verify_workflow.js.verify-cache/
 
 # verification fetch cache (regenerated on demand)
 .verify-cache/
+
+# IMDb verification working files (regenerated on demand)
+_imdb-ratings.tsv
+_imdb-resolved.json
+_bad-imdb-ids.json
+_tags-cache.json

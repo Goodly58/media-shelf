@@ -8,9 +8,14 @@ function extract(file, varName) {
   const start = h.indexOf('const ' + varName + ' = ');
   if (start < 0) throw new Error('data not found in ' + file);
   const from = start + ('const ' + varName + ' = ').length;
-  const end = h.indexOf('\n\nconst $ = s => document.querySelector', from);
+  /* Line-ending tolerant. This was the literal '\n\nconst $ = s => …', which
+     never matched on a Windows checkout: the repo sets core.autocrlf=true, so
+     the working tree holds CRLF and the script died with "data end marker not
+     found". CI checks out LF and was unaffected, so the breakage stayed
+     invisible to the deploy and only bit anyone regenerating stats locally. */
+  const end = h.slice(from).search(/\r?\n\r?\nconst \$ = s => document\.querySelector/);
   if (end < 0) throw new Error('data end marker not found in ' + file);
-  return JSON.parse(h.slice(from, end).replace(/;\s*$/, ''));
+  return JSON.parse(h.slice(from, from + end).replace(/;\s*$/, ''));
 }
 
 const games = extract('games.html', 'GAMES');

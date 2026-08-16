@@ -372,7 +372,7 @@ ${HEAL}
 
 <footer>
   <div class="wrap">
-    Entries marked <b>✓ Verified</b> had their Metascore read directly from metacritic.com. Remaining Metascores, along with all IMDb and Rotten Tomatoes figures, are compiled from public sources and are close approximations. Posters come from TMDB and Wikipedia; a handful of titles have no poster in either, so those show a typographic card instead. Not affiliated with Metacritic, IMDb, Rotten Tomatoes or TMDB.
+    Entries marked <b>✓ Verified</b> had their Metascore read directly from metacritic.com. IMDb ratings marked <b>verified ✓</b> were read from IMDb's own published ratings dataset and joined on the title's IMDb id, with the id itself re-checked against IMDb so a wrong id corrects nothing. Remaining Metascores and IMDb ratings, and all Rotten Tomatoes figures, are compiled from public sources and are close approximations. Posters come from TMDB and Wikipedia; a handful of titles have no poster in either, so those show a typographic card instead. Not affiliated with Metacritic, IMDb, Rotten Tomatoes or TMDB.
   </div>
 </footer>
 
@@ -560,7 +560,7 @@ function openModal(x){
         <div class="mmeta"><span>\${x.year}</span><span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--mut2)"></span><span>\${x.genre}</span>\${sub?'<span class="dot" style="width:3px;height:3px;border-radius:50%;background:var(--mut2)"></span><span>'+sub+'</span>':''}</div>
         <div class="mscores">
           \${box('Metacritic', x.metacritic, x.verified?'verified ✓':'approximate', mcColor(x.metacritic||0))}
-          \${box('IMDb', x.imdb!=null?(+x.imdb).toFixed(1):null, 'out of 10', '#f5c518')}
+          \${box('IMDb', x.imdb!=null?(+x.imdb).toFixed(1):null, x.imdbVerified?('verified ✓'+(x.imdbVotes?' · '+Intl.NumberFormat('en',{notation:'compact'}).format(x.imdbVotes)+' votes':'')):'approximate', '#f5c518')}
           \${box('Rotten Tomatoes', x.rt!=null?x.rt+'%':null, 'critics', x.rt>=60?'#0ac855':'#fa320a')}
         </div>
       </div>
