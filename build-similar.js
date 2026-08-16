@@ -143,21 +143,37 @@ const AXIS_PHRASE = {
    no Drama in the games vocabulary anyway.
    tone: warm(+) .. bleak(-)   scale: epic(+) .. domestic(-)   both -1..1 */
 const GENRE_PRIOR = {
-  // ---- games (14)
-  'Strategy / 4X / RTS':         { system: 3, history: 2, violence: 2, tone: -0.1, scale: 0.8 },
-  'Narrative / Adventure':       { interior: 2, moral: 2, deduction: 1, tone: -0.1, scale: -0.4 },
-  'Simulation / Management':     { making: 3, system: 1, tone: 0.3, scale: -0.1 },
-  'Shooter (FPS/TPS)':           { violence: 3, tone: -0.2, scale: 0.2 },
-  'Action RPG':                  { wonder: 2, violence: 2, journey: 1, scale: 0.4 },
-  'Indie / Platformer':          { wonder: 2, youth: 1, tone: 0.3, scale: -0.4 },
-  'Roguelike / Metroidvania':    { confine: 2, violence: 1, wonder: 1, scale: -0.2 },
-  'Horror / Survival':           { confine: 3, uncanny: 2, violence: 1, tone: -0.8, scale: -0.3 },
-  'Racing / Sports':             { making: 1, tone: 0.3, scale: -0.2 },
-  'Multiplayer / MOBA / Co-op':  { violence: 2, tone: 0.1, scale: 0 },
-  'JRPG / Turn-based RPG':       { wonder: 3, journey: 2, youth: 2, scale: 0.5 },
-  'Fighting':                    { violence: 3, tone: 0.1, scale: -0.2 },
-  'Open-World Action-Adventure': { journey: 2, violence: 2, scale: 0.6 },
-  'Stealth / Immersive Sim':     { confine: 2, system: 2, deduction: 1, tone: -0.3, scale: -0.1 },
+  /* ---- games (22, flat) ----
+     Rewritten when the compound buckets were replaced. The old "Horror /
+     Survival" carried tone -0.8, so every survival-crafting game in it was
+     scored as bleak horror: Palworld recommended Frankenstein and Carrie, and
+     Breathedge — a comedy by its own blurb — recommended 28 Days Later. Horror
+     and Survival now carry their own, very different tones. */
+  Action:          { violence: 3, scale: 0.3 },
+  Adventure:       { journey: 2, interior: 1, wonder: 1, scale: 0.2 },
+  'Card & Board':  { deduction: 2, making: 1, tone: 0.2, scale: -0.4 },
+  Fighting:        { violence: 3, tone: 0.1, scale: -0.2 },
+  Horror:          { uncanny: 3, confine: 2, violence: 2, tone: -0.8, scale: -0.3 },
+  JRPG:            { wonder: 3, journey: 2, youth: 2, scale: 0.5 },
+  MMO:             { journey: 2, violence: 1, scale: 0.6 },
+  Metroidvania:    { confine: 2, journey: 1, wonder: 1, scale: -0.1 },
+  Mystery:         { deduction: 3, interior: 1, tone: -0.3, scale: -0.3 },
+  Platformer:      { wonder: 2, youth: 1, tone: 0.3, scale: -0.4 },
+  Puzzle:          { deduction: 2, making: 1, tone: 0.2, scale: -0.5 },
+  RPG:             { wonder: 2, journey: 2, moral: 1, scale: 0.5 },
+  Racing:          { making: 1, tone: 0.3, scale: -0.2 },
+  Rhythm:          { making: 3, tone: 0.6, scale: -0.4 },
+  Roguelike:       { confine: 2, violence: 1, wonder: 1, scale: -0.2 },
+  Shooter:         { violence: 3, tone: -0.2, scale: 0.2 },
+  Simulation:      { making: 3, system: 1, tone: 0.3, scale: -0.1 },
+  Sports:          { making: 1, tone: 0.4, scale: -0.2 },
+  Stealth:         { confine: 2, system: 2, deduction: 1, tone: -0.3, scale: -0.1 },
+  Strategy:        { system: 3, history: 2, violence: 2, tone: -0.1, scale: 0.8 },
+  /* The whole point of the split. Survival is hard, not grim: scarcity and
+     endurance, with no tonal penalty, so a crafting game stops being scored as
+     a horror film. */
+  Survival:        { making: 3, confine: 1, journey: 1, tone: 0, scale: -0.1 },
+  'Visual Novel':  { interior: 3, youth: 1, scale: -0.6 },
   // ---- books (22)
   'Literary Fiction':            { interior: 3, moral: 2, tone: -0.3, scale: -0.5 },
   'Philosophy & Psychology':     { interior: 3, system: 1, scale: 0.1 },
