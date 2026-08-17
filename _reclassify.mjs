@@ -48,6 +48,15 @@ function readArray(file, name) {
 const cache = fs.existsSync('_tags-cache.json')
   ? JSON.parse(fs.readFileSync('_tags-cache.json', 'utf8')) : {};
 
+/* The ORIGINAL compound genres, captured from the commit before this script
+   first ran. Needed because the script is now re-run over its own output: a game
+   whose Steam id turned out to name a different game already has a genre derived
+   from that wrong game's tags, and keeping it would preserve the error forever.
+   Age of Wonders: Planetfall carries Resident Evil 2's id, was classified Horror
+   from RE2's tags, and is really "Strategy / 4X / RTS". */
+const ORIGINAL = fs.existsSync('_orig-genres.json')
+  ? JSON.parse(fs.readFileSync('_orig-genres.json', 'utf8')) : {};
+
 /* Priority order: the FIRST rule that matches wins, so the list runs from most
    specific to most general. Horror sits above Survival deliberately — a survival
    horror game is a horror game, while Palworld carries Survival and no Horror
@@ -92,11 +101,26 @@ const RULES = [
  */
 const HORROR_WORDS = /horror|zombie|undead|monster|nightmare|haunt|ghost|demon|cult|terror|dread|scare|slasher|gore|mutant|xenomorph|necromorph|parasit|creep|eerie|macabre|lovecraft/i;
 
+const FLAT = new Set(RULES.map(([n]) => n));
+
 function fallbackFor(game) {
+  // Prefer the original compound label over whatever a bad id already wrote.
+  const was = ORIGINAL[game.title];
+  if (was && FALLBACK[was]) {
+    if (was === 'Horror / Survival') return HORROR_WORDS.test(game.blurb || '') ? 'Horror' : 'Survival';
+    return FALLBACK[was];
+  }
   if (game.genre === 'Horror / Survival') {
     return HORROR_WORDS.test(game.blurb || '') ? 'Horror' : 'Survival';
   }
-  return FALLBACK[game.genre] || 'Action';
+  if (FALLBACK[game.genre]) return FALLBACK[game.genre];
+  /* Already a flat category — this script has run before. Keep it. Defaulting to
+     'Action' here put 1,056 of 2,169 games under Action on the second run,
+     because the FALLBACK table is keyed on the OLD compound names and matches
+     nothing once they are gone. A migration that is not safe to run twice is a
+     migration that will be run twice. */
+  if (FLAT.has(game.genre)) return game.genre;
+  return 'Action';
 }
 
 /** Old genre -> best flat guess, for the 21% of games with no Steam id. */
@@ -169,8 +193,36 @@ let fromTags = 0, fromFallback = 0;
 const counts = {};
 const moved = [];
 
+/* A quarter of the catalogue's steamAppIds name a different game — Age of
+   Wonders: Planetfall carries Resident Evil 2's id, which is why its card shows
+   RE2 art. Trusting the id meant classifying Planetfall, a 4X strategy game,
+   from Resident Evil's tags: it came out Horror. Steam returns the game's name
+   alongside the tags and this never checked it, exactly the mistake the IMDb ids
+   had already taught once.
+
+   The check is lenient on purpose, because real variants abound: "Assassin's
+   Creed II" against "Assassin's Creed 2", "Hitman 3" against "HITMAN World of
+   Assassination". It asks whether the two names share most of their meaningful
+   words, not whether they are identical. */
+const norm = (x) => String(x || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ')
+  .replace(/iii/g, '3').replace(/ii/g, '2').replace(/iv/g, '4')
+  .replace(/xi/g, '11').replace(/x/g, '10')
+  .split(/\s+/).filter((w) => w && !['the', 'a', 'of', 'edition', 'definitive', 'remastered', 'gold', 'complete', 'goty', 'hd'].includes(w));
+
+function idLooksRight(title, steamName) {
+  if (!steamName) return false;
+  const a = norm(title), b = norm(steamName);
+  if (!a.length || !b.length) return false;
+  const setB = new Set(b);
+  const shared = a.filter((w) => setB.has(w)).length;
+  // Most of the shorter title's words must appear in the other.
+  return shared / Math.min(a.length, b.length) >= 0.6;
+}
+
+let idRejected = 0;
 for (const g of GAMES) {
-  const entry = g.steamAppId ? cache[String(g.steamAppId)] : null;
+  let entry = g.steamAppId ? cache[String(g.steamAppId)] : null;
+  if (entry && entry.name && !idLooksRight(g.title, entry.name)) { entry = null; idRejected += 1; }
   let next = entry ? classify(entry.tags) : null;
   if (next) fromTags += 1;
   else { next = fallbackFor(g); fromFallback += 1; }
