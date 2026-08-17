@@ -17,6 +17,14 @@
  * An empty field is honest; a made-up 8 is not.
  */
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+/* Resolve everything against the script's own folder, not the shell's cwd, so
+   this runs correctly from anywhere — including a bare `node _fetch_ign.mjs`
+   typed in the home directory, which is exactly how it was first tried. */
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const at = (f) => path.join(HERE, f);
 
 const APPLY = process.argv.includes('--apply');
 
@@ -33,13 +41,13 @@ function readArray(file, name) {
   return { array: JSON.parse(h.slice(s, e)), start: s, end: e, html: h };
 }
 
-if (!fs.existsSync('_ign-scores.json')) {
+if (!fs.existsSync(at('_ign-scores.json'))) {
   console.error('_ign-scores.json not found — run `node _fetch_ign.mjs` first.');
   process.exit(1);
 }
 
-const { array: GAMES, start, end, html } = readArray('games.html', 'GAMES');
-const rows = JSON.parse(fs.readFileSync('_ign-scores.json', 'utf8'));
+const { array: GAMES, start, end, html } = readArray(at('games.html'), 'GAMES');
+const rows = JSON.parse(fs.readFileSync(at('_ign-scores.json'), 'utf8'));
 const byTitle = new Map(rows.map((r) => [r.title, r]));
 
 let scored = 0, agreed = 0, corrected = 0, cleared = 0, untouched = 0;
@@ -80,7 +88,7 @@ for (const [t, o, n] of moves.filter((m) => m[2] != null)
 }
 
 if (!APPLY) { console.log('\n(report only — pass --apply to write)'); process.exit(0); }
-fs.writeFileSync('games.html', html.slice(0, start) + JSON.stringify(GAMES) + html.slice(end));
+fs.writeFileSync(at('games.html'), html.slice(0, start) + JSON.stringify(GAMES) + html.slice(end));
 console.log('\nwrote games.html — now run:');
 console.log('  node build-stats.js && node build-backlog-index.js && node build-similar.js');
 console.log('  node build-version.js && node validate.js');

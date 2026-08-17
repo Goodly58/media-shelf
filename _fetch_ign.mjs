@@ -38,10 +38,18 @@
  * title we asked for.
  */
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+/* Resolve everything against the script's own folder, not the shell's cwd, so
+   this runs correctly from anywhere — including a bare `node _fetch_ign.mjs`
+   typed in the home directory, which is exactly how it was first tried. */
+const HERE = path.dirname(fileURLToPath(import.meta.url));
+const at = (f) => path.join(HERE, f);
 
 const STATUS_ONLY = process.argv.includes('--status');
-const CACHE = '_ign-cache.json';
-const OUT = '_ign-scores.json';
+const CACHE = at('_ign-cache.json');
+const OUT = at('_ign-scores.json');
 
 /* An honest identity. Change the contact if you want it to be yours. */
 const UA = 'media-shelf-personal/1.0 (personal catalogue project; +https://github.com/Goodly58/media-shelf)';
@@ -60,7 +68,7 @@ function readArray(file, name) {
   return JSON.parse(h.slice(s, e));
 }
 
-const GAMES = readArray('games.html', 'GAMES');
+const GAMES = readArray(at('games.html'), 'GAMES');
 const cache = fs.existsSync(CACHE) ? JSON.parse(fs.readFileSync(CACHE, 'utf8')) : {};
 
 /* ------------------------------------------------------------------- slugs */
