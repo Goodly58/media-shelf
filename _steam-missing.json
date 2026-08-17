@@ -1,0 +1,3233 @@
+[
+ {
+  "title": "Death Stranding 2: On The Beach",
+  "year": 2026,
+  "newId": 3280350,
+  "steamName": "DEATH STRANDING 2: ON THE BEACH",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Overwatch",
+  "year": 2016,
+  "newId": 2357570,
+  "steamName": "Overwatch®",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Mass Effect 3",
+  "year": 2012,
+  "newId": 1238020,
+  "steamName": "Mass Effect™ 3 N7 Digital Deluxe Edition (2012)",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Schrodinger's Call",
+  "year": 2026,
+  "newId": 2090390,
+  "steamName": "Schrödinger's Call",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Mewgenics",
+  "year": 2026,
+  "newId": 686060,
+  "steamName": "Mewgenics",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Final Fantasy Tactics: The Ivalice Chronicles",
+  "year": 2025,
+  "newId": 1004640,
+  "steamName": "FINAL FANTASY TACTICS - The Ivalice Chronicles",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Monster Hunter Stories 3: Twisted Reflection",
+  "year": 2026,
+  "newId": 2852190,
+  "steamName": "Monster Hunter Stories 3: Twisted Reflection",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Hermit and Pig",
+  "year": 2026,
+  "newId": 2408350,
+  "steamName": "Hermit and Pig",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Titanium Court",
+  "year": 2026,
+  "newId": 2364580,
+  "steamName": "Titanium Court",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "DAVE THE DIVER: In the Jungle",
+  "year": 2026,
+  "newId": 1868140,
+  "steamName": "DAVE THE DIVER",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Mixtape",
+  "year": 2026,
+  "newId": 2582320,
+  "steamName": "Mixtape",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Cairn",
+  "year": 2026,
+  "newId": 1588550,
+  "steamName": "Cairn",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Perfect Tides: Station to Station",
+  "year": 2026,
+  "newId": 2088810,
+  "steamName": "Perfect Tides: Station to Station",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "OPUS: Prism Peak",
+  "year": 2026,
+  "newId": 1947910,
+  "steamName": "OPUS: Prism Peak",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Vertigo 2",
+  "year": 2023,
+  "newId": 843390,
+  "steamName": "Vertigo 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Metal Gear Solid Delta: Snake Eater",
+  "year": 2025,
+  "newId": 2417610,
+  "steamName": "METAL GEAR SOLID Δ: SNAKE EATER",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Nioh 3",
+  "year": 2026,
+  "newId": 3681010,
+  "steamName": "Nioh 3",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Esoteric Ebb",
+  "year": 2026,
+  "newId": 2057760,
+  "steamName": "Esoteric Ebb",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "PARANORMASIGHT: The Mermaid's Curse",
+  "year": 2026,
+  "newId": 2701440,
+  "steamName": "PARANORMASIGHT: The Mermaid's Curse",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Walkabout Mini Golf",
+  "year": 2021,
+  "newId": 1408230,
+  "steamName": "Walkabout Mini Golf VR",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "DOOM + DOOM II",
+  "year": 2024,
+  "newId": 2280,
+  "steamName": "DOOM + DOOM II",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Dragon Quest III HD-2D Remake",
+  "year": 2024,
+  "newId": 2701660,
+  "steamName": "DRAGON QUEST III HD-2D Remake",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Riven",
+  "year": 2024,
+  "newId": 1712350,
+  "steamName": "Riven",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sonic X Shadow Generations",
+  "year": 2024,
+  "newId": 2513280,
+  "steamName": "SONIC X SHADOW GENERATIONS",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "007 First Light",
+  "year": 2026,
+  "newId": 3768760,
+  "steamName": "007 First Light",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "LEGO Batman: Legacy of the Dark Knight",
+  "year": 2026,
+  "newId": 2215200,
+  "steamName": "LEGO® Batman™: Legacy of the Dark Knight",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Bravely Default: Flying Fairy",
+  "year": 2024,
+  "newId": 2833580,
+  "steamName": "BRAVELY DEFAULT FLYING FAIRY HD Remaster",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Demon Tides",
+  "year": 2026,
+  "newId": 2585890,
+  "steamName": "Demon Tides",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sanabi",
+  "year": 2023,
+  "newId": 1562700,
+  "steamName": "SANABI",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Super Mega Baseball 3",
+  "year": 2020,
+  "newId": 988910,
+  "steamName": "Super Mega Baseball 3",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Red Matter 2",
+  "year": 2022,
+  "newId": 2081470,
+  "steamName": "Red Matter 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Room VR: A Dark Matter",
+  "year": 2020,
+  "newId": 1104380,
+  "steamName": "The Room VR: A Dark Matter",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Gears of War: Reloaded",
+  "year": 2025,
+  "newId": 2523720,
+  "steamName": "Gears of War: Reloaded",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Ghost Trick: Phantom Detective",
+  "year": 2023,
+  "newId": 1967430,
+  "steamName": "Ghost Trick: Phantom Detective",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Castlevania Advance Collection",
+  "year": 2021,
+  "newId": 1552550,
+  "steamName": "Castlevania Advance Collection",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Marvel vs. Capcom Fighting Collection: Arcade Classics",
+  "year": 2024,
+  "newId": 2634890,
+  "steamName": "MARVEL vs. CAPCOM Fighting Collection: Arcade Classics",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Teenage Mutant Ninja Turtles: The Cowabunga Collection",
+  "year": 2022,
+  "newId": 1659600,
+  "steamName": "Teenage Mutant Ninja Turtles: The Cowabunga Collection",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "World of Goo 2",
+  "year": 2024,
+  "newId": 3385670,
+  "steamName": "World of Goo 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Tony Hawk's Pro Skater 3+4",
+  "year": 2025,
+  "newId": 2545710,
+  "steamName": "Tony Hawk's™ Pro Skater™ 3 + 4",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "MIO: Memories in Orbit",
+  "year": 2026,
+  "newId": 1672810,
+  "steamName": "MIO: Memories in Orbit",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Horizon Zero Dawn Remastered",
+  "year": 2024,
+  "newId": 2561580,
+  "steamName": "Horizon Zero Dawn™ Remastered",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Need for Speed: Most Wanted",
+  "year": 2012,
+  "newId": 1262560,
+  "steamName": "Need for Speed™ Most Wanted",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Bayonetta Origins: Cereza and the Lost Demon",
+  "year": 2023,
+  "newId": 460790,
+  "steamName": "Bayonetta",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "The Legend of Heroes: Trails beyond the Horizon",
+  "year": 2026,
+  "newId": 3316940,
+  "steamName": "The Legend of Heroes: Trails beyond the Horizon",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "The First Berserker: Khazan",
+  "year": 2025,
+  "newId": 2680010,
+  "steamName": "The First Berserker: Khazan",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Xenonauts 2",
+  "year": 2026,
+  "newId": 538030,
+  "steamName": "Xenonauts 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Zenless Zone Zero",
+  "year": 2024,
+  "newId": 4162040,
+  "steamName": "Zenless Zone Zero",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Super Mega Baseball 4",
+  "year": 2023,
+  "newId": 1487210,
+  "steamName": "Super Mega Baseball™ 4",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "What the Golf?",
+  "year": 2020,
+  "newId": 785790,
+  "steamName": "WHAT THE GOLF?",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Thronebreaker: The Witcher Tales",
+  "year": 2018,
+  "newId": 973760,
+  "steamName": "Thronebreaker: The Witcher Tales",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Card Hunter",
+  "year": 2013,
+  "newId": 293260,
+  "steamName": "Card Hunter",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "System Shock 2: 25th Anniversary Remaster",
+  "year": 2025,
+  "newId": 866570,
+  "steamName": "System Shock 2: 25th Anniversary Remaster",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Legend of Heroes: Trails in the Sky 1st Chapter",
+  "year": 2025,
+  "newId": 251150,
+  "steamName": "The Legend of Heroes: Trails in the Sky",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Nuclear Option",
+  "year": 2024,
+  "newId": 2168680,
+  "steamName": "Nuclear Option",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Marathon",
+  "year": 2026,
+  "newId": 3065800,
+  "steamName": "Marathon",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Luna Abyss",
+  "year": 2026,
+  "newId": 1933000,
+  "steamName": "Luna Abyss",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Swan Song",
+  "year": 2026,
+  "newId": 3265290,
+  "steamName": "Swan Song",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Loco Motive",
+  "year": 2024,
+  "newId": 1709880,
+  "steamName": "Loco Motive",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Artful Escape",
+  "year": 2021,
+  "newId": 1122680,
+  "steamName": "The Artful Escape",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sportsfriends",
+  "year": 2014,
+  "newId": 277850,
+  "steamName": "Sportsfriends",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Dragon Quest VII Reimagined",
+  "year": 2026,
+  "newId": 2499860,
+  "steamName": "DRAGON QUEST VII Reimagined",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "REANIMAL",
+  "year": 2026,
+  "newId": 2129530,
+  "steamName": "REANIMAL",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Fatal Frame II: Crimson Butterfly REMAKE",
+  "year": 2026,
+  "newId": 3920610,
+  "steamName": "FATAL FRAME II: Crimson Butterfly REMAKE",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Railroader",
+  "year": 2023,
+  "newId": 1683150,
+  "steamName": "Railroader",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sailwind",
+  "year": 2022,
+  "newId": 1764530,
+  "steamName": "Sailwind",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Defender's Quest: Valley of the Forgotten",
+  "year": 2012,
+  "newId": 218410,
+  "steamName": "Defender's Quest: Valley of the Forgotten (DX edition)",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Creeper World 4",
+  "year": 2021,
+  "newId": 848480,
+  "steamName": "Creeper World 4",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Revenge of the Titans",
+  "year": 2011,
+  "newId": 93200,
+  "steamName": "Revenge of the Titans",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Kingdom Rush Origins",
+  "year": 2018,
+  "newId": 816340,
+  "steamName": "Kingdom Rush Origins - Tower Defense",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "GemCraft - Frostborn Wrath",
+  "year": 2020,
+  "newId": 1106530,
+  "steamName": "GemCraft - Frostborn Wrath",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Cataclismo",
+  "year": 2024,
+  "newId": 1422440,
+  "steamName": "Cataclismo",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Retro/Grade",
+  "year": 2013,
+  "newId": 222660,
+  "steamName": "Retro/Grade",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Wandering Sword",
+  "year": 2023,
+  "newId": 1876890,
+  "steamName": "Wandering Sword",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "World of Tanks",
+  "year": 2011,
+  "newId": 1407200,
+  "steamName": "World of Tanks",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Legend Bowl",
+  "year": 2022,
+  "newId": 1106340,
+  "steamName": "Legend Bowl",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "WWE 2K24",
+  "year": 2024,
+  "newId": 2315690,
+  "steamName": "WWE 2K24",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Eleven Table Tennis",
+  "year": 2020,
+  "newId": 488310,
+  "steamName": "Eleven Table Tennis",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Twilight Struggle",
+  "year": 2016,
+  "newId": 406290,
+  "steamName": "Twilight Struggle",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Through the Ages: A New Story of Civilization",
+  "year": 2018,
+  "newId": 758370,
+  "steamName": "Through the Ages",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "5D Chess With Multiverse Time Travel",
+  "year": 2020,
+  "newId": 1349230,
+  "steamName": "5D Chess With Multiverse Time Travel",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Slice & Dice",
+  "year": 2023,
+  "newId": 1775490,
+  "steamName": "Slice & Dice",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "I Expect You To Die",
+  "year": 2016,
+  "newId": 587430,
+  "steamName": "I Expect You To Die",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Underdogs",
+  "year": 2024,
+  "newId": 2441700,
+  "steamName": "UNDERDOGS",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Breachers",
+  "year": 2023,
+  "newId": 1922010,
+  "steamName": "Breachers™",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Vox Machinae",
+  "year": 2022,
+  "newId": 334540,
+  "steamName": "Vox Machinae",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Alan Wake Remastered",
+  "year": 2021,
+  "newId": 108710,
+  "steamName": "Alan Wake",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Kingdom Hearts HD 1.5 + 2.5 ReMIX",
+  "year": 2021,
+  "newId": 2552430,
+  "steamName": "KINGDOM HEARTS -HD 1.5+2.5 ReMIX-",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Romancing SaGa 2: Revenge of the Seven",
+  "year": 2024,
+  "newId": 2455640,
+  "steamName": "Romancing SaGa 2: Revenge of the Seven",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Live A Live",
+  "year": 2023,
+  "newId": 2014380,
+  "steamName": "LIVE A LIVE",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Capcom Fighting Collection",
+  "year": 2022,
+  "newId": 1685750,
+  "steamName": "Capcom Fighting Collection",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Cold Waters",
+  "year": 2017,
+  "newId": 541210,
+  "steamName": "Cold Waters",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Flashpoint Campaigns: Southern Storm",
+  "year": 2022,
+  "newId": 2366530,
+  "steamName": "Flashpoint Campaigns: Southern Storm",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Rule the Waves 3",
+  "year": 2022,
+  "newId": 2008100,
+  "steamName": "Rule the Waves 3",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Assault Android Cactus",
+  "year": 2015,
+  "newId": 250110,
+  "steamName": "Assault Android Cactus+",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Bopl Battle",
+  "year": 2024,
+  "newId": 1686940,
+  "steamName": "Bopl Battle",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Iron Marines",
+  "year": 2021,
+  "newId": 931280,
+  "steamName": "Iron Marines",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Lamplight City",
+  "year": 2018,
+  "newId": 761460,
+  "steamName": "Lamplight City",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Strangeland",
+  "year": 2021,
+  "newId": 1369520,
+  "steamName": "Strangeland",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Creaks",
+  "year": 2020,
+  "newId": 956030,
+  "steamName": "Creaks",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Ken Follett's The Pillars of the Earth",
+  "year": 2017,
+  "newId": 234270,
+  "steamName": "Ken Follett's The Pillars of the Earth",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "King's Quest",
+  "year": 2015,
+  "newId": 345390,
+  "steamName": "King's Quest",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "140",
+  "year": 2013,
+  "newId": 242820,
+  "steamName": "140",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Infinity Nikki",
+  "year": 2024,
+  "newId": 3164330,
+  "steamName": "Infinity Nikki",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Windjammers 2",
+  "year": 2022,
+  "newId": 1114290,
+  "steamName": "Windjammers 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Red Matter",
+  "year": 2018,
+  "newId": 966680,
+  "steamName": "Red Matter",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Metro Awakening",
+  "year": 2024,
+  "newId": 2669410,
+  "steamName": "Metro Awakening",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Rick and Morty: Virtual Rick-ality",
+  "year": 2017,
+  "newId": 469610,
+  "steamName": "Rick and Morty: Virtual Rick-ality",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Dead Rising Deluxe Remaster",
+  "year": 2024,
+  "newId": 2527390,
+  "steamName": "Dead Rising Deluxe Remaster",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Rise of the Triad: Ludicrous Edition",
+  "year": 2023,
+  "newId": 1421490,
+  "steamName": "Rise of the Triad: Ludicrous Edition",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Myst",
+  "year": 2021,
+  "newId": 1255560,
+  "steamName": "Myst",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Dead Space 3",
+  "year": 2013,
+  "newId": 1238060,
+  "steamName": "Dead Space™ 3",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Kara no Shoujo",
+  "year": 2011,
+  "newId": 965810,
+  "steamName": "Kara no Shojo",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Particle Fleet: Emergence",
+  "year": 2016,
+  "newId": 422900,
+  "steamName": "Particle Fleet: Emergence",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Kingdom Rush Vengeance",
+  "year": 2020,
+  "newId": 1367550,
+  "steamName": "Kingdom Rush Vengeance - Tower Defense",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Dungeon Warfare 2",
+  "year": 2018,
+  "newId": 698540,
+  "steamName": "Dungeon Warfare 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Tower Tactics: Liberation",
+  "year": 2022,
+  "newId": 1709900,
+  "steamName": "Tower Tactics: Liberation",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Cannon Brawl",
+  "year": 2014,
+  "newId": 230860,
+  "steamName": "Cannon Brawl",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Syberia: The World Before",
+  "year": 2022,
+  "newId": 1410640,
+  "steamName": "Syberia: The World Before",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Tsioque",
+  "year": 2018,
+  "newId": 393190,
+  "steamName": "TSIOQUE",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sherlock Holmes: Crimes & Punishments",
+  "year": 2014,
+  "newId": 241260,
+  "steamName": "Sherlock Holmes: Crimes and Punishments",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sam & Max Save the World Remastered",
+  "year": 2020,
+  "newId": 1440440,
+  "steamName": "Sam & Max Save the World",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Rusty Lake: Roots",
+  "year": 2016,
+  "newId": 532110,
+  "steamName": "Rusty Lake: Roots",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Robobeat",
+  "year": 2024,
+  "newId": 1456760,
+  "steamName": "ROBOBEAT",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Audica",
+  "year": 2019,
+  "newId": 1020340,
+  "steamName": "AUDICA: Rhythm Shooter",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Ragnarock",
+  "year": 2021,
+  "newId": 1345820,
+  "steamName": "Ragnarock",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Project Heartbeat",
+  "year": 2021,
+  "newId": 1216230,
+  "steamName": "Project Heartbeat",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sixtar Gate: STARTRAIL",
+  "year": 2022,
+  "newId": 1802720,
+  "steamName": "Sixtar Gate: STARTRAIL",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Where Winds Meet",
+  "year": 2025,
+  "newId": 3564740,
+  "steamName": "Where Winds Meet",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Ratopia",
+  "year": 2023,
+  "newId": 2244130,
+  "steamName": "Ratopia",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sword of Convallaria",
+  "year": 2024,
+  "newId": 2526380,
+  "steamName": "Sword of Convallaria",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Cursed to Golf",
+  "year": 2022,
+  "newId": 1726120,
+  "steamName": "Cursed to Golf",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Gremlins, Inc.",
+  "year": 2016,
+  "newId": 369990,
+  "steamName": "Gremlins, Inc.",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Chess Ultra",
+  "year": 2017,
+  "newId": 518060,
+  "steamName": "Chess Ultra",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Shadowverse: Worlds Beyond",
+  "year": 2025,
+  "newId": 2584990,
+  "steamName": "Shadowverse: Worlds Beyond",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Until You Fall",
+  "year": 2020,
+  "newId": 858260,
+  "steamName": "Until You Fall",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "In Death",
+  "year": 2018,
+  "newId": 605450,
+  "steamName": "In Death",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "A Fisherman's Tale",
+  "year": 2019,
+  "newId": 559330,
+  "steamName": "A Fisherman's Tale",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Cosmodread",
+  "year": 2021,
+  "newId": 1256060,
+  "steamName": "Cosmodread",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Legendary Tales",
+  "year": 2023,
+  "newId": 1465070,
+  "steamName": "Legendary Tales",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Down the Rabbit Hole",
+  "year": 2020,
+  "newId": 1215270,
+  "steamName": "Down the Rabbit Hole",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Star Wars: Dark Forces Remaster",
+  "year": 2024,
+  "newId": 2292260,
+  "steamName": "STAR WARS™: Dark Forces Remaster",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Diablo II: Resurrected",
+  "year": 2021,
+  "newId": 2536520,
+  "steamName": "Diablo II: Resurrected – Infernal Edition",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "low"
+ },
+ {
+  "title": "Suikoden I & II HD Remaster: Gate Rune and Dunan Unification Wars",
+  "year": 2025,
+  "newId": 1932640,
+  "steamName": "Suikoden I&II HD Remaster Gate Rune and Dunan Unification Wars",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Like a Dragon: Ishin!",
+  "year": 2023,
+  "newId": 1805480,
+  "steamName": "Like a Dragon: Ishin!",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Need for Speed Hot Pursuit Remastered",
+  "year": 2020,
+  "newId": 1328660,
+  "steamName": "Need for Speed™ Hot Pursuit Remastered",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sea Power: Naval Combat in the Missile Age",
+  "year": 2024,
+  "newId": 1286220,
+  "steamName": "Sea Power : Naval Combat in the Missile Age",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "HighFleet",
+  "year": 2021,
+  "newId": 1434950,
+  "steamName": "HighFleet",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Second Front",
+  "year": 2022,
+  "newId": 1148490,
+  "steamName": "Second Front",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Gunner, HEAT, PC!",
+  "year": 2023,
+  "newId": 1705180,
+  "steamName": "Gunner, HEAT, PC!",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "IL-2 Sturmovik: Battle of Stalingrad",
+  "year": 2014,
+  "newId": 307960,
+  "steamName": "IL-2 Sturmovik: Battle of Stalingrad",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Samurai Gunn",
+  "year": 2013,
+  "newId": 239090,
+  "steamName": "Samurai GUNN",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Killer Queen Black",
+  "year": 2019,
+  "newId": 663670,
+  "steamName": "Killer Queen Black",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "ROUNDS",
+  "year": 2021,
+  "newId": 1557740,
+  "steamName": "ROUNDS",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "AVICII Invector",
+  "year": 2019,
+  "newId": 986800,
+  "steamName": "AVICII Invector",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Wuthering Waves",
+  "year": 2024,
+  "newId": 3513350,
+  "steamName": "Wuthering Waves",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "The Legend of Tianding",
+  "year": 2021,
+  "newId": 1406850,
+  "steamName": "The Legend of Tianding",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "NBA 2K25",
+  "year": 2024,
+  "newId": 2878980,
+  "steamName": "NBA 2K25",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "TopSpin 2K25",
+  "year": 2024,
+  "newId": 1785650,
+  "steamName": "TopSpin 2K25",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Instruments of Destruction",
+  "year": 2022,
+  "newId": 1428100,
+  "steamName": "Instruments of Destruction",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Call of Duty: Black Ops Cold War",
+  "year": 2020,
+  "newId": 1985810,
+  "steamName": "Call of Duty®: Black Ops Cold War",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Call of Duty: Warzone",
+  "year": 2020,
+  "newId": 1962663,
+  "steamName": "Call of Duty®: Warzone™",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "House Flipper 2",
+  "year": 2023,
+  "newId": 1190970,
+  "steamName": "House Flipper 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Rogue Tower",
+  "year": 2022,
+  "newId": 1843760,
+  "steamName": "Rogue Tower",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Ratropolis",
+  "year": 2020,
+  "newId": 1108370,
+  "steamName": "Ratropolis",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Element TD 2",
+  "year": 2021,
+  "newId": 1018830,
+  "steamName": "Element TD 2 - Tower Defense",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Warpips",
+  "year": 2022,
+  "newId": 1291010,
+  "steamName": "Warpips",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Anna's Quest",
+  "year": 2015,
+  "newId": 327220,
+  "steamName": "Anna's Quest",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Unforeseen Incidents",
+  "year": 2018,
+  "newId": 501790,
+  "steamName": "Unforeseen Incidents",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Darkside Detective",
+  "year": 2017,
+  "newId": 368390,
+  "steamName": "The Darkside Detective",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Beyond a Steel Sky",
+  "year": 2020,
+  "newId": 1146310,
+  "steamName": "Beyond a Steel Sky",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Duck Detective: The Secret Salami",
+  "year": 2024,
+  "newId": 2637990,
+  "steamName": "Duck Detective: The Secret Salami",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Dropsy",
+  "year": 2015,
+  "newId": 274350,
+  "steamName": "Dropsy",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Audio Trip",
+  "year": 2019,
+  "newId": 826540,
+  "steamName": "Audio Trip",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Groove Coaster",
+  "year": 2018,
+  "newId": 744060,
+  "steamName": "Groove Coaster",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Rhythm Sprout: Sick Beats & Bad Sweets",
+  "year": 2023,
+  "newId": 1475840,
+  "steamName": "Rhythm Sprout: Sick Beats & Bad Sweets",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Vectronom",
+  "year": 2019,
+  "newId": 925460,
+  "steamName": "Vectronom",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Warm Snow",
+  "year": 2022,
+  "newId": 1296830,
+  "steamName": "暖雪 Warm Snow",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Dungreed",
+  "year": 2018,
+  "newId": 753420,
+  "steamName": "Dungreed",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Coma 2: Vicious Sisters",
+  "year": 2020,
+  "newId": 1045720,
+  "steamName": "The Coma 2: Vicious Sisters",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Football, Tactics & Glory",
+  "year": 2018,
+  "newId": 375530,
+  "steamName": "Football, Tactics & Glory",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Everdell",
+  "year": 2023,
+  "newId": 1722840,
+  "steamName": "Everdell",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Regency Solitaire",
+  "year": 2015,
+  "newId": 351090,
+  "steamName": "Regency Solitaire",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Arizona Sunshine 2",
+  "year": 2023,
+  "newId": 1540210,
+  "steamName": "Arizona Sunshine® VR 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Compound",
+  "year": 2022,
+  "newId": 615120,
+  "steamName": "COMPOUND",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Bootstrap Island",
+  "year": 2024,
+  "newId": 1942110,
+  "steamName": "Bootstrap Island",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sairento VR",
+  "year": 2018,
+  "newId": 555880,
+  "steamName": "Sairento VR",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Days Gone Remastered",
+  "year": 2025,
+  "newId": 1259420,
+  "steamName": "Days Gone",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Tomb Raider IV-VI Remastered",
+  "year": 2025,
+  "newId": 2525380,
+  "steamName": "Tomb Raider IV-VI Remastered",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Easy Red 2",
+  "year": 2021,
+  "newId": 1324780,
+  "steamName": "Easy Red 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Lethal League",
+  "year": 2014,
+  "newId": 261180,
+  "steamName": "Lethal League",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Shardlight",
+  "year": 2016,
+  "newId": 336130,
+  "steamName": "Shardlight",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Inner World: The Last Wind Monk",
+  "year": 2017,
+  "newId": 613470,
+  "steamName": "The Inner World - The Last Wind Monk",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "OhShape",
+  "year": 2020,
+  "newId": 1098100,
+  "steamName": "OhShape",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Soundodger+",
+  "year": 2013,
+  "newId": 247140,
+  "steamName": "Soundodger+",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Aaero",
+  "year": 2017,
+  "newId": 499890,
+  "steamName": "Aaero",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Melody's Escape 2",
+  "year": 2022,
+  "newId": 1829470,
+  "steamName": "Melody's Escape 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "The Metronomicon",
+  "year": 2016,
+  "newId": 416790,
+  "steamName": "The Metronomicon: Slay The Dance Floor",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Drums Rock",
+  "year": 2022,
+  "newId": 1906020,
+  "steamName": "Drums Rock",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Rewinder",
+  "year": 2021,
+  "newId": 1161170,
+  "steamName": "The Rewinder",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Chinese Parents",
+  "year": 2018,
+  "newId": 736190,
+  "steamName": "Chinese Parents",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Immortal Life",
+  "year": 2023,
+  "newId": 1201230,
+  "steamName": "Immortal Life",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Tennis Elbow 4",
+  "year": 2021,
+  "newId": 760640,
+  "steamName": "Tennis Elbow 4",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Mahjong Soul",
+  "year": 2021,
+  "newId": 2739990,
+  "steamName": "Mahjong Soul",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Shadow Man Remastered",
+  "year": 2021,
+  "newId": 1413870,
+  "steamName": "Shadow Man Remastered",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "YU-NO: A Girl Who Chants Love at the Bound of this World",
+  "year": 2019,
+  "newId": 912450,
+  "steamName": "YU-NO: A girl who chants love at the bound of this world",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Anomaly 2",
+  "year": 2013,
+  "newId": 236730,
+  "steamName": "Anomaly 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Unstoppable Gorg",
+  "year": 2012,
+  "newId": 18120,
+  "steamName": "Unstoppable Gorg",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "PixelJunk Monsters 2",
+  "year": 2018,
+  "newId": 749800,
+  "steamName": "PixelJunk™ Monsters 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Space Run",
+  "year": 2014,
+  "newId": 275670,
+  "steamName": "Space Run",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Auto Chess",
+  "year": 2019,
+  "newId": 1530300,
+  "steamName": "Auto Chess",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Gladiator Guild Manager",
+  "year": 2023,
+  "newId": 1043260,
+  "steamName": "Gladiator Guild Manager",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Whispered World",
+  "year": 2010,
+  "newId": 268540,
+  "steamName": "The Whispered World Special Edition",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Gibbous: A Cthulhu Adventure",
+  "year": 2019,
+  "newId": 914020,
+  "steamName": "Gibbous -  A Cthulhu Adventure",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Chuchel",
+  "year": 2018,
+  "newId": 711660,
+  "steamName": "CHUCHEL",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Harold Halibut",
+  "year": 2024,
+  "newId": 924750,
+  "steamName": "Harold Halibut",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Audioshield",
+  "year": 2016,
+  "newId": 412740,
+  "steamName": "Audioshield",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "FRACT OSC",
+  "year": 2014,
+  "newId": 243220,
+  "steamName": "FRACT OSC",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Klang 2",
+  "year": 2021,
+  "newId": 1111600,
+  "steamName": "Klang 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Everhood 2",
+  "year": 2025,
+  "newId": 1984020,
+  "steamName": "Everhood 2",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Anno: Mutationem",
+  "year": 2022,
+  "newId": 1368030,
+  "steamName": "ANNO: Mutationem",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Nobody - The Turnaround",
+  "year": 2023,
+  "newId": 1810580,
+  "steamName": "Nobody - The Turnaround",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Behind the Frame: The Finest Scenery",
+  "year": 2021,
+  "newId": 1634150,
+  "steamName": "Behind the Frame: The Finest Scenery",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Firework",
+  "year": 2021,
+  "newId": 1288310,
+  "steamName": "Firework",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Franchise Hockey Manager 9",
+  "year": 2022,
+  "newId": 1937470,
+  "steamName": "Franchise Hockey Manager 9",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Mutant Football League",
+  "year": 2017,
+  "newId": 529520,
+  "steamName": "Mutant Football League",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Pure Pool",
+  "year": 2014,
+  "newId": 300610,
+  "steamName": "Pure Pool",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Steep",
+  "year": 2016,
+  "newId": 460920,
+  "steamName": "Steep™",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Shredders",
+  "year": 2022,
+  "newId": 1874170,
+  "steamName": "Shredders",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Patchwork",
+  "year": 2018,
+  "newId": 528250,
+  "steamName": "Patchwork",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "One Deck Dungeon",
+  "year": 2018,
+  "newId": 770100,
+  "steamName": "One Deck Dungeon",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "KARDS - The WWII Card Game",
+  "year": 2020,
+  "newId": 544810,
+  "steamName": "KARDS - The WW2 Card Game",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Ghosts of Tabor",
+  "year": 2023,
+  "newId": 1957780,
+  "steamName": "Ghosts of Tabor",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Trover Saves the Universe",
+  "year": 2019,
+  "newId": 1051200,
+  "steamName": "Trover Saves the Universe",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Thing: Remastered",
+  "year": 2024,
+  "newId": 2958970,
+  "steamName": "The Thing: Remastered",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Shin Megami Tensei III Nocturne HD Remaster",
+  "year": 2021,
+  "newId": 1413480,
+  "steamName": "Shin Megami Tensei III Nocturne HD Remaster",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Broken Sword - Shadow of the Templars: Reforged",
+  "year": 2024,
+  "newId": 2544110,
+  "steamName": "Broken Sword - Shadow of the Templars: Reforged",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Mega Man X Legacy Collection",
+  "year": 2018,
+  "newId": 743890,
+  "steamName": "Mega Man X Legacy Collection",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "GROUND BRANCH",
+  "year": 2018,
+  "newId": 16900,
+  "steamName": "GROUND BRANCH",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Partisans 1941",
+  "year": 2020,
+  "newId": 1227530,
+  "steamName": "Partisans 1941",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Stranger of Paradise: Final Fantasy Origin",
+  "year": 2022,
+  "newId": 1358700,
+  "steamName": "STRANGER OF PARADISE FINAL FANTASY ORIGIN",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Code Vein II",
+  "year": 2026,
+  "newId": 2362060,
+  "steamName": "CODE VEIN II",
+  "type": "game",
+  "headerOk": false,
+  "confidence": "high"
+ },
+ {
+  "title": "Edna & Harvey: Harvey's New Eyes",
+  "year": 2012,
+  "newId": 219910,
+  "steamName": "Edna & Harvey: Harvey's New Eyes",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Little Misfortune",
+  "year": 2019,
+  "newId": 714120,
+  "steamName": "Little Misfortune",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Happy Game",
+  "year": 2021,
+  "newId": 1206060,
+  "steamName": "Happy Game",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Jenny LeClue - Detectivu",
+  "year": 2019,
+  "newId": 319870,
+  "steamName": "Jenny LeClue - Detectivu",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "One Hand Clapping",
+  "year": 2021,
+  "newId": 893720,
+  "steamName": "One Hand Clapping",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Wuchang: Fallen Feathers",
+  "year": 2025,
+  "newId": 2277560,
+  "steamName": "WUCHANG: Fallen Feathers",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Eastside Hockey Manager",
+  "year": 2015,
+  "newId": 301120,
+  "steamName": "Eastside Hockey Manager",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Star Realms",
+  "year": 2015,
+  "newId": 438140,
+  "steamName": "Star Realms",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "RoadCraft",
+  "year": 2025,
+  "newId": 2104890,
+  "steamName": "RoadCraft",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Mutropolis",
+  "year": 2021,
+  "newId": 1037120,
+  "steamName": "Mutropolis",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Journey Down: Chapter Three",
+  "year": 2017,
+  "newId": 579760,
+  "steamName": "The Journey Down: Chapter Three",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Willy Morgan and the Curse of Bone Town",
+  "year": 2020,
+  "newId": 1097110,
+  "steamName": "Willy Morgan and the Curse of Bone Town",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Beatbuddy: Tale of the Guardians",
+  "year": 2013,
+  "newId": 231040,
+  "steamName": "Beatbuddy: Tale of the Guardians",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Rhythm Fighter",
+  "year": 2020,
+  "newId": 1198400,
+  "steamName": "Rhythm Fighter",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sonority",
+  "year": 2022,
+  "newId": 1432390,
+  "steamName": "Sonority",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Dark and Darker",
+  "year": 2023,
+  "newId": 2016590,
+  "steamName": "Dark and Darker",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Lost Castle",
+  "year": 2016,
+  "newId": 434650,
+  "steamName": "Lost Castle / 失落城堡",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "New Star Manager",
+  "year": 2019,
+  "newId": 883130,
+  "steamName": "New Star™ Manager",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Super Blood Hockey",
+  "year": 2017,
+  "newId": 532190,
+  "steamName": "Super Blood Hockey",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Galaxy Trucker: Extended Edition",
+  "year": 2014,
+  "newId": 870690,
+  "steamName": "Galaxy Trucker: Extended Edition",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Istanbul: Digital Edition",
+  "year": 2019,
+  "newId": 943410,
+  "steamName": "Istanbul: Digital Edition",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Onirim",
+  "year": 2018,
+  "newId": 651470,
+  "steamName": "Onirim - Solitaire Card Game",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Ascension: Deckbuilding Game",
+  "year": 2015,
+  "newId": 320430,
+  "steamName": "Ascension: Deckbuilding Game",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Hard Bullet",
+  "year": 2020,
+  "newId": 1294760,
+  "steamName": "HARD BULLET",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Headquarters: World War II",
+  "year": 2023,
+  "newId": 1840800,
+  "steamName": "Headquarters: World War II",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Isonzo",
+  "year": 2022,
+  "newId": 1556790,
+  "steamName": "Isonzo",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Syrian Warfare",
+  "year": 2017,
+  "newId": 485980,
+  "steamName": "Syrian Warfare",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Project Winter",
+  "year": 2019,
+  "newId": 774861,
+  "steamName": "Project Winter",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Mass Effect: Andromeda",
+  "year": 2017,
+  "newId": 1238000,
+  "steamName": "Mass Effect™: Andromeda Deluxe Edition",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Contraband Police",
+  "year": 2023,
+  "newId": 756800,
+  "steamName": "Contraband Police",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Prime World: Defenders",
+  "year": 2013,
+  "newId": 235360,
+  "steamName": "Prime World: Defenders",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "The Dark Eye: Chains of Satinav",
+  "year": 2012,
+  "newId": 203830,
+  "steamName": "The Dark Eye: Chains of Satinav",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Chinatown Detective Agency",
+  "year": 2022,
+  "newId": 1172190,
+  "steamName": "Chinatown Detective Agency",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Trüberbrook",
+  "year": 2019,
+  "newId": 757300,
+  "steamName": "Truberbrook / Trüberbrook",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Pilgrims",
+  "year": 2021,
+  "newId": 1049280,
+  "steamName": "Pilgrims",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Tesla Effect: A Tex Murphy Adventure",
+  "year": 2014,
+  "newId": 261510,
+  "steamName": "Tesla Effect: A Tex Murphy Adventure",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Nelly Cootalot: The Fowl Fleet",
+  "year": 2016,
+  "newId": 317320,
+  "steamName": "Nelly Cootalot: The Fowl Fleet",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Leisure Suit Larry: Wet Dreams Don't Dry",
+  "year": 2018,
+  "newId": 765870,
+  "steamName": "Leisure Suit Larry - Wet Dreams Don't Dry",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Chime Sharp",
+  "year": 2016,
+  "newId": 326520,
+  "steamName": "Chime Sharp",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Lost Soul Aside",
+  "year": 2025,
+  "newId": 3378960,
+  "steamName": "Lost Soul Aside™",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Guild of Dungeoneering",
+  "year": 2015,
+  "newId": 317820,
+  "steamName": "Guild of Dungeoneering Ultimate Edition",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sonic Origins",
+  "year": 2022,
+  "newId": 1794960,
+  "steamName": "Sonic Origins",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Broken Lines",
+  "year": 2020,
+  "newId": 926580,
+  "steamName": "Broken Lines",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Screencheat",
+  "year": 2014,
+  "newId": 301970,
+  "steamName": "Screencheat",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Divekick",
+  "year": 2013,
+  "newId": 244730,
+  "steamName": "Divekick",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Vigor",
+  "year": 2023,
+  "newId": 2818260,
+  "steamName": "Vigor",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Deathtrap",
+  "year": 2015,
+  "newId": 310510,
+  "steamName": "Deathtrap",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Fortified!",
+  "year": 2016,
+  "newId": 334210,
+  "steamName": "Fortified",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sword and Fairy 7",
+  "year": 2021,
+  "newId": 1543030,
+  "steamName": "Sword and Fairy 7",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "inZOI",
+  "year": 2025,
+  "newId": 2456740,
+  "steamName": "inZOI",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Wrestling Empire",
+  "year": 2021,
+  "newId": 1620340,
+  "steamName": "Wrestling Empire",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Premium Bowling",
+  "year": 2019,
+  "newId": 898580,
+  "steamName": "Premium Bowling",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Terra Mystica",
+  "year": 2020,
+  "newId": 628900,
+  "steamName": "Terra Mystica",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Potion Explosion",
+  "year": 2017,
+  "newId": 788420,
+  "steamName": "Potion Explosion",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Tabletopia",
+  "year": 2016,
+  "newId": 402560,
+  "steamName": "Tabletopia",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Yu-Gi-Oh! Legacy of the Duelist: Link Evolution",
+  "year": 2019,
+  "newId": 1150640,
+  "steamName": "Yu-Gi-Oh! Legacy of the Duelist : Link Evolution",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Cardfight!! Vanguard Dear Days",
+  "year": 2022,
+  "newId": 1881420,
+  "steamName": "Cardfight!! Vanguard Dear Days",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Alien: Rogue Incursion",
+  "year": 2024,
+  "newId": 1850050,
+  "steamName": "Alien: Rogue Incursion VR",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Behemoth",
+  "year": 2024,
+  "newId": 3027260,
+  "steamName": "BEHEMOTH",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Green Hell VR",
+  "year": 2022,
+  "newId": 1782330,
+  "steamName": "Green Hell VR",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Hubris",
+  "year": 2022,
+  "newId": 1265800,
+  "steamName": "Hubris",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Rogue Company",
+  "year": 2020,
+  "newId": 872200,
+  "steamName": "Rogue Company",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Construction Simulator",
+  "year": 2022,
+  "newId": 1273400,
+  "steamName": "Construction Simulator",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Soundfall",
+  "year": 2022,
+  "newId": 1608700,
+  "steamName": "Soundfall",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "No Straight Roads",
+  "year": 2020,
+  "newId": 1726190,
+  "steamName": "No Straight Roads: Encore Edition",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Xuan-Yuan Sword VII",
+  "year": 2020,
+  "newId": 1249800,
+  "steamName": "Xuan-Yuan Sword VII",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Paranormal HK",
+  "year": 2020,
+  "newId": 2298390,
+  "steamName": "Paranormal VHS",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Undisputed",
+  "year": 2024,
+  "newId": 1451190,
+  "steamName": "Undisputed",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Pro Cycling Manager 2024",
+  "year": 2024,
+  "newId": 2494350,
+  "steamName": "Pro Cycling Manager 2024",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Disc Jam",
+  "year": 2017,
+  "newId": 415880,
+  "steamName": "Disc Jam",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Tokaido",
+  "year": 2018,
+  "newId": 648750,
+  "steamName": "Tokaido",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Splendor",
+  "year": 2016,
+  "newId": 376680,
+  "steamName": "Splendor",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Agricola: All Creatures Big and Small",
+  "year": 2014,
+  "newId": 528180,
+  "steamName": "Agricola: All Creatures Big and Small",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Steam: Rails to Riches",
+  "year": 2015,
+  "newId": 595930,
+  "steamName": "Steam: Rails to Riches",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "UNO",
+  "year": 2016,
+  "newId": 470220,
+  "steamName": "UNO",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Krosmaga",
+  "year": 2017,
+  "newId": 609940,
+  "steamName": "KROSMAGA",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "SolForge Fusion",
+  "year": 2023,
+  "newId": 2400960,
+  "steamName": "SolForge Fusion",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Espire 1: VR Operative",
+  "year": 2019,
+  "newId": 669290,
+  "steamName": "Espire 1: VR Operative",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Wanderer",
+  "year": 2022,
+  "newId": 1599560,
+  "steamName": "Wanderer",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Sniper Elite V2 Remastered",
+  "year": 2019,
+  "newId": 728740,
+  "steamName": "Sniper Elite V2 Remastered",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Destroy All Humans! 2 - Reprobed",
+  "year": 2022,
+  "newId": 1266700,
+  "steamName": "Destroy All Humans! 2 - Reprobed",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Gray Zone Warfare",
+  "year": 2024,
+  "newId": 2479810,
+  "steamName": "Gray Zone Warfare",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Zero Hour",
+  "year": 2021,
+  "newId": 1359090,
+  "steamName": "Zero Hour",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Alone in the Dark",
+  "year": 2024,
+  "newId": 1310410,
+  "steamName": "Alone in the Dark",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Plane Mechanic Simulator",
+  "year": 2019,
+  "newId": 803980,
+  "steamName": "Plane Mechanic Simulator",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "medium"
+ },
+ {
+  "title": "Encodya",
+  "year": 2021,
+  "newId": 1137450,
+  "steamName": "ENCODYA",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Runner3",
+  "year": 2018,
+  "newId": 516130,
+  "steamName": "Runner3",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Vambrace: Cold Soul",
+  "year": 2019,
+  "newId": 904380,
+  "steamName": "Vambrace: Cold Soul",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "AEW Fight Forever",
+  "year": 2023,
+  "newId": 1913210,
+  "steamName": "AEW: Fight Forever",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Fishing Sim World: Pro Tour",
+  "year": 2018,
+  "newId": 834280,
+  "steamName": "Fishing Sim World®: Pro Tour",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Panzer Dragoon: Remake",
+  "year": 2020,
+  "newId": 1178880,
+  "steamName": "Panzer Dragoon: Remake",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Fishing: Barents Sea",
+  "year": 2018,
+  "newId": 501080,
+  "steamName": "Fishing: Barents Sea",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Deemo Reborn",
+  "year": 2021,
+  "newId": 1282210,
+  "steamName": "DEEMO -Reborn-",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Behold the Kickmen",
+  "year": 2017,
+  "newId": 529440,
+  "steamName": "Behold the Kickmen",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Axis Football 2023",
+  "year": 2022,
+  "newId": 2103640,
+  "steamName": "Axis Football 2023",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Don Bradman Cricket 17",
+  "year": 2016,
+  "newId": 464850,
+  "steamName": "Don Bradman Cricket 17",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Warhammer 40,000: Warpforge",
+  "year": 2024,
+  "newId": 1361210,
+  "steamName": "Warhammer 40,000: Darktide",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "low"
+ },
+ {
+  "title": "Remothered: Tormented Fathers",
+  "year": 2018,
+  "newId": 633360,
+  "steamName": "Remothered: Tormented Fathers",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Carcassonne - Tiles & Tactics",
+  "year": 2017,
+  "newId": 598810,
+  "steamName": "Carcassonne - Tiles & Tactics",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Matchpoint - Tennis Championships",
+  "year": 2022,
+  "newId": 1345760,
+  "steamName": "Matchpoint - Tennis Championships",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Warhammer Quest",
+  "year": 2015,
+  "newId": 326670,
+  "steamName": "Warhammer Quest (Classic)",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Tharsis",
+  "year": 2016,
+  "newId": 323060,
+  "steamName": "Tharsis",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Prominence Poker",
+  "year": 2016,
+  "newId": 384180,
+  "steamName": "Prominence Poker",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Front Mission 1st: Remake",
+  "year": 2023,
+  "newId": 2399730,
+  "steamName": "FRONT MISSION 1st: Remake",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Big Rumble Boxing: Creed Champions",
+  "year": 2021,
+  "newId": 1278170,
+  "steamName": "Big Rumble Boxing: Creed Champions",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Cricket 24",
+  "year": 2023,
+  "newId": 2358260,
+  "steamName": "Cricket 24",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Vikings: Wolves of Midgard",
+  "year": 2017,
+  "newId": 404590,
+  "steamName": "Vikings - Wolves of Midgard",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Six Days in Fallujah",
+  "year": 2023,
+  "newId": 1548850,
+  "steamName": "Six Days in Fallujah",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Pro Basketball Manager 2024",
+  "year": 2023,
+  "newId": 2328780,
+  "steamName": "Pro Basketball Manager 2024",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Brunswick Pro Billiards",
+  "year": 2020,
+  "newId": 1179420,
+  "steamName": "Brunswick Pro Billiards",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Handball 21",
+  "year": 2020,
+  "newId": 891020,
+  "steamName": "Handball 21",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Risk: Global Domination",
+  "year": 2019,
+  "newId": 1128810,
+  "steamName": "RISK: Global Domination",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Necropolis: Brutal Edition",
+  "year": 2016,
+  "newId": 384490,
+  "steamName": "NECROPOLIS: BRUTAL EDITION",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Rugby 22",
+  "year": 2022,
+  "newId": 1475850,
+  "steamName": "Rugby 22",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "God of Rock",
+  "year": 2023,
+  "newId": 1851030,
+  "steamName": "God of Rock",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Blood Bowl 3",
+  "year": 2023,
+  "newId": 1016950,
+  "steamName": "Blood Bowl 3",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Maximum Football",
+  "year": 2024,
+  "newId": 1691280,
+  "steamName": "Maximum Football",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ },
+ {
+  "title": "Star Wars: Battlefront Classic Collection",
+  "year": 2024,
+  "newId": 2446550,
+  "steamName": "STAR WARS™: Battlefront Classic Collection",
+  "type": "game",
+  "headerOk": true,
+  "confidence": "high"
+ }
+]

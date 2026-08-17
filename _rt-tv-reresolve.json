@@ -1,0 +1,775 @@
+[
+ {
+  "title": "The Ascent of Man",
+  "ourYear": 1973,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/ascent_of_man",
+   "pageName": "Ascent of Man",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/ascent_of_man",
+   "pageName": "Ascent of Man",
+   "score": null,
+   "reviews": 0,
+   "rtYear": null,
+   "exactTitle": false,
+   "yearGap": null
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "ascent_of_man",
+    "url": "https://www.rottentomatoes.com/tv/ascent_of_man",
+    "name": "Ascent of Man",
+    "score": null,
+    "reviews": 0,
+    "ldYear": null,
+    "exact": false,
+    "gap": null
+   }
+  ]
+ },
+ {
+  "title": "Arcane",
+  "ourYear": 2021,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/arcane_league_of_legends",
+   "pageName": "Arcane: League of Legends",
+   "score": 100,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/arcane_league_of_legends",
+   "pageName": "Arcane: League of Legends",
+   "score": 100,
+   "reviews": 65,
+   "rtYear": 2021,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "arcane",
+    "url": "https://www.rottentomatoes.com/tv/arcane_league_of_legends",
+    "name": "Arcane: League of Legends",
+    "score": 100,
+    "reviews": 65,
+    "ldYear": 2021,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "The Genius",
+  "ourYear": 2013,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/genius",
+   "pageName": "Genius",
+   "score": 71,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/genius",
+   "pageName": "Genius",
+   "score": 71,
+   "reviews": 100,
+   "rtYear": 2017,
+   "exactTitle": false,
+   "yearGap": 4
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "genius",
+    "url": "https://www.rottentomatoes.com/tv/genius",
+    "name": "Genius",
+    "score": 71,
+    "reviews": 100,
+    "ldYear": 2017,
+    "exact": false,
+    "gap": 4
+   }
+  ]
+ },
+ {
+  "title": "Code Geass: Lelouch of the Rebellion",
+  "ourYear": 2006,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/code_geass_lelouch_of_the_rebellion",
+   "pageName": "Code Geass",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/code_geass_lelouch_of_the_rebellion",
+   "pageName": "Code Geass",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 2006,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "code_geass_lelouch_of_the_rebellion",
+    "url": "https://www.rottentomatoes.com/tv/code_geass_lelouch_of_the_rebellion",
+    "name": "Code Geass",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2006,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "Haikyu!!",
+  "ourYear": 2014,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/haikyu_to_the_top",
+   "pageName": "Haikyu!! To the Top",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/haikyu_to_the_top",
+   "pageName": "Haikyu!! To the Top",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 2014,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "haikyu",
+    "url": "https://www.rottentomatoes.com/tv/haikyu_to_the_top",
+    "name": "Haikyu!! To the Top",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2014,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "The Bridge",
+  "ourYear": 2011,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/bridge",
+   "pageName": "Bridge",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/the_bridge_2011",
+   "pageName": "The Bridge",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 2011,
+   "exactTitle": true,
+   "yearGap": 0
+  },
+  "verdict": "improved",
+  "changed": true,
+  "candidates": [
+   {
+    "slug": "the_bridge_2011",
+    "url": "https://www.rottentomatoes.com/tv/the_bridge_2011",
+    "name": "The Bridge",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2011,
+    "exact": true,
+    "gap": 0
+   },
+   {
+    "slug": "bridge",
+    "url": "https://www.rottentomatoes.com/tv/bridge",
+    "name": "Bridge",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2001,
+    "exact": false,
+    "gap": 10
+   }
+  ]
+ },
+ {
+  "title": "Warrior",
+  "ourYear": 2019,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/warrior",
+   "pageName": "Warriors of the Mongkon",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/warrior_2019",
+   "pageName": "Warrior",
+   "score": 93,
+   "reviews": 41,
+   "rtYear": 2019,
+   "exactTitle": true,
+   "yearGap": 0
+  },
+  "verdict": "improved",
+  "changed": true,
+  "candidates": [
+   {
+    "slug": "warrior_2019",
+    "url": "https://www.rottentomatoes.com/tv/warrior_2019",
+    "name": "Warrior",
+    "score": 93,
+    "reviews": 41,
+    "ldYear": 2019,
+    "exact": true,
+    "gap": 0
+   },
+   {
+    "slug": "warrior",
+    "url": "https://www.rottentomatoes.com/tv/warrior",
+    "name": "Warriors of the Mongkon",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2015,
+    "exact": false,
+    "gap": 4
+   }
+  ]
+ },
+ {
+  "title": "The Traitors",
+  "ourYear": 2022,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/the_traitors_uk",
+   "pageName": "The Traitors UK",
+   "score": 90,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/the_traitors_2022",
+   "pageName": "The Traitors",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 2022,
+   "exactTitle": true,
+   "yearGap": 0
+  },
+  "verdict": "ambiguous",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "the_traitors_2022",
+    "url": "https://www.rottentomatoes.com/tv/the_traitors_2022",
+    "name": "The Traitors",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2022,
+    "exact": true,
+    "gap": 0
+   },
+   {
+    "slug": "the_traitors",
+    "url": "https://www.rottentomatoes.com/tv/the_traitors_uk",
+    "name": "The Traitors UK",
+    "score": 90,
+    "reviews": 40,
+    "ldYear": 2022,
+    "exact": false,
+    "gap": 0
+   },
+   {
+    "slug": "traitors",
+    "url": "https://www.rottentomatoes.com/tv/traitors",
+    "name": "Traitors",
+    "score": 67,
+    "reviews": 9,
+    "ldYear": 2019,
+    "exact": false,
+    "gap": 3
+   }
+  ]
+ },
+ {
+  "title": "Strike Back",
+  "ourYear": 2010,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/strike_back",
+   "pageName": "Strike Back: Origins",
+   "score": 85,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/strike_back",
+   "pageName": "Strike Back: Origins",
+   "score": 85,
+   "reviews": 59,
+   "rtYear": 2010,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "strike_back",
+    "url": "https://www.rottentomatoes.com/tv/strike_back",
+    "name": "Strike Back: Origins",
+    "score": 85,
+    "reviews": 59,
+    "ldYear": 2010,
+    "exact": false,
+    "gap": 0
+   },
+   {
+    "slug": "strike-back",
+    "url": "https://www.rottentomatoes.com/tv/strike_back",
+    "name": "Strike Back: Origins",
+    "score": 85,
+    "reviews": 59,
+    "ldYear": 2010,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "Jack Ryan",
+  "ourYear": 2018,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/jack_ryan",
+   "pageName": "Tom Clancy's Jack Ryan",
+   "score": 80,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/jack_ryan",
+   "pageName": "Tom Clancy's Jack Ryan",
+   "score": 80,
+   "reviews": 150,
+   "rtYear": 2018,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "jack_ryan",
+    "url": "https://www.rottentomatoes.com/tv/jack_ryan",
+    "name": "Tom Clancy's Jack Ryan",
+    "score": 80,
+    "reviews": 150,
+    "ldYear": 2018,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "The Tunnel",
+  "ourYear": 2013,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/the_tunnel_vengeance",
+   "pageName": "The Tunnel: Vengeance",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/the_tunnel_vengeance",
+   "pageName": "The Tunnel: Vengeance",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 2013,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "the_tunnel",
+    "url": "https://www.rottentomatoes.com/tv/the_tunnel_vengeance",
+    "name": "The Tunnel: Vengeance",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2013,
+    "exact": false,
+    "gap": 0
+   },
+   {
+    "slug": "the-tunnel",
+    "url": "https://www.rottentomatoes.com/tv/the_tunnel_vengeance",
+    "name": "The Tunnel: Vengeance",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2013,
+    "exact": false,
+    "gap": 0
+   },
+   {
+    "slug": "tunnel",
+    "url": "https://www.rottentomatoes.com/tv/tunnel",
+    "name": "Tunnel",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2017,
+    "exact": false,
+    "gap": 4
+   }
+  ]
+ },
+ {
+  "title": "Rocko's Modern Life",
+  "ourYear": 1993,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/rocko_s_modern_life",
+   "pageName": "Rocko",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/rocko_s_modern_life",
+   "pageName": "Rocko",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 1993,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "rockos_modern_life",
+    "url": "https://www.rottentomatoes.com/tv/rocko_s_modern_life",
+    "name": "Rocko",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 1993,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "McMillions",
+  "ourYear": 2020,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/mcmillions",
+   "pageName": "McMillion$",
+   "score": 89,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/mcmillions",
+   "pageName": "McMillion$",
+   "score": 89,
+   "reviews": 36,
+   "rtYear": 2020,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "mcmillions",
+    "url": "https://www.rottentomatoes.com/tv/mcmillions",
+    "name": "McMillion$",
+    "score": 89,
+    "reviews": 36,
+    "ldYear": 2020,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "Tiger King",
+  "ourYear": 2020,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/tiger_king",
+   "pageName": "Tiger King: Murder, Mayhem and Madness",
+   "score": 52,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/tiger_king",
+   "pageName": "Tiger King: Murder, Mayhem and Madness",
+   "score": 52,
+   "reviews": 127,
+   "rtYear": 2020,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "tiger_king",
+    "url": "https://www.rottentomatoes.com/tv/tiger_king",
+    "name": "Tiger King: Murder, Mayhem and Madness",
+    "score": 52,
+    "reviews": 127,
+    "ldYear": 2020,
+    "exact": false,
+    "gap": 0
+   },
+   {
+    "slug": "tiger-king",
+    "url": "https://www.rottentomatoes.com/tv/tiger_king",
+    "name": "Tiger King: Murder, Mayhem and Madness",
+    "score": 52,
+    "reviews": 127,
+    "ldYear": 2020,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "Sword Art Online",
+  "ourYear": 2012,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/sword_art_online_alicization",
+   "pageName": "Sword Art Online: Alicization",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/sword_art_online_alicization",
+   "pageName": "Sword Art Online: Alicization",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 2012,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "sword_art_online",
+    "url": "https://www.rottentomatoes.com/tv/sword_art_online_alicization",
+    "name": "Sword Art Online: Alicization",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2012,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "Daredevil",
+  "ourYear": 2015,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/daredevil",
+   "pageName": "Marvel's Daredevil",
+   "score": 92,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/daredevil",
+   "pageName": "Marvel's Daredevil",
+   "score": 92,
+   "reviews": 196,
+   "rtYear": 2015,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "daredevil",
+    "url": "https://www.rottentomatoes.com/tv/daredevil",
+    "name": "Marvel's Daredevil",
+    "score": 92,
+    "reviews": 196,
+    "ldYear": 2015,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "Special Ops: Lioness",
+  "ourYear": 2023,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/lioness",
+   "pageName": "Lioness",
+   "score": 76,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/lioness",
+   "pageName": "Lioness",
+   "score": 76,
+   "reviews": 58,
+   "rtYear": 2023,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "special_ops_lioness",
+    "url": "https://www.rottentomatoes.com/tv/lioness",
+    "name": "Lioness",
+    "score": 76,
+    "reviews": 58,
+    "ldYear": 2023,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "Guillermo del Toro's Cabinet of Curiosities",
+  "ourYear": 2022,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/cabinet_of_curiosities",
+   "pageName": "Cabinet of Curiosities",
+   "score": 93,
+   "status": "ok"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/cabinet_of_curiosities",
+   "pageName": "Cabinet of Curiosities",
+   "score": 93,
+   "reviews": 55,
+   "rtYear": 2022,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "guillermo_del_toros_cabinet_of_curiosities",
+    "url": "https://www.rottentomatoes.com/tv/cabinet_of_curiosities",
+    "name": "Cabinet of Curiosities",
+    "score": 93,
+    "reviews": 55,
+    "ldYear": 2022,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "Xena: Warrior Princess",
+  "ourYear": 1995,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/xena_warrior_princess",
+   "pageName": "Xena",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/xena_warrior_princess",
+   "pageName": "Xena",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 1995,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "xena_warrior_princess",
+    "url": "https://www.rottentomatoes.com/tv/xena_warrior_princess",
+    "name": "Xena",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 1995,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ },
+ {
+  "title": "The Boiling Point",
+  "ourYear": 2022,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/boiling_point",
+   "pageName": "Boiling Point",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/boiling_point",
+   "pageName": "Boiling Point",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 2021,
+   "exactTitle": false,
+   "yearGap": 1
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "boiling_point",
+    "url": "https://www.rottentomatoes.com/tv/boiling_point",
+    "name": "Boiling Point",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2021,
+    "exact": false,
+    "gap": 1
+   }
+  ]
+ },
+ {
+  "title": "Love Island",
+  "ourYear": 2015,
+  "was": {
+   "url": "https://www.rottentomatoes.com/tv/love_island_uk",
+   "pageName": "Love Island UK",
+   "score": null,
+   "status": "unscored"
+  },
+  "now": {
+   "url": "https://www.rottentomatoes.com/tv/love_island_uk",
+   "pageName": "Love Island UK",
+   "score": null,
+   "reviews": 0,
+   "rtYear": 2015,
+   "exactTitle": false,
+   "yearGap": 0
+  },
+  "verdict": "unchanged",
+  "changed": false,
+  "candidates": [
+   {
+    "slug": "love_island",
+    "url": "https://www.rottentomatoes.com/tv/love_island_uk",
+    "name": "Love Island UK",
+    "score": null,
+    "reviews": 0,
+    "ldYear": 2015,
+    "exact": false,
+    "gap": 0
+   }
+  ]
+ }
+]
