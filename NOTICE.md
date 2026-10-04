@@ -6,28 +6,29 @@ owners.
 
 ## Bundled
 
-**Lucide** — icons, used under the ISC Licence.
+**Lucide**: icons, used under the ISC Licence.
 Copyright (c) 2022 Lucide Contributors. <https://lucide.dev>
-The SVG paths are inlined in `assets/site.js` rather than loaded from a CDN, so
-the site stays self-contained.
+The SVG paths are inlined in `assets/app.js`.
 
 ## Loaded at runtime
 
-**Inter** and **Fraunces** — typefaces served by Google Fonts under the
-SIL Open Font Licence 1.1.
+**Inter**: typeface served by Google Fonts under the SIL Open Font Licence 1.1.
 
-**Cover art and posters** — fetched on demand from Steam, Open Library, TMDB and
-Wikimedia. None of it is stored in this repository. All of it remains copyright
-of the respective publishers and studios.
+**Cover art and posters**: loaded on demand from Wikimedia (Wikipedia), TVmaze,
+Steam, Open Library and TMDB. None of it is stored in this repository, and all
+of it remains copyright of the respective publishers and studios. TVmaze data is
+used under CC BY-SA 4.0 (<https://www.tvmaze.com>).
 
-**Definitions** — supplied by the free Dictionary API (dictionaryapi.dev).
+**Summaries**: fetched from Wikipedia when a title is opened, under CC BY-SA 4.0,
+and linked back to the article.
 
 ## Data
 
-Critic scores and ratings referenced here originate with **Metacritic**, **IGN**,
-**Goodreads**, **IMDb** and **Rotten Tomatoes**. The compiled dataset is offered
-for personal, non-commercial discovery only, and is approximate except where an
-entry is explicitly marked as verified.
+Scores come from **IMDb** (the official IMDb datasets, used for personal and
+non-commercial purposes), **Metacritic**, **Rotten Tomatoes**, **Steam**,
+**Goodreads** and **IGN**. Links between titles and their pages come from
+**Wikidata** (CC0). The refresh pipeline in `scripts/refresh/` reads each score
+from its source and records nothing it could not read there.
 
 This project is not affiliated with, endorsed by, or connected to any of the
 services named above.
