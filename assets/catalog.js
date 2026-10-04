@@ -58,7 +58,7 @@
   var results = [], shown = 0, PAGE = 60;
   var state = defaults();
 
-  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], from: null, to: null, min: null, len: '', status: '', saved: false }; }
+  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false }; }
 
   /* ------------------------------------------------------------- url state */
   function readURL() {
@@ -68,6 +68,8 @@
     if (CONFIG.sorts.some(function (x) { return x[0] === p.get('sort'); })) s.sort = p.get('sort');
     s.genres = (p.get('genre') || '').split(',').filter(Boolean);
     s.tags = (p.get('theme') || '').split(',').filter(Boolean);
+    s.match = p.get('match') === 'any' ? 'any' : 'all';
+    s.country = (p.get('country') || '').split(',').filter(Boolean);
     var y = (p.get('years') || '').split('-');
     s.from = Number(y[0]) || null; s.to = Number(y[1]) || null;
     s.min = p.get('min') != null ? Number(p.get('min')) : null;
@@ -82,6 +84,8 @@
     if (state.sort !== 'top') p.set('sort', state.sort);
     if (state.genres.length) p.set('genre', state.genres.join(','));
     if (state.tags.length) p.set('theme', state.tags.join(','));
+    if (state.match === 'any' && state.genres.length + state.tags.length) p.set('match', 'any');
+    if (state.country.length) p.set('country', state.country.join(','));
     if (state.from || state.to) p.set('years', (state.from || '') + '-' + (state.to || ''));
     if (state.min != null) p.set('min', state.min);
     if (state.len) p.set('length', state.len);
@@ -126,13 +130,12 @@
   }
 
   /* -------------------------------------------------------------- filtering */
-  function matches(r, s) {
+  /* Everything except genres and themes: the pool the genre picker counts within. */
+  function matchesBase(r, s) {
     if (s.q) {
       var words = S.fold(s.q).split(' ');
       for (var i = 0; i < words.length; i++) if ((' ' + r._f).indexOf(' ' + words[i]) < 0) return false;
     }
-    for (var g = 0; g < s.genres.length; g++) if (!r.genres || r.genres.indexOf(s.genres[g]) < 0) return false;
-    for (var t = 0; t < s.tags.length; t++) if (!r.tags || r.tags.indexOf(s.tags[t]) < 0) return false;
     if (s.from && (!r.year || r.year < s.from)) return false;
     if (s.to && (!r.year || r.year > s.to)) return false;
     if (s.min != null) { var v = S.METRICS[CONFIG.min.key].v(r); if (v == null || v < s.min) return false; }
@@ -149,9 +152,22 @@
       if (s.status === 'ongoing' && (mini || r.end)) return false;
       if (s.status === 'ended' && (mini || !r.end)) return false;
     }
+    if (s.country.length && !(r.country && s.country.some(function (c) { return r.country.indexOf(c) >= 0; }))) return false;
     if (s.saved && !S.Favs.has(kind, r.id)) return false;
     return true;
   }
+  function hasAll(r, s) {
+    for (var g = 0; g < s.genres.length; g++) if (!r.genres || r.genres.indexOf(s.genres[g]) < 0) return false;
+    for (var t = 0; t < s.tags.length; t++) if (!r.tags || r.tags.indexOf(s.tags[t]) < 0) return false;
+    return true;
+  }
+  function hasAny(r, s) {
+    if (!s.genres.length && !s.tags.length) return true;
+    for (var g = 0; g < s.genres.length; g++) if (r.genres && r.genres.indexOf(s.genres[g]) >= 0) return true;
+    for (var t = 0; t < s.tags.length; t++) if (r.tags && r.tags.indexOf(s.tags[t]) >= 0) return true;
+    return false;
+  }
+  function matches(r, s) { return matchesBase(r, s) && (s.match === 'any' ? hasAny(r, s) : hasAll(r, s)); }
 
   var SORTERS = {
     top: function (a, b) { return b._top - a._top; },
@@ -175,6 +191,9 @@
     renderMeta();
     renderChips();
     renderActive();
+    renderShow();
+    if (genresDlg.open) refreshPicker();
+    if (filtersDlg.open) refreshCountries();
     writeURL();
     if (!keepScroll && window.scrollY > grid.offsetTop) window.scrollTo({ top: grid.offsetTop - 160 });
   }
@@ -217,26 +236,31 @@
   }
 
   /* ---------------------------------------------------------- genre chips */
-  function topGenres() {
-    return Object.keys(genreCount).sort(function (a, b) { return genreCount[b] - genreCount[a]; });
-  }
+  function byCount(counts) { return function (a, b) { return (counts[b] || 0) - (counts[a] || 0) || a.localeCompare(b); }; }
+  /* The quick row: the biggest genres, with anything picked from the full list up front.
+     The button that opens the full list sits outside the row, so it is never scrolled away. */
   function renderChips() {
-    var top = topGenres().slice(0, 14);
-    state.genres.forEach(function (g) { if (top.indexOf(g) < 0) top.unshift(g); });
-    var any = !state.genres.length && !state.tags.length;
-    var html = '<button class="chip" data-chip="" aria-pressed="' + any + '">All</button>';
-    top.forEach(function (g) {
-      html += '<button class="chip" data-chip="' + esc(g) + '" aria-pressed="' + (state.genres.indexOf(g) >= 0) + '">' + esc(g) + '</button>';
+    var top = Object.keys(genreCount).sort(byCount(genreCount)).slice(0, 12);
+    var extra = state.genres.filter(function (g) { return top.indexOf(g) < 0; });
+    var html = '<button class="chip" type="button" data-chip="" aria-pressed="' + !(state.genres.length || state.tags.length) + '">All</button>';
+    state.tags.forEach(function (t) { html += '<button class="chip" type="button" data-tag="' + esc(t) + '" aria-pressed="true">' + esc(t) + '</button>'; });
+    extra.concat(top).forEach(function (g) {
+      html += '<button class="chip" type="button" data-chip="' + esc(g) + '" aria-pressed="' + (state.genres.indexOf(g) >= 0) + '">' + esc(g) + '</button>';
     });
-    state.tags.forEach(function (t) {
-      html += '<button class="chip" data-tag="' + esc(t) + '" aria-pressed="true">' + esc(t) + '</button>';
-    });
-    html += '<button class="chip more" data-open="genres">' + icon('plus', 'sm') + (Object.keys(tagCount).length ? 'More genres' : 'All genres') + '</button>';
     chipsEl.innerHTML = html;
+    var n = state.genres.length + state.tags.length, gc = $('#genresBtn .count');
+    if (gc) { gc.textContent = n; gc.hidden = !n; }
+    chipFade();
   }
+  function chipFade() {
+    var l = chipsEl.scrollLeft > 4, r = chipsEl.scrollLeft + chipsEl.clientWidth < chipsEl.scrollWidth - 4;
+    chipsEl.setAttribute('data-fade', (l ? 'l' : '') + (r ? 'r' : ''));
+  }
+  chipsEl.addEventListener('scroll', chipFade, { passive: true });
+  window.addEventListener('resize', chipFade);
 
   function filterCount() {
-    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0);
+    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.country.length ? 1 : 0);
   }
   function renderActive() {
     var pills = [];
@@ -245,6 +269,7 @@
     if (state.min != null) add(S.METRICS[CONFIG.min.key].label + ' ' + CONFIG.min.fmt(state.min) + (CONFIG.min.key === 'mc' ? '' : '+'), 'min');
     if (state.len) add({ short: 'Under 90 min', mid: '90 to 120 min', long: 'Over 2 hours' }[state.len], 'len');
     if (state.status) add({ ongoing: 'Ongoing', ended: 'Ended', mini: 'Miniseries' }[state.status], 'status');
+    state.country.forEach(function (c) { add(c, 'country', c); });
     if (state.saved) add('Saved', 'saved');
     if (state.q) add('“' + state.q + '”', 'q');
     var total = pills.length + state.genres.length + state.tags.length;
@@ -256,30 +281,114 @@
 
   /* ------------------------------------------------------------ panels */
   var genresDlg = $('#genresDlg'), filtersDlg = $('#filtersDlg');
-  function openGenres() {
-    var base = items.filter(function (r) { return matches(r, state); });
-    var gc = {}, tc = {};
-    base.forEach(function (r) {
-      (r.genres || []).forEach(function (g) { gc[g] = (gc[g] || 0) + 1; });
-      (r.tags || []).forEach(function (t) { tc[t] = (tc[t] || 0) + 1; });
-    });
-    function group(title, counts, all, sel, attr) {
-      var names = Object.keys(all).filter(function (n) { return counts[n] || sel.indexOf(n) >= 0; })
-        .sort(function (a, b) { return (counts[b] || 0) - (counts[a] || 0) || a.localeCompare(b); });
-      if (!names.length) return '';
-      return '<div class="opt-group"><h3>' + title + '</h3><div class="opt-wrap">' + names.map(function (n) {
-        return '<button class="chip" ' + attr + '="' + esc(n) + '" data-name="' + esc(S.fold(n)) + '" aria-pressed="' + (sel.indexOf(n) >= 0) + '">' + esc(n) + '<small>' + (counts[n] || 0).toLocaleString() + '</small></button>';
-      }).join('') + '</div></div>';
-    }
-    $('#genreBody').innerHTML = group('Genres', gc, genreCount, state.genres, 'data-chip') +
-      group(kind === 'games' ? 'Tags' : 'Themes and subgenres', tc, tagCount, state.tags, 'data-tag');
-    $('#genreFind').value = '';
-    if (!genresDlg.open) genresDlg.showModal();
+  // [[group, [theme, ...]], ...]: the taxonomy the data refresh tags titles with, written in by the build.
+  var TAX = window.SHELF_TAXONOMY || [];
+  var groups = null, expanded = {};
+
+  function showLabel() {
+    var n = results.length;
+    return n ? 'Show ' + n.toLocaleString() + ' ' + (n === 1 ? K.one : K.many) : 'No ' + K.many + ' match';
   }
-  $('#genreFind').addEventListener('input', function () {
-    var f = S.fold(this.value);
-    genresDlg.querySelectorAll('#genreBody .chip').forEach(function (c) { c.hidden = f && c.getAttribute('data-name').indexOf(f) < 0; });
-  });
+  function renderShow() { $('#genreShow').textContent = showLabel(); $('#filterShow').textContent = showLabel(); }
+
+  /* What each genre and theme would give, given everything else that is picked.
+     "Match all" counts what each would narrow the list to; "match any" counts each on its own. */
+  function pickerCounts() {
+    var gc = {}, tc = {};
+    for (var i = 0; i < items.length; i++) {
+      var r = items[i];
+      if (!matchesBase(r, state) || (state.match === 'all' && !hasAll(r, state))) continue;
+      if (r.genres) for (var a = 0; a < r.genres.length; a++) gc[r.genres[a]] = (gc[r.genres[a]] || 0) + 1;
+      if (r.tags) for (var b = 0; b < r.tags.length; b++) tc[r.tags[b]] = (tc[r.tags[b]] || 0) + 1;
+    }
+    return { gc: gc, tc: tc };
+  }
+  function squash(s) { return S.fold(s).replace(/ /g, ''); }
+
+  /* Lays the picker out once per opening, search or mode change. Picks in between only
+     update counts in place, so nothing jumps around while choosing. */
+  function layoutPicker() {
+    if (!groups) {
+      var known = {};
+      TAX.forEach(function (g) { g[1].forEach(function (t) { known[t] = 1; }); });
+      var rest = Object.keys(tagCount).filter(function (t) { return !known[t]; }).sort(byCount(tagCount));
+      groups = TAX.map(function (g) { return [g[0], g[1].filter(function (t) { return tagCount[t]; })]; })
+        .concat([['More', rest]]).filter(function (g) { return g[1].length; });
+    }
+    var c = pickerCounts(), raw = $('#genreFind').value.trim(), find = squash(raw);
+    var section = function (title, list, attr, counts, sel, limit) {
+      var hit = find && squash(title).indexOf(find) >= 0;
+      var names = list.filter(function (n) {
+        if (sel.indexOf(n) >= 0) return true;
+        if (!find) return counts[n] > 0;
+        return squash(n).indexOf(find) >= 0 || (hit && counts[n] > 0);
+      }).sort(byCount(counts));
+      if (!names.length) return '';
+      var more = 0;
+      if (limit && !find && !expanded[title] && names.length > limit + 2) {
+        var keep = names.slice(0, limit);
+        names.slice(limit).forEach(function (n) { if (sel.indexOf(n) >= 0) keep.push(n); });
+        more = names.length - keep.length;
+        names = keep;
+      }
+      return '<div class="opt-group"><h3>' + esc(title) + '</h3><div class="opt-wrap">' + names.map(function (n) {
+        var k = counts[n] || 0, on = sel.indexOf(n) >= 0;
+        return '<button class="chip" type="button" ' + attr + '="' + esc(n) + '" aria-pressed="' + on + '"' + (k || on ? '' : ' disabled') + '>' +
+          esc(n) + '<small>' + k.toLocaleString() + '</small></button>';
+      }).join('') + (more ? '<button class="chip expand" type="button" data-expand="' + esc(title) + '">+ ' + more + ' more</button>' : '') + '</div></div>';
+    };
+    // Themes that belong to a picked genre (Slasher under Horror) come first.
+    var lead = groups.filter(function (g) { return g[0].split(' & ').some(function (p) { return state.genres.indexOf(p) >= 0; }); });
+    var html = section('Genres', Object.keys(genreCount), 'data-chip', c.gc, state.genres, 0) +
+      lead.concat(groups.filter(function (g) { return lead.indexOf(g) < 0; })).map(function (g) {
+        return section(g[0], g[1], 'data-tag', c.tc, state.tags, 10);
+      }).join('');
+    $('#genreBody').innerHTML = html || '<p class="p-hint">' + (find ? 'Nothing matches “' + esc(raw) + '”' : 'Nothing left with these filters') + '</p>';
+    pickerHead();
+  }
+  function refreshPicker() {
+    var c = pickerCounts();
+    genresDlg.querySelectorAll('#genreBody [data-chip], #genreBody [data-tag]').forEach(function (b) {
+      var isGenre = b.hasAttribute('data-chip'), name = b.getAttribute(isGenre ? 'data-chip' : 'data-tag');
+      var k = (isGenre ? c.gc : c.tc)[name] || 0, on = (isGenre ? state.genres : state.tags).indexOf(name) >= 0;
+      b.setAttribute('aria-pressed', String(on));
+      b.disabled = !k && !on;
+      b.lastChild.textContent = k.toLocaleString();
+    });
+    pickerHead();
+  }
+  function pickerHead() {
+    var pill = function (attr) { return function (n) { return '<button class="pill" type="button" ' + attr + '="' + esc(n) + '" aria-label="Remove ' + esc(n) + '">' + esc(n) + icon('x') + '</button>'; }; };
+    $('#genreSel').innerHTML = state.genres.map(pill('data-chip')).join('') + state.tags.map(pill('data-tag')).join('');
+    genresDlg.querySelectorAll('[data-match]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-match') === state.match)); });
+    $('#genreClear').hidden = !(state.genres.length || state.tags.length);
+  }
+  function openGenres() {
+    $('#genreFind').value = '';
+    layoutPicker();
+    if (!genresDlg.open) genresDlg.showModal();
+    $('#genreBody').scrollTop = 0;
+  }
+  $('#genreFind').addEventListener('input', layoutPicker);
+
+  /* Countries of origin, from each title's Wikipedia categories, counted within everything else picked. */
+  var allCountries = false;
+  function countryCounts() {
+    var s2 = Object.assign({}, state, { country: [] }), cc = {};
+    for (var i = 0; i < items.length; i++) {
+      var r = items[i];
+      if (r.country && r.country.length && matches(r, s2)) for (var j = 0; j < r.country.length; j++) cc[r.country[j]] = (cc[r.country[j]] || 0) + 1;
+    }
+    return cc;
+  }
+  function refreshCountries() {
+    var cc = countryCounts();
+    filtersDlg.querySelectorAll('[data-country]').forEach(function (b) {
+      var x = b.getAttribute('data-country');
+      b.setAttribute('aria-pressed', String(state.country.indexOf(x) >= 0));
+      b.lastChild.textContent = (cc[x] || 0).toLocaleString();
+    });
+  }
 
   function openFilters() {
     var m = CONFIG.min;
@@ -296,6 +405,14 @@
       '<input type="range" id="fMin" min="0" max="' + m.max + '" step="' + m.step + '" value="' + cur + '"></div>';
     if (kind === 'movies') html += seg('Length', 'len', [['', 'Any'], ['short', 'Under 90 min'], ['mid', '90 to 120 min'], ['long', 'Over 2 hours']]);
     if (kind === 'shows') html += seg('Status', 'status', [['', 'Any'], ['ongoing', 'Ongoing'], ['ended', 'Ended'], ['mini', 'Miniseries']]);
+    if (kind === 'movies' || kind === 'shows') {
+      var cc = countryCounts(), all = Object.keys(cc).sort(byCount(cc));
+      var list = allCountries ? all : all.slice(0, 12);
+      state.country.forEach(function (x) { if (list.indexOf(x) < 0) list.push(x); });
+      if (list.length) html += '<div class="row-field"><label>Country</label><div class="seg">' + list.map(function (x) {
+        return '<button class="chip" type="button" data-country="' + esc(x) + '" aria-pressed="' + (state.country.indexOf(x) >= 0) + '">' + esc(x) + '<small>' + (cc[x] || 0).toLocaleString() + '</small></button>';
+      }).join('') + (all.length > list.length ? '<button class="chip expand" type="button" data-more-countries>+ ' + (all.length - list.length) + ' more</button>' : '') + '</div></div>';
+    }
     html += seg('Show', 'saved', [['', 'Everything'], ['1', 'Saved only']]);
     $('#filterBody').innerHTML = html;
     if (!filtersDlg.open) filtersDlg.showModal();
@@ -499,7 +616,6 @@
       else if (chip.closest('#detailBody')) { state.genres = [g]; state.tags = []; detailDlg.close(); }
       else toggleIn(state.genres, g);
       apply(true);
-      if (genresDlg.open) chip.setAttribute('aria-pressed', String(state.genres.indexOf(g) >= 0));
       return;
     }
     var tag = t.closest('[data-tag]');
@@ -509,10 +625,17 @@
       if (tag.closest('#detailBody')) { state.genres = []; state.tags = [v]; detailDlg.close(); }
       else toggleIn(state.tags, v);
       apply(true);
-      if (genresDlg.open) tag.setAttribute('aria-pressed', String(state.tags.indexOf(v) >= 0));
       return;
     }
     if (t.closest('[data-open="genres"]')) { openGenres(); return; }
+    var mt = t.closest('[data-match]');
+    if (mt) { state.match = mt.getAttribute('data-match'); apply(true); layoutPicker(); return; }
+    if (t.closest('#genreClear')) { state.genres = []; state.tags = []; apply(true); layoutPicker(); return; }
+    var ex = t.closest('[data-expand]');
+    if (ex) { expanded[ex.getAttribute('data-expand')] = true; layoutPicker(); return; }
+    var ct = t.closest('[data-country]');
+    if (ct) { toggleIn(state.country, ct.getAttribute('data-country')); apply(true); return; }
+    if (t.closest('[data-more-countries]')) { allCountries = true; openFilters(); return; }
     if (t.closest('#filtersBtn')) { openFilters(); return; }
     if (t.closest('[data-close]')) { t.closest('dialog').close(); return; }
     var dec = t.closest('[data-dec]');
@@ -541,6 +664,7 @@
       else if (d === 'min') state.min = null;
       else if (d === 'q') { state.q = ''; qEl.value = ''; qEl.parentNode.classList.remove('has-value'); }
       else if (d === 'saved') state.saved = false;
+      else if (d === 'country') state.country = state.country.filter(function (c) { return c !== drop.getAttribute('data-val'); });
       else state[d] = '';
       apply(true);
       return;

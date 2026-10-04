@@ -162,7 +162,21 @@ h1, h2, h3 { margin: 0; line-height: 1.15; letter-spacing: -.02em; }
 }
 .chip:hover { color: var(--text); border-color: var(--mut-2); }
 .chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
-.chip.more { color: var(--text); display: inline-flex; align-items: center; gap: 6px; }
+.chip.more { color: var(--text); background: var(--card); display: inline-flex; align-items: center; gap: 6px; }
+.chip .count { background: var(--acc); color: var(--acc-ink); border-radius: 999px; font-size: 11px; padding: 1px 7px; }
+.chip small { color: var(--mut-2); margin-left: 6px; font-weight: 500; }
+.chip[aria-pressed="true"] small { color: inherit; opacity: .6; }
+.chip:disabled { opacity: .35; cursor: default; }
+.chip:disabled:hover { color: var(--mut); border-color: var(--line); }
+.chip.expand { color: var(--text); border-style: dashed; }
+
+/* genre row: the quick chips scroll, the button for the full list stays put */
+.chipbar { display: flex; align-items: flex-start; gap: 8px; min-width: 0; }
+.chipbar .chips { flex: 1; min-width: 0; }
+.chipbar .more { margin-top: 2px; }
+.chips[data-fade="r"] { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 44px), transparent); }
+.chips[data-fade="l"] { -webkit-mask-image: linear-gradient(90deg, transparent, #000 44px); mask-image: linear-gradient(90deg, transparent, #000 44px); }
+.chips[data-fade="lr"] { -webkit-mask-image: linear-gradient(90deg, transparent, #000 44px, #000 calc(100% - 44px), transparent); mask-image: linear-gradient(90deg, transparent, #000 44px, #000 calc(100% - 44px), transparent); }
 
 .pill { display: inline-flex; align-items: center; gap: 4px; height: 28px; padding: 0 6px 0 11px; border-radius: 999px; background: var(--card-2); font-size: 13px; font-weight: 550; border: 0; }
 .pill .i { width: 14px; height: 14px; color: var(--mut); }
@@ -297,9 +311,33 @@ a.score:hover { border-color: var(--mut-2); }
 .sheet.narrow { width: min(640px, calc(100vw - 32px)); }
 .opt-group h3 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--mut-2); margin: 4px 0 10px; }
 .opt-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-.opt-wrap .chip { height: 32px; padding: 0 12px; }
-.opt-wrap .chip small { color: var(--mut-2); margin-left: 6px; font-weight: 500; }
-.chip[aria-pressed="true"] small { color: inherit; opacity: .6; }
+.opt-wrap .chip, .seg .chip { height: 32px; padding: 0 12px; }
+
+/* genre picker: the header and footer stay put while the options scroll */
+.sheet.picker { display: flex; flex-direction: column; overflow: hidden; height: min(780px, calc(100vh - 48px)); }
+.pk-head { display: flex; flex-direction: column; gap: 12px; padding: 18px 20px 14px; border-bottom: 1px solid var(--line); }
+.pk-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pk-top h2 { font-size: 20px; }
+.pk-row { display: flex; align-items: center; gap: 12px; }
+.pk-row .field { flex: 1; min-width: 0; }
+.pk-row .field input { height: 40px; }
+.pk-match { display: flex; align-items: center; gap: 8px; flex: none; color: var(--mut); font-size: 13px; font-weight: 600; }
+.toggle2 { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); }
+.toggle2 button { height: 32px; padding: 0 14px; border: 0; border-radius: 999px; background: none; color: var(--mut); font-weight: 600; font-size: 13px; }
+.toggle2 button:hover { color: var(--text); }
+.toggle2 button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+.pk-sel { display: flex; flex-wrap: wrap; gap: 6px; }
+.pk-sel:empty { display: none; }
+.pk-body { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 16px 20px 22px; display: flex; flex-direction: column; gap: 18px; }
+.pk-foot { display: flex; align-items: center; gap: 10px; padding: 12px 20px; border-top: 1px solid var(--line); }
+.pk-foot .btn.primary { margin-left: auto; min-width: 160px; }
+@media (max-width: 640px) {
+  dialog.as-sheet .sheet.picker { height: 88vh; }
+  .pk-head { padding: 16px 16px 12px; }
+  .pk-body { padding: 14px 16px 18px; }
+  .pk-foot { padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .pk-match > span { display: none; }
+}
 .row-field { display: flex; flex-direction: column; gap: 8px; }
 .row-field label { font-weight: 650; font-size: 14px; display: flex; justify-content: space-between; }
 .row-field label output { color: var(--mut); font-weight: 600; }

@@ -26,7 +26,12 @@ published, and leaves it empty if it cannot:
 | Rotten Tomatoes | The title's own page, at the address Wikidata records |
 | Steam | The store's review summary for each app |
 | Goodreads | Genre lists for new books, then each book's own page by its Goodreads id or ISBN |
-| Wikidata, Wikipedia, TVmaze, Open Library | Links between sites, subgenres, posters and covers |
+| Wikipedia | Each article's categories, for the subgenres, themes and countries of films and series |
+| Wikidata, TVmaze, Open Library | Links between sites, posters and covers |
+
+Genres and themes come from one curated list, `scripts/refresh/taxonomy.mjs`,
+matched against Wikipedia categories for films and series ("2010s satirical
+films"), Steam's tags for games and Goodreads' shelves for books.
 
 A GitHub Action runs the pipeline every Monday, commits the changes as data, and
 redeploys. The slow sources are re-checked a slice at a time, oldest first, so
@@ -34,13 +39,13 @@ the whole catalogue is re-verified every few weeks.
 
 ## Working locally
 
-Node 20 or newer, no dependencies to install.
+Node 22.12 or newer, no dependencies to install.
 
 ```bash
 npm run build      # generate the site into _site/
 npm run serve      # preview it at http://localhost:8080
 npm run validate   # the checks the deploy runs
-npm test           # backlog matcher tests
+npm test           # unit tests
 npm run refresh    # re-fetch every source (slow; the weekly job does this)
 ```
 

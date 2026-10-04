@@ -12,11 +12,12 @@
    that fails is logged and skipped; it never blocks the others. */
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadCache, saveCache, readData, writeData, log, CACHE } from './lib.mjs';
+import { loadCache, saveCache, readData, writeData, compact, log, CACHE } from './lib.mjs';
 import { loadImdb } from './imdb.mjs';
 import { resolveWikidata, resolveSteam } from './wikidata.mjs';
 import { crawlAll, gameScore } from './metacritic.mjs';
 import { resolveImages, searchArticle } from './wikipedia.mjs';
+import { resolveCategories } from './categories.mjs';
 import { refreshRT } from './rottentomatoes.mjs';
 import { refreshReviews, refreshTags, popularApps, appDetails, refreshAssets } from './steam.mjs';
 import { refreshBooks, refreshEditionCovers } from './books.mjs';
@@ -60,6 +61,11 @@ await Promise.all([
   step('images', async () => {
     const wd = loadCache('wikidata');
     await resolveImages(selected().map((t) => ({ key: t.id, wiki: wd[t.id]?.wiki })).filter((x) => x.wiki), { cacheName: 'images' });
+  }),
+  step('categories', async () => {
+    // Wikipedia categories: subgenres, themes and countries for the genre picker.
+    const wd = loadCache('wikidata');
+    await resolveCategories(selected().map((t) => ({ key: t.id, wiki: wd[t.id]?.wiki })).filter((x) => x.wiki), { budgetMin: Math.min(30, BUDGET) });
   }),
   step('tvmaze', async () => {
     await resolveTvmaze(selected().filter((t) => t.kind === 'shows').map((t) => t.id), { budgetMin: Math.min(20, BUDGET) });
@@ -151,9 +157,10 @@ const games = mergeGames(before.games, { newApps: loadCache('steam-popular', [])
 const books = mergeBooks(before.books);
 
 function diff(kind, a, b) {
-  const old = new Map(a.map((r) => [r.id, JSON.stringify(r)]));
+  // Compared as written, so a field that is empty either way is not a change.
+  const old = new Map(a.map((r) => [r.id, JSON.stringify(compact(r))]));
   let added = 0, changed = 0;
-  for (const r of b) { const o = old.get(r.id); if (o == null) added++; else if (o !== JSON.stringify(r)) changed++; }
+  for (const r of b) { const o = old.get(r.id); if (o == null) added++; else if (o !== JSON.stringify(compact(r))) changed++; }
   const removed = a.length - (b.length - added);
   return { kind, added, changed, removed, total: b.length };
 }

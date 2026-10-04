@@ -7,81 +7,16 @@
 import { loadCache, readData, writeData, fold, decode, log } from './lib.mjs';
 import { matchScreen } from './metacritic.mjs';
 import { loadEpisodes } from './imdb.mjs';
+import { SCREEN_TAGS, GAME_TAGS, screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags } from './taxonomy.mjs';
 
+const SCREEN_TAG_NAMES = new Set(SCREEN_TAGS.map((x) => x[0]));
+const GAME_NAMES = new Set(GAME_TAGS.map((x) => x[1]));
+const GAME_BY_STEAM = new Map(GAME_TAGS.map(([steam, name]) => [steam, name]));
 
 export function slugify(s) {
   return decode(s).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
     .replace(/&/g, ' and ').replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
 }
-/* ------------------------------------------------------------- tags */
-
-const GENERIC = new Set(('drama comedy action adventure thriller horror fantasy sci-fi animation animated documentary family ' +
-  'musical music war western crime mystery romance romantic biographical biography historical history sport sports short ' +
-  'television feature comedy-drama drama comedy science fiction film reality reality television news talk show game show ' +
-  'adaptation literary adaptation film adaptation black-and-white color 3d children television special variety ' +
-  'action-adventure action adventure suspense melodrama').split(' '));
-const GENERIC_PHRASES = new Set(['science fiction', 'comedy drama', 'drama comedy', 'action adventure', 'reality television',
-  'talk show', 'game show', 'film based on literature', 'film based on a novel', 'film based on a book', 'based on a novel',
-  'film based on a play', 'film based on a short story', 'black and white', 'feature', 'television special',
-  'film adaptation', 'literary adaptation', 'action thriller', 'crime drama', 'war drama', 'historical drama', 'sports drama',
-  'teen drama', 'drama television', 'comedy television', 'animated television', 'animated', 'adult animated',
-  'computer animated', 'traditionally animated', 'live action', 'live-action', 'serial', 'web', 'miniseries', 'mini-series',
-  'limited', 'anthology television', 'fiction', 'nonfiction', 'non-fiction', 'genre', 'remake', 'sequel', 'prequel', 'spin-off']);
-const RENAME = {
-  'lgbt-related': 'LGBTQ', 'lgbtq-related': 'LGBTQ', 'lgbt': 'LGBTQ', 'lgbtq': 'LGBTQ', 'lgbtqia+': 'LGBTQ',
-  'children s': 'Kids', 'childrens': 'Kids', "children's": 'Kids', 'teen': 'Teen', 'anime': 'Anime',
-  'independent': 'Indie', 'art': 'Arthouse', 'silent': 'Silent', 'neo-noir': 'Neo-Noir', 'film noir': 'Film Noir', 'noir': 'Film Noir',
-  'black comedy': 'Dark Comedy', 'comedy horror': 'Horror Comedy', 'science fiction comedy': 'Sci-Fi Comedy',
-  'science fiction action': 'Sci-Fi Action', 'science fiction horror': 'Sci-Fi Horror', 'christmas': 'Christmas',
-  'coming-of-age': 'Coming of Age', 'coming of age': 'Coming of Age', 'superhero': 'Superhero', 'film based on comics': 'Comic Book',
-  'film based on a comic': 'Comic Book', 'comic book': 'Comic Book', 'film based on a video game': 'Video Game Adaptation',
-  'film based on actual events': 'True Story', 'based on actual events': 'True Story', 'docudrama': 'True Story',
-  'true crime': 'True Crime', 'police procedural': 'Police Procedural', 'medical drama': 'Medical', 'legal drama': 'Legal',
-  'prime time soap opera': 'Soap', 'soap opera': 'Soap', 'stand-up comedy': 'Stand-Up', 'sketch comedy': 'Sketch Comedy',
-  'mockumentary': 'Mockumentary', 'sitcom': 'Sitcom', 'animated sitcom': 'Animated Sitcom', 'nature documentary': 'Nature',
-  'post-apocalyptic': 'Post-Apocalyptic', 'dystopian': 'Dystopian', 'cyberpunk': 'Cyberpunk', 'space opera': 'Space Opera',
-  'found footage': 'Found Footage', 'slasher': 'Slasher', 'zombie': 'Zombie', 'vampire': 'Vampire', 'heist': 'Heist',
-  'spy': 'Spy', 'martial arts': 'Martial Arts', 'kaiju': 'Kaiju', 'disaster': 'Disaster', 'monster': 'Monster',
-  'psychological thriller': 'Psychological Thriller', 'psychological horror': 'Psychological Horror',
-  'supernatural horror': 'Supernatural Horror', 'supernatural': 'Supernatural', 'folk horror': 'Folk Horror',
-  'body horror': 'Body Horror', 'gothic horror': 'Gothic Horror', 'erotic thriller': 'Erotic Thriller',
-  'political thriller': 'Political Thriller', 'legal thriller': 'Legal Thriller', 'conspiracy': 'Conspiracy',
-  'gangster': 'Gangster', 'crime thriller': 'Crime Thriller', 'romantic comedy': 'Romantic Comedy',
-  'romantic drama': 'Romantic Drama', 'period drama': 'Period Drama', 'costume drama': 'Period Drama', 'epic': 'Epic',
-  'swashbuckler': 'Swashbuckler', 'sword and sorcery': 'Sword and Sorcery', 'high fantasy': 'High Fantasy',
-  'dark fantasy': 'Dark Fantasy', 'urban fantasy': 'Urban Fantasy', 'fairy tale': 'Fairy Tale', 'road': 'Road Movie',
-  'buddy': 'Buddy', 'buddy cop': 'Buddy Cop', 'satire': 'Satire', 'political satire': 'Satire', 'parody': 'Parody',
-  'slapstick': 'Slapstick', 'screwball comedy': 'Screwball', 'teen comedy': 'Teen Comedy', 'sex comedy': 'Sex Comedy',
-  'action comedy': 'Action Comedy', 'crime comedy': 'Crime Comedy', 'fantasy comedy': 'Fantasy Comedy', 'giallo': 'Giallo',
-  'exploitation': 'Exploitation', 'splatter': 'Splatter', 'spaghetti western': 'Spaghetti Western', 'samurai': 'Samurai',
-  'jidaigeki': 'Samurai', 'wuxia': 'Wuxia', 'jukebox musical': 'Jukebox Musical', 'dance': 'Dance', 'concert': 'Concert',
-  'stop-motion': 'Stop-Motion', 'stop motion': 'Stop-Motion', 'adult animation': 'Adult Animation', 'experimental': 'Experimental',
-  'avant-garde': 'Experimental', 'telenovela': 'Telenovela', 'k-drama': 'K-Drama', 'korean drama': 'K-Drama', 'anthology': 'Anthology',
-  'time travel': 'Time Travel', 'alien invasion': 'Alien Invasion', 'mecha': 'Mecha', 'isekai': 'Isekai', 'shōnen': 'Shonen',
-  'shonen': 'Shonen', 'shōjo': 'Shojo', 'seinen': 'Seinen', 'slice of life': 'Slice of Life', 'iyashikei': 'Slice of Life',
-  'magical girl': 'Magical Girl', 'cooking': 'Cooking', 'travel': 'Travel', 'historical fiction': 'Period Drama',
-  'war film': null, 'erotic': 'Erotic', 'cult': 'Cult', 'b movie': 'B-Movie', 'monster movie': 'Monster', 'creature feature': 'Monster',
-  'action horror': 'Action Horror', 'survival': 'Survival', 'survival horror': 'Survival', 'techno-thriller': 'Techno-Thriller',
-  'military science fiction': 'Military Sci-Fi', 'hard science fiction': 'Hard Sci-Fi', 'soft science fiction': null,
-  'family drama': 'Family Drama', 'social drama': 'Social Drama', 'political drama': 'Political Drama', 'courtroom drama': 'Legal',
-  'prison': 'Prison', 'boxing': 'Boxing', 'heist comedy': 'Heist', 'hood': 'Hood', 'mumblecore': 'Mumblecore',
-  'mystery thriller': null, 'whodunit': 'Whodunit', 'detective fiction': 'Detective', 'detective': 'Detective',
-  'police': 'Police', 'teen horror': 'Teen Horror', 'natural horror': 'Creature', 'religious': 'Religious', 'christian': 'Religious',
-  'biblical': 'Religious', 'surrealist': 'Surreal', 'surrealism': 'Surreal', 'magic realism': 'Magic Realism', 'magical realism': 'Magic Realism',
-};
-
-export function cleanTag(label) {
-  let s = decode(label).toLowerCase().trim();
-  if (s in RENAME) return RENAME[s];
-  s = s.replace(/\b(television|tv) (series|program|programme|drama|comedy|show)s?\b/g, (m, a, b) => (b === 'drama' || b === 'comedy') ? b : '')
-    .replace(/\b(feature )?(films?|movies?)\b/g, '').replace(/\bseries\b$/g, '').replace(/\s+/g, ' ').trim();
-  if (s in RENAME) return RENAME[s];
-  if (!s || GENERIC.has(s) || GENERIC_PHRASES.has(s)) return null;
-  if (/^film based on|^based on|^films? about|adaptation of|^works? |^television series based/.test(s)) return null;
-  if (s.length > 28 || s.split(' ').length > 3) return null;
-  return s.replace(/\b[a-z]/g, (c) => c.toUpperCase());
-}
-
 /* Wikidata's broad genres, in IMDb's names. IMDb's dataset now lists some
    titles under a single genre (Batman Begins is only "Crime"), so these
    fill the gaps that would otherwise hide a film from a genre filter. */
@@ -118,6 +53,7 @@ export async function mergeScreen(prevMovies, prevShows) {
   const rt = { ...loadCache('rt-b'), ...loadCache('rt') };
   const mcMovies = loadCache('mc-movies', []);
   const mcTv = loadCache('mc-tv', []);
+  const cats = loadCache('wp-categories');
   const prev = {};
   for (const r of [...prevMovies, ...prevShows]) prev[r.id] = r;
 
@@ -131,6 +67,7 @@ export async function mergeScreen(prevMovies, prevShows) {
     const o = prev[t.id] || {};
     const known = Boolean(wd[t.id]);
     const w = wd[t.id] || {};
+    const c = cats[t.id]?.cats?.length ? cats[t.id].cats : null;
     const m = mc.get(t.id);
     const r = rt[t.id];
     const wikiImg = images[t.id]?.img ? images[t.id].img.split('?')[0] : null;
@@ -140,13 +77,20 @@ export async function mergeScreen(prevMovies, prevShows) {
       alt: t.original && fold(t.original) !== fold(t.title) ? t.original : null,
       year: t.year,
       runtime: t.runtime,
-      // Without a Wikidata answer this run, keep what the last run derived from it.
-      // IMDb's genres are curated; Wikidata over-tags (it files Memento as horror). So
-      // Wikidata only fills in where IMDb gives a single genre, and adds at most two.
+      // IMDb's genres are curated, so they stand when it lists more than one. A title
+      // filed under a single genre gets up to two more that its Wikipedia categories
+      // name outright ("2005 action films"), or failing those, Wikidata's. Without
+      // categories this run, what an earlier run derived from them stands.
       genres: (t.genres.length > 1 ? t.genres
+        : c ? [...new Set([...t.genres, ...screenBroad(c, 2)])]
+        : o.genres?.length ? [...new Set([...t.genres, ...o.genres])]
         : known ? [...new Set([...t.genres, ...broadGenres(w.genres).slice(0, 2)])]
-        : [...new Set([...t.genres, ...(o.genres || [])])]).filter((g) => g !== 'Short' && g !== 'News').slice(0, 3),
-      tags: known ? [...new Set((w.genres || []).map(cleanTag).filter(Boolean))] : (o.tags || []),
+        : t.genres).filter((g) => g !== 'Short' && g !== 'News').slice(0, 3),
+      // Subgenres and themes from the curated taxonomy, on the same terms.
+      tags: c ? screenTags(c, w.genres)
+        : o.tags?.some((x) => SCREEN_TAG_NAMES.has(x)) ? o.tags.filter((x) => SCREEN_TAG_NAMES.has(x))
+        : known ? screenTags(null, w.genres) : [],
+      country: c ? screenCountries(c) : (o.country || []),
       by: (t.kind === 'movies' ? (t.directors || []).slice(0, 2).join(', ')
         : known && w.creators && w.creators.length ? w.creators.slice(0, 2).join(', ') : (o.by || (t.directors || []).slice(0, 2).join(', '))) || null,
       imdb: t.imdb, votes: t.votes,
@@ -173,8 +117,8 @@ export async function mergeScreen(prevMovies, prevShows) {
 
   const movies = films.map((t) => build(t, mcFilm));
   const shows = series.map((t) => build(t, mcShow));
-  pruneTags(movies, 12, 'movies');
-  pruneTags(shows, 8, 'shows');
+  tidy(movies);
+  tidy(shows);
   for (const list of [movies, shows]) list.sort((a, b) => (b.votes || 0) - (a.votes || 0));
   const count = (l, k) => l.filter((r) => r[k] != null).length;
   log(`movies ${movies.length}: mc ${count(movies, 'mc')}, rt ${count(movies, 'rt')}, img ${count(movies, 'img')}`);
@@ -182,38 +126,17 @@ export async function mergeScreen(prevMovies, prevShows) {
   return { movies, shows };
 }
 
-/* Second pass over cleaned tags: merge near-duplicates and drop labels that
-   are vague, editorial or belong to the other medium. */
-const TAG_ALIAS = {
-  'Time-Travel': 'Time Travel', 'Psychological Horror Fiction': 'Psychological Horror', 'Female Buddy': 'Buddy',
-  'Cinematic Fairy Tale': 'Fairy Tale', 'Sword-And-Sandal': 'Sword and Sandal', 'Rape And Revenge': 'Rape and Revenge',
-  'Arthouse Science Fiction': 'Arthouse Sci-Fi', 'Satirical': 'Satire', 'Magic Realist': 'Magic Realism',
-  'Samurai Cinema': 'Samurai', 'Science Fiction Anime': 'Anime', 'Thriller Anime': 'Anime', 'Mystery Anime': 'Anime',
-  'Supernatural Anime': 'Anime', 'Lesbian-Related': 'LGBTQ', 'Association Football': 'Football', 'American Football': 'Football',
-  'Girls With Guns': 'Girls with Guns', 'Trial': 'Courtroom', 'Legal': 'Courtroom', 'Crossover Fiction': 'Crossover',
-  'Teen Drama Television': 'Teen', 'Teen Sitcom': 'Teen', 'Youth': 'Teen', 'Police Drama': 'Police Procedural',
-  'Espionage': 'Spy', 'Late-Night Talk Show': 'Talk Show', 'Love Triangle Romance': 'Love Triangle', 'College Life': 'College',
-  'Apocalyptic': 'Post-Apocalyptic', 'Live-Action/Animated': 'Live Action and Animation', 'Paranormal': 'Supernatural',
-};
-const TAG_DROP = new Set(['Speculative Fiction', 'Flashback', 'Drama Fiction', 'Psychological', 'White Savior', 'Horror Fiction',
-  'Action Fiction', 'Crime Fiction', 'Westerns On Television', 'Political', 'Science Fantasy', 'Drama', 'Comedy']);
-const SCREEN_ONLY = { movies: new Set(['Police Procedural', 'Sitcom', 'Animated Sitcom', 'Soap', 'Talk Show', 'Sketch Comedy']), shows: new Set() };
-const squash = (s) => s.toLowerCase().replace(/[^a-z0-9]/g, '').replace(/s$/, '');
-
-function pruneTags(rows, minCount, kind) {
+/* Genres held by only a handful of titles are noise in a filter list, and a
+   title's tags read best most specific first. */
+function tidy(rows) {
+  const gn = {}, tn = {};
   for (const r of rows) {
-    r.tags = [...new Set(r.tags.map((t) => TAG_ALIAS[t] || t))].filter((t) => !TAG_DROP.has(t) && !SCREEN_ONLY[kind].has(t));
+    for (const g of r.genres || []) gn[g] = (gn[g] || 0) + 1;
+    for (const t of r.tags || []) tn[t] = (tn[t] || 0) + 1;
   }
-  // Genres held by only a handful of titles are noise in a filter list.
-  const gn = {};
-  for (const r of rows) for (const g of r.genres) gn[g] = (gn[g] || 0) + 1;
-  for (const r of rows) r.genres = r.genres.filter((g) => gn[g] >= 8);
-  const n = {};
-  for (const r of rows) for (const t of r.tags) n[t] = (n[t] || 0) + 1;
-  const genres = new Set(rows.flatMap((r) => r.genres).map(squash));
   for (const r of rows) {
-    r.tags = r.tags.filter((t) => n[t] >= minCount && !genres.has(squash(t)))
-      .sort((a, b) => n[a] - n[b]).slice(0, 8);
+    r.genres = (r.genres || []).filter((g) => gn[g] >= 8);
+    r.tags = (r.tags || []).filter((t) => tn[t] >= 3).sort((a, b) => tn[a] - tn[b]).slice(0, 12);
   }
 }
 
@@ -263,33 +186,6 @@ export function classifyGame(tags) {
   }
   return null;
 }
-/* Steam tags worth filtering by: sub-genres, settings and modes. Generic
-   ones (Singleplayer, Great Soundtrack, Indie...) are left out. */
-const TAG_KEEP = new Set(['Souls-like', 'Metroidvania', 'Roguelike', 'Roguelite', 'Deckbuilding', 'Open World', 'Survival Horror',
-  'Psychological Horror', 'Horror', 'City Builder', 'Colony Sim', 'Farming Sim', 'Life Sim', 'Visual Novel', 'CRPG', 'JRPG',
-  'Party-Based RPG', 'Action RPG', 'Tactical RPG', 'Turn-Based Tactics', 'Turn-Based Strategy', 'RTS', 'Grand Strategy', '4X',
-  'Tower Defense', 'MOBA', 'Battle Royale', 'MMORPG', 'Open World Survival Craft', 'Survival', 'Immersive Sim', 'Stealth',
-  'Point & Click', 'Walking Simulator', 'Puzzle', 'Puzzle Platformer', 'Precision Platformer', 'Platformer', 'Twin Stick Shooter',
-  'Bullet Hell', 'Looter Shooter', 'Hero Shooter', 'FPS', 'Third-Person Shooter', 'Space Sim', 'Dating Sim', 'Interactive Fiction',
-  'Dungeon Crawler', 'Hack and Slash', 'Character Action Game', 'Base Building', 'Wargame', 'Auto Battler', 'Card Battler',
-  'Roguelike Deckbuilder', 'Lovecraftian', 'Cyberpunk', 'Steampunk', 'Post-apocalyptic', 'Western', 'Pirates', 'Superhero',
-  'Mythology', 'Time Travel', 'Heist', 'Zombies', 'Space', 'Medieval', 'Dark Fantasy', 'Sci-fi', 'Fantasy', 'Anime',
-  'Pixel Graphics', 'Online Co-Op', 'Local Co-Op', 'PvP', 'Sandbox', 'Crafting', 'Story Rich', 'Choices Matter', 'Detective',
-  'Mystery', 'Comedy', 'Cozy', 'Racing', 'Driving', 'Sports', 'Fighting', 'Rhythm', 'Flight', 'Naval', 'Mechs', 'Military',
-  'Strategy', 'Simulation', 'Indie', 'Free to Play', 'VR']);
-const TAG_LABEL = { 'Online Co-Op': 'Co-op', 'Local Co-Op': 'Couch Co-op', 'Sci-fi': 'Sci-Fi', 'Post-apocalyptic': 'Post-Apocalyptic',
-  "Shoot 'Em Up": 'Shmup', 'Free to Play': 'Free to Play' };
-function gameTags(tags) {
-  const out = [];
-  for (const t of (tags || []).slice(0, 14)) {
-    if (!TAG_KEEP.has(t)) continue;
-    const l = TAG_LABEL[t] || t;
-    if (!out.includes(l)) out.push(l);
-    if (out.length >= 8) break;
-  }
-  return out;
-}
-
 export function mergeGames(prevGames, { newApps = [] } = {}) {
   const reviews = loadCache('steam-reviews');
   const tags = loadCache('steam-tags');
@@ -311,7 +207,9 @@ export function mergeGames(prevGames, { newApps = [] } = {}) {
     const sr = appId && reviews[appId];
     if (sr && sr.score != null && sr.n >= 50) { row.steam = sr.score; row.steamN = sr.n; }
     const tg = appId && tags[appId];
-    if (tg && tg.tags && tg.tags.length) row.tags = gameTags(tg.tags);
+    // Without fresh Steam tags, earlier tags are put through the same list (it may have been renamed since).
+    row.tags = tg && tg.tags && tg.tags.length ? gameTags(tg.tags)
+      : (row.tags || []).map((t) => (GAME_NAMES.has(t) ? t : GAME_BY_STEAM.get(t))).filter(Boolean);
     const w = appId && wds[appId];
     if (w && w.wiki) row.wiki = w.wiki;
     if (!appId && gimg[row.id]?.img && articleMatches(gimg[row.id].wiki, row.title)) row.img = gimg[row.id].img.split('?')[0];
@@ -445,6 +343,11 @@ export function mergeBooks(prevBooks) {
     if (g && g.rating) { row.rating = g.rating; row.ratings = g.count; row.gr = g.id || row.gr; row.isbn = g.isbn || row.isbn; fresh++; }
     else if (row.rating != null) kept++;
     else { dropped++; continue; }
+    // Goodreads' own shelves decide genres and tags once a book has been read from its page.
+    const shelves = g?.genres?.length ? g.genres : null;
+    row.genres = bookGenres(shelves, row.genres);
+    // Without shelves this run, earlier tags stand: they may have come from shelves.
+    row.tags = shelves ? bookTags(shelves, ol[k]?.subjects) : b.tags?.length ? b.tags : bookTags(null, ol[k]?.subjects);
     // The verified edition's own cover beats the work's default, which may be a translation.
     if (row.isbn && editions[row.isbn]?.cover) row.cover = editions[row.isbn].cover;
     rows.push(row);
@@ -469,8 +372,10 @@ export function mergeBooks(prevBooks) {
     const k = key(row);
     const main = mainTitle(title) + '|' + fold(b.author || '');
     if (haveKey.has(k) || haveMain.has(main) || sameWork(b.author, b.count) || /box set|boxed set|collection set|books? \d+-\d+/i.test(title)) continue;
-    row.genres = [bookGenre(b.genre, ol[k]?.subjects)];
     const g = gr[k];
+    const shelves = g?.genres?.length && g.id === b.gr ? g.genres : null;
+    row.genres = bookGenres(shelves, [bookGenre(b.genre, ol[k]?.subjects)]);
+    row.tags = bookTags(shelves, ol[k]?.subjects);
     if (g && g.rating && g.id === b.gr) { row.rating = g.rating; row.ratings = g.count; row.isbn = g.isbn || null; }
     row.year = ol[k]?.year || null;
     row.cover = ol[k]?.cover || null;
@@ -488,6 +393,7 @@ export function mergeBooks(prevBooks) {
     if (!byKey.has(k) || (r.ratings || 0) > (byKey.get(k).ratings || 0)) byKey.set(k, r);
   }
   const out = [...byKey.values()];
+  tidy(out);
   const ids = new Set();
   for (const r of out) { while (ids.has(r.id)) r.id += '-' + (r.year || 'b'); ids.add(r.id); }
   log(`books ${out.length}: ${fresh} confirmed on Goodreads now, ${kept} confirmed earlier, ${added} added from Goodreads lists, ${dropped} dropped as unverifiable, ${rows.length - out.length} duplicates merged`);

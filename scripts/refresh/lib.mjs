@@ -90,16 +90,17 @@ export function readData(kind) {
 }
 
 /* One object per line: small diffs, still valid JSON. */
+/** A row as written: empty fields left out. */
+export function compact(r) {
+  const o = {};
+  for (const [k, v] of Object.entries(r)) {
+    if (v == null || v === '' || (Array.isArray(v) && !v.length)) continue;
+    o[k] = v;
+  }
+  return o;
+}
 export function writeData(kind, rows) {
-  const clean = rows.map((r) => {
-    const o = {};
-    for (const [k, v] of Object.entries(r)) {
-      if (v == null || v === '' || (Array.isArray(v) && !v.length)) continue;
-      o[k] = v;
-    }
-    return o;
-  });
-  fs.writeFileSync(dataFile(kind), '[\n' + clean.map((o) => JSON.stringify(o)).join(',\n') + '\n]\n');
+  fs.writeFileSync(dataFile(kind), '[\n' + rows.map((r) => JSON.stringify(compact(r))).join(',\n') + '\n]\n');
 }
 
 /* ------------------------------------------------------------------ titles */

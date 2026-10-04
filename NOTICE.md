@@ -27,7 +27,8 @@ and linked back to the article.
 Scores come from **IMDb** (the official IMDb datasets, used for personal and
 non-commercial purposes), **Metacritic**, **Rotten Tomatoes**, **Steam**,
 **Goodreads** and **IGN**. Links between titles and their pages come from
-**Wikidata** (CC0). The refresh pipeline in `scripts/refresh/` reads each score
+**Wikidata** (CC0). Subgenres, themes and countries of films and series are
+derived from the categories of their **Wikipedia** articles. The refresh pipeline in `scripts/refresh/` reads each score
 from its source and records nothing it could not read there.
 
 This project is not affiliated with, endorsed by, or connected to any of the

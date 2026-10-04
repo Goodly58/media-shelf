@@ -60,7 +60,9 @@ async function goodreadsPage(url) {
   if (!ar || !(Number(ar.ratingValue) > 0)) return null;
   const id = (res.url.match(/\/book\/show\/(\d+)/) || [])[1] || null;
   const author = Array.isArray(ld.author) ? ld.author[0]?.name : ld.author?.name;
-  return { rating: Number(ar.ratingValue), count: Number(ar.ratingCount), title: decode(ld.name || ''), author: decode(author || ''), id, isbn: ld.isbn || null };
+  // The page's own genre shelves, most-shelved first: the best genre source for a book.
+  const genres = [...new Set([...html.matchAll(/BookPageMetadataSection__genreButton"><a href="https:\/\/www\.goodreads\.com\/genres\/[^"]+"[^>]*><span class="Button__labelItem">([^<]+)</g)].map((m) => decode(m[1])))];
+  return { rating: Number(ar.ratingValue), count: Number(ar.ratingCount), title: decode(ld.name || ''), author: decode(author || ''), id, isbn: ld.isbn || null, genres };
 }
 
 /**
@@ -78,7 +80,8 @@ export async function refreshBooks(books, { budgetMin = 60, maxAgeDays = 45, olO
   for (const b of books) {
     if (Date.now() > deadline) break;
     const k = key(b);
-    if (gr[k] && gr[k].at > stale) continue;
+    // Fresh and complete (a rating with its genre shelves, or a confirmed miss): nothing to do.
+    if (gr[k] && gr[k].at > stale && (gr[k].none || gr[k].genres)) continue;
     // Open Library supplies the cover and first-publication year, and ISBNs when there is no Goodreads id.
     if ((!b.gr || !b.cover || !b.year) && (!ol[k] || (!olOnlyMissing && ol[k].at < stale))) {
       try { ol[k] = { ...(await openLibrary(b)), at: Date.now() }; } catch (e) { log(`openlibrary ${b.title}: ${e.message}`); }

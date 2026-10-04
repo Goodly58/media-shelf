@@ -1,6 +1,7 @@
 /* Unit tests for the refresh pipeline's matching and cleaning rules. No
    network: these are the pure functions that decide what gets written. */
-import { slugify, cleanTag, broadGenres, articleMatches, classifyGame, bookGenre } from '../scripts/refresh/merge.mjs';
+import { slugify, broadGenres, articleMatches, classifyGame, bookGenre } from '../scripts/refresh/merge.mjs';
+import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
 
 let pass = 0, fail = 0;
@@ -14,12 +15,33 @@ console.log('titles');
 ok('fold drops accents, punctuation and a leading article', fold('The Café: Amélie & Co.') === 'cafe amelie and co');
 ok('slugify makes stable ids', slugify("Assassin's Creed® II") === 'assassins-creed-ii', slugify("Assassin's Creed® II"));
 
-console.log('tags');
-ok('subgenre film suffix is dropped', cleanTag('slasher film') === 'Slasher');
-ok('television series suffix is dropped', cleanTag('police procedural') === 'Police Procedural');
-ok('LGBT label is normalised', cleanTag('LGBT-related film') === 'LGBTQ');
-ok('a plain genre is not a theme', cleanTag('drama film') === null);
-ok('literature adaptation is not a theme', cleanTag('film based on literature') === null);
+console.log('screen themes');
+const getOut = ['2017 horror films', '2010s satirical films', 'American body horror films', 'Films about racism in the United States',
+  'Films about cults', 'Films directed by Jordan Peele', 'Blumhouse Productions films'];
+const tags = screenTags(getOut, ['horror film']);
+ok('subgenres and themes come from categories', ['Satire', 'Body Horror', 'Race & Racism', 'Cults'].every((x) => tags.includes(x)), tags);
+ok('a studio is not a theme', !screenTags(['Ghost House Pictures films'], []).includes('Ghosts'));
+ok('the Great Depression is not mental health', !screenTags(['Great Depression films'], []).includes('Mental Health'));
+ok('Dragon Ball is not about dragons', !screenTags(['Dragon Ball films'], []).includes('Dragons'));
+ok('a city name is not a religion', !screenTags(['Films set in Islamabad'], []).includes('Religion'));
+const nations = screenCountries(['2017 films', 'American satirical films', 'British horror films', '2010s French-language films']);
+ok('countries come from nationality prefixes', nations.includes('United States') && nations.includes('United Kingdom'), nations);
+ok('a language is not a country', !nations.includes('France'), nations);
+ok('broad genres fill a single-genre title', JSON.stringify(screenBroad(['2005 action films', 'American crime films', '2005 films'])) === '["Action","Crime"]');
+
+console.log('game and book tags');
+const gt = gameTags(['Souls-like', 'Action', 'Open World', 'Singleplayer', 'Great Soundtrack']);
+ok('Steam tags worth filtering by are kept', gt.includes('Souls-like') && gt.includes('Open World'), gt);
+ok('generic Steam tags are dropped', !gt.includes('Singleplayer') && !gt.includes('Great Soundtrack'), gt);
+const shelves = ['Fantasy', 'Classics', 'Fiction', 'Adventure', 'Young Adult', 'Audiobook', 'High Fantasy'];
+ok('Goodreads shelves give genres', JSON.stringify(bookGenres(shelves, ['Horror'])) === '["Fantasy","Classics","Young Adult"]', bookGenres(shelves, ['Horror']));
+ok('no shelves keeps the fallback genre', JSON.stringify(bookGenres(null, ['Horror'])) === '["Horror"]');
+ok('shelves give subgenre tags', bookTags(shelves, []).includes('Epic Fantasy'), bookTags(shelves, []));
+const tax = clientTaxonomy();
+ok('every shelf has a picker taxonomy', ['movies', 'shows', 'games', 'books'].every((k) => tax[k].length > 5));
+const seen = new Set(), dupes = [];
+for (const [, list] of tax.movies) for (const x of list) { if (seen.has(x)) dupes.push(x); seen.add(x); }
+ok('no theme sits in two groups', !dupes.length, dupes);
 
 console.log('genres');
 const g = broadGenres(['superhero film', 'action film', 'crime film', 'drama television series', 'science fiction film']);

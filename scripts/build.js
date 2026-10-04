@@ -26,11 +26,14 @@ const icon = (name, cls) => `<svg class="i${cls ? ' ' + cls : ''}" viewBox="0 0 
 
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+// The genre picker groups themes with the same taxonomy the data refresh tags titles with.
+const TAXONOMY = require('./refresh/taxonomy.mjs').clientTaxonomy();
+
 /* -------------------------------------------------------------- build id */
 const hashed = [
   ...fs.readdirSync(path.join(ROOT, 'assets')).map((f) => 'assets/' + f),
   ...fs.readdirSync(path.join(ROOT, 'src')).map((f) => 'src/' + f),
-  'manifest.webmanifest', 'scripts/build.js',
+  'manifest.webmanifest', 'scripts/build.js', 'scripts/refresh/taxonomy.mjs',
 ].sort();
 const h = crypto.createHash('sha256');
 for (const f of hashed) { h.update(f); h.update(fs.readFileSync(path.join(ROOT, f))); }
@@ -282,7 +285,7 @@ for (const k of KINDS) {
       sorts: SORTS[k].map(([v, l]) => `<option value="${v}">${l}</option>`).join(''),
     }),
     head: `<link rel="preload" href="data/${k}.json?v=${BUILD}" as="fetch" crossorigin>`,
-    scripts: `<script src="assets/catalog.js?v=${BUILD}" defer></script>`,
+    scripts: `<script>window.SHELF_TAXONOMY = ${JSON.stringify(TAXONOMY[k] || [])};</script>\n<script src="assets/catalog.js?v=${BUILD}" defer></script>`,
   });
 }
 

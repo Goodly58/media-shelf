@@ -6,7 +6,10 @@
       <select id="sort" class="select" aria-label="Sort by">{{sorts}}</select>
       <button class="btn" id="filtersBtn" type="button">{{icon:sliders}}Filters<span class="count" hidden>0</span></button>
     </div>
-    <div class="chips" id="chips" role="group" aria-label="Genres"></div>
+    <div class="chipbar">
+      <div class="chips" id="chips" role="group" aria-label="Genres"></div>
+      <button class="chip more" id="genresBtn" type="button" data-open="genres">{{icon:plus:sm}}More genres<span class="count" hidden>0</span></button>
+    </div>
     <div class="active" id="active"></div>
   </header>
   <div class="meta-line" id="meta" aria-live="polite"></div>
@@ -22,14 +25,17 @@
 </dialog>
 
 <dialog id="genresDlg" class="as-sheet" aria-labelledby="genresTitle">
-  <div class="sheet narrow">
-    <button class="icon-btn sheet-x" type="button" data-close aria-label="Close">{{icon:x}}</button>
-    <div class="panel-in">
-      <h2 id="genresTitle">Genres</h2>
-      <div class="field">{{icon:search}}<input id="genreFind" type="search" placeholder="Find a genre" autocomplete="off" aria-label="Find a genre"></div>
-      <div id="genreBody" style="display:flex;flex-direction:column;gap:18px"></div>
-      <div class="panel-foot"><button class="link-btn" type="button" data-reset>Clear all</button><button class="btn primary" type="button" data-close>Done</button></div>
+  <div class="sheet narrow picker">
+    <div class="pk-head">
+      <div class="pk-top"><h2 id="genresTitle">Genres and themes</h2><button class="icon-btn" type="button" data-close aria-label="Close">{{icon:x}}</button></div>
+      <div class="pk-row">
+        <div class="field">{{icon:search}}<input id="genreFind" type="search" placeholder="Search" autocomplete="off" aria-label="Find a genre or theme"></div>
+        <div class="pk-match"><span id="matchLbl">Match</span><div class="toggle2" role="group" aria-labelledby="matchLbl"><button type="button" data-match="all" aria-pressed="true" title="Titles with every pick">All</button><button type="button" data-match="any" aria-pressed="false" title="Titles with any pick">Any</button></div></div>
+      </div>
+      <div class="pk-sel" id="genreSel"></div>
     </div>
+    <div class="pk-body" id="genreBody"></div>
+    <div class="pk-foot"><button class="link-btn" type="button" id="genreClear" hidden>Clear</button><button class="btn primary" type="button" id="genreShow" data-close>Show results</button></div>
   </div>
 </dialog>
 
@@ -39,7 +45,7 @@
     <div class="panel-in">
       <h2 id="filtersTitle">Filters</h2>
       <div id="filterBody" style="display:flex;flex-direction:column;gap:22px"></div>
-      <div class="panel-foot"><button class="link-btn" type="button" data-reset>Reset</button><button class="btn primary" type="button" data-close>Show results</button></div>
+      <div class="panel-foot"><button class="link-btn" type="button" data-reset>Reset</button><button class="btn primary" type="button" id="filterShow" data-close>Show results</button></div>
     </div>
   </div>
 </dialog>

@@ -10,5 +10,5 @@
     "refresh": "node scripts/refresh/run.mjs",
     "serve": "node scripts/serve.js"
   },
-  "engines": { "node": ">=20" }
+  "engines": { "node": ">=22.12" }
 }
