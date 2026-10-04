@@ -98,7 +98,9 @@
     var html = '<span class="cover" style="--k:var(--k-' + kind + ')">' +
       '<span class="ph" aria-hidden="true"><b>' + esc(r.title) + '</b><span>' + esc(r.author || r.by || sub) + '</span></span>';
     if (url) {
-      html += '<img src="' + esc(url) + '" alt="" loading="' + (opts.eager ? 'eager' : 'lazy') + '"' + (opts.high ? ' fetchpriority="high"' : '') + ' decoding="async"' +
+      // Wikimedia sets cookies on every image it serves; an anonymous request keeps them out.
+      html += '<img src="' + esc(url) + '" alt=""' + (/\.wikimedia\.org\//.test(url) ? ' crossorigin="anonymous"' : '') +
+        ' loading="' + (opts.eager ? 'eager' : 'lazy') + '"' + (opts.high ? ' fetchpriority="high"' : '') + ' decoding="async"' +
         (kind === 'games' && r.steamId ? ' data-steam="' + r.steamId + '"' : '') +
         ' referrerpolicy="no-referrer" onload="Shelf.imgOn(this)" onerror="Shelf.imgFail(this)">';
     }

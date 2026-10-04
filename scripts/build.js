@@ -73,6 +73,8 @@ const badge = (kind, x) => Shelf.METRICS[BADGE[kind]].badge(x) || (kind === 'gam
 const imgUrl = (kind, x) => Shelf.imgUrl(kind, x);
 // Wall and fan tiles are small, so Commons thumbnails come down a size.
 const smallImg = (kind, x) => (imgUrl(kind, x) || '').replace('/330px-', '/250px-');
+// Wikimedia sets cookies on every image it serves; an anonymous request keeps them out.
+const anon = (url) => (/\.wikimedia\.org\//.test(url) ? ' crossorigin="anonymous"' : '');
 const card = (kind, x, meta) => Shelf.cardHTML(kind, x, { href: `${PAGE[kind]}#${encodeURIComponent(x.id)}`, meta, badge: badge(kind, x) });
 const metaOf = (kind, x) => (kind === 'books' ? x.author : (x.genres || [])[0]);
 
@@ -94,7 +96,7 @@ const NOUN = { games: ['game', 'games'], books: ['book', 'books'], movies: ['fil
 function firstScreen(kind) {
   const rows = DATA[kind];
   const list = rows.slice().sort((a, b) => TOP[kind](b) - TOP[kind](a)).slice(0, FIRST);
-  const cards = list.map((x, i) => Shelf.cardHTML(kind, x, { meta: metaOf(kind, x), badge: badge(kind, x), fav: true, eager: i < 16, high: i < 4 })).join('');
+  const cards = list.map((x, i) => Shelf.cardHTML(kind, x, { meta: metaOf(kind, x), badge: badge(kind, x), fav: true, eager: i < 6, high: i < 3 })).join('');
   const count = {};
   for (const x of rows) for (const g of x.genres || []) count[g] = (count[g] || 0) + 1;
   const genres = Object.keys(count).sort((a, b) => count[b] - count[a] || a.localeCompare(b)).slice(0, 12);
@@ -112,7 +114,7 @@ function firstScreen(kind) {
 /* ------------------------------------------------------------------ home */
 function wallRow(items) {
   // The first screenful loads straight away, the rest as the row drifts into view.
-  const cells = items.map(([kind, x], i) => `<img src="${esc(smallImg(kind, x))}" alt=""${i >= 8 ? ' loading="lazy"' : ''} decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
+  const cells = items.map(([kind, x], i) => `<img src="${esc(smallImg(kind, x))}" alt=""${anon(smallImg(kind, x))}${i >= 4 ? ' loading="lazy"' : ''} decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
   return `<div class="wall-row">${cells}${cells}</div>`;
 }
 function homePage() {
@@ -126,7 +128,7 @@ function homePage() {
 
   const blurb = { games: 'Metacritic and Steam', books: 'Goodreads', movies: 'IMDb, Metacritic, Rotten Tomatoes', shows: 'IMDb, Metacritic, Rotten Tomatoes' };
   const shelves = KINDS.map((k) => {
-    const fan = top(k, 3, (x) => POP[k](x) > 0, { strict: true }).map((x) => `<img src="${esc(smallImg(k, x))}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
+    const fan = top(k, 3, (x) => POP[k](x) > 0, { strict: true }).map((x) => `<img src="${esc(smallImg(k, x))}" alt=""${anon(smallImg(k, x))} loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
     return `<a class="shelf" href="${PAGE[k]}" style="--k:var(--k-${k})"><div class="fan" aria-hidden="true">${fan}</div><h2>${LABEL[k]}</h2><p>${blurb[k]}</p></a>`;
   }).join('');
 
@@ -302,8 +304,6 @@ for (const k of KINDS) {
       sorts: SORTS[k].map(([v, l]) => `<option value="${v}">${l}</option>`).join(''),
       ...firstScreen(k),
     }),
-    // Low priority: the drawn cards and their posters come first, the full list behind them.
-    head: `<link rel="preload" href="data/${k}.json?v=${BUILD}" as="fetch" crossorigin fetchpriority="low">`,
     scripts: `<script>window.SHELF_TAXONOMY = ${JSON.stringify(TAXONOMY[k] || [])};</script>\n<script src="assets/catalog.js?v=${BUILD}" defer></script>`,
   });
 }

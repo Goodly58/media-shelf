@@ -384,6 +384,7 @@ dialog.palette { margin: 9vh auto auto; }
 .wall-row:nth-child(2) { animation-direction: reverse; animation-duration: 110s; }
 .wall-row:nth-child(3) { animation-duration: 130s; }
 .wall-row img, .wall-row .wph { width: 132px; height: 198px; border-radius: 10px; object-fit: cover; flex: none; background: var(--card-2); }
+@media (max-width: 640px) { .wall-row img, .wall-row .wph { width: 100px; height: 150px; } }
 @keyframes drift { to { transform: translateX(-50%); } }
 .hero::before {
   content: ''; position: absolute; inset: 0; z-index: -1;

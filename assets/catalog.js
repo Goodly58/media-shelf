@@ -109,6 +109,16 @@
     qEl.value = state.q;
     qEl.parentNode.classList.toggle('has-value', Boolean(state.q));
     sortEl.value = state.sort;
+    // With the first screen already drawn, its posters get the connection first and the full
+    // list follows once they are in, after 2.5 s at most, or as soon as someone reaches for a control.
+    if (!pre.length || document.readyState === 'complete') return fetchData();
+    var started = false;
+    var go = function () { if (!started) { started = true; fetchData(); } };
+    window.addEventListener('load', go);
+    setTimeout(go, 2500);
+    ['pointerdown', 'keydown', 'focusin'].forEach(function (t) { document.addEventListener(t, go, { once: true, passive: true }); });
+  }
+  function fetchData() {
     fetch('data/' + kind + '.json?v=' + ((document.querySelector('meta[name="shelf-build"]') || {}).content || '')).then(function (r) { return r.json(); }).then(function (rows) {
       items = rows;
       var sum = 0, n = 0;
@@ -234,7 +244,7 @@
     var html = '';
     for (var i = shown; i < end; i++) {
       var r = results[i];
-      html += S.cardHTML(kind, r, { meta: CONFIG.meta(r), badge: badgeFor(r), fav: true, eager: i < 16, high: i < 4 });
+      html += S.cardHTML(kind, r, { meta: CONFIG.meta(r), badge: badgeFor(r), fav: true, eager: i < 6, high: i < 3 });
     }
     grid.insertAdjacentHTML('beforeend', html);
     shown = end;
