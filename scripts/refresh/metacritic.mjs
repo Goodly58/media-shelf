@@ -23,10 +23,13 @@ function reduce(i) {
 }
 
 /** Every scored title of one type ('movies' | 'tv'), walked year by year. */
-export async function crawlFinder(type, { fromYear = 1910 } = {}) {
+export async function crawlFinder(type, { fromYear = 1910, budgetMin = 30 } = {}) {
   const out = new Map();
   const last = new Date().getFullYear();
-  for (let y = fromYear; y <= last; y++) {
+  const deadline = Date.now() + budgetMin * 60e3;
+  // Newest years first, so a run cut short by the budget still covers what changes most.
+  for (let y = last; y >= fromYear; y--) {
+    if (Date.now() > deadline) { log(`metacritic ${type}: out of time at ${y}`); break; }
     let total = 0;
     const seen = new Set();
     // Ties in the sort can shuffle across pages; walking the year in both
@@ -47,7 +50,7 @@ export async function crawlFinder(type, { fromYear = 1910 } = {}) {
       }
       if (seen.size >= total) break;
     }
-    if (y % 10 === 0) log(`metacritic ${type}: through ${y}, ${out.size} scored`);
+    if (y % 10 === 0) log(`metacritic ${type}: back to ${y}, ${out.size} scored`);
   }
   log(`metacritic ${type}: ${out.size} scored titles`);
   return [...out.values()];

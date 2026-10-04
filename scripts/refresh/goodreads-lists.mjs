@@ -82,11 +82,15 @@ function parseList(html) {
  * Crawl the best-matching lists for every genre. Returns the cache:
  * { books: { <gr id>: { title, author, rating, count, genre, at } }, lists: {...}, at }
  */
-export async function crawlGenreLists({ listsPerGenre = 2, pages = 3, maxAgeDays = 25, force = false } = {}) {
+export async function crawlGenreLists({ listsPerGenre = 2, pages = 3, maxAgeDays = 25, force = false, budgetMin = 20 } = {}) {
   const cache = loadCache('goodreads-lists', { books: {}, lists: {} });
   if (!force && cache.at && Date.now() - cache.at < maxAgeDays * 864e5) return cache;
+  const deadline = Date.now() + budgetMin * 60e3;
   const books = {};
+  let complete = true;
   for (const [genre, tags] of GENRE_LISTS) {
+    // Out of time: keep what earlier crawls found and pick up the rest next run.
+    if (Date.now() > deadline) { complete = false; break; }
     const lists = [];
     for (const tag of tags) {
       try { for (const l of await listsForTag(tag, genre, listsPerGenre)) if (!lists.some((x) => x.id === l.id)) lists.push(l); }
@@ -106,8 +110,8 @@ export async function crawlGenreLists({ listsPerGenre = 2, pages = 3, maxAgeDays
     }
     log(`goodreads lists: ${genre} via ${cache.lists[genre].map((l) => l.title).join(' / ') || 'nothing'}; ${Object.keys(books).length} books so far`);
   }
-  cache.books = books;
-  cache.at = Date.now();
+  cache.books = complete ? books : { ...cache.books, ...books };
+  if (complete) cache.at = Date.now();
   saveCache('goodreads-lists', cache);
   return cache;
 }
