@@ -408,15 +408,22 @@ const SUBJECT_GENRES = [
   ['Travel & Food', /travel|cooking|cookery|food/i],
   ['Art, Music & Film', /\bart\b|music|motion pictures|film/i],
 ];
+const NONFICTION = new Set(['Memoir & Biography', 'History & Politics', 'Science & Nature', 'Philosophy & Psychology',
+  'Business & Self-Help', 'Health & Wellbeing', 'Travel & Food', 'Art, Music & Film']);
 export function bookGenre(listGenre, subjects) {
   if (!subjects || !subjects.length) return listGenre;
-  const hits = SUBJECT_GENRES.map(([g, re]) => [g, subjects.filter((x) => re.test(x)).length]);
+  // A novel about politics is still a novel: fiction subjects rule out the non-fiction shelves.
+  const fiction = subjects.some((x) => /fiction|novel/i.test(x) && !/non-?fiction/i.test(x));
+  const hits = SUBJECT_GENRES.filter(([g]) => !(fiction && NONFICTION.has(g)))
+    .map(([g, re]) => [g, subjects.filter((x) => re.test(x)).length]);
   const own = hits.find(([g]) => g === listGenre);
   const best = hits.reduce((a, b) => (b[1] > a[1] ? b : a), ['', 0]);
   if (!best[1]) return listGenre;
-  return own && own[1] >= best[1] ? listGenre : best[0];
+  // Classics and Literary Fiction have no subject test, so overruling one takes real evidence.
+  if (!own) return best[1] >= 2 ? best[0] : listGenre;
+  return own[1] >= best[1] ? listGenre : best[0];
 }
-const mainTitle = (t) => fold(String(t).split(/[:(]|,\s*vol\b/i)[0]);
+const mainTitle = (t) => fold(String(t).split(/[:(]|,\s*(vol|or)\b/i)[0]);
 
 
 export function mergeBooks(prevBooks) {
@@ -448,6 +455,12 @@ export function mergeBooks(prevBooks) {
   const haveKey = new Set(rows.map(key));
   // "Just Mercy" and "Just Mercy: A Story of Justice and Redemption" are one book.
   const haveMain = new Set(rows.map((r) => mainTitle(r.title) + '|' + fold(r.author || '')));
+  // Goodreads counts ratings per work, so one author with the same count is the same
+  // book under another title (Philosopher's Stone and Sorcerer's Stone).
+  const counts = new Map();
+  const noteCount = (r) => { const a = fold(r.author || ''); if (!counts.has(a)) counts.set(a, []); counts.get(a).push(r.ratings || 0); };
+  rows.forEach(noteCount);
+  const sameWork = (author, n) => (counts.get(fold(author || '')) || []).some((c) => c && Math.abs(c - n) / n < 0.01);
   let added = 0;
   for (const b of Object.values(lists)) {
     if (b.count < 10000 || haveGr.has(b.gr)) continue;
@@ -455,7 +468,7 @@ export function mergeBooks(prevBooks) {
     const row = { title, author: b.author, genres: [b.genre], rating: b.rating, ratings: b.count, gr: b.gr };
     const k = key(row);
     const main = mainTitle(title) + '|' + fold(b.author || '');
-    if (haveKey.has(k) || haveMain.has(main) || /box set|boxed set|collection set|books? \d+-\d+/i.test(title)) continue;
+    if (haveKey.has(k) || haveMain.has(main) || sameWork(b.author, b.count) || /box set|boxed set|collection set|books? \d+-\d+/i.test(title)) continue;
     row.genres = [bookGenre(b.genre, ol[k]?.subjects)];
     const g = gr[k];
     if (g && g.rating && g.id === b.gr) { row.rating = g.rating; row.ratings = g.count; row.isbn = g.isbn || null; }
@@ -464,7 +477,7 @@ export function mergeBooks(prevBooks) {
     if (row.isbn && editions[row.isbn]?.cover) row.cover = editions[row.isbn].cover;
     row.id = slugify(title) ? slugify(title + ' ' + (b.author || '').split(' ').pop()) : 'gr-' + b.gr;
     rows.push(row);
-    haveGr.add(b.gr); haveKey.add(k); haveMain.add(main);
+    haveGr.add(b.gr); haveKey.add(k); haveMain.add(main); noteCount(row);
     added++;
   }
 
