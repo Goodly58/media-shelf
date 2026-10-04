@@ -35,21 +35,29 @@ jobs:
         with:
           node-version: '20'
 
+      # npm run build runs, in order:
+      #   build-pages.js           movies.html + shows.html from data/*.json
+      #   build-stats.js           assets/stats.json
+      #   build-backlog-index.js   data/backlog-index.json
+      #   build-similar.js         data/similar.json (MUST run after the index)
+      #   build-version.js         SW_VERSION + per-page build stamps
       - name: Regenerate derived files
-        run: |
-          node build-pages.js         # movies.html + shows.html from data/*.json
-          node build-stats.js         # assets/stats.json
-          node build-backlog-index.js # data/backlog-index.json
-          node build-similar.js       # data/similar.json — MUST run after the index
-          node build-version.js       # SW_VERSION + per-page build stamps
+        run: npm run build
 
       - name: Validate before publishing
-        run: node validate.js
+        run: npm run validate
+
+      # Publish the site and nothing else: scripts/, tools/ and the docs stay
+      # in the repo.
+      - name: Collect the public files
+        run: |
+          mkdir _site
+          cp -r *.html manifest.webmanifest sw.js assets data _site/
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
 
   deploy:
     needs: build

@@ -1,31 +1,8 @@
-# scratch / local only
 node_modules/
 *.log
-_verify_keys.json
-_verify_workflow.js.verify-cache/
+__pycache__/
 
-# verification fetch cache (regenerated on demand)
+# Working files written by tools/ into the repo root: fetch caches, reports,
+# queues. All regenerated on demand, never part of the site.
+/_*
 .verify-cache/
-
-# IMDb verification working files (regenerated on demand)
-_imdb-ratings.tsv
-_imdb-resolved.json
-_bad-imdb-ids.json
-_tags-cache.json
-_goodreads-cache.json
-_ign-cache.json
-_mcuser-cache.json
-_rt-cache.json
-_orig-genres.json
-_bad-steam-ids.json
-_steam-cache.json
-_steam-id-repairs.json
-_steam-id-report.json
-_steam-id-repairs.json
-_steam-id-report.json
-_steam-cache.json
-_rt-scores.json
-_rt-pages.json
-_rt-search.json
-_book-ratings.json
-_book-isbn-mismatches.json
