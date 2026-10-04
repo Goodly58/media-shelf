@@ -360,6 +360,7 @@ dialog.palette { margin: 9vh auto auto; }
   transition: transform .2s, border-color .2s;
 }
 .shelf:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--k) 60%, var(--line)); }
+.shelf::after { content: ''; position: absolute; inset: auto 0 0 0; height: 55%; z-index: -1; background: linear-gradient(to top, color-mix(in srgb, var(--card) 92%, transparent) 30%, transparent); pointer-events: none; }
 .shelf h2 { font-size: 24px; font-weight: 800; }
 .shelf p { margin: 2px 0 0; color: var(--mut); font-size: 13.5px; }
 .fan { position: absolute; right: -10px; top: 18px; width: 210px; height: 170px; z-index: -1; }
@@ -369,7 +370,7 @@ dialog.palette { margin: 9vh auto auto; }
 .fan > :nth-child(3) { right: 8px; top: 18px; transform: rotate(8deg); }
 .shelf:hover .fan > :nth-child(1) { transform: rotate(-14deg) translateX(-6px); }
 .shelf:hover .fan > :nth-child(3) { transform: rotate(12deg) translateX(6px); }
-@media (max-width: 520px) { .shelf { height: 190px; padding: 16px; } .fan { transform: scale(.78); transform-origin: top right; } .shelf h2 { font-size: 20px; } }
+@media (max-width: 520px) { .shelf { height: 200px; padding: 14px; } .fan { top: 8px; transform: scale(.6); transform-origin: top right; } .shelf h2 { font-size: 20px; } .shelf p { font-size: 12px; } }
 
 .rowsec { padding-top: 44px; }
 .rowsec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
