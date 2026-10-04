@@ -89,22 +89,7 @@ ok('pulls a bare trailing year off too', pasted.items[2].title === 'Outer Wilds'
 
 console.log('matching against the real catalogue');
 
-function readArray(file, name) {
-  const html = readFileSync(file, 'utf8');
-  const at = html.search(new RegExp(`const ${name}\\s*=\\s*\\[`));
-  const start = html.indexOf('[', at);
-  let depth = 0, end = -1, inStr = false, esc = false;
-  for (let i = start; i < html.length; i += 1) {
-    const ch = html[i];
-    if (inStr) { if (esc) esc = false; else if (ch === '\\') esc = true; else if (ch === '"') inStr = false; continue; }
-    if (ch === '"') inStr = true;
-    else if (ch === '[') depth += 1;
-    else if (ch === ']') { depth -= 1; if (!depth) { end = i + 1; break; } }
-  }
-  return JSON.parse(html.slice(start, end));
-}
-
-const BOOKS = readArray('books.html', 'BOOKS');
+const BOOKS = JSON.parse(readFileSync('data/books.json', 'utf8'));
 const MOVIES = JSON.parse(readFileSync('data/movies.json', 'utf8'));
 
 const bookIdx = B.indexCatalogue(BOOKS);

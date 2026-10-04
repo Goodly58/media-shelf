@@ -1,0 +1,62 @@
+# Re-check every score against its source and add new titles, once a week.
+#
+# scripts/refresh/run.mjs pulls IMDb's datasets, Metacritic, Rotten Tomatoes,
+# Steam, Goodreads, Wikidata, Wikipedia and TVmaze, then rewrites data/*.json.
+# The slow sources are refreshed a slice per run, oldest first, so the whole
+# catalogue is re-verified every few weeks. Fetch caches persist between runs
+# in the Actions cache. The deploy workflow publishes the result.
+
+name: Refresh data
+
+on:
+  schedule:
+    - cron: '0 4 * * 1'   # Mondays, 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Restore fetch caches
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache
+          key: refresh-${{ github.run_id }}
+          restore-keys: refresh-
+
+      - name: Refresh from sources
+        run: node scripts/refresh/run.mjs --budget=55
+
+      - name: Save fetch caches
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache
+          key: refresh-${{ github.run_id }}
+
+      - name: Build and validate
+        run: npm run build && npm run validate
+
+      - name: Commit
+        run: |
+          git add data
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git -c user.name=goodly2018 -c user.email=goodly2018@gmail.com commit -m "$(cat .cache/summary.txt)"
+          git push

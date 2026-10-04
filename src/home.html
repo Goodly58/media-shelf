@@ -1,0 +1,28 @@
+<main id="main">
+  <section class="hero">
+    <div class="wall" aria-hidden="true">{{wall}}</div>
+    <div class="hero-in">
+      <h1>Find your next favourite.</h1>
+      <p>Games, books, films and series, ranked by critics and fans.</p>
+      <button class="search-big" type="button" data-search>{{icon:search}}<span>Search any title</span><kbd>/</kbd></button>
+      <nav class="kinds" aria-label="Browse">
+        <a href="games.html" style="--k:var(--k-games)"><span class="dot"></span>Games</a>
+        <a href="books.html" style="--k:var(--k-books)"><span class="dot"></span>Books</a>
+        <a href="movies.html" style="--k:var(--k-movies)"><span class="dot"></span>Films</a>
+        <a href="shows.html" style="--k:var(--k-shows)"><span class="dot"></span>Series</a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="shelves">{{shelves}}</div>
+    {{rows}}
+    <section class="promo">
+      <div>
+        <h2>What should you play, read or watch next?</h2>
+        <p>Drop in your Goodreads, Letterboxd or IMDb export and get your own list, best first.</p>
+      </div>
+      <a class="btn primary" href="backlog.html">Try What next{{icon:chevR:sm}}</a>
+    </section>
+  </div>
+</main>

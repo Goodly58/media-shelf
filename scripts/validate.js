@@ -1,261 +1,104 @@
-/* Pre-publish checks for Shelf.  Run: node scripts/validate.js
+/* Pre-publish checks for Shelf. Run after the build: node scripts/validate.js
  *
- * Every check here exists because that exact thing broke at least once:
- *   - a duplicated `const GAMES =` left a page blank
- *   - a stale service-worker cache hid new builds from returning visitors
- *   - new module files were referenced but never precached, breaking offline
- *   - a class-name collision made a hero line invisible
- *   - hard-coded counts went stale the moment the catalogues grew
- * The Action runs this before publishing, so these fail the build, not the site.
- */
+ * The deploy runs this and publishes nothing if it fails, so a broken build
+ * stays a failed build instead of becoming a broken site. */
 const fs = require('fs');
 const path = require('path');
 
-const PAGES = ['index.html', 'games.html', 'books.html', 'movies.html', 'shows.html', 'backlog.html'];
+const ROOT = path.join(__dirname, '..');
+const OUT = path.join(ROOT, '_site');
 const fail = [];
-const warn = [];
 const ok = [];
+const at = (f) => path.join(OUT, f);
+const has = (f) => fs.existsSync(at(f));
+const read = (f) => fs.readFileSync(at(f), 'utf8');
 
-const read = f => fs.readFileSync(f, 'utf8');
-const has = f => fs.existsSync(f);
+if (!has('index.html')) {
+  console.error('_site/ is missing or empty: run npm run build first');
+  process.exit(1);
+}
 
-/* ---------- 1. every page exists and its inline JS parses ---------- */
+/* ---------- pages ---------- */
+const PAGES = ['index.html', 'games.html', 'books.html', 'movies.html', 'shows.html', 'backlog.html', '404.html'];
+const sw = has('sw.js') ? read('sw.js') : '';
+const version = (sw.match(/var VERSION = '([^']+)'/) || [])[1];
+if (!version) fail.push('sw.js has no VERSION');
+
 for (const p of PAGES) {
   if (!has(p)) { fail.push(`${p} is missing`); continue; }
   const h = read(p);
+  if (/\{\{[\w:-]+\}\}/.test(h)) fail.push(`${p}: unfilled template placeholder ${h.match(/\{\{[\w:-]+\}\}/)[0]}`);
+  const stamp = (h.match(/name="shelf-build" content="([^"]+)"/) || [])[1];
+  if (stamp !== version) fail.push(`${p}: build stamp ${stamp} does not match sw.js ${version}`);
   let n = 0;
   for (const m of h.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)) {
-    const attrs = m[1] || '';
-    if (/\bsrc=/.test(attrs)) continue;
-    if (/type\s*=\s*"(?!text\/javascript)/i.test(attrs)) continue;  // ld+json etc
+    if (/\bsrc=/.test(m[1])) continue;
     n++;
-    try { new Function(m[2]); }
-    catch (e) { fail.push(`${p}: inline script #${n} — ${e.message}`); }
+    try { new Function(m[2]); } catch (e) { fail.push(`${p}: inline script #${n}: ${e.message}`); }
+  }
+  for (const m of h.matchAll(/(?:href|src)="((?:assets|data)\/[^"?#]+)/g)) {
+    if (!has(m[1])) fail.push(`${p} references ${m[1]}, which is not in _site/`);
   }
 }
-ok.push(`${PAGES.length} pages parsed`);
+ok.push(`${PAGES.length} pages: templates filled, scripts parse, references resolve`);
 
-/* ---------- 2. standalone JS parses ---------- */
-const jsFiles = fs.readdirSync('assets').filter(f => f.endsWith('.js')).map(f => 'assets/' + f);
-if (has('sw.js')) jsFiles.push('sw.js');
-for (const f of jsFiles) {
-  try { new Function(read(f)); }
-  catch (e) { fail.push(`${f} — ${e.message}`); }
+/* ---------- scripts ---------- */
+const scripts = fs.readdirSync(at('assets')).filter((f) => f.endsWith('.js'));
+for (const f of scripts) {
+  try { new Function(read('assets/' + f)); } catch (e) { fail.push(`assets/${f}: ${e.message}`); }
 }
-ok.push(`${jsFiles.length} scripts parsed`);
-
-/* ---------- 3. a dataset must be declared exactly once ---------- */
-for (const [p, v] of [['games.html','GAMES'], ['books.html','BOOKS'], ['movies.html','MOVIES'], ['shows.html','SHOWS']]) {
-  if (!has(p)) continue;
-  const c = (read(p).match(new RegExp('const ' + v + ' = ', 'g')) || []).length;
-  if (c !== 1) fail.push(`${p}: found ${c} \`const ${v} =\` declarations, expected exactly 1`);
+try { new Function(sw); } catch (e) { fail.push(`sw.js: ${e.message}`); }
+const shell = JSON.parse((sw.match(/var SHELL = (\[[\s\S]*?\]);/) || [])[1] || '[]');
+for (const s of shell) {
+  const f = s.split('?')[0];
+  if (f && f !== './' && !has(f)) fail.push(`sw.js precaches ${s}, which does not exist`);
 }
+ok.push(`${scripts.length} scripts parse; ${shell.length} precached files exist`);
 
-/* ---------- 4. referenced assets exist AND are precached ---------- */
-const swSrc = has('assets/sw.js') ? read('assets/sw.js') : '';
-const shell = (swSrc.match(/var SHELL = \[([\s\S]*?)\]\.map/) || [])[1] || '';
-for (const p of PAGES) {
-  if (!has(p)) continue;
-  const h = read(p);
-  const refs = new Set();
-  for (const m of h.matchAll(/(?:href|src)="(assets\/[^"]+\.(?:css|js))"/g)) refs.add(m[1]);
-  for (const r of refs) {
-    if (!has(r)) fail.push(`${p} references ${r}, which does not exist`);
-    else if (shell && !shell.includes(`'${r}'`)) {
-      fail.push(`${r} is referenced by ${p} but not in the service-worker precache (offline would break)`);
+/* ---------- data ---------- */
+const MIN = { games: 1000, books: 1500, movies: 5000, shows: 1500 };
+const RANGE = { imdb: [1, 10], mc: [0, 100], rt: [0, 100], steam: [0, 100], rating: [1, 5], ign: [0, 10] };
+let total = 0;
+for (const kind of Object.keys(MIN)) {
+  let rows;
+  try { rows = JSON.parse(read(`data/${kind}.json`)); } catch (e) { fail.push(`data/${kind}.json: ${e.message}`); continue; }
+  if (!Array.isArray(rows)) { fail.push(`data/${kind}.json is not an array`); continue; }
+  total += rows.length;
+  if (rows.length < MIN[kind]) fail.push(`data/${kind}.json has ${rows.length} rows, expected at least ${MIN[kind]}`);
+  const ids = new Set();
+  for (const r of rows) {
+    if (!r.id || !r.title) { fail.push(`${kind}: row without id or title: ${JSON.stringify(r).slice(0, 80)}`); continue; }
+    if (ids.has(r.id)) fail.push(`${kind}: duplicate id ${r.id}`);
+    ids.add(r.id);
+    for (const [k, [lo, hi]] of Object.entries(RANGE)) {
+      if (r[k] != null && !(typeof r[k] === 'number' && r[k] >= lo && r[k] <= hi)) fail.push(`${kind} ${r.id}: ${k}=${r[k]} is out of range`);
     }
+    if (r.genres && !Array.isArray(r.genres)) fail.push(`${kind} ${r.id}: genres is not a list`);
   }
-  if (!has(p)) continue;
-  if (!/<link rel="manifest"/.test(h)) warn.push(`${p} has no manifest link`);
-  if (!/name="shelf-build"/.test(h)) fail.push(`${p} has no build stamp`);
-}
-ok.push('asset references + precache coverage');
-
-/* ---------- 5. build stamps agree with SW_VERSION ---------- */
-const version = (read('assets/pwa.js').match(/var SW_VERSION\s*=\s*'([^']*)'/) || [])[1];
-if (!version || version === 'dev') fail.push('SW_VERSION is unset — run node scripts/build-version.js');
-for (const p of PAGES) {
-  if (!has(p)) continue;
-  const stamp = (read(p).match(/name="shelf-build" content="([^"]+)"/) || [])[1];
-  if (stamp !== version) fail.push(`${p} stamp ${stamp} != SW_VERSION ${version} — build is stale`);
-}
-if (has('sw.js')) {
-  const shim = (read('sw.js').match(/BUILD_STAMP: ([\w.\-]+)/) || [])[1];
-  if (shim !== version) fail.push(`sw.js BUILD_STAMP ${shim} != SW_VERSION ${version} — stale workers will not update`);
-}
-ok.push(`build stamp ${version} consistent`);
-
-/* ---------- 6. stats.json matches the real data ---------- */
-if (!has('assets/stats.json')) fail.push('assets/stats.json missing — run node scripts/build-stats.js');
-else {
-  const s = JSON.parse(read('assets/stats.json'));
-  const count = (file, v) => {
-    if (!has(file)) return null;
-    const h = read(file);
-    const m = h.match(new RegExp('const ' + v + ' = (\\[[\\s\\S]*?\\]);\\n'));
-    try { return m ? JSON.parse(m[1]).length : null; } catch (e) { return null; }
-  };
-  for (const [file, v, key] of [['games.html','GAMES','games'], ['books.html','BOOKS','books'],
-                                ['movies.html','MOVIES','movies'], ['shows.html','SHOWS','shows']]) {
-    const n = count(file, v);
-    if (n != null && s[key] !== n) fail.push(`stats.json ${key}=${s[key]} but ${file} holds ${n} — run node scripts/build-stats.js`);
+  if (kind === 'games') {
+    const bare = rows.filter((r) => r.mc == null && r.steam == null).length;
+    if (bare) fail.push(`games: ${bare} rows have neither a Metascore nor a Steam score`);
   }
-  ok.push('stats.json matches the datasets');
-}
-
-/* ---------- 7. no hard-coded catalogue numbers in visible copy ---------- */
-const stats = has('assets/stats.json') ? JSON.parse(read('assets/stats.json')) : {};
-const live = [stats.games, stats.books, stats.movies, stats.shows].filter(Boolean);
-for (const p of PAGES) {
-  if (!has(p)) continue;
-  let h = read(p);
-  h = h.replace(/const (GAMES|BOOKS|MOVIES|SHOWS) = \[[\s\S]*?\];\n/, '');  // drop the data
-  h = h.replace(/<script[\s\S]*?<\/script>/g, '').replace(/<style[\s\S]*?<\/style>/g, '');
-  for (const n of live) {
-    const grouped = n.toLocaleString('en-US');
-    if (h.includes(grouped) || new RegExp('\\b' + n + '\\b').test(h)) {
-      fail.push(`${p} hard-codes the count ${grouped} in visible copy — it must come from stats.json`);
-    }
+  if (kind === 'books') {
+    const bare = rows.filter((r) => r.rating == null).length;
+    if (bare) fail.push(`books: ${bare} rows have no Goodreads rating`);
   }
-}
-ok.push('no hard-coded counts in copy');
-
-/* ---------- 7b. modules must actually RUN, not merely parse ----------
-   Parsing is not enough: `addEventListener(visibilitychange, …)` — a missing
-   pair of quotes — parses perfectly and then throws a ReferenceError at load,
-   which killed the whole motion module on every page while every check here
-   still passed. Executing each module against a permissive DOM stub catches
-   that class of error. The stub answers almost anything, so a failure here
-   means a genuine top-level throw rather than a missing browser feature. */
-{
-  const stub = () => {
-    const any = new Proxy(function () {}, {
-      get: (t, k) => {
-        if (k === Symbol.toPrimitive || k === 'toString') return () => '';
-        if (k === 'length') return 0;
-        if (k === Symbol.iterator) return function* () {};
-        // Every module opens with `if (window.ShelfX) return;` to avoid double
-        // installing. A blanket-truthy proxy would satisfy that guard and the
-        // module would return before running a single line — so these must read
-        // as undefined or this whole check silently tests nothing.
-        if (typeof k === 'string' && /^Shelf/.test(k)) return undefined;
-        return any;
-      },
-      set: () => true,
-      apply: () => any,
-      construct: () => any,
-      has: () => true
-    });
-    return any;
-  };
-  // Browser globals the modules legitimately reference bare (not via window.*).
-  const GLOBALS = ['window', 'document', 'self', 'globalThis', 'navigator', 'location',
-    'localStorage', 'sessionStorage', 'MutationObserver', 'IntersectionObserver',
-    'requestAnimationFrame', 'cancelAnimationFrame', 'matchMedia', 'fetch', 'caches',
-    'performance', 'Event', 'CustomEvent', 'KeyboardEvent', 'URL', 'URLSearchParams',
-    'TextEncoder', 'crypto', 'Audio', 'Image', 'Blob', 'FileReader', 'DOMParser',
-    'speechSynthesis', 'SpeechSynthesisUtterance', 'getComputedStyle', 'history', 'screen'];
-  const modules = ['site.js', 'theme.js', 'motion.js', 'palette.js', 'features.js', 'covers.js', 'a11y.js', 'theme-fix.js', 'pwa.js', 'similar.js'];
-  for (const m of modules) {
-    const f = 'assets/' + m;
-    if (!has(f)) continue;
-    try {
-      const args = GLOBALS.map(() => stub());
-      new Function(...GLOBALS, '"use strict";' + read(f))(...args);
-    } catch (e) {
-      if (e instanceof ReferenceError || e instanceof SyntaxError) {
-        fail.push(`${f} throws on load — ${e.constructor.name}: ${e.message}`);
-      } else {
-        warn.push(`${f} threw under the DOM stub (${e.constructor.name}: ${e.message}) — likely a stub gap, check manually`);
-      }
-    }
+  if (kind === 'movies' || kind === 'shows') {
+    const bad = rows.filter((r) => !/^tt\d+$/.test(r.id)).length;
+    if (bad) fail.push(`${kind}: ${bad} rows without an IMDb id`);
   }
-  ok.push(`${modules.length} modules execute`);
+  ok.push(`data/${kind}.json: ${rows.length} rows, ids unique, scores in range`);
 }
 
-/* ---------- 8. every data-icon used in markup actually exists ----------
-   A missing icon renders nothing at all — silently. Both new page logos and
-   their nav entries were invisible for a while because two icons were never
-   added to the set. */
-{
-  const site = read('assets/site.js');
-  const block = site.match(/var ICONS = \{[\s\S]*?\n  \};/);
-  if (!block) fail.push('assets/site.js: ICONS block not found');
-  else {
-    const defined = new Set([...block[0].matchAll(/"([\w-]+)":/g)].map(m => m[1]));
-    const used = new Map();
-    for (const p of PAGES) {
-      if (!has(p)) continue;
-      for (const m of read(p).matchAll(/data-icon="([\w-]+)"/g)) {
-        if (!used.has(m[1])) used.set(m[1], p);
-      }
-    }
-    // icons referenced from JS (nav entries, dynamically built cards)
-    for (const f of ['assets/site.js', 'assets/palette.js']) {
-      if (!has(f)) continue;
-      for (const m of read(f).matchAll(/icon: '([\w-]+)'/g)) {
-        if (!used.has(m[1])) used.set(m[1], f);
-      }
-    }
-    for (const [name, where] of used) {
-      if (!defined.has(name)) fail.push(`icon "${name}" used in ${where} is not defined in site.js ICONS`);
-    }
-    ok.push(`${used.size} icons resolve`);
-  }
-}
-
-/* ---------- 9. source data is intact ---------- */
-for (const f of ['data/movies.json', 'data/shows.json']) {
-  if (!has(f)) { warn.push(`${f} missing — movies/shows cannot be rebuilt from source`); continue; }
-  try {
-    const a = JSON.parse(read(f));
-    if (!Array.isArray(a) || !a.length) fail.push(`${f} is empty`);
-    else if (!a[0].title) fail.push(`${f} rows have no title field`);
-  } catch (e) { fail.push(`${f} — ${e.message}`); }
-}
-
-/* ---------- 10. similar.json and backlog-index.json agree ----------
-   similar.json stores neighbours as POSITIONS into the catalogues, and the
-   browser reads the title and score for a position out of backlog-index.json.
-   The two are produced by different scripts from the same arrays, so nothing
-   but this check stops them drifting — and drift would not throw, it would
-   quietly put the wrong title on every recommendation. */
-if (has('data/similar.json') && has('data/backlog-index.json')) {
-  try {
-    const sim = JSON.parse(read('data/similar.json'));
-    const disp = JSON.parse(read('data/backlog-index.json'));
-    let n = 0;
-    for (const k of sim.kinds) {
-      const a = sim.counts[k];
-      const b = (disp.kinds[k] || []).length;
-      if (a !== b) fail.push(`similar.json says ${a} ${k} but backlog-index.json has ${b} — indices are misaligned`);
-      if (sim.offsets[k] !== n) fail.push(`similar.json offset for ${k} is ${sim.offsets[k]}, expected ${n}`);
-      n += a;
-    }
-    const want = n * sim.stride * 4;
-    if (sim.n.length !== want) {
-      fail.push(`similar.json neighbour string is ${sim.n.length} chars, expected ${want}`);
-    }
-    // Spot-check that every packed index is in range.
-    let bad = 0;
-    for (let p = 0; p + 4 <= sim.n.length; p += 4) {
-      const c = sim.n.substr(p, 4);
-      if (c === '0000') continue;
-      const j = parseInt(c.substr(0, 3), 36);
-      if (!(j >= 0 && j < n)) bad++;
-    }
-    if (bad) fail.push(`similar.json has ${bad} out-of-range neighbour indices`);
-    if (!fail.some(f => f.includes('similar.json'))) ok.push(`similar.json aligns with backlog-index.json (${n} items)`);
-  } catch (e) {
-    fail.push(`similar.json — ${e.message}`);
-  }
-} else if (has('assets/similar.js')) {
-  warn.push('assets/similar.js ships but data/similar.json is missing — run node scripts/build-similar.js');
-}
+try {
+  const s = JSON.parse(read('data/search.json'));
+  if (s.items.length !== total) fail.push(`search.json holds ${s.items.length} titles, the catalogues ${total}`);
+  else ok.push(`search index covers all ${total} titles`);
+} catch (e) { fail.push(`data/search.json: ${e.message}`); }
 
 /* ---------- report ---------- */
-for (const o of ok)   console.log('  ok    ' + o);
-for (const w of warn) console.log('  warn  ' + w);
-for (const f of fail) console.log('  FAIL  ' + f);
-console.log(fail.length ? `\n${fail.length} check(s) failed` : `\nall checks passed`);
-process.exit(fail.length ? 1 : 0);
+for (const o of ok) console.log('  ok    ' + o);
+for (const f of fail.slice(0, 60)) console.log('  FAIL  ' + f);
+if (fail.length > 60) console.log(`  ... and ${fail.length - 60} more`);
+if (fail.length) { console.log(`\n${fail.length} check(s) failed`); process.exit(1); }
+console.log('\nall checks passed');

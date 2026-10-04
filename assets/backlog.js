@@ -154,6 +154,7 @@
         return rows.map(function (r) {
           return {
             title: r.Title || r['Original Title'] || '',
+            imdbId: r.Const || '',
             creator: r.Directors || '',
             year: num(r.Year),
             pages: null,
@@ -216,7 +217,7 @@
   function fold(s) {
     return String(s == null ? '' : s)
       .toLowerCase()
-      .normalize('NFD').replace(/[̀-ͯ]/g, '')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
       .replace(/&/g, ' and ')
       .replace(/\b(the|a|an)\b/g, ' ')
       .replace(/[^a-z0-9]+/g, '');
@@ -292,8 +293,9 @@
     if (kind === 'movies') return (entry && entry.runtime) || null;
     if (kind === 'shows') {
       if (!entry || !entry.runtime) return null;
-      // A series is its whole run: episodes are not listed, so seasons are the
-      // only handle, and 10 episodes a season is the streaming-era norm.
+      // A series is its whole run. IMDb lists every episode; where a count is
+      // missing, 10 episodes a season is the streaming-era norm.
+      if (entry.eps) return Math.round(entry.runtime * entry.eps);
       const seasons = entry.seasons || 1;
       return Math.round(entry.runtime * 10 * seasons);
     }
@@ -346,6 +348,8 @@
     const items = params.items || [];
     const kind = params.kind;
     const index = indexCatalogue(params.catalogue || []);
+    const byId = new Map();
+    (params.catalogue || []).forEach(function (e) { if (e.id) byId.set(e.id, e); });
     const budget = Number(params.minutes) || 0;
     const floor = Number(params.minScore) || 0;
     const want = params.status || 'todo';
@@ -357,7 +361,7 @@
       const item = items[i];
       if (want !== 'any' && item.status !== want) continue;
 
-      const entry = matchOne(item, index);
+      const entry = (item.imdbId && byId.get(item.imdbId)) || matchOne(item, index);
       if (entry) matched++;
 
       const q = qualityOf(item, entry, kind);

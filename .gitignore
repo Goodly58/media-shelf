@@ -2,7 +2,9 @@ node_modules/
 *.log
 __pycache__/
 
-# Working files written by tools/ into the repo root: fetch caches, reports,
-# queues. All regenerated on demand, never part of the site.
+# Build output (npm run build) and the refresh pipeline's fetch caches.
+_site/
+.cache/
+
+# Stray working files written into the repo root.
 /_*
-.verify-cache/

@@ -1,0 +1,45 @@
+<main id="main" class="wrap">
+  <header class="cat-head">
+    <div class="cat-title"><h1>{{label}}</h1></div>
+    <div class="toolbar">
+      <div class="field">{{icon:search}}<input id="q" type="search" placeholder="{{placeholder}}" aria-label="Search {{label}}" autocomplete="off" spellcheck="false"><button class="clear" type="button" aria-label="Clear search">{{icon:x}}</button></div>
+      <select id="sort" class="select" aria-label="Sort by">{{sorts}}</select>
+      <button class="btn" id="filtersBtn" type="button">{{icon:sliders}}Filters<span class="count" hidden>0</span></button>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Genres"></div>
+    <div class="active" id="active"></div>
+  </header>
+  <div class="meta-line" id="meta" aria-live="polite"></div>
+  <div class="grid" id="grid"></div>
+  <div class="sentinel" id="sentinel"></div>
+</main>
+
+<dialog id="detailDlg" aria-labelledby="detailTitle">
+  <div class="sheet">
+    <button class="icon-btn sheet-x" type="button" data-close aria-label="Close">{{icon:x}}</button>
+    <div id="detailBody"></div>
+  </div>
+</dialog>
+
+<dialog id="genresDlg" class="as-sheet" aria-labelledby="genresTitle">
+  <div class="sheet narrow">
+    <button class="icon-btn sheet-x" type="button" data-close aria-label="Close">{{icon:x}}</button>
+    <div class="panel-in">
+      <h2 id="genresTitle">Genres</h2>
+      <div class="field">{{icon:search}}<input id="genreFind" type="search" placeholder="Find a genre" autocomplete="off" aria-label="Find a genre"></div>
+      <div id="genreBody" style="display:flex;flex-direction:column;gap:18px"></div>
+      <div class="panel-foot"><button class="link-btn" type="button" data-reset>Clear all</button><button class="btn primary" type="button" data-close>Done</button></div>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="filtersDlg" class="as-sheet" aria-labelledby="filtersTitle">
+  <div class="sheet narrow">
+    <button class="icon-btn sheet-x" type="button" data-close aria-label="Close">{{icon:x}}</button>
+    <div class="panel-in">
+      <h2 id="filtersTitle">Filters</h2>
+      <div id="filterBody" style="display:flex;flex-direction:column;gap:22px"></div>
+      <div class="panel-foot"><button class="link-btn" type="button" data-reset>Reset</button><button class="btn primary" type="button" data-close>Show results</button></div>
+    </div>
+  </div>
+</dialog>

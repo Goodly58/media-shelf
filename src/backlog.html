@@ -1,0 +1,51 @@
+<main id="main" class="wrap bl">
+  <header class="cat-head">
+    <div class="cat-title" style="--k:var(--acc)"><h1>What next</h1></div>
+    <p class="bl-sub">Your backlog, best first.</p>
+  </header>
+
+  <section class="intake" id="intake">
+    <h2>Drop a CSV from Goodreads, Letterboxd or IMDb</h2>
+    <button class="btn primary" id="pick" type="button">Choose a file</button>
+    <input type="file" id="file" accept=".csv,text/csv" hidden>
+    <div class="bl-src">
+      <span>Goodreads: My Books → Import and export</span>
+      <span>Letterboxd: Settings → Data</span>
+      <span>IMDb: Your ratings → Export</span>
+    </div>
+    <details class="paste">
+      <summary>Or paste titles</summary>
+      <textarea id="pasted" placeholder="One title per line, year optional&#10;Hades&#10;Disco Elysium (2019)"></textarea>
+      <button class="btn sm" id="usePasted" type="button">Use this list</button>
+    </details>
+    <p class="bl-note">Your file stays in your browser.</p>
+  </section>
+
+  <section id="workspace" hidden>
+    <div class="bl-controls">
+      <label>Match against
+        <select id="kind" class="select">
+          <option value="books">Books</option>
+          <option value="movies">Films</option>
+          <option value="shows">Series</option>
+          <option value="games">Games</option>
+        </select>
+      </label>
+      <label>Show
+        <select id="status" class="select">
+          <option value="todo">Not done yet</option>
+          <option value="done">Already done</option>
+          <option value="any">Everything</option>
+        </select>
+      </label>
+      <label class="bl-range">At least <output id="floorVal">70</output>
+        <input type="range" id="floor" min="0" max="95" step="5" value="70">
+      </label>
+      <div class="bl-time"><span>Time</span><div class="chips" id="timeChips"></div></div>
+    </div>
+    <div class="meta-line" id="summary"></div>
+    <ol class="bl-list" id="results"></ol>
+    <div id="none" class="empty" hidden></div>
+    <p style="text-align:center;margin-top:24px"><button class="btn" id="reset" type="button">Use a different list</button></p>
+  </section>
+</main>

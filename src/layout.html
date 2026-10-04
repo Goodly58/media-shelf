@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="shelf-build" content="{{build}}">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{title}}">
+<meta property="og:description" content="{{description}}">
+<meta name="theme-color" content="#0a0c11">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://upload.wikimedia.org">
+<link rel="dns-prefetch" href="https://cdn.cloudflare.steamstatic.com">
+<link rel="dns-prefetch" href="https://static.tvmaze.com">
+<link rel="dns-prefetch" href="https://covers.openlibrary.org">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap">
+<script>
+(function(){try{var t=localStorage.getItem('shelf_theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
+window.Shelf={imgOn:function(e){if(e.naturalWidth<8){e.remove();return}e.classList.add('on')},imgFail:function(e){var s=e.getAttribute('data-steam');if(s&&e.src.indexOf('library_600x900')>0){e.src='https://cdn.cloudflare.steamstatic.com/steam/apps/'+s+'/header.jpg';e.parentNode.classList.add('wide-art');return}e.remove()}};
+</script>
+<link rel="stylesheet" href="assets/app.css?v={{build}}">
+{{head}}
+</head>
+<body{{bodyAttrs}}>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="logo" href="./" aria-label="Shelf home"><span class="logo-mark">{{icon:logo}}</span>Shelf</a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="games.html" style="--k:var(--k-games)"{{cur:games}}><span class="dot"></span>Games</a>
+      <a href="books.html" style="--k:var(--k-books)"{{cur:books}}><span class="dot"></span>Books</a>
+      <a href="movies.html" style="--k:var(--k-movies)"{{cur:movies}}><span class="dot"></span>Films</a>
+      <a href="shows.html" style="--k:var(--k-shows)"{{cur:shows}}><span class="dot"></span>Series</a>
+      <a href="backlog.html"{{cur:backlog}}>What next</a>
+    </nav>
+    <div class="nav-act">
+      <button class="search-btn" type="button" data-search aria-label="Search everything">{{icon:search}}<span>Search</span><kbd>/</kbd></button>
+      <button class="icon-btn" type="button" data-theme-toggle aria-label="Switch light or dark theme">{{icon:sun:theme-light}}{{icon:moon:theme-dark}}</button>
+    </div>
+  </div>
+</header>
+{{body}}
+<footer class="foot">
+  <div class="wrap foot-in">
+    <span>Scores from IMDb, Metacritic, Rotten Tomatoes, Steam and Goodreads, re-checked every week. Updated {{updated}}.</span>
+    <nav aria-label="Footer"><a href="https://github.com/Goodly58/media-shelf">GitHub</a><a href="https://github.com/Goodly58/media-shelf/blob/main/NOTICE.md">Credits</a></nav>
+  </div>
+</footer>
+<script src="assets/app.js?v={{build}}" defer></script>
+{{scripts}}
+</body>
+</html>

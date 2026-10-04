@@ -4,8 +4,11 @@
   "description": "A fast, filterable catalogue of PC games, books, films and TV series, ranked by critics.",
   "license": "MIT",
   "scripts": {
-    "build": "node scripts/build-pages.js && node scripts/build-stats.js && node scripts/build-backlog-index.js && node scripts/build-similar.js && node scripts/build-version.js",
+    "build": "node scripts/build.js",
     "validate": "node scripts/validate.js",
-    "test": "node tests/backlog.test.mjs"
-  }
+    "test": "node tests/backlog.test.mjs && node tests/refresh.test.mjs",
+    "refresh": "node scripts/refresh/run.mjs",
+    "serve": "node scripts/serve.js"
+  },
+  "engines": { "node": ">=20" }
 }

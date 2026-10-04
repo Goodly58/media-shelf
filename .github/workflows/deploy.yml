@@ -1,58 +1,51 @@
 # Build and publish Shelf to GitHub Pages.
 #
-# Why this exists: two values on the site are DERIVED and must be regenerated
-# whenever content changes —
-#   assets/stats.json   the counts the landing page reads (nothing is hard-coded)
-#   SW_VERSION          the hash that invalidates the service-worker cache
-# Forgetting either one silently ships a stale site to returning visitors, which
-# is exactly the failure this repo hit once already. Running the build here means
-# it cannot be skipped: pushing to main is the whole deploy.
+# Pushing to main is the whole deploy. The site is generated from src/ and
+# data/ into _site/, checked by scripts/validate.js, and only then published.
+# If validation fails, nothing is published and the previous site stays live.
+# It also runs after the weekly data refresh, whose commit cannot trigger a
+# push event itself.
 
 name: Deploy Shelf
 
 on:
   push:
     branches: [main]
-  workflow_dispatch:      # allow a manual re-deploy from the Actions tab
+  workflow_dispatch:
+  workflow_run:
+    workflows: [Refresh data]
+    types: [completed]
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Never let two deploys race; let a newer push supersede one already running.
 concurrency:
   group: pages
   cancel-in-progress: true
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
 
-      # npm run build runs, in order:
-      #   build-pages.js           movies.html + shows.html from data/*.json
-      #   build-stats.js           assets/stats.json
-      #   build-backlog-index.js   data/backlog-index.json
-      #   build-similar.js         data/similar.json (MUST run after the index)
-      #   build-version.js         SW_VERSION + per-page build stamps
-      - name: Regenerate derived files
+      - name: Build
         run: npm run build
 
       - name: Validate before publishing
         run: npm run validate
 
-      # Publish the site and nothing else: scripts/, tools/ and the docs stay
-      # in the repo.
-      - name: Collect the public files
-        run: |
-          mkdir _site
-          cp -r *.html manifest.webmanifest sw.js assets data _site/
+      - name: Test
+        run: npm test
 
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
