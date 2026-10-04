@@ -48,26 +48,20 @@
 
   /* ------------------------------------------------------------- images */
   var STEAM = 'https://cdn.cloudflare.steamstatic.com/steam/apps/';
+  // A poster file on Wikipedia, as opposed to one of its thumbnails.
+  var WIKI_FILE = /^(https:\/\/upload\.wikimedia\.org\/wikipedia\/(?:en|commons))\/(\w\/\w\w)\/([^/]+\.jpe?g)$/i;
   function imgUrl(kind, r) {
     if (kind === 'games' && r.img) return r.img;
     if (kind === 'games' && r.steamId) return STEAM + r.steamId + '/library_600x900.jpg';
     if (kind === 'books' && r.cover) return 'https://covers.openlibrary.org/b/id/' + r.cover + '-M.jpg';
-    return r.img || null;
+    if (!r.img) return null;
+    // Wikipedia's 250px thumbnail is the same poster re-encoded, often a fifth of the bytes.
+    // PNG thumbnails stay PNG and come out no smaller, so those are left alone.
+    var m = WIKI_FILE.exec(r.img);
+    return m ? m[1] + '/thumb/' + m[2] + '/' + m[3] + '/250px-' + m[3] : r.img;
   }
-  function imgFail(el) {
-    var steam = el.getAttribute('data-steam');
-    if (steam && el.src.indexOf('library_600x900') > 0) {
-      el.src = STEAM + steam + '/header.jpg';
-      el.parentNode.classList.add('wide-art');
-      return;
-    }
-    el.remove();
-  }
-  function imgOn(el) {
-    // Open Library answers a missing cover with a 1x1 gif rather than a 404.
-    if (el.naturalWidth < 8) { el.remove(); return; }
-    el.classList.add('on');
-  }
+  // Loading and failure handlers (Shelf.imgOn, Shelf.imgFail) live in the page head, so
+  // they work for images that finish before this script runs.
 
   /* ------------------------------------------------------------- scores */
   function tone(v100) { return v100 == null ? '' : v100 >= 75 ? 'good' : v100 >= 50 ? 'mid' : 'bad'; }
@@ -102,9 +96,9 @@
     var url = imgUrl(kind, r);
     var sub = r.year || '';
     var html = '<span class="cover" style="--k:var(--k-' + kind + ')">' +
-      '<span class="ph"><b>' + esc(r.title) + '</b><span>' + esc(r.author || r.by || sub) + '</span></span>';
+      '<span class="ph" aria-hidden="true"><b>' + esc(r.title) + '</b><span>' + esc(r.author || r.by || sub) + '</span></span>';
     if (url) {
-      html += '<img src="' + esc(url) + '" alt="" loading="' + (opts.eager ? 'eager' : 'lazy') + '" decoding="async"' +
+      html += '<img src="' + esc(url) + '" alt="" loading="' + (opts.eager ? 'eager' : 'lazy') + '"' + (opts.high ? ' fetchpriority="high"' : '') + ' decoding="async"' +
         (kind === 'games' && r.steamId ? ' data-steam="' + r.steamId + '"' : '') +
         ' referrerpolicy="no-referrer" onload="Shelf.imgOn(this)" onerror="Shelf.imgFail(this)">';
     }
@@ -120,7 +114,8 @@
     opts = opts || {};
     var meta = [r.year, opts.meta].filter(Boolean).join(' · ');
     var tag = opts.href ? 'a href="' + esc(opts.href) + '"' : 'button type="button"';
-    return '<' + tag + ' class="card" data-id="' + esc(r.id) + '" aria-label="' + esc(r.title + (r.year ? ' (' + r.year + ')' : '')) + '">' +
+    // No aria-label: the card's own text (rating, title, year) is its name.
+    return '<' + tag + ' class="card" data-id="' + esc(r.id) + '">' +
       coverHTML(kind, r, opts) +
       '<span class="card-t">' + esc(r.title) + '</span>' +
       (meta ? '<span class="card-m">' + esc(meta) + '</span>' : '') +
@@ -263,7 +258,7 @@
   var S = window.Shelf || (window.Shelf = {});
   var api = {
     icon: icon, esc: esc, compact: compact, KINDS: KINDS, METRICS: METRICS, tone: tone,
-    imgUrl: imgUrl, imgFail: imgFail, imgOn: imgOn, coverHTML: coverHTML, cardHTML: cardHTML,
+    imgUrl: imgUrl, coverHTML: coverHTML, cardHTML: cardHTML,
     Favs: Favs, toast: toast, openSearch: openSearch, fold: fold,
   };
   for (var k in api) S[k] = api[k];

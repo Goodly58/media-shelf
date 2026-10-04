@@ -55,8 +55,10 @@
   var qEl = $('#q'), sortEl = $('#sort');
 
   var items = [], byId = {}, idx = {}, genreCount = {}, tagCount = {}, avgTop = 0;
-  var results = [], shown = 0, PAGE = 60;
-  var state = defaults();
+  var results = [], shown = 0, PAGE = 60, loaded = false;
+  var state = readURL();
+  // Ids of the cards the page was built with (the default list), if they are still on it.
+  var pre = [].map.call(grid.querySelectorAll('.card[data-id]'), function (c) { return c.getAttribute('data-id'); });
 
   function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false }; }
 
@@ -103,7 +105,10 @@
   }
 
   function load() {
-    skeleton();
+    if (!pre.length) skeleton();
+    qEl.value = state.q;
+    qEl.parentNode.classList.toggle('has-value', Boolean(state.q));
+    sortEl.value = state.sort;
     fetch('data/' + kind + '.json?v=' + ((document.querySelector('meta[name="shelf-build"]') || {}).content || '')).then(function (r) { return r.json(); }).then(function (rows) {
       items = rows;
       var sum = 0, n = 0;
@@ -119,11 +124,12 @@
       avgTop = n ? sum / n : 0;
       items.forEach(function (r) { r._top = CONFIG.top(r, avgTop); });
       state = readURL();
-      qEl.value = state.q;
-      qEl.parentNode.classList.toggle('has-value', Boolean(state.q));
-      sortEl.value = state.sort;
+      loaded = true;
       apply();
       openFromHash();
+      // Panels opened while the data was on its way.
+      if (genresDlg.open) layoutPicker();
+      if (filtersDlg.open) openFilters();
     }).catch(function () {
       grid.innerHTML = '<div class="empty"><h2>Could not load the catalogue</h2><p>Check your connection and reload.</p></div>';
     });
@@ -183,10 +189,24 @@
   function lastName(s) { s = (s || '').trim(); return s.split(' ').pop() + ' ' + s; }
 
   function apply(keepScroll) {
+    // Before the data is in, a choice is only remembered (in the address); the list follows.
+    if (!loaded) {
+      writeURL();
+      if (pre.length) { pre = []; skeleton(); metaEl.style.visibility = 'hidden'; }
+      return;
+    }
     results = items.filter(function (r) { return matches(r, state); });
     results.sort(SORTERS[state.sort] || SORTERS.top);
-    shown = 0;
-    grid.innerHTML = '';
+    // Keep the cards the page was built with while they are still the top of the list.
+    var keep = pre.length && pre.every(function (id, i) { return results[i] && results[i].id === id; });
+    if (keep) {
+      shown = pre.length;
+      grid.querySelectorAll('[data-fav]').forEach(function (f) { f.classList.toggle('on', S.Favs.has(kind, f.getAttribute('data-fav'))); });
+    } else {
+      shown = 0;
+      grid.innerHTML = '';
+    }
+    pre = [];
     renderMore();
     renderMeta();
     renderChips();
@@ -214,7 +234,7 @@
     var html = '';
     for (var i = shown; i < end; i++) {
       var r = results[i];
-      html += S.cardHTML(kind, r, { meta: CONFIG.meta(r), badge: badgeFor(r), fav: true, eager: i < 12 });
+      html += S.cardHTML(kind, r, { meta: CONFIG.meta(r), badge: badgeFor(r), fav: true, eager: i < 16, high: i < 4 });
     }
     grid.insertAdjacentHTML('beforeend', html);
     shown = end;
@@ -231,6 +251,7 @@
   }
   function renderMeta() {
     var n = results.length;
+    metaEl.style.visibility = '';
     metaEl.innerHTML = '<span><b>' + n.toLocaleString() + '</b> ' + (n === 1 ? K.one : K.many) + (n ? ' · ' + avgOf(results) : '') + '</span>' +
       (n ? '<button class="link-btn" id="surprise">' + icon('shuffle', 'sm') + ' Surprise me</button>' : '');
   }
@@ -248,6 +269,7 @@
       html += '<button class="chip" type="button" data-chip="' + esc(g) + '" aria-pressed="' + (state.genres.indexOf(g) >= 0) + '">' + esc(g) + '</button>';
     });
     chipsEl.innerHTML = html;
+    chipsEl.style.visibility = '';
     var n = state.genres.length + state.tags.length, gc = $('#genresBtn .count');
     if (gc) { gc.textContent = n; gc.hidden = !n; }
     chipFade();
@@ -365,6 +387,11 @@
   }
   function openGenres() {
     $('#genreFind').value = '';
+    if (!loaded) {
+      $('#genreBody').innerHTML = '<p class="p-hint">Loading…</p>';
+      if (!genresDlg.open) genresDlg.showModal();
+      return;
+    }
     layoutPicker();
     if (!genresDlg.open) genresDlg.showModal();
     $('#genreBody').scrollTop = 0;

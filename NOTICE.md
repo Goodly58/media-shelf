@@ -10,9 +10,11 @@ owners.
 Copyright (c) 2022 Lucide Contributors. <https://lucide.dev>
 The SVG paths are inlined in `assets/app.js`.
 
-## Loaded at runtime
+**Inter**: typeface, used under the SIL Open Font Licence 1.1.
+Copyright (c) 2016 The Inter Project Authors. <https://github.com/rsms/inter>
+The font files and the full licence are in `assets/` (`inter-LICENSE.txt`).
 
-**Inter**: typeface served by Google Fonts under the SIL Open Font Licence 1.1.
+## Loaded at runtime
 
 **Cover art and posters**: loaded on demand from Wikimedia (Wikipedia), TVmaze,
 Steam, Open Library and TMDB. None of it is stored in this repository, and all

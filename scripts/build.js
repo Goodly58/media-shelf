@@ -5,6 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
 const OUT = path.join(ROOT, '_site');
@@ -13,6 +14,7 @@ const KINDS = ['games', 'books', 'movies', 'shows'];
 const LABEL = { games: 'Games', books: 'Books', movies: 'Films', shows: 'Series' };
 const PAGE = { games: 'games.html', books: 'books.html', movies: 'movies.html', shows: 'shows.html' };
 const THIS_YEAR = new Date().getFullYear();
+const SITE = 'https://goodly58.github.io/media-shelf/';
 
 /* ------------------------------------------------------------- inputs */
 // SHELF_DATA_DIR builds from another copy of the data (used to preview a merge).
@@ -20,11 +22,19 @@ const DATA_DIR = process.env.SHELF_DATA_DIR || path.join(ROOT, 'data');
 const DATA = {};
 for (const k of KINDS) DATA[k] = JSON.parse(fs.readFileSync(path.join(DATA_DIR, `${k}.json`), 'utf8'));
 
-// The icon set lives in app.js; reuse it so the two cannot drift.
-const ICONS = new Function('return ' + r('assets/app.js').match(/var ICONS = (\{[\s\S]*?\n {2}\});/)[1])();
-const icon = (name, cls) => `<svg class="i${cls ? ' ' + cls : ''}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ''}</svg>`;
-
-const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+// The browser's own renderer (assets/app.js), run here so cards drawn at build time are
+// exactly the ones the page draws. It needs only a few inert stand-ins for the DOM.
+const Shelf = (() => {
+  const noop = () => {};
+  const ctx = {
+    document: { addEventListener: noop, querySelector: () => null, documentElement: { getAttribute: noop, setAttribute: noop }, body: { getAttribute: () => null } },
+    localStorage: { getItem: () => null, setItem: noop }, navigator: {}, location: { protocol: 'file:' }, setTimeout, clearTimeout,
+  };
+  ctx.window = ctx;
+  vm.runInNewContext(r('assets/app.js'), ctx, { filename: 'assets/app.js' });
+  return ctx.Shelf;
+})();
+const { icon, esc } = Shelf;
 
 // The genre picker groups themes with the same taxonomy the data refresh tags titles with.
 const TAXONOMY = require('./refresh/taxonomy.mjs').clientTaxonomy();
@@ -55,34 +65,15 @@ const TOP = {
   books: (x) => weighted(x.rating, x.ratings || 0, 4000, C.books),
 };
 const POP = { movies: (x) => x.votes || 0, shows: (x) => x.votes || 0, games: (x) => x.steamN || 0, books: (x) => x.ratings || 0 };
-const tone = (v) => (v == null ? '' : v >= 75 ? 'good' : v >= 50 ? 'mid' : 'bad');
-function badge(kind, x) {
-  if (kind === 'movies' || kind === 'shows') return x.imdb == null ? '' : `<span class="badge star">${icon('star')}<b>${x.imdb.toFixed(1)}</b></span>`;
-  if (kind === 'books') return x.rating == null ? '' : `<span class="badge star">${icon('star')}<b>${x.rating.toFixed(2)}</b></span>`;
-  if (x.mc != null) return `<span class="badge ${tone(x.mc)}">${x.mc}</span>`;
-  return x.steam == null ? '' : `<span class="badge ${tone(x.steam)}">${x.steam}%</span>`;
-}
+// The score each catalogue shows on its cards by default, as catalog.js chooses it.
+const BADGE = { movies: 'imdb', shows: 'imdb', games: 'mc', books: 'rating' };
+const badge = (kind, x) => Shelf.METRICS[BADGE[kind]].badge(x) || (kind === 'games' ? Shelf.METRICS.steam.badge(x) : '');
 
 /* ----------------------------------------------------------------- cards */
-const STEAM = 'https://cdn.cloudflare.steamstatic.com/steam/apps/';
-function imgUrl(kind, x, small) {
-  if (kind === 'games' && x.img) return x.img;
-  if (kind === 'games' && x.steamId) return STEAM + x.steamId + '/library_600x900.jpg';
-  if (kind === 'books' && x.cover) return `https://covers.openlibrary.org/b/id/${x.cover}-M.jpg`;
-  if (!x.img) return null;
-  return small ? x.img.replace('/330px-', '/250px-') : x.img;
-}
-function cover(kind, x, { lazy = true, badges = true } = {}) {
-  const url = imgUrl(kind, x);
-  return `<span class="cover" style="--k:var(--k-${kind})"><span class="ph"><b>${esc(x.title)}</b><span>${esc(x.author || x.by || x.year || '')}</span></span>` +
-    (url ? `<img src="${esc(url)}" alt="" loading="${lazy ? 'lazy' : 'eager'}" decoding="async"${kind === 'games' && x.steamId ? ` data-steam="${x.steamId}"` : ''} referrerpolicy="no-referrer" onload="Shelf.imgOn(this)" onerror="Shelf.imgFail(this)">` : '') +
-    (badges ? badge(kind, x) : '') + '</span>';
-}
-function card(kind, x, meta) {
-  const m = [x.year, meta].filter(Boolean).join(' · ');
-  return `<a class="card" href="${PAGE[kind]}#${encodeURIComponent(x.id)}" aria-label="${esc(x.title + (x.year ? ` (${x.year})` : ''))}">${cover(kind, x)}` +
-    `<span class="card-t">${esc(x.title)}</span>${m ? `<span class="card-m">${esc(m)}</span>` : ''}</a>`;
-}
+const imgUrl = (kind, x) => Shelf.imgUrl(kind, x);
+// Wall and fan tiles are small, so Commons thumbnails come down a size.
+const smallImg = (kind, x) => (imgUrl(kind, x) || '').replace('/330px-', '/250px-');
+const card = (kind, x, meta) => Shelf.cardHTML(kind, x, { href: `${PAGE[kind]}#${encodeURIComponent(x.id)}`, meta, badge: badge(kind, x) });
 const metaOf = (kind, x) => (kind === 'books' ? x.author : (x.genres || [])[0]);
 
 const withArt = (kind) => (x) => Boolean(imgUrl(kind, x));
@@ -94,9 +85,34 @@ function top(kind, n, filter, { strict = false } = {}) {
   return strict || art.length >= Math.min(n, 8) ? art.slice(0, n) : sorted.slice(0, n);
 }
 
+/* ------------------------------------------------------------ catalogues */
+/* Each catalogue page arrives with its first screen drawn: the default list (top rated,
+   no filters), its genre chips and its count, all as catalog.js draws them. The page keeps
+   them when its data confirms the same list, so nothing moves when it comes alive. */
+const FIRST = 30;
+const NOUN = { games: ['game', 'games'], books: ['book', 'books'], movies: ['film', 'films'], shows: ['series', 'series'] };
+function firstScreen(kind) {
+  const rows = DATA[kind];
+  const list = rows.slice().sort((a, b) => TOP[kind](b) - TOP[kind](a)).slice(0, FIRST);
+  const cards = list.map((x, i) => Shelf.cardHTML(kind, x, { meta: metaOf(kind, x), badge: badge(kind, x), fav: true, eager: i < 16, high: i < 4 })).join('');
+  const count = {};
+  for (const x of rows) for (const g of x.genres || []) count[g] = (count[g] || 0) + 1;
+  const genres = Object.keys(count).sort((a, b) => count[b] - count[a] || a.localeCompare(b)).slice(0, 12);
+  const chips = '<button class="chip" type="button" data-chip="" aria-pressed="true">All</button>' +
+    genres.map((g) => `<button class="chip" type="button" data-chip="${esc(g)}" aria-pressed="false">${esc(g)}</button>`).join('');
+  const key = BADGE[kind];
+  const v = rows.map((x) => Shelf.METRICS[key].v(x)).filter((x) => x != null);
+  const a = v.reduce((p, q) => p + q, 0) / (v.length || 1);
+  const avg = !v.length ? '' : key === 'imdb' ? 'avg ★ ' + a.toFixed(1) : key === 'rating' ? 'avg ★ ' + a.toFixed(2) : 'avg Metascore ' + Math.round(a);
+  const meta = `<span><b>${rows.length.toLocaleString('en-US')}</b> ${NOUN[kind][rows.length === 1 ? 0 : 1]}${avg ? ' · ' + avg : ''}</span>` +
+    `<button class="link-btn" id="surprise">${icon('shuffle', 'sm')} Surprise me</button>`;
+  return { cards, chips, meta };
+}
+
 /* ------------------------------------------------------------------ home */
 function wallRow(items) {
-  const cells = items.map(([kind, x]) => `<img src="${esc(imgUrl(kind, x, true))}" alt="" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`).join('');
+  // The first screenful loads straight away, the rest as the row drifts into view.
+  const cells = items.map(([kind, x], i) => `<img src="${esc(smallImg(kind, x))}" alt=""${i >= 8 ? ' loading="lazy"' : ''} decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
   return `<div class="wall-row">${cells}${cells}</div>`;
 }
 function homePage() {
@@ -110,7 +126,7 @@ function homePage() {
 
   const blurb = { games: 'Metacritic and Steam', books: 'Goodreads', movies: 'IMDb, Metacritic, Rotten Tomatoes', shows: 'IMDb, Metacritic, Rotten Tomatoes' };
   const shelves = KINDS.map((k) => {
-    const fan = top(k, 3, (x) => POP[k](x) > 0, { strict: true }).map((x) => `<img src="${esc(imgUrl(k, x, true))}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.remove()">`).join('');
+    const fan = top(k, 3, (x) => POP[k](x) > 0, { strict: true }).map((x) => `<img src="${esc(smallImg(k, x))}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
     return `<a class="shelf" href="${PAGE[k]}" style="--k:var(--k-${k})"><div class="fan" aria-hidden="true">${fan}</div><h2>${LABEL[k]}</h2><p>${blurb[k]}</p></a>`;
   }).join('');
 
@@ -148,6 +164,7 @@ function fill(tpl, vars) {
 function page({ file, title, description, body, kind, current, scripts = '', head = '' }) {
   let html = fill(r('src/layout.html'), {
     build: BUILD, title: esc(title), description: esc(description), updated: UPDATED,
+    site: SITE, url: SITE + (file === 'index.html' ? '' : file),
     body, scripts, head,
     bodyAttrs: kind ? ` data-kind="${kind}" style="--k:var(--k-${kind})"` : '',
   });
@@ -231,14 +248,14 @@ self.addEventListener('fetch', function (e) {
     }));
     return;
   }
-  if (same) {
-    e.respondWith(caches.match(req).then(function (hit) { return hit || fetch(req); }));
+  if (same && /\\.woff2$/.test(url.pathname)) {
+    e.respondWith(caches.open(FONT).then(function (c) {
+      return c.match(req).then(function (hit) { return hit || fetch(req).then(function (res) { if (res.ok) c.put(req, res.clone()); return res; }); });
+    }));
     return;
   }
-  if (/fonts\\.(googleapis|gstatic)\\.com$/.test(url.hostname)) {
-    e.respondWith(caches.open(FONT).then(function (c) {
-      return c.match(req).then(function (hit) { return hit || fetch(req).then(function (res) { c.put(req, res.clone()); return res; }); });
-    }));
+  if (same) {
+    e.respondWith(caches.match(req).then(function (hit) { return hit || fetch(req); }));
     return;
   }
   if (req.destination === 'image') {
@@ -283,8 +300,10 @@ for (const k of KINDS) {
     body: fill(r('src/catalog.html'), {
       label: LABEL[k], placeholder: CAT[k].ph,
       sorts: SORTS[k].map(([v, l]) => `<option value="${v}">${l}</option>`).join(''),
+      ...firstScreen(k),
     }),
-    head: `<link rel="preload" href="data/${k}.json?v=${BUILD}" as="fetch" crossorigin>`,
+    // Low priority: the drawn cards and their posters come first, the full list behind them.
+    head: `<link rel="preload" href="data/${k}.json?v=${BUILD}" as="fetch" crossorigin fetchpriority="low">`,
     scripts: `<script>window.SHELF_TAXONOMY = ${JSON.stringify(TAXONOMY[k] || [])};</script>\n<script src="assets/catalog.js?v=${BUILD}" defer></script>`,
   });
 }
@@ -310,10 +329,9 @@ fs.copyFileSync(path.join(ROOT, 'manifest.webmanifest'), path.join(OUT, 'manifes
 
 const shell = ['./', 'index.html', ...KINDS.map((k) => PAGE[k]), 'backlog.html', '404.html',
   `assets/app.css?v=${BUILD}`, `assets/app.js?v=${BUILD}`, `assets/catalog.js?v=${BUILD}`,
-  `assets/backlog.js?v=${BUILD}`, `assets/whatnext.js?v=${BUILD}`, 'assets/icon.svg', 'manifest.webmanifest'];
+  `assets/backlog.js?v=${BUILD}`, `assets/whatnext.js?v=${BUILD}`, 'assets/icon.svg', 'assets/inter-latin.woff2', 'manifest.webmanifest'];
 fs.writeFileSync(path.join(OUT, 'sw.js'), serviceWorker(shell));
 
-const SITE = 'https://goodly58.github.io/media-shelf/';
 fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE}sitemap.xml\n`);
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   ['', ...KINDS.map((k) => PAGE[k]), 'backlog.html'].map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join('\n') + '\n</urlset>\n');

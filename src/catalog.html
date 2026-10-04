@@ -7,13 +7,24 @@
       <button class="btn" id="filtersBtn" type="button">{{icon:sliders}}Filters<span class="count" hidden>0</span></button>
     </div>
     <div class="chipbar">
-      <div class="chips" id="chips" role="group" aria-label="Genres"></div>
+      <div class="chips" id="chips" role="group" aria-label="Genres">{{chips}}</div>
       <button class="chip more" id="genresBtn" type="button" data-open="genres">{{icon:plus:sm}}More genres<span class="count" hidden>0</span></button>
     </div>
     <div class="active" id="active"></div>
   </header>
-  <div class="meta-line" id="meta" aria-live="polite"></div>
-  <div class="grid" id="grid"></div>
+  <div class="meta-line" id="meta" aria-live="polite">{{meta}}</div>
+  <div class="grid" id="grid">{{cards}}</div>
+  <script>
+  // The page is built with the default list drawn. A link with filters gets placeholders
+  // instead, until the data is in to draw its own list.
+  if (location.search) (function () {
+    var s = '';
+    for (var i = 0; i < 18; i++) s += '<div class="card skel"><div class="cover"></div><span class="card-t">&nbsp;</span><span class="card-m">&nbsp;</span></div>';
+    document.getElementById('grid').innerHTML = s;
+    document.getElementById('meta').style.visibility = 'hidden';
+    document.getElementById('chips').style.visibility = 'hidden';
+  })();
+  </script>
   <div class="sentinel" id="sentinel"></div>
 </main>
 

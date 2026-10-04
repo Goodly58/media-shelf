@@ -6,22 +6,38 @@
 <meta name="shelf-build" content="{{build}}">
 <title>{{title}}</title>
 <meta name="description" content="{{description}}">
+<link rel="canonical" href="{{url}}">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Shelf">
+<meta property="og:url" content="{{url}}">
 <meta property="og:title" content="{{title}}">
 <meta property="og:description" content="{{description}}">
+<meta property="og:image" content="{{site}}assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shelf: games, books, films and series, ranked">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#0a0c11">
+<link rel="icon" href="assets/icon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" href="assets/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://upload.wikimedia.org">
 <link rel="dns-prefetch" href="https://cdn.cloudflare.steamstatic.com">
 <link rel="dns-prefetch" href="https://static.tvmaze.com">
 <link rel="dns-prefetch" href="https://covers.openlibrary.org">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..900&display=swap">
 <script>
 (function(){try{var t=localStorage.getItem('shelf_theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
-window.Shelf={imgOn:function(e){if(e.naturalWidth<8){e.remove();return}e.classList.add('on')},imgFail:function(e){var s=e.getAttribute('data-steam');if(s&&e.src.indexOf('library_600x900')>0){e.src='https://cdn.cloudflare.steamstatic.com/steam/apps/'+s+'/header.jpg';e.parentNode.classList.add('wide-art');return}e.remove()}};
+// Image handlers live here rather than in app.js so they cover images that settle before it runs.
+window.Shelf={
+  // Open Library answers a missing cover with a 1x1 gif rather than a 404.
+  imgOn:function(e){if(e.naturalWidth<8){e.remove();return}e.classList.add('on')},
+  // Steam portrait art falls back to the store header, a Wikipedia thumbnail to the original file.
+  imgFail:function(e){var s=e.getAttribute('data-steam'),o=e.src.replace(/\/thumb(\/\w\/\w\w\/[^/]+)\/250px-[^/]+$/,'$1');
+    if(s&&e.src.indexOf('library_600x900')>0){e.src='https://cdn.cloudflare.steamstatic.com/steam/apps/'+s+'/header.jpg';e.parentNode.classList.add('wide-art');return}
+    if(o!==e.src){e.src=o;return}e.remove()}
+};
 </script>
 <link rel="stylesheet" href="assets/app.css?v={{build}}">
 {{head}}
