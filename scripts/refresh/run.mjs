@@ -12,7 +12,7 @@
    that fails is logged and skipped; it never blocks the others. */
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadCache, saveCache, readData, writeData, compact, log, CACHE } from './lib.mjs';
+import { loadCache, saveCache, readData, writeData, compact, log, traffic, CACHE } from './lib.mjs';
 import { loadImdb } from './imdb.mjs';
 import { resolveWikidata, resolveSteam } from './wikidata.mjs';
 import { crawlAll, gameScore } from './metacritic.mjs';
@@ -24,6 +24,7 @@ import { refreshBooks, refreshEditionCovers } from './books.mjs';
 import { resolveTvmaze } from './tvmaze.mjs';
 import { crawlGenreLists } from './goodreads-lists.mjs';
 import { mergeScreen, mergeGames, mergeBooks, slugify, articleMatches } from './merge.mjs';
+import { snapshot, assess, save as saveHealth } from './health.mjs';
 
 const arg = (name, dflt) => {
   const a = process.argv.find((x) => x.startsWith(`--${name}`));
@@ -34,11 +35,27 @@ const ONLY = arg('only', null);
 const MERGE_ONLY = arg('merge', false);
 const BUDGET = Number(arg('budget', 55));
 const want = (s) => !MERGE_ONLY && (!ONLY || ONLY.split(',').includes(s));
+// What each step did, for the health check (health.mjs) at the end.
+const RUN_START = Date.now();
+const SNAP = snapshot();
+const steps = [];
 const step = async (name, fn) => {
   if (!want(name)) return;
   const t = Date.now();
-  try { await fn(); log(`${name}: done in ${Math.round((Date.now() - t) / 1000)}s`); }
-  catch (e) { log(`${name}: FAILED (${e.message}), keeping previous data`); }
+  try {
+    await fn();
+    steps.push({ name, seconds: Math.round((Date.now() - t) / 1000) });
+    log(`${name}: done in ${Math.round((Date.now() - t) / 1000)}s`);
+  } catch (e) {
+    steps.push({ name, seconds: Math.round((Date.now() - t) / 1000), error: e.message });
+    log(`${name}: FAILED (${e.message}), keeping previous data`);
+  }
+};
+const health = (notes = []) => {
+  if (!steps.length) return;
+  const report = assess({ since: RUN_START, steps, snap: SNAP, traffic, notes });
+  saveHealth(report);
+  log(report.ok ? 'health: all sources fine' : `health: ${report.problems.join('; ')}`);
 };
 const MIN_VOTES = 10000;
 const MIN_STEAM_REVIEWS = 10000;
@@ -151,7 +168,7 @@ await step('gameart', async () => {
 });
 
 /* ------------------------------------------------------------------ merge */
-if (arg('no-merge', false)) { log('fetch only: data/ left as it was'); process.exit(0); }
+if (arg('no-merge', false)) { health(); log('fetch only: data/ left as it was'); process.exit(0); }
 const { movies, shows } = await mergeScreen(before.movies, before.shows);
 const games = mergeGames(before.games, { newApps: loadCache('steam-popular', []).filter((a) => a.reviews >= MIN_STEAM_REVIEWS) });
 const books = mergeBooks(before.books);
@@ -168,13 +185,16 @@ const report = [diff('games', before.games, games), diff('books', before.books, 
 
 // Never write a catalogue that shrank sharply: that is a source failing, not the world changing.
 const out = { games, books, movies, shows };
+const refused = [];
 for (const [k, rows] of Object.entries(out)) {
   if (before[k].length > 500 && rows.length < before[k].length * 0.8) {
     log(`${k}: refusing to shrink from ${before[k].length} to ${rows.length}; keeping the previous file`);
+    refused.push(`${k}: would have shrunk from ${before[k].length} to ${rows.length}, kept the previous file`);
     continue;
   }
   writeData(k, rows);
 }
+health(refused);
 
 const parts = report.filter((r) => r.added || r.changed || r.removed)
   .map((r) => `${r.kind} ${[r.added && `+${r.added}`, r.changed && `${r.changed} updated`, r.removed && `-${r.removed}`].filter(Boolean).join(' ')}`);

@@ -76,9 +76,11 @@ export async function refreshBooks(books, { budgetMin = 60, maxAgeDays = 45, olO
   const stale = Date.now() - maxAgeDays * 864e5;
   const deadline = Date.now() + budgetMin * 60e3;
   const key = (b) => fold(b.title) + '|' + fold(b.author || '');
-  let n = 0, ok = 0;
+  let n = 0, ok = 0, failed = 0, streak = 0;
   for (const b of books) {
     if (Date.now() > deadline) break;
+    // Twenty books in a row with every request failing: Goodreads is down or blocking, so stop.
+    if (streak >= 20) { log('books: Goodreads keeps failing; stopping early'); break; }
     const k = key(b);
     // Fresh and complete (a rating with its genre shelves, or a confirmed miss): nothing to do.
     if (gr[k] && gr[k].at > stale && (gr[k].none || gr[k].genres)) continue;
@@ -87,22 +89,26 @@ export async function refreshBooks(books, { budgetMin = 60, maxAgeDays = 45, olO
       try { ol[k] = { ...(await openLibrary(b)), at: Date.now() }; } catch (e) { log(`openlibrary ${b.title}: ${e.message}`); }
     }
     const isbns = [...new Set([b.isbn, ...(ol[k]?.isbns || [])].filter(Boolean))].slice(0, 4);
-    let hit = null;
+    let hit = null, errors = 0, answers = 0;
     // A known Goodreads id is exact; ISBNs are the fallback.
     if (b.gr) {
-      try { const r = await goodreadsById(b.gr); if (r) hit = { ...r, isbn: r.isbn || b.isbn || null }; } catch (e) { log(`goodreads ${b.gr}: ${e.message}`); }
+      try { const r = await goodreadsById(b.gr); answers++; if (r) hit = { ...r, isbn: r.isbn || b.isbn || null }; } catch (e) { errors++; log(`goodreads ${b.gr}: ${e.message}`); }
     }
     for (const isbn of hit ? [] : isbns) {
       let r;
-      try { r = await goodreadsByIsbn(isbn); } catch (e) { log(`goodreads ${isbn}: ${e.message}`); continue; }
+      try { r = await goodreadsByIsbn(isbn); answers++; } catch (e) { errors++; log(`goodreads ${isbn}: ${e.message}`); continue; }
       if (r && titleMatch(r.title, b.title) && authorMatch(r.author, b.author)) { hit = { ...r, isbn }; break; }
     }
+    n++;
+    // Requests that failed outright say nothing about the book: leave its entry and try again next run.
+    if (!hit && errors && !answers) { failed++; streak++; continue; }
+    streak = 0;
     gr[k] = hit ? { ...hit, at: Date.now() } : { none: true, at: Date.now() };
-    n++; if (hit) ok++;
-    if (n % 25 === 0) { saveCache('openlibrary', ol); saveCache('goodreads', gr); log(`books: ${n} checked, ${ok} verified`); }
+    if (hit) ok++;
+    if (n % 25 === 0) { saveCache('openlibrary', ol); saveCache('goodreads', gr); log(`books: ${n} checked, ${ok} verified, ${failed} failed`); }
   }
   saveCache('openlibrary', ol); saveCache('goodreads', gr);
-  log(`books: ${n} checked, ${ok} verified`);
+  log(`books: ${n} checked, ${ok} verified, ${failed} failed`);
   return { ol, gr, key };
 }
 

@@ -3,6 +3,7 @@
 import { slugify, broadGenres, articleMatches, classifyGame, bookGenre } from '../scripts/refresh/merge.mjs';
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
+import { assess } from '../scripts/refresh/health.mjs';
 
 let pass = 0, fail = 0;
 function ok(label, cond, detail) {
@@ -65,6 +66,23 @@ console.log('book genres');
 ok('subjects overrule an off-topic list', bookGenre('Travel & Food', ['Fantasy fiction', 'Magic', 'Wizards', 'Juvenile fiction']) === 'Fantasy');
 ok('a supported list genre stands', bookGenre('Romance', ['Love stories', 'Fiction, romance, contemporary']) === 'Romance');
 ok('no subjects keeps the list genre', bookGenre('Horror', []) === 'Horror');
+
+console.log('source health');
+const now = Date.now(), old = now - 9e9;
+const fake = (caches) => (name, dflt) => caches[name] ?? dflt;
+const entries = (n, hits, at = now) => Object.fromEntries([...Array(n)].map((_, i) => [i, i < hits ? { score: 80, at } : { none: true, at }]));
+const run = (steps, caches, snap, notes, traffic) => assess({ since: now - 1000, steps: steps.map((name) => (typeof name === 'string' ? { name, seconds: 1 } : name)), snap, notes, traffic, load: fake(caches) });
+ok('a source answering as usual is fine', run(['rt'], { rt: entries(100, 88) }).ok);
+ok('a quiet week with nothing due is fine', run(['steam'], { 'steam-tags': entries(100, 90, old) }).ok);
+ok('a site failing most requests is a problem', /rottentomatoes/.test(run(['rt'], { rt: {} }, {}, [], { 'www.rottentomatoes.com': { ok: 3, failed: 120 } }).problems.join()));
+ok('a few failed requests are not', run(['rt'], { rt: entries(100, 88) }, {}, [], { 'www.rottentomatoes.com': { ok: 900, failed: 12 } }).ok);
+ok('a sharp drop in answers is a problem', /Rotten Tomatoes/.test(run(['rt'], { rt: entries(100, 30) }).problems.join()));
+ok('a small sample is not judged', run(['rt'], { rt: entries(10, 1) }).ok);
+ok('Metacritic games answering a fifth of the time is normal', run(['gamesmc'], { 'mc-games': entries(60, 12) }).ok);
+ok('a source whose step did not run is not judged', run(['rt'], { rt: entries(100, 88), 'steam-reviews': {} }).rows.length === 1);
+ok('a failed step is a problem', /rt: failed/.test(run([{ name: 'rt', seconds: 1, error: 'timeout' }], { rt: entries(100, 88) }).problems.join()));
+ok('a crawl that shrank is a problem', /shrank/.test(run(['metacritic'], { 'mc-movies': new Array(5000), 'mc-tv': new Array(3300) }, { 'mc-movies': 17000, 'mc-tv': 3300 }).problems.join()));
+ok('notes from the run are problems', !run(['rt'], { rt: entries(100, 88) }, {}, ['books: would have shrunk']).ok);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

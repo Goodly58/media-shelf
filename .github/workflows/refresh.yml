@@ -11,7 +11,18 @@ name: Refresh data
 on:
   schedule:
     - cron: '0 4 * * 1'   # Mondays, 04:00 UTC
+  # A manual run can be limited to some steps with a longer budget, for a catch-up
+  # such as fetching every book's Goodreads shelves in one go.
   workflow_dispatch:
+    inputs:
+      only:
+        description: 'Steps to run, comma-separated (blank for all), e.g. books'
+        required: false
+        default: ''
+      budget:
+        description: 'Minutes per slow step'
+        required: false
+        default: '55'
 
 permissions:
   contents: write
@@ -39,7 +50,10 @@ jobs:
           restore-keys: refresh-
 
       - name: Refresh from sources
-        run: node scripts/refresh/run.mjs --budget=55
+        env:
+          ONLY: ${{ inputs.only }}
+          BUDGET: ${{ inputs.budget }}
+        run: node scripts/refresh/run.mjs --budget="${BUDGET:-55}" ${ONLY:+--only="$ONLY"}
 
       - name: Save fetch caches
         if: always()
@@ -59,4 +73,11 @@ jobs:
             exit 0
           fi
           git -c user.name=goodly2018 -c user.email=goodly2018@gmail.com commit -m "$(cat .cache/summary.txt)"
+          # The run takes hours; code pushed meanwhile is replayed under the data, not lost.
+          git -c user.name=goodly2018 -c user.email=goodly2018@gmail.com pull --rebase origin main
           git push
+
+      # Healthy sources are committed above either way. This step then fails the run
+      # (and GitHub emails the owner) if any source broke, checked nothing or shrank.
+      - name: Check sources
+        run: node scripts/refresh/health.mjs

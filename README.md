@@ -37,6 +37,11 @@ A GitHub Action runs the pipeline every Monday, commits the changes as data, and
 redeploys. The slow sources are re-checked a slice at a time, oldest first, so
 the whole catalogue is re-verified every few weeks.
 
+A source that breaks is skipped so the rest still update, and the run then fails
+on purpose so GitHub emails the owner: `scripts/refresh/health.mjs` flags a site
+failing most of its requests, a source answering far less often than usual, and
+a crawl or catalogue that shrank sharply. Each run's table is in its summary.
+
 ## Working locally
 
 Node 22.12 or newer, no dependencies to install.
@@ -65,13 +70,14 @@ validation fails, nothing is published and the previous site stays live.
 
 ```
 src/              page templates (layout, home, catalogue, What next)
-assets/           app.css, app.js (shared), catalog.js, whatnext.js, backlog.js
+assets/           app.css, app.js (shared, also run by the build), catalog.js,
+                  whatnext.js, backlog.js, the Inter font, icons, og.png
 data/             games.json  books.json  movies.json  shows.json
 scripts/
-  build.js        templates + data -> _site/
+  build.js        templates + data -> _site/, each catalogue's first screen pre-drawn
   validate.js     pre-publish checks
   refresh/        the data pipeline, one module per source
-tests/            backlog matcher tests
+tests/            unit tests
 ```
 
 ## Licence

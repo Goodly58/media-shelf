@@ -32,12 +32,20 @@ export class HttpError extends Error {
   constructor(status, url) { super(`HTTP ${status} ${url}`); this.status = status; }
 }
 
+/** Requests per host this run, answered (a clean 404 counts) or failed, for the health check. */
+export const traffic = {};
+
 /**
  * GET with pacing, retries and backoff. Returns null on 404/410.
  * type: 'json' | 'text' | 'response'
  */
-export async function get(url, { type = 'json', paceMs = 1000, retries = 4, timeout = 45000, headers = {}, method = 'GET', body } = {}) {
+export async function get(url, opts = {}) {
   const host = new URL(url).host;
+  const t = traffic[host] || (traffic[host] = { ok: 0, failed: 0 });
+  try { const r = await withRetries(url, host, opts); t.ok++; return r; }
+  catch (e) { t.failed++; throw e; }
+}
+async function withRetries(url, host, { type = 'json', paceMs = 1000, retries = 4, timeout = 45000, headers = {}, method = 'GET', body } = {}) {
   let lastErr;
   for (let attempt = 0; attempt <= retries; attempt++) {
     await pace(host, paceMs);
