@@ -62,7 +62,7 @@ await Promise.all([
     await resolveImages(selected().map((t) => ({ key: t.id, wiki: wd[t.id]?.wiki })).filter((x) => x.wiki), { cacheName: 'images' });
   }),
   step('tvmaze', async () => {
-    await resolveTvmaze(selected().filter((t) => t.kind === 'shows').map((t) => t.id), { budgetMin: 20 });
+    await resolveTvmaze(selected().filter((t) => t.kind === 'shows').map((t) => t.id), { budgetMin: Math.min(20, BUDGET) });
   }),
   step('steamlist', async () => {
     // New popular games: SteamSpy's listing, then the store says whether each is a released game.

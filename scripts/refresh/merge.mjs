@@ -141,8 +141,11 @@ export async function mergeScreen(prevMovies, prevShows) {
       year: t.year,
       runtime: t.runtime,
       // Without a Wikidata answer this run, keep what the last run derived from it.
-      genres: known ? [...new Set([...t.genres, ...broadGenres(w.genres)])].filter((g) => g !== 'Short' && g !== 'News').slice(0, 4)
-        : [...new Set([...t.genres, ...(o.genres || [])])].slice(0, 4),
+      // IMDb's genres are curated; Wikidata over-tags (it files Memento as horror). So
+      // Wikidata only fills in where IMDb gives a single genre, and adds at most two.
+      genres: (t.genres.length > 1 ? t.genres
+        : known ? [...new Set([...t.genres, ...broadGenres(w.genres).slice(0, 2)])]
+        : [...new Set([...t.genres, ...(o.genres || [])])]).filter((g) => g !== 'Short' && g !== 'News').slice(0, 3),
       tags: known ? [...new Set((w.genres || []).map(cleanTag).filter(Boolean))] : (o.tags || []),
       by: (t.kind === 'movies' ? (t.directors || []).slice(0, 2).join(', ')
         : known && w.creators && w.creators.length ? w.creators.slice(0, 2).join(', ') : (o.by || (t.directors || []).slice(0, 2).join(', '))) || null,
