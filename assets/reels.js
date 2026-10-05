@@ -64,11 +64,17 @@
     if (r.by) b.push(r.by.split(',')[0]);
     return b.filter(Boolean).map(esc).join(' · ');
   }
+  function score(href, value, label, count) {
+    return '<a href="' + esc(href) + '" target="_blank" rel="noopener"><b>' + value + '</b>' + label + (count ? '<small>' + count + '</small>' : '') + '</a>';
+  }
+  function plural(n, one) { return S.compact(n) + ' ' + one + (n === 1 ? '' : 's'); }
   function scores(r) {
     var s = [];
-    if (r.imdb != null) s.push('<span><b>' + r.imdb.toFixed(1) + '</b>IMDb</span>');
-    if (r.mc != null) s.push('<span><b>' + r.mc + '</b>Metascore</span>');
-    if (r.rt != null) s.push('<span><b>' + r.rt + '%</b>Rotten Tomatoes</span>');
+    if (r.imdb != null) s.push(score('https://www.imdb.com/title/' + r.id + '/', r.imdb.toFixed(1), 'IMDb', r.votes ? plural(r.votes, 'vote') : ''));
+    if (r.mc != null) s.push(score('https://www.metacritic.com/' + (kind === 'movies' ? 'movie' : 'tv') + '/' + (r.mcSlug || '') + '/', r.mc, 'Metascore', r.mcN ? plural(r.mcN, 'critic') : ''));
+    if (r.rt != null) s.push(score('https://www.rottentomatoes.com/' + (r.rtPath || ''), r.rt + '%', 'Rotten Tomatoes', r.rtN ? plural(r.rtN, 'review') : ''));
+    // A page with too few critics for a Tomatometer says so, rather than the score just being absent.
+    else if (r.rtN != null && r.rtPath) s.push(score('https://www.rottentomatoes.com/' + r.rtPath, '–', 'Rotten Tomatoes', plural(r.rtN, 'review') + (r.rtN < 5 ? ', too few to score' : ', no score yet')));
     return s.join('');
   }
   function soundLabel() { return icon(muted ? 'mute' : 'sound', 'sm') + '<span>' + (muted ? 'Sound off' : 'Sound on') + '</span>'; }
@@ -135,7 +141,7 @@
     if (bg.getAttribute('data-bg')) bg.style.backgroundImage = 'url("' + bg.getAttribute('data-bg') + '")';
     pl.style.backgroundImage = 'url("' + pl.getAttribute('data-thumb') + '")';
   }
-  function setActive(i) {
+  function setActive(i, now) {
     if (i === active || !list[i]) return;
     active = i;
     for (var j = i - 1; j <= i + 2; j++) paint(j);
@@ -144,8 +150,9 @@
       if (k < i - 1 || k > i + 1) destroy(k); else if (k !== i) pause(k);
     });
     clearTimeout(timers.start);
-    // A short wait, so swiping quickly past a trailer does not start it.
-    timers.start = setTimeout(function () { if (active === i) start(i); }, 180);
+    // A short wait, so swiping quickly past a trailer does not start it; none for the first.
+    if (now) start(i);
+    else timers.start = setTimeout(function () { if (active === i) start(i); }, 180);
     if (rendered - i < 8 && rendered < list.length) more();
   }
   function next(step) {
@@ -162,7 +169,7 @@
     track.scrollTop = 0;
     empty.hidden = list.length > 0;
     counts();
-    if (list.length) more();
+    if (list.length) { more(); setActive(0, true); }
   }
 
   /* ------------------------------------------------------------ YouTube */
@@ -180,65 +187,86 @@
     return api;
   }
   function slot(i) { var el = slideAt(i); return el && el.querySelector('.reel-player'); }
+  function embed(yt, autoplay) {
+    return 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(yt) + '?autoplay=' + (autoplay ? 1 : 0) + '&mute=' + (muted ? 1 : 0) +
+      '&playsinline=1&rel=0&iv_load_policy=3&enablejsapi=1&origin=' + encodeURIComponent(location.origin);
+  }
 
+  /* A player's frame goes in at once and starts loading (and, for the trailer on screen,
+     playing) by itself. YouTube's API, which may still be on its way, takes hold of the
+     frame when it arrives, to pause, mute and follow it. Each entry: { f: frame, p: player,
+     ready, auto: started playing by itself }. */
   function create(i, autoplay) {
-    if (players[i] || !list[i]) return;
-    players[i] = { pending: true };
+    var box = slot(i);
+    if (players[i] || !list[i] || !box || box.classList.contains('gone')) return;
+    var f = document.createElement('iframe');
+    f.src = embed(list[i].yt, autoplay);
+    f.title = 'Trailer: ' + list[i].title;
+    f.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
+    f.setAttribute('allowfullscreen', '');
+    f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    var old = box.querySelector('.reel-slot');
+    if (old) box.replaceChild(f, old); else box.appendChild(f);
+    var e = players[i] = { f: f, p: null, ready: false, auto: Boolean(autoplay) };
     loadApi().then(function (YT) {
-      var box = slot(i);
-      if (!box || !players[i] || !players[i].pending) return;
-      var p = new YT.Player(box.querySelector('.reel-slot'), {
-        host: 'https://www.youtube-nocookie.com',
-        videoId: list[i].yt, width: '100%', height: '100%',
-        playerVars: { autoplay: autoplay ? 1 : 0, mute: muted ? 1 : 0, playsinline: 1, rel: 0, iv_load_policy: 3, origin: location.origin },
+      if (players[i] !== e) return;
+      e.p = new YT.Player(f, {
         events: {
-          onReady: function (e) {
-            p.ready = true;
-            var f = e.target.getIframe && e.target.getIframe();
-            if (f) f.title = 'Trailer: ' + list[i].title;
-            if (i === active && !blocked && !reduce) { sound(e.target); e.target.playVideo(); watch(i); cueNext(i); }
+          onReady: function () {
+            e.ready = true;
+            if (i === active && !blocked && !reduce) { sound(e); e.p.playVideo(); watch(i); cueNext(i); }
+            else if (e.auto) e.p.pauseVideo();
           },
-          onStateChange: function (e) {
+          onStateChange: function (ev) {
             if (i !== active) return;
-            if (e.data === YT.PlayerState.PLAYING) {
+            if (ev.data === YT.PlayerState.PLAYING) {
               clearTimeout(timers.check);
               clearTimeout(timers.seen);
               timers.seen = setTimeout(function () { if (i === active) markSeen(list[i].id); }, 3000);
-            } else if (e.data === YT.PlayerState.ENDED) next();
+            } else if (ev.data === YT.PlayerState.ENDED) next();
           },
           onError: function () { gone(i); },
         },
       });
-      players[i] = p;
-    }, function () { offline(i); });
+    }, function () {});
   }
   // Browsers may refuse to start a trailer with sound before a tap: if it never started
   // at all (still unstarted or cued, so not an ad or buffering), fall back to muted.
   function watch(i) {
     clearTimeout(timers.check);
     timers.check = setTimeout(function () {
-      var p = players[i];
-      if (i !== active || !p || !p.ready || muted) return;
-      var st = p.getPlayerState();
-      if (st === -1 || st === 5) { muted = true; sound(p); p.playVideo(); labels(); }
+      var e = players[i];
+      if (i !== active || !e || !e.ready || muted) return;
+      var st = e.p.getPlayerState();
+      if (st === -1 || st === 5) { muted = true; sound(e); e.p.playVideo(); labels(); }
     }, 3500);
   }
-  function sound(p) {
-    if (!p || !p.ready) return;
-    if (muted) p.mute(); else { p.unMute(); p.setVolume(100); }
+  function sound(e) {
+    if (!e || !e.ready) return;
+    if (muted) e.p.mute(); else { e.p.unMute(); e.p.setVolume(100); }
   }
   function start(i) {
     if (blocked) return;
-    var p = players[i];
-    if (!p) { create(i, !reduce); return; }
-    if (p.ready) { sound(p); if (!reduce) { p.playVideo(); watch(i); } cueNext(i); }
+    var e = players[i];
+    if (!e) { create(i, !reduce); return; }
+    if (e.ready) { sound(e); if (!reduce) { e.p.playVideo(); watch(i); } cueNext(i); }
   }
   function cueNext(i) { if (list[i + 1] && !players[i + 1]) create(i + 1, false); }
-  function pause(i) { var p = players[i]; if (p && p.ready && p.getPlayerState() === 1) p.pauseVideo(); }
+  // A frame that started by itself and that the API has not reached yet cannot be paused,
+  // so it goes: never two trailers playing at once.
+  function pause(i) {
+    var e = players[i];
+    if (!e) return;
+    if (e.ready) { if (e.p.getPlayerState() === 1) e.p.pauseVideo(); }
+    else if (e.auto) destroy(i);
+  }
   function destroy(i) {
-    var p = players[i];
+    var e = players[i];
     delete players[i];
-    if (p && p.destroy) { try { p.destroy(); } catch (e) {} }
+    if (e) {
+      if (e.p && e.p.destroy) { try { e.p.destroy(); } catch (x) {} }
+      if (e.f && e.f.parentNode) e.f.parentNode.removeChild(e.f);
+    }
     var box = slot(i);
     if (box && !box.querySelector('.reel-slot') && !box.classList.contains('gone')) box.insertAdjacentHTML('afterbegin', '<div class="reel-slot"></div>');
   }
@@ -251,15 +279,9 @@
     }
     if (i === active) setTimeout(function () { if (i === active) next(); }, 1500);
   }
-  function offline(i) {
-    delete players[i];
-    var box = slot(i);
-    if (box && !box.classList.contains('gone')) {
-      box.classList.add('gone');
-      box.innerHTML = '<p>YouTube did not load. <a href="https://www.youtube.com/watch?v=' + esc(list[i].yt) + '" target="_blank" rel="noopener">Watch on YouTube</a></p>';
-    }
-  }
   function labels() { dlg.querySelectorAll('[data-reel-sound]').forEach(function (b) { b.innerHTML = soundLabel(); b.setAttribute('aria-pressed', String(!muted)); }); }
+
+  loadApi().catch(function () {});
 
   /* ------------------------------------------------------------ panels over the feed */
   // Genres, filters and details open on top of the feed: the trailer waits until they close.
@@ -300,8 +322,8 @@
       if (t.closest('[data-reel-next]')) { next(); return; }
       if (t.closest('[data-reel-sound]')) {
         muted = !muted; labels();
-        var p = players[active];
-        if (p && p.ready) { sound(p); if (p.getPlayerState() !== 1 && !blocked) p.playVideo(); }
+        var cur = players[active];
+        if (cur && cur.ready) { sound(cur); if (cur.p.getPlayerState() !== 1 && !blocked) cur.p.playVideo(); }
         return;
       }
       var d = t.closest('[data-reel-detail]');
@@ -326,7 +348,6 @@
     if (!dlg) build();
     document.documentElement.classList.add('reels-open');
     if (!dlg.open) { dlg.showModal(); dlg.focus(); }
-    loadApi().catch(function () {});
     refresh(opts.start);
   }
   // quiet: the page is already closing it (Back was pressed), so do not tell it again.

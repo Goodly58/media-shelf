@@ -144,8 +144,6 @@
       // Panels opened while the data was on its way.
       if (genresDlg.open) layoutPicker();
       if (filtersDlg.open) openFilters();
-      var rb = $('#reelsBtn');
-      if (rb) rb.hidden = !items.some(function (r) { return r.yt; });
       if (state.view === 'trailers') openReels();
     }).catch(function () {
       grid.innerHTML = '<div class="empty"><h2>Could not load the catalogue</h2><p>Check your connection and reload.</p></div>';
@@ -496,6 +494,8 @@
       if (r.imdb != null) h.push(scoreBlock(r.imdb.toFixed(1), 'plain', 'IMDb', S.compact(r.votes) + ' votes', 'https://www.imdb.com/title/' + r.id + '/'));
       if (r.mc != null) h.push(scoreBlock(r.mc, S.tone(r.mc), 'Metascore', (r.mcN ? r.mcN + ' critics' : 'Metacritic'), r.mcSlug ? 'https://www.metacritic.com/' + (kind === 'movies' ? 'movie' : 'tv') + '/' + r.mcSlug + '/' : null));
       if (r.rt != null) h.push(scoreBlock(r.rt + '%', r.rt >= 60 ? 'good' : 'bad', 'Rotten Tomatoes', (r.rtN ? r.rtN + ' reviews' : 'Tomatometer'), r.rtPath ? 'https://www.rottentomatoes.com/' + r.rtPath : null));
+      // Too few critics for a Tomatometer: say so rather than leave a gap.
+      else if (r.rtN != null && r.rtPath) h.push(scoreBlock('–', 'plain', 'Rotten Tomatoes', r.rtN + (r.rtN === 1 ? ' review' : ' reviews') + (r.rtN < 5 ? ', too few to score' : ', no score yet'), 'https://www.rottentomatoes.com/' + r.rtPath));
     } else if (kind === 'games') {
       if (r.mc != null) h.push(scoreBlock(r.mc, S.tone(r.mc), 'Metascore', (r.mcN ? r.mcN + ' critics' : 'Metacritic'), r.mcSlug ? 'https://www.metacritic.com/game/' + r.mcSlug + '/' : null));
       if (r.steam != null) h.push(scoreBlock(r.steam + '%', S.tone(r.steam), 'Steam reviews', S.compact(r.steamN) + ' reviews', r.steamId ? 'https://store.steampowered.com/app/' + r.steamId + '/' : null));
@@ -684,7 +684,7 @@
     if (ct) { toggleIn(state.country, ct.getAttribute('data-country')); apply(true); return; }
     if (t.closest('[data-more-countries]')) { allCountries = true; openFilters(); return; }
     if (t.closest('#filtersBtn')) { openFilters(); return; }
-    if (t.closest('#reelsBtn')) { openReels(null, true); return; }
+    if (t.closest('[data-trailers]') && (kind === 'movies' || kind === 'shows') && loaded) { e.preventDefault(); openReels(null, true); return; }
     if (t.closest('#trailerBtn') && current) {
       var tid = current.id;
       detailDlg.close();
@@ -822,5 +822,9 @@
     closeReels: closeReels,
   };
   chipFade();   // the chip row the page was built with may already overflow
+  if (kind === 'movies' || kind === 'shows') {
+    document.addEventListener('shelf:trailers', function () { loadReels().catch(function () {}); });
+    if (state.view === 'trailers') S.warmTrailers();
+  }
   load();
 })();

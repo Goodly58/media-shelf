@@ -492,7 +492,7 @@ a.bl-t:hover { text-decoration: underline; }
    a YouTube player: the bar sits above the feed, the details above and below the video. */
 .kinds a.trailers { background: var(--text); color: var(--bg); border-color: var(--text); }
 .kinds a.trailers .i { fill: currentColor; stroke: none; }
-#reelsBtn .i, #trailerBtn .i { fill: currentColor; stroke: none; }
+#trailerBtn .i { fill: currentColor; stroke: none; }
 html.reels-open { overflow: hidden; }
 dialog.reels {
   position: fixed; inset: 0; width: 100%; height: 100%; height: 100dvh; max-width: none; max-height: none;
@@ -557,3 +557,14 @@ dialog.reels::backdrop { background: #05060a; }
 /* TMDB credit in the footer, shown only while TMDB supplies trailers */
 .foot .tmdb { display: inline-flex; align-items: center; gap: 8px; color: var(--mut-2); font-size: 12.5px; }
 .foot .tmdb img { height: 12px; width: auto; }
+
+/* Trailers tab: set apart from the shelves (Games, Books, Films, Series) as its own thing */
+.trailers-tab {
+  display: inline-flex; align-items: center; gap: 7px; height: 38px; padding: 0 15px 0 13px; border-radius: 999px;
+  background: var(--text); color: var(--bg); font-weight: 650; font-size: 14px; flex: none; transition: opacity .15s;
+}
+.trailers-tab:hover { opacity: .88; }
+.trailers-tab .i { fill: currentColor; stroke: none; }
+.reel-scores a { display: inline-flex; align-items: baseline; gap: 0; color: rgba(255, 255, 255, .72); }
+.reel-scores a:hover { color: #fff; }
+.reel-scores small { margin-left: 6px; font-size: 12px; color: rgba(255, 255, 255, .5); }

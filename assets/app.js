@@ -254,6 +254,26 @@
     if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !typing)) { e.preventDefault(); openSearch(); }
   });
 
+  /* ------------------------------------------------------------ trailers */
+  // A pointer over (or a finger on) a way into the trailers is a hint: connect to YouTube
+  // now, and let the page fetch the feed itself, so the first trailer starts sooner.
+  var warmed = false;
+  function warmTrailers() {
+    if (warmed) return;
+    warmed = true;
+    ['https://www.youtube-nocookie.com', 'https://www.youtube.com', 'https://i.ytimg.com'].forEach(function (h) {
+      var l = document.createElement('link');
+      l.rel = 'preconnect'; l.href = h;
+      document.head.appendChild(l);
+    });
+    document.dispatchEvent(new CustomEvent('shelf:trailers'));
+  }
+  ['pointerover', 'touchstart', 'focusin'].forEach(function (type) {
+    document.addEventListener(type, function (e) {
+      if (!warmed && e.target.closest && e.target.closest('[data-trailers], #trailerBtn')) warmTrailers();
+    }, { passive: true });
+  });
+
   /* ------------------------------------------------------ service worker */
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     window.addEventListener('load', function () {
@@ -266,7 +286,7 @@
   var api = {
     icon: icon, esc: esc, compact: compact, KINDS: KINDS, METRICS: METRICS, tone: tone,
     imgUrl: imgUrl, coverHTML: coverHTML, cardHTML: cardHTML,
-    Favs: Favs, toast: toast, openSearch: openSearch, fold: fold,
+    Favs: Favs, toast: toast, openSearch: openSearch, fold: fold, warmTrailers: warmTrailers,
   };
   for (var k in api) S[k] = api[k];
 })();
