@@ -54,6 +54,8 @@ jobs:
         env:
           ONLY: ${{ github.event.schedule == '30 4 * * 0,2-6' && 'trailers' || inputs.only }}
           BUDGET: ${{ inputs.budget }}
+          # Optional: with this secret set, TMDB supplies trailers for nearly every title.
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: node scripts/refresh/run.mjs --budget="${BUDGET:-55}" ${ONLY:+--only="$ONLY"}
 
       - name: Save fetch caches

@@ -70,9 +70,9 @@ ok('no subjects keeps the list genre', bookGenre('Horror', []) === 'Horror');
 
 console.log('trailers');
 const wd = { tt1: { c: [['aaaaaaaaaaa', '', ''], ['bbbbbbbbbbb', 'trailer', 'English']], at: 1 }, tt2: { c: [['ccccccccccc', '', '']], at: 1 }, tt3: { c: [], at: 1 } };
-const check = { aaaaaaaaaaa: { ok: true, title: 'Full film' }, bbbbbbbbbbb: { ok: true, title: 'Clip' }, ccccccccccc: { ok: true, title: 'Official Trailer' }, ddddddddddd: { ok: false } };
+const check = { aaaaaaaaaaa: { ok: true, title: 'The Godfather' }, bbbbbbbbbbb: { ok: true, title: 'Clip' }, ccccccccccc: { ok: true, title: 'Casablanca' }, ddddddddddd: { ok: false } };
 ok('a marked Wikidata trailer is chosen', pickTrailer('tt1', { wd, check }) === 'bbbbbbbbbbb');
-ok('an unmarked id counts when its title says trailer', pickTrailer('tt2', { wd, check }) === 'ccccccccccc');
+ok('an unmarked id (the paid film listing) is not a trailer', pickTrailer('tt2', { wd, check }) === null);
 ok('a title no source has seen is undecided', pickTrailer('tt9', { wd, check }) === undefined);
 ok('a title the sources know has none', pickTrailer('tt3', { wd, check }) === null);
 ok('an official trailer wins over Wikidata', pickTrailer('tt1', { wd, check, kino: { tt1: { yt: 'eeeeeeeeeee' } } }) === 'eeeeeeeeeee');

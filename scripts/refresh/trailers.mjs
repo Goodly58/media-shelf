@@ -4,9 +4,9 @@
    - TMDB, only when TMDB_API_KEY is set: official trailers for nearly every title.
    - KinoCheck (api.kinocheck.com, free, 1,000 requests a day): official trailers,
      strongest for recent films and for series.
-   - Wikidata (property P1651): YouTube ids recorded on a title's item, strongest for
-     classics. A statement marked as a trailer or teaser counts as one; an unmarked id
-     counts only if the video's own title says it is a trailer.
+   - Wikidata (property P1651): YouTube ids recorded on a title's item, used only when
+     the statement is marked as a trailer or teaser. Unmarked ids are nearly always
+     YouTube's paid listing of the whole film (titled just "The Godfather"), not a trailer.
 
    Every id is checked with YouTube's oEmbed endpoint, which answers only for public,
    embeddable videos, so a removed or locked trailer is dropped. Official trailers are
@@ -16,15 +16,14 @@ import { get, log, loadCache, saveCache } from './lib.mjs';
 
 const SPARQL = 'https://query.wikidata.org/sparql';
 const TRAILER_ROLE = /trailer|teaser/i;
-const TRAILER_TITLE = /trailer|teaser|tr[aá]iler|bande[- ]annonce/i;
 const YT_ID = /^[\w-]{11}$/;
 const DAY = 864e5;
 
 /* ----------------------------------------------------------- the choice */
 
-/** Wikidata candidates for a title, best first: marked trailers, then English, then the rest. */
+/** A title's Wikidata trailers (statements marked as one), English first. */
 function rankWikidata(c) {
-  return (c || []).slice().sort((a, b) => (TRAILER_ROLE.test(b[1] || '') - TRAILER_ROLE.test(a[1] || '')) || ((b[2] === 'English') - (a[2] === 'English')));
+  return (c || []).filter((x) => TRAILER_ROLE.test(x[1] || '')).sort((a, b) => (b[2] === 'English') - (a[2] === 'English'));
 }
 
 /**
@@ -36,11 +35,8 @@ export function pickTrailer(id, { tmdb = {}, kino = {}, wd = {}, check = {} }) {
   if (!known) return undefined;
   const dead = (yt) => check[yt] && check[yt].ok === false;
   for (const src of [tmdb[id], kino[id]]) if (src && src.yt && !dead(src.yt)) return src.yt;
-  for (const [yt, role] of rankWikidata(wd[id] && wd[id].c)) {
-    const c = check[yt];
-    if (!c || !c.ok) continue;
-    if (role ? TRAILER_ROLE.test(role) : TRAILER_TITLE.test(c.title || '')) return yt;
-  }
+  // Wikidata's ids wait for YouTube to confirm they still play.
+  for (const [yt] of rankWikidata(wd[id] && wd[id].c)) if (check[yt] && check[yt].ok) return yt;
   return null;
 }
 

@@ -24,8 +24,9 @@ used under CC BY-SA 4.0 (<https://www.tvmaze.com>).
 **Trailers**: YouTube videos, played in YouTube's own embedded player in its
 privacy-enhanced mode (youtube-nocookie.com) and only when the trailer feed is
 opened. Which video belongs to which title comes from the KinoCheck API
-(<https://api.kinocheck.com>) and Wikidata. The videos remain the property of their
-owners.
+(<https://api.kinocheck.com>) and Wikidata, and from TMDB when the refresh has a key
+for it: this product uses the TMDB API but is not endorsed or certified by TMDB. The
+videos remain the property of their owners.
 
 **Summaries**: fetched from Wikipedia when a title is opened, under CC BY-SA 4.0,
 and linked back to the article.
