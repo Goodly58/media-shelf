@@ -280,6 +280,9 @@
     dlg = document.createElement('dialog');
     dlg.className = 'reels';
     dlg.setAttribute('aria-label', 'Trailers');
+    // Opening focuses the feed itself rather than its first button, so no focus ring
+    // appears unprompted; Tab still reaches every control.
+    dlg.tabIndex = -1;
     dlg.innerHTML = bar() + '<div class="reels-track" id="reelsTrack"></div>' +
       '<div class="reels-empty" hidden><h2>No trailers here</h2><p>None of these ' + S.KINDS[kind].many + ' has a trailer yet. Try other filters.</p><p><button class="btn sm" type="button" data-reset>Clear filters</button></p></div>';
     document.body.appendChild(dlg);
@@ -322,10 +325,9 @@
     opts = opts || {};
     if (!dlg) build();
     document.documentElement.classList.add('reels-open');
-    if (!dlg.open) dlg.showModal();
+    if (!dlg.open) { dlg.showModal(); dlg.focus(); }
     loadApi().catch(function () {});
     refresh(opts.start);
-    dlg.querySelector('[data-reels-close]').focus({ focusVisible: false });
   }
   // quiet: the page is already closing it (Back was pressed), so do not tell it again.
   function close(quiet) {
