@@ -40,10 +40,12 @@ export function pickTrailer(id, { tmdb = {}, kino = {}, wd = {}, check = {} }) {
   return null;
 }
 
-/** The pick for every title, from the current caches. */
+/** The pick for every title, from the current caches. pick.fromTmdb(id, yt) says whether TMDB supplied it. */
 export function loadTrailers() {
   const caches = { tmdb: loadCache('tmdb-videos'), kino: loadCache('kinocheck'), wd: loadCache('wikidata-yt'), check: loadCache('yt-check') };
-  return (id) => pickTrailer(id, caches);
+  const pick = (id) => pickTrailer(id, caches);
+  pick.fromTmdb = (id, yt) => Boolean(yt && caches.tmdb[id] && caches.tmdb[id].yt === yt);
+  return pick;
 }
 
 /* --------------------------------------------------------------- Wikidata */

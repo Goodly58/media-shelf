@@ -553,3 +553,7 @@ dialog.reels::backdrop { background: #05060a; }
   .reel-scores, .reel-tags, .reel-sub { display: none; }
   .reel-head h2 { font-size: 18px; }
 }
+
+/* TMDB credit in the footer, shown only while TMDB supplies trailers */
+.foot .tmdb { display: inline-flex; align-items: center; gap: 8px; color: var(--mut-2); font-size: 12.5px; }
+.foot .tmdb img { height: 12px; width: auto; }

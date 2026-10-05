@@ -127,7 +127,9 @@ export async function mergeScreen(prevMovies, prevShows) {
   const count = (l, k) => l.filter((r) => r[k] != null).length;
   log(`movies ${movies.length}: mc ${count(movies, 'mc')}, rt ${count(movies, 'rt')}, img ${count(movies, 'img')}`);
   log(`shows ${shows.length}: mc ${count(shows, 'mc')}, rt ${count(shows, 'rt')}, img ${count(shows, 'img')}`);
-  return { movies, shows };
+  // TMDB's terms ask for its logo wherever its data is used; the build shows it when this is above zero.
+  const tmdb = [...movies, ...shows].filter((r) => trailer.fromTmdb(r.id, r.yt)).length;
+  return { movies, shows, tmdb };
 }
 
 /* Genres held by only a handful of titles are noise in a filter list, and a

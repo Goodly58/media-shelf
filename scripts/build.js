@@ -48,6 +48,9 @@ const hashed = [
 const h = crypto.createHash('sha256');
 for (const f of hashed) { h.update(f); h.update(fs.readFileSync(path.join(ROOT, f))); }
 for (const k of KINDS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}.json`)));
+let META = {};
+try { META = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'meta.json'), 'utf8')); } catch {}
+h.update(JSON.stringify(META));
 const BUILD = h.digest('hex').slice(0, 10);
 
 const lastData = KINDS.map((k) => fs.statSync(path.join(DATA_DIR, `${k}.json`)).mtime).sort().pop();
@@ -167,6 +170,8 @@ function page({ file, title, description, body, kind, current, scripts = '', hea
   let html = fill(r('src/layout.html'), {
     build: BUILD, title: esc(title), description: esc(description), updated: UPDATED,
     site: SITE, url: SITE + (file === 'index.html' ? '' : file),
+    // TMDB's terms: its logo, less prominent than ours, wherever its data is used.
+    credits: META.tmdbTrailers > 0 ? `<a class="tmdb" href="https://www.themoviedb.org/" target="_blank" rel="noopener" title="This website uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB."><span>Trailers via</span><img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" width="92" height="12" loading="lazy" referrerpolicy="no-referrer"></a>` : '',
     body, scripts, head,
     bodyAttrs: kind ? ` data-kind="${kind}" style="--k:var(--k-${kind})"` : '',
   });

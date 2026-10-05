@@ -98,6 +98,10 @@ const dataFile = (kind) => path.join(ROOT, 'data', kind + '.json');
 export function readData(kind) {
   return JSON.parse(fs.readFileSync(dataFile(kind), 'utf8'));
 }
+/** data/meta.json: facts about the data as a whole that the build needs (credits, say). */
+export function writeMeta(meta) {
+  fs.writeFileSync(path.join(ROOT, 'data', 'meta.json'), JSON.stringify(meta, null, 2) + '\n');
+}
 
 /* One object per line: small diffs, still valid JSON. */
 /** A row as written: empty fields left out. */

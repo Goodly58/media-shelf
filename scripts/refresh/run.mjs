@@ -12,7 +12,7 @@
    that fails is logged and skipped; it never blocks the others. */
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadCache, saveCache, readData, writeData, compact, log, traffic, CACHE } from './lib.mjs';
+import { loadCache, saveCache, readData, writeData, writeMeta, compact, log, traffic, CACHE } from './lib.mjs';
 import { loadImdb } from './imdb.mjs';
 import { resolveWikidata, resolveSteam } from './wikidata.mjs';
 import { crawlAll, gameScore } from './metacritic.mjs';
@@ -175,7 +175,8 @@ await step('gameart', async () => {
 
 /* ------------------------------------------------------------------ merge */
 if (arg('no-merge', false)) { health(); log('fetch only: data/ left as it was'); process.exit(0); }
-const { movies, shows } = await mergeScreen(before.movies, before.shows);
+const { movies, shows, tmdb } = await mergeScreen(before.movies, before.shows);
+writeMeta({ tmdbTrailers: tmdb });
 const games = mergeGames(before.games, { newApps: loadCache('steam-popular', []).filter((a) => a.reviews >= MIN_STEAM_REVIEWS) });
 const books = mergeBooks(before.books);
 
