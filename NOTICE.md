@@ -21,6 +21,12 @@ Steam, Open Library and TMDB. None of it is stored in this repository, and all
 of it remains copyright of the respective publishers and studios. TVmaze data is
 used under CC BY-SA 4.0 (<https://www.tvmaze.com>).
 
+**Trailers**: YouTube videos, played in YouTube's own embedded player in its
+privacy-enhanced mode (youtube-nocookie.com) and only when the trailer feed is
+opened. Which video belongs to which title comes from the KinoCheck API
+(<https://api.kinocheck.com>) and Wikidata. The videos remain the property of their
+owners.
+
 **Summaries**: fetched from Wikipedia when a title is opened, under CC BY-SA 4.0,
 and linked back to the article.
 

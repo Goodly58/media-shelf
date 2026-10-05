@@ -18,6 +18,7 @@ import { resolveWikidata, resolveSteam } from './wikidata.mjs';
 import { crawlAll, gameScore } from './metacritic.mjs';
 import { resolveImages, searchArticle } from './wikipedia.mjs';
 import { resolveCategories } from './categories.mjs';
+import { resolveTrailers } from './trailers.mjs';
 import { refreshRT } from './rottentomatoes.mjs';
 import { refreshReviews, refreshTags, popularApps, appDetails, refreshAssets } from './steam.mjs';
 import { refreshBooks, refreshEditionCovers } from './books.mjs';
@@ -83,6 +84,11 @@ await Promise.all([
     // Wikipedia categories: subgenres, themes and countries for the genre picker.
     const wd = loadCache('wikidata');
     await resolveCategories(selected().map((t) => ({ key: t.id, wiki: wd[t.id]?.wiki })).filter((x) => x.wiki), { budgetMin: Math.min(30, BUDGET) });
+  }),
+  step('trailers', async () => {
+    // A YouTube trailer per film and series, for the reels view.
+    // On its own (the daily run, or a catch-up) it may use the whole budget; alongside the rest, 50 minutes.
+    await resolveTrailers(selected().map((t) => ({ id: t.id, kind: t.kind, title: t.title, year: t.year, votes: t.votes })), { budgetMin: ONLY === 'trailers' ? BUDGET : Math.min(50, BUDGET) });
   }),
   step('tvmaze', async () => {
     await resolveTvmaze(selected().filter((t) => t.kind === 'shows').map((t) => t.id), { budgetMin: Math.min(20, BUDGET) });

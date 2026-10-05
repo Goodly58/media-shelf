@@ -38,6 +38,7 @@ export const traffic = {};
 /**
  * GET with pacing, retries and backoff. Returns null on 404/410.
  * type: 'json' | 'text' | 'response'
+ * answers: further statuses that are an answer rather than a failure (returned as { status }).
  */
 export async function get(url, opts = {}) {
   const host = new URL(url).host;
@@ -45,7 +46,7 @@ export async function get(url, opts = {}) {
   try { const r = await withRetries(url, host, opts); t.ok++; return r; }
   catch (e) { t.failed++; throw e; }
 }
-async function withRetries(url, host, { type = 'json', paceMs = 1000, retries = 4, timeout = 45000, headers = {}, method = 'GET', body } = {}) {
+async function withRetries(url, host, { type = 'json', paceMs = 1000, retries = 4, timeout = 45000, headers = {}, method = 'GET', body, answers = [] } = {}) {
   let lastErr;
   for (let attempt = 0; attempt <= retries; attempt++) {
     await pace(host, paceMs);
@@ -57,6 +58,7 @@ async function withRetries(url, host, { type = 'json', paceMs = 1000, retries = 
         redirect: 'follow',
       });
       if (res.status === 404 || res.status === 410) return null;
+      if (answers.includes(res.status)) return { status: res.status };
       if (res.status === 429 || res.status === 202 || res.status >= 500) {
         lastErr = new HttpError(res.status, url);
         const ra = Number(res.headers.get('retry-after'));

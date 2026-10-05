@@ -8,6 +8,7 @@ import { loadCache, readData, writeData, fold, decode, log } from './lib.mjs';
 import { matchScreen } from './metacritic.mjs';
 import { loadEpisodes } from './imdb.mjs';
 import { SCREEN_TAGS, GAME_TAGS, screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags } from './taxonomy.mjs';
+import { loadTrailers } from './trailers.mjs';
 
 const SCREEN_TAG_NAMES = new Set(SCREEN_TAGS.map((x) => x[0]));
 const GAME_NAMES = new Set(GAME_TAGS.map((x) => x[1]));
@@ -54,6 +55,7 @@ export async function mergeScreen(prevMovies, prevShows) {
   const mcMovies = loadCache('mc-movies', []);
   const mcTv = loadCache('mc-tv', []);
   const cats = loadCache('wp-categories');
+  const trailer = loadTrailers();
   const prev = {};
   for (const r of [...prevMovies, ...prevShows]) prev[r.id] = r;
 
@@ -100,6 +102,8 @@ export async function mergeScreen(prevMovies, prevShows) {
       img: (t.kind === 'shows' && (tvmaze[t.id]?.img || (/tvmaze/.test(o.img || '') ? o.img : null))) || wikiImg || o.img || null,
       wiki: w.wiki || o.wiki || null,
       blurb: o.blurb || null,
+      // A YouTube trailer for the reels view. Until a source has looked at a title, the last one stands.
+      yt: (() => { const p = trailer(t.id); return p === undefined ? o.yt || null : p; })(),
     };
     if (m) { row.mc = m.score; row.mcN = m.n; row.mcSlug = m.slug; }
     else if (o.mc != null) { row.mc = o.mc; row.mcN = o.mcN || null; row.mcSlug = o.mcSlug || null; }

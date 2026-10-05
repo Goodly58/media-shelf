@@ -303,6 +303,8 @@ for (const k of KINDS) {
       label: LABEL[k], placeholder: CAT[k].ph,
       sorts: SORTS[k].map(([v, l]) => `<option value="${v}">${l}</option>`).join(''),
       ...firstScreen(k),
+      // Films and series have trailer reels; the button shows once the page knows of a trailer.
+      reels: k === 'movies' || k === 'shows' ? `<button class="btn" id="reelsBtn" type="button" hidden>${icon('play')}Trailers</button>` : '',
     }),
     scripts: `<script>window.SHELF_TAXONOMY = ${JSON.stringify(TAXONOMY[k] || [])};</script>\n<script src="assets/catalog.js?v=${BUILD}" defer></script>`,
   });

@@ -60,7 +60,7 @@
   // Ids of the cards the page was built with (the default list), if they are still on it.
   var pre = [].map.call(grid.querySelectorAll('.card[data-id]'), function (c) { return c.getAttribute('data-id'); });
 
-  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false }; }
+  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, view: '', rsort: 'shuffle' }; }
 
   /* ------------------------------------------------------------- url state */
   function readURL() {
@@ -78,6 +78,8 @@
     s.len = p.get('length') || '';
     s.status = p.get('status') || '';
     s.saved = p.get('saved') === '1';
+    s.view = p.get('view') === 'trailers' && (kind === 'movies' || kind === 'shows') ? 'trailers' : '';
+    if (CONFIG.sorts.some(function (x) { return x[0] === p.get('rsort'); })) s.rsort = p.get('rsort');
     return s;
   }
   function writeURL() {
@@ -93,6 +95,8 @@
     if (state.len) p.set('length', state.len);
     if (state.status) p.set('status', state.status);
     if (state.saved) p.set('saved', '1');
+    if (state.view) p.set('view', state.view);
+    if (state.view && state.rsort !== 'shuffle') p.set('rsort', state.rsort);
     var qs = p.toString();
     history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
   }
@@ -140,6 +144,9 @@
       // Panels opened while the data was on its way.
       if (genresDlg.open) layoutPicker();
       if (filtersDlg.open) openFilters();
+      var rb = $('#reelsBtn');
+      if (rb) rb.hidden = !items.some(function (r) { return r.yt; });
+      if (state.view === 'trailers') openReels();
     }).catch(function () {
       grid.innerHTML = '<div class="empty"><h2>Could not load the catalogue</h2><p>Check your connection and reload.</p></div>';
     });
@@ -225,7 +232,8 @@
     if (genresDlg.open) refreshPicker();
     if (filtersDlg.open) refreshCountries();
     writeURL();
-    if (!keepScroll && window.scrollY > grid.offsetTop) window.scrollTo({ top: grid.offsetTop - 160 });
+    if (window.ShelfReels && window.ShelfReels.isOpen()) window.ShelfReels.refresh();
+    else if (!keepScroll && window.scrollY > grid.offsetTop) window.scrollTo({ top: grid.offsetTop - 160 });
   }
 
   function badgeKey() { return CONFIG.badge[state.sort] || (state.min != null ? CONFIG.min.key : CONFIG.defBadge); }
@@ -534,6 +542,7 @@
           '<p class="summary" id="summary">' + (r.blurb ? esc(r.blurb) : '') + '</p>' +
           '<div class="d-actions">' +
             '<button class="btn sm" id="saveBtn" aria-pressed="' + saved + '">' + icon('heart', 'sm') + (saved ? 'Saved' : 'Save') + '</button>' +
+            (r.yt ? '<button class="btn sm primary" id="trailerBtn">' + icon('play', 'sm') + 'Trailer</button>' : '') +
             '<button class="btn sm" id="shareBtn">' + icon('link', 'sm') + 'Copy link</button>' +
             linksHTML(r) +
           '</div>' +
@@ -639,8 +648,9 @@
     var fav = t.closest('[data-fav]');
     if (fav) {
       e.preventDefault(); e.stopPropagation();
-      var on = S.Favs.toggle(kind, fav.getAttribute('data-fav'));
-      fav.classList.toggle('on', on);
+      var fid = fav.getAttribute('data-fav');
+      var on = S.Favs.toggle(kind, fid);
+      document.querySelectorAll('[data-fav="' + CSS.escape(fid) + '"]').forEach(function (f) { f.classList.toggle('on', on); });
       S.toast(on ? 'Saved' : 'Removed from saved');
       if (state.saved) apply(true);
       return;
@@ -674,6 +684,14 @@
     if (ct) { toggleIn(state.country, ct.getAttribute('data-country')); apply(true); return; }
     if (t.closest('[data-more-countries]')) { allCountries = true; openFilters(); return; }
     if (t.closest('#filtersBtn')) { openFilters(); return; }
+    if (t.closest('#reelsBtn')) { openReels(null, true); return; }
+    if (t.closest('#trailerBtn') && current) {
+      var tid = current.id;
+      detailDlg.close();
+      if (window.ShelfReels && window.ShelfReels.isOpen()) window.ShelfReels.open({ start: tid });
+      else openReels(tid, true);
+      return;
+    }
     if (t.closest('[data-close]')) { t.closest('dialog').close(); return; }
     var dec = t.closest('[data-dec]');
     if (dec) {
@@ -758,6 +776,50 @@
   }, { rootMargin: '1200px 0px' });
   io.observe($('#sentinel'));
 
-  window.ShelfCatalog = { open: open };
+  /* ----------------------------------------------------------- trailer reels */
+  var reelsJs = null, reelsPushed = false;
+  function loadReels() {
+    if (!reelsJs) reelsJs = new Promise(function (resolve, reject) {
+      var sc = document.createElement('script');
+      sc.src = 'assets/reels.js?v=' + (($('meta[name="shelf-build"]') || {}).content || '');
+      sc.onload = resolve;
+      sc.onerror = function () { reelsJs = null; reject(); };
+      document.head.appendChild(sc);
+    });
+    return reelsJs;
+  }
+  /* push: add a history entry, so Back (or a phone's back gesture) closes the feed
+     rather than leaving the page. Opened from the address, there is none to add. */
+  function openReels(startId, push) {
+    if (!(kind === 'movies' || kind === 'shows') || !loaded) return;
+    state.view = 'trailers';
+    if (push) { history.pushState({ reels: 1 }, '', location.pathname + location.search + location.hash); reelsPushed = true; }
+    writeURL();
+    loadReels().then(function () { window.ShelfReels.open({ start: startId }); }, function () { S.toast('Could not load trailers'); });
+  }
+  function closeReels() {
+    state.view = '';
+    if (reelsPushed) { reelsPushed = false; history.back(); } else writeURL();
+  }
+  window.addEventListener('popstate', function () {
+    if (new URLSearchParams(location.search).get('view') === 'trailers') return;
+    if (window.ShelfReels && window.ShelfReels.isOpen()) { reelsPushed = false; window.ShelfReels.close(true); }
+    state.view = '';
+    // Genres or filters changed inside the feed carry over to the grid.
+    if (loaded) { writeURL(); apply(true); }
+  });
+
+  window.ShelfCatalog = {
+    open: open, kind: kind,
+    results: function () { return results; },
+    byId: function (id) { return byId[id]; },
+    avgTop: function () { return avgTop; },
+    state: function () { return state; },
+    filterCount: filterCount,
+    sorters: SORTERS, sorts: CONFIG.sorts,
+    setOrder: function (v) { state.rsort = v; writeURL(); if (window.ShelfReels) window.ShelfReels.refresh(); },
+    openFilters: openFilters,
+    closeReels: closeReels,
+  };
   load();
 })();

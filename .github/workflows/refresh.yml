@@ -10,7 +10,8 @@ name: Refresh data
 
 on:
   schedule:
-    - cron: '0 4 * * 1'   # Mondays, 04:00 UTC
+    - cron: '0 4 * * 1'         # Mondays, 04:00 UTC: everything
+    - cron: '30 4 * * 0,2-6'    # other days: trailers only (KinoCheck allows 1,000 lookups a day)
   # A manual run can be limited to some steps with a longer budget, for a catch-up
   # such as fetching every book's Goodreads shelves in one go.
   workflow_dispatch:
@@ -51,7 +52,7 @@ jobs:
 
       - name: Refresh from sources
         env:
-          ONLY: ${{ inputs.only }}
+          ONLY: ${{ github.event.schedule == '30 4 * * 0,2-6' && 'trailers' || inputs.only }}
           BUDGET: ${{ inputs.budget }}
         run: node scripts/refresh/run.mjs --budget="${BUDGET:-55}" ${ONLY:+--only="$ONLY"}
 

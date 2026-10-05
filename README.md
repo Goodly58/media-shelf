@@ -8,8 +8,8 @@ backend, no accounts, no tracking.
 
 | Page | What it is |
 | --- | --- |
-| Films | Every film with 10,000+ IMDb votes, with Metacritic and Rotten Tomatoes |
-| Series | Every series with 10,000+ IMDb votes, same three scores |
+| Films | Every film with 10,000+ IMDb votes, with Metacritic and Rotten Tomatoes, and a trailer feed |
+| Series | Every series with 10,000+ IMDb votes, same three scores, and a trailer feed |
 | Games | PC games by Metacritic and Steam reviews, including every game with 10,000+ Steam reviews |
 | Books | Books with 10,000+ Goodreads ratings from Goodreads' genre lists, by rating |
 | What next | Drop in a Goodreads, Letterboxd or IMDb export and get your backlog ranked |
@@ -28,13 +28,16 @@ published, and leaves it empty if it cannot:
 | Goodreads | Genre lists for new books, then each book's own page by its Goodreads id or ISBN |
 | Wikipedia | Each article's categories, for the subgenres, themes and countries of films and series |
 | Wikidata, TVmaze, Open Library | Links between sites, posters and covers |
+| KinoCheck, Wikidata, YouTube | Trailers: official ones from KinoCheck's API, YouTube ids recorded on Wikidata, each checked with YouTube's oEmbed before it is shown |
 
 Genres and themes come from one curated list, `scripts/refresh/taxonomy.mjs`,
 matched against Wikipedia categories for films and series ("2010s satirical
 films"), Steam's tags for games and Goodreads' shelves for books.
 
 A GitHub Action runs the pipeline every Monday, commits the changes as data, and
-redeploys. The slow sources are re-checked a slice at a time, oldest first, so
+redeploys. Trailers are looked up every day, within KinoCheck's free allowance of
+1,000 requests; with a `TMDB_API_KEY` repository secret, TMDB is asked first and
+nearly every title gets one. The slow sources are re-checked a slice at a time, oldest first, so
 the whole catalogue is re-verified every few weeks.
 
 A source that breaks is skipped so the rest still update, and the run then fails

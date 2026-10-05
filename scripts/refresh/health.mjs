@@ -35,6 +35,7 @@ export const SOURCES = [
   ['steam-tags', 'Steam tags', 'steam', (e) => Boolean(e.tags && e.tags.length), 0.94],
   ['mc-games', 'Metacritic games', 'gamesmc', (e) => e.score != null, 0.33],
   ['goodreads', 'Goodreads', 'books', (e) => e.rating != null, 0.9],
+  ['yt-check', 'YouTube trailer checks', 'trailers', (e) => e.ok === true, 0.75],
 ];
 // Full crawls, judged by size against the previous run: [cache, label, step, smallest share kept].
 export const CRAWLS = [

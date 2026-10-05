@@ -4,6 +4,7 @@ import { slugify, broadGenres, articleMatches, classifyGame, bookGenre } from '.
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
+import { pickTrailer, kinoPick, tmdbPick } from '../scripts/refresh/trailers.mjs';
 
 let pass = 0, fail = 0;
 function ok(label, cond, detail) {
@@ -66,6 +67,22 @@ console.log('book genres');
 ok('subjects overrule an off-topic list', bookGenre('Travel & Food', ['Fantasy fiction', 'Magic', 'Wizards', 'Juvenile fiction']) === 'Fantasy');
 ok('a supported list genre stands', bookGenre('Romance', ['Love stories', 'Fiction, romance, contemporary']) === 'Romance');
 ok('no subjects keeps the list genre', bookGenre('Horror', []) === 'Horror');
+
+console.log('trailers');
+const wd = { tt1: { c: [['aaaaaaaaaaa', '', ''], ['bbbbbbbbbbb', 'trailer', 'English']], at: 1 }, tt2: { c: [['ccccccccccc', '', '']], at: 1 }, tt3: { c: [], at: 1 } };
+const check = { aaaaaaaaaaa: { ok: true, title: 'Full film' }, bbbbbbbbbbb: { ok: true, title: 'Clip' }, ccccccccccc: { ok: true, title: 'Official Trailer' }, ddddddddddd: { ok: false } };
+ok('a marked Wikidata trailer is chosen', pickTrailer('tt1', { wd, check }) === 'bbbbbbbbbbb');
+ok('an unmarked id counts when its title says trailer', pickTrailer('tt2', { wd, check }) === 'ccccccccccc');
+ok('a title no source has seen is undecided', pickTrailer('tt9', { wd, check }) === undefined);
+ok('a title the sources know has none', pickTrailer('tt3', { wd, check }) === null);
+ok('an official trailer wins over Wikidata', pickTrailer('tt1', { wd, check, kino: { tt1: { yt: 'eeeeeeeeeee' } } }) === 'eeeeeeeeeee');
+ok('a video YouTube refused is skipped', pickTrailer('tt1', { wd, check, kino: { tt1: { yt: 'ddddddddddd' } } }) === 'bbbbbbbbbbb');
+ok('KinoCheck: its own trailer pick', kinoPick({ trailer: { youtube_video_id: 'gaZ-S1aFB24', categories: ['Trailer'] }, videos: [] }) === 'gaZ-S1aFB24');
+ok('KinoCheck: a teaser when there is no trailer', kinoPick({ trailer: null, videos: [{ youtube_video_id: 'aaaaaaaaaaa', categories: ['Clip'] }, { youtube_video_id: 'bbbbbbbbbbb', categories: ['Teaser'] }] }) === 'bbbbbbbbbbb');
+ok('KinoCheck: nothing for a clip', kinoPick({ trailer: null, videos: [{ youtube_video_id: 'aaaaaaaaaaa', categories: ['Clip'] }] }) === null);
+ok('KinoCheck: nothing for an error', kinoPick({ error: 'Error', message: 'movie not found' }) === null);
+ok('TMDB: the official trailer', tmdbPick({ results: [{ site: 'YouTube', key: 'aaaaaaaaaaa', type: 'Teaser', official: true }, { site: 'YouTube', key: 'bbbbbbbbbbb', type: 'Trailer', official: true }, { site: 'Vimeo', key: 'x', type: 'Trailer' }] }) === 'bbbbbbbbbbb');
+ok('TMDB: nothing but featurettes', tmdbPick({ results: [{ site: 'YouTube', key: 'aaaaaaaaaaa', type: 'Featurette', official: true }] }) === null);
 
 console.log('source health');
 const now = Date.now(), old = now - 9e9;
