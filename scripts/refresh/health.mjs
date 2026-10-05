@@ -31,6 +31,8 @@ export const SOURCES = [
   ['wp-categories', 'Wikipedia categories', 'categories', (e) => Boolean(e.cats && e.cats.length), 1],
   ['tvmaze', 'TVmaze posters', 'tvmaze', (e) => Boolean(e.img), 0.96],
   ['rt', 'Rotten Tomatoes', 'rt', (e) => e.score != null, 0.9],
+  ['rt', 'Rotten Tomatoes audience', 'rt', (e) => e.aud != null, 0.85],
+  ['mc-user', 'Metacritic users', 'mcusers', (e) => e.score != null, 0.9],
   ['steam-reviews', 'Steam reviews', 'steam', (e) => e.score != null, 0.96],
   ['steam-tags', 'Steam tags', 'steam', (e) => Boolean(e.tags && e.tags.length), 0.94],
   ['mc-games', 'Metacritic games', 'gamesmc', (e) => e.score != null, 0.33],

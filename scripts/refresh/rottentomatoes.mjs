@@ -1,6 +1,7 @@
-/* Rotten Tomatoes critic scores (Tomatometer), read from each title's page at
-   the exact path Wikidata records. The score sits in a JSON block about a
-   third of the way down, so the download stops as soon as it has passed it. */
+/* Rotten Tomatoes scores, critics' (Tomatometer) and audience's (Popcornmeter),
+   read from each title's page at the exact path Wikidata records. Both sit in a
+   JSON block about a third of the way down, so the download stops as soon as it
+   has passed it. */
 import { get, log, loadCache, saveCache, fold, decode } from './lib.mjs';
 
 const BASE = 'https://www.rottentomatoes.com/';
@@ -41,10 +42,25 @@ export async function rtScore(path) {
   return {
     score: Number.isFinite(score) ? score : null,
     n: cs.reviewCount ?? cs.ratingCount ?? null,
+    ...audienceOf(card),
     title,
     year,
     path: finalPath,
   };
+}
+
+/**
+ * The audience half of a page's scorecard: { aud, audN }. RT publishes how many rated
+ * a title only in bands ("25,000+ Ratings", "5,000+ Verified Ratings"), so audN is the
+ * band's lower end, as the page itself shows it.
+ */
+export function audienceOf(card) {
+  const a = card?.audienceScore || {};
+  const band = String(a.bandedRatingCount || '');
+  const score = a.score === '' || a.score == null ? null : Number(a.score);
+  // Not out yet (RT hides the score), or too few ratings for RT to give one.
+  if (card?.hideAudienceScore || !Number.isFinite(score) || /fewer/i.test(band)) return { aud: null, audN: null };
+  return { aud: score, audN: Number(band.replace(/\D/g, '')) || null };
 }
 
 /** RT's address for a film title: lower case, words joined by underscores ("m/the_dark_knight"). */
@@ -103,8 +119,9 @@ export async function refreshRT(titles, { budgetMin = 60, maxAgeDays = 30, cache
   const others = cacheName === 'rt' ? {} : loadCache('rt');
   const stale = Date.now() - maxAgeDays * 864e5;
   const deadline = Date.now() + budgetMin * 60e3;
-  const fresh = (c) => c && c.at >= stale;
-  const todo = titles.filter((t) => t.rt && !(fresh(cache[t.id]) && cache[t.id].src === t.rt) && !(fresh(others[t.id]) && others[t.id].src === t.rt));
+  // Up to date: read lately, from this address, since pages were read for the audience score too.
+  const upToDate = (c, t) => c && c.src === t.rt && c.at >= stale && (c.missing || c.mismatch || 'aud' in c);
+  const todo = titles.filter((t) => t.rt && !upToDate(cache[t.id], t) && !upToDate(others[t.id], t));
   log(`rt: ${todo.length} of ${titles.length} due`);
   let done = 0, scored = 0, mismatch = 0;
   for (const t of todo) {

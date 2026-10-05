@@ -5,7 +5,8 @@ import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTag
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
 import { pickTrailer, kinoPick, tmdbPick } from '../scripts/refresh/trailers.mjs';
-import { slugRT } from '../scripts/refresh/rottentomatoes.mjs';
+import { slugRT, audienceOf } from '../scripts/refresh/rottentomatoes.mjs';
+import { userOf } from '../scripts/refresh/metacritic.mjs';
 
 let pass = 0, fail = 0;
 function ok(label, cond, detail) {
@@ -91,10 +92,22 @@ ok('apostrophes go, accents fold', slugRT("Schindler's List") === 'schindlers_li
 ok('punctuation becomes one underscore', slugRT('Spider-Man: No Way Home') === 'spider_man_no_way_home', slugRT('Spider-Man: No Way Home'));
 ok('commas inside numbers go', slugRT('10,000 BC') === '10000_bc', slugRT('10,000 BC'));
 
+console.log('audience scores');
+const card = (a, hide = false) => ({ audienceScore: a, hideAudienceScore: hide });
+ok('RT audience: score and the band it comes from', JSON.stringify(audienceOf(card({ score: '79', bandedRatingCount: '25,000+ Ratings' }))) === '{"aud":79,"audN":25000}');
+ok('RT audience: verified ratings count the same way', audienceOf(card({ score: '85', bandedRatingCount: '5,000+ Verified Ratings' })).audN === 5000);
+ok('RT audience: too few ratings is no score', audienceOf(card({ score: '90', bandedRatingCount: 'Fewer than 50 Ratings' })).aud === null);
+ok('RT audience: a hidden score is no score', audienceOf(card({ score: '90', bandedRatingCount: '250+ Ratings' }, true)).aud === null);
+ok('RT audience: none at all', audienceOf(card({ score: '' })).aud === null && audienceOf(null).aud === null);
+ok('Metacritic users: score and count', JSON.stringify(userOf({ data: { item: { score: 7.1, reviewCount: 2061 } } })) === '{"score":7.1,"n":2061}');
+ok('Metacritic users: nobody has rated it', userOf({ data: { item: { score: 0, reviewCount: 0 } } }).score === null);
+ok('Metacritic users: not enough to score yet', userOf({ data: { item: { score: null, reviewCount: 2 } } }).score === null);
+ok('Metacritic users: no such page', userOf({ errors: [{ code: 404 }] }) === null);
+
 console.log('source health');
 const now = Date.now(), old = now - 9e9;
 const fake = (caches) => (name, dflt) => caches[name] ?? dflt;
-const entries = (n, hits, at = now) => Object.fromEntries([...Array(n)].map((_, i) => [i, i < hits ? { score: 80, at } : { none: true, at }]));
+const entries = (n, hits, at = now) => Object.fromEntries([...Array(n)].map((_, i) => [i, i < hits ? { score: 80, aud: 70, at } : { none: true, at }]));
 const run = (steps, caches, snap, notes, traffic) => assess({ since: now - 1000, steps: steps.map((name) => (typeof name === 'string' ? { name, seconds: 1 } : name)), snap, notes, traffic, load: fake(caches) });
 ok('a source answering as usual is fine', run(['rt'], { rt: entries(100, 88) }).ok);
 ok('a quiet week with nothing due is fine', run(['steam'], { 'steam-tags': entries(100, 90, old) }).ok);
@@ -103,7 +116,8 @@ ok('a few failed requests are not', run(['rt'], { rt: entries(100, 88) }, {}, []
 ok('a sharp drop in answers is a problem', /Rotten Tomatoes/.test(run(['rt'], { rt: entries(100, 30) }).problems.join()));
 ok('a small sample is not judged', run(['rt'], { rt: entries(10, 1) }).ok);
 ok('Metacritic games answering a fifth of the time is normal', run(['gamesmc'], { 'mc-games': entries(60, 12) }).ok);
-ok('a source whose step did not run is not judged', run(['rt'], { rt: entries(100, 88), 'steam-reviews': {} }).rows.length === 1);
+ok('a source whose step did not run is not judged', run(['rt'], { rt: entries(100, 88), 'steam-reviews': {} }).rows.every((r) => /Rotten Tomatoes/.test(r.label)));
+ok('RT pages that stop giving the audience score are a problem', /audience/.test(run(['rt'], { rt: Object.fromEntries(Object.entries(entries(100, 88)).map(([k, e]) => [k, { ...e, aud: null }])) }).problems.join()));
 ok('a failed step is a problem', /rt: failed/.test(run([{ name: 'rt', seconds: 1, error: 'timeout' }], { rt: entries(100, 88) }).problems.join()));
 ok('a crawl that shrank is a problem', /shrank/.test(run(['metacritic'], { 'mc-movies': new Array(5000), 'mc-tv': new Array(3300) }, { 'mc-movies': 17000, 'mc-tv': 3300 }).problems.join()));
 ok('notes from the run are problems', !run(['rt'], { rt: entries(100, 88) }, {}, ['books: would have shrunk']).ok);

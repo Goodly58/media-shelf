@@ -5,6 +5,7 @@
   var kind = document.body.getAttribute('data-kind');
   var K = S.KINDS[kind];
   var THIS_YEAR = new Date().getFullYear();
+  var SCREEN = kind === 'movies' || kind === 'shows';   // films and series: trailers, and titles that can be hidden
 
   /* Bayesian average: a 9.0 from 12k votes should not outrank an 8.8 from 1M. */
   function weighted(v, n, m, c) { return v == null ? -1 : (n / (n + m)) * v + (m / (n + m)) * c; }
@@ -13,8 +14,8 @@
 
   var CONFIG = {
     movies: {
-      sorts: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metascore'], ['rt', 'Rotten Tomatoes'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
-      badge: { mc: 'mc', rt: 'rt' }, defBadge: 'imdb', avg: 'imdb',
+      sorts: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metacritic critics'], ['mcu', 'Metacritic users'], ['rt', 'Rotten Tomatoes critics'], ['rta', 'Rotten Tomatoes audience'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
+      badge: { mc: 'mc', mcu: 'mcu', rt: 'rt', rta: 'rta' }, defBadge: 'imdb', avg: 'imdb',
       min: { key: 'imdb', max: 10, step: 0.5, fmt: function (v) { return '★ ' + v.toFixed(1); } },
       fields: function (r) { return [r.title, r.alt, r.by].join(' '); },
       meta: function (r) { return (r.genres || [])[0]; },
@@ -22,8 +23,8 @@
       popular: function (r) { return r.votes || 0; },
     },
     shows: {
-      sorts: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metascore'], ['rt', 'Rotten Tomatoes'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
-      badge: { mc: 'mc', rt: 'rt' }, defBadge: 'imdb', avg: 'imdb',
+      sorts: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metacritic critics'], ['mcu', 'Metacritic users'], ['rt', 'Rotten Tomatoes critics'], ['rta', 'Rotten Tomatoes audience'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
+      badge: { mc: 'mc', mcu: 'mcu', rt: 'rt', rta: 'rta' }, defBadge: 'imdb', avg: 'imdb',
       min: { key: 'imdb', max: 10, step: 0.5, fmt: function (v) { return '★ ' + v.toFixed(1); } },
       fields: function (r) { return [r.title, r.alt, r.by].join(' '); },
       meta: function (r) { return (r.genres || [])[0]; },
@@ -31,8 +32,8 @@
       popular: function (r) { return r.votes || 0; },
     },
     games: {
-      sorts: [['top', 'Top rated'], ['steam', 'Steam rating'], ['popular', 'Most reviewed'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
-      badge: { steam: 'steam', popular: 'steam' }, defBadge: 'mc', avg: 'mc',
+      sorts: [['top', 'Top rated'], ['steam', 'Steam rating'], ['mcu', 'Metacritic users'], ['popular', 'Most reviewed'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
+      badge: { steam: 'steam', popular: 'steam', mcu: 'mcu' }, defBadge: 'mc', avg: 'mc',
       min: { key: 'mc', max: 100, step: 5, fmt: function (v) { return v + '+'; } },
       fields: function (r) { return [r.title].concat(r.tags || []).join(' '); },
       meta: function (r) { return (r.genres || [])[0]; },
@@ -60,7 +61,7 @@
   // Ids of the cards the page was built with (the default list), if they are still on it.
   var pre = [].map.call(grid.querySelectorAll('.card[data-id]'), function (c) { return c.getAttribute('data-id'); });
 
-  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, view: '', rsort: 'shuffle' }; }
+  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, hidden: false, view: '', rsort: 'shuffle' }; }
 
   /* ------------------------------------------------------------- url state */
   function readURL() {
@@ -78,6 +79,7 @@
     s.len = p.get('length') || '';
     s.status = p.get('status') || '';
     s.saved = p.get('saved') === '1';
+    s.hidden = SCREEN && !s.saved && p.get('hidden') === '1';
     s.view = p.get('view') === 'trailers' && (kind === 'movies' || kind === 'shows') ? 'trailers' : '';
     if (CONFIG.sorts.some(function (x) { return x[0] === p.get('rsort'); })) s.rsort = p.get('rsort');
     return s;
@@ -95,6 +97,7 @@
     if (state.len) p.set('length', state.len);
     if (state.status) p.set('status', state.status);
     if (state.saved) p.set('saved', '1');
+    if (state.hidden) p.set('hidden', '1');
     if (state.view) p.set('view', state.view);
     if (state.view && state.rsort !== 'shuffle') p.set('rsort', state.rsort);
     var qs = p.toString();
@@ -175,6 +178,7 @@
     }
     if (s.country.length && !(r.country && s.country.some(function (c) { return r.country.indexOf(c) >= 0; }))) return false;
     if (s.saved && !S.Favs.has(kind, r.id)) return false;
+    if (s.hidden && !S.Hidden.has(kind, r.id)) return false;
     return true;
   }
   function hasAll(r, s) {
@@ -194,7 +198,10 @@
     top: function (a, b) { return b._top - a._top; },
     popular: function (a, b) { return CONFIG.popular(b) - CONFIG.popular(a); },
     mc: function (a, b) { return (b.mc == null ? -1 : b.mc) - (a.mc == null ? -1 : a.mc) || b._top - a._top; },
+    // A user score from a handful of people goes after the rest, ahead of none at all.
+    mcu: function (a, b) { return userKey(b) - userKey(a) || (b.mcuN || 0) - (a.mcuN || 0); },
     rt: function (a, b) { return (b.rt == null ? -1 : b.rt) - (a.rt == null ? -1 : a.rt) || (b.rtN || 0) - (a.rtN || 0); },
+    rta: function (a, b) { return (b.rta == null ? -1 : b.rta) - (a.rta == null ? -1 : a.rta) || (b.rtaN || 0) - (a.rtaN || 0); },
     steam: function (a, b) { return (b.steam == null ? -1 : b.steam + Math.min(b.steamN || 0, 5e4) / 1e6) - (a.steam == null ? -1 : a.steam + Math.min(a.steamN || 0, 5e4) / 1e6); },
     new: function (a, b) { return (b.year || 0) - (a.year || 0) || b._top - a._top; },
     old: function (a, b) { return (a.year || 9999) - (b.year || 9999) || b._top - a._top; },
@@ -202,6 +209,7 @@
     author: function (a, b) { return lastName(a.author).localeCompare(lastName(b.author)) || (a.year || 0) - (b.year || 0); },
   };
   function lastName(s) { s = (s || '').trim(); return s.split(' ').pop() + ' ' + s; }
+  function userKey(r) { return r.mcu == null ? -1 : (r.mcuN || 0) < 10 ? r.mcu / 100 - 0.99 : r.mcu; }
 
   function apply(keepScroll) {
     // Before the data is in, a choice is only remembered (in the address); the list follows.
@@ -237,7 +245,7 @@
   function badgeKey() { return CONFIG.badge[state.sort] || (state.min != null ? CONFIG.min.key : CONFIG.defBadge); }
   function badgeFor(r) {
     var k = badgeKey(), b = S.METRICS[k].badge(r);
-    if (!b && kind === 'games') b = S.METRICS[k === 'mc' ? 'steam' : 'mc'].badge(r);
+    if (!b && kind === 'games' && (k === 'mc' || k === 'steam')) b = S.METRICS[k === 'mc' ? 'steam' : 'mc'].badge(r);
     return b;
   }
 
@@ -298,7 +306,7 @@
   window.addEventListener('resize', chipFade);
 
   function filterCount() {
-    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.country.length ? 1 : 0);
+    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.hidden ? 1 : 0) + (state.country.length ? 1 : 0);
   }
   function renderActive() {
     var pills = [];
@@ -309,6 +317,7 @@
     if (state.status) add({ ongoing: 'Ongoing', ended: 'Ended', mini: 'Miniseries' }[state.status], 'status');
     state.country.forEach(function (c) { add(c, 'country', c); });
     if (state.saved) add('Saved', 'saved');
+    if (state.hidden) add('Hidden', 'hidden');
     if (state.q) add('“' + state.q + '”', 'q');
     var total = pills.length + state.genres.length + state.tags.length;
     activeEl.innerHTML = pills.join('') + (total > 1 ? '<button class="link-btn" data-reset>Clear all</button>' : '');
@@ -456,12 +465,15 @@
         return '<button class="chip" type="button" data-country="' + esc(x) + '" aria-pressed="' + (state.country.indexOf(x) >= 0) + '">' + esc(x) + '<small>' + (cc[x] || 0).toLocaleString() + '</small></button>';
       }).join('') + (all.length > list.length ? '<button class="chip expand" type="button" data-more-countries>+ ' + (all.length - list.length) + ' more</button>' : '') + '</div></div>';
     }
-    html += seg('Show', 'saved', [['', 'Everything'], ['1', 'Saved only']]);
+    // Hidden titles can be listed (and brought back) once there are any.
+    var show = [['', 'Everything'], ['saved', 'Saved only']];
+    if (SCREEN && (state.hidden || S.Hidden.list(kind).length)) show.push(['hidden', 'Hidden']);
+    html += seg('Show', 'show', show);
     $('#filterBody').innerHTML = html;
     if (!filtersDlg.open) filtersDlg.showModal();
   }
   function seg(label, key, opts) {
-    var cur = key === 'saved' ? (state.saved ? '1' : '') : state[key];
+    var cur = key === 'show' ? (state.saved ? 'saved' : state.hidden ? 'hidden' : '') : state[key];
     return '<div class="row-field"><label>' + label + '</label><div class="seg">' + opts.map(function (o) {
       return '<button class="chip" data-seg="' + key + '" data-val="' + o[0] + '" aria-pressed="' + (cur === o[0]) + '">' + o[1] + '</button>';
     }).join('') + '</div></div>';
@@ -488,16 +500,37 @@
     var tag = href ? 'a class="score" href="' + esc(href) + '" target="_blank" rel="noopener"' : 'div class="score"';
     return '<' + tag + '><span class="v ' + cls + '">' + v + '</span><span class="l"><b>' + label + '</b><span>' + sub + '</span></span></' + (href ? 'a' : 'div') + '>';
   }
+  /* A source with a critics' and an audience score (Metacritic, Rotten Tomatoes): one block
+     under the source's name, each score with its own count and link. */
+  function scorePair(source, parts) {
+    parts = parts.filter(Boolean);
+    return parts.length ? '<div class="score duo"><span class="src">' + source + '</span><div class="duo-in">' + parts.join('') + '</div></div>' : '';
+  }
+  function part(v, cls, label, sub, href) {
+    var tag = href ? 'a class="part" href="' + esc(href) + '" target="_blank" rel="noopener"' : 'span class="part"';
+    return '<' + tag + '><span class="v ' + cls + '">' + v + '</span><span class="l"><b>' + label + '</b><span>' + sub + '</span></span></' + (href ? 'a' : 'span') + '>';
+  }
+  function count(n, one) { return n.toLocaleString() + ' ' + one + (n === 1 ? '' : 's'); }
   function scoresHTML(r) {
     var h = [];
+    var mcPage = r.mcSlug ? 'https://www.metacritic.com/' + { movies: 'movie', shows: 'tv', games: 'game' }[kind] + '/' + r.mcSlug + '/' : null;
+    var metacritic = scorePair('Metacritic', [
+      r.mc != null && part(r.mc, S.tone(r.mc), 'Critics', r.mcN ? count(r.mcN, 'review') : 'Metascore', mcPage),
+      r.mcu != null && part(r.mcu.toFixed(1), S.tone(Math.round(r.mcu * 10)), 'Users', r.mcuN ? count(r.mcuN, 'rating') : 'User score', mcPage && mcPage + 'user-reviews/'),
+    ]);
     if (kind === 'movies' || kind === 'shows') {
       if (r.imdb != null) h.push(scoreBlock(r.imdb.toFixed(1), 'plain', 'IMDb', S.compact(r.votes) + ' votes', 'https://www.imdb.com/title/' + r.id + '/'));
-      if (r.mc != null) h.push(scoreBlock(r.mc, S.tone(r.mc), 'Metascore', (r.mcN ? r.mcN + ' critics' : 'Metacritic'), r.mcSlug ? 'https://www.metacritic.com/' + (kind === 'movies' ? 'movie' : 'tv') + '/' + r.mcSlug + '/' : null));
-      if (r.rt != null) h.push(scoreBlock(r.rt + '%', r.rt >= 60 ? 'good' : 'bad', 'Rotten Tomatoes', (r.rtN ? r.rtN + ' reviews' : 'Tomatometer'), r.rtPath ? 'https://www.rottentomatoes.com/' + r.rtPath : null));
-      // Too few critics for a Tomatometer: say so rather than leave a gap.
-      else if (r.rtN != null && r.rtPath) h.push(scoreBlock('–', 'plain', 'Rotten Tomatoes', r.rtN + (r.rtN === 1 ? ' review' : ' reviews') + (r.rtN < 5 ? ', too few to score' : ', no score yet'), 'https://www.rottentomatoes.com/' + r.rtPath));
+      h.push(metacritic);
+      var rtPage = r.rtPath ? 'https://www.rottentomatoes.com/' + r.rtPath : null;
+      h.push(scorePair('Rotten Tomatoes', [
+        r.rt != null ? part(r.rt + '%', r.rt >= 60 ? 'good' : 'bad', 'Critics', r.rtN ? count(r.rtN, 'review') : 'Tomatometer', rtPage)
+          // Too few critics for a Tomatometer: say so rather than leave a gap.
+          : r.rtN != null && rtPage && part('–', 'plain', 'Critics', count(r.rtN, 'review') + (r.rtN < 5 ? ', too few to score' : ', no score yet'), rtPage),
+        // RT gives the audience's count in bands ("25,000+").
+        r.rta != null && part(r.rta + '%', r.rta >= 60 ? 'good' : 'bad', 'Audience', r.rtaN ? r.rtaN.toLocaleString() + '+ ratings' : 'Popcornmeter', rtPage),
+      ]));
     } else if (kind === 'games') {
-      if (r.mc != null) h.push(scoreBlock(r.mc, S.tone(r.mc), 'Metascore', (r.mcN ? r.mcN + ' critics' : 'Metacritic'), r.mcSlug ? 'https://www.metacritic.com/game/' + r.mcSlug + '/' : null));
+      h.push(metacritic);
       if (r.steam != null) h.push(scoreBlock(r.steam + '%', S.tone(r.steam), 'Steam reviews', S.compact(r.steamN) + ' reviews', r.steamId ? 'https://store.steampowered.com/app/' + r.steamId + '/' : null));
       if (r.ign != null) h.push(scoreBlock(r.ign, S.tone(r.ign * 10), 'IGN', 'out of 10', r.ignUrl || null));
     } else {
@@ -542,6 +575,7 @@
           '<p class="summary" id="summary">' + (r.blurb ? esc(r.blurb) : '') + '</p>' +
           '<div class="d-actions">' +
             '<button class="btn sm" id="saveBtn" aria-pressed="' + saved + '">' + icon('heart', 'sm') + (saved ? 'Saved' : 'Save') + '</button>' +
+            (SCREEN ? hideButton(S.Hidden.has(kind, r.id)) : '') +
             (r.yt ? '<button class="btn sm primary" id="trailerBtn">' + icon('play', 'sm') + 'Trailer</button>' : '') +
             '<button class="btn sm" id="shareBtn">' + icon('link', 'sm') + 'Copy link</button>' +
             linksHTML(r) +
@@ -554,6 +588,19 @@
     detailDlg.querySelector('.sheet').scrollTop = 0;
     if (push !== false) history.replaceState(null, '', location.pathname + location.search + '#' + encodeURIComponent(r.id));
     summary(r);
+  }
+
+  function hideButton(on) {
+    return '<button class="btn sm" id="hideBtn" aria-pressed="' + on + '" title="Keep it out of trailers and suggestions">' + icon('eyeOff', 'sm') + (on ? 'Hidden' : 'Hide') + '</button>';
+  }
+  /* Hidden titles stay in the catalogue but leave the trailer feed and the suggestions. */
+  function setHidden(id, on) {
+    if (S.Hidden.has(kind, id) !== on) S.Hidden.toggle(kind, id);
+    var b = $('#hideBtn');
+    // Changed in place, so the button keeps focus (and the toast finds the dialog it is in).
+    if (b && current && current.id === id) { b.setAttribute('aria-pressed', String(on)); b.innerHTML = icon('eyeOff', 'sm') + (on ? 'Hidden' : 'Hide'); }
+    if (window.ShelfReels) window.ShelfReels.sync(id);
+    if (state.hidden) apply(true);
   }
 
   var sumCache = {};
@@ -600,7 +647,7 @@
     var out = [];
     for (var i = 0; i < items.length; i++) {
       var x = items[i];
-      if (x === r) continue;
+      if (x === r || (SCREEN && S.Hidden.has(kind, x.id))) continue;
       var s = 0, shared = 0;
       // Shared genres count for their rarity; genres the original lacks count a little against.
       if (x.genres) for (var a = 0; a < x.genres.length; a++) {
@@ -707,7 +754,7 @@
     var sg = t.closest('[data-seg]');
     if (sg) {
       var key = sg.getAttribute('data-seg'), val = sg.getAttribute('data-val');
-      if (key === 'saved') state.saved = val === '1'; else state[key] = val;
+      if (key === 'show') { state.saved = val === 'saved'; state.hidden = val === 'hidden'; } else state[key] = val;
       sg.parentNode.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', String(c === sg)); });
       apply(true);
       return;
@@ -719,6 +766,7 @@
       else if (d === 'min') state.min = null;
       else if (d === 'q') { state.q = ''; qEl.value = ''; qEl.parentNode.classList.remove('has-value'); }
       else if (d === 'saved') state.saved = false;
+      else if (d === 'hidden') state.hidden = false;
       else if (d === 'country') state.country = state.country.filter(function (c) { return c !== drop.getAttribute('data-val'); });
       else state[d] = '';
       apply(true);
@@ -733,7 +781,16 @@
       return;
     }
     if (t.closest('#surprise')) {
-      if (results.length) open(results[Math.floor(Math.random() * Math.min(results.length, 400))].id);
+      // A surprise is a suggestion too: never a hidden title, unless hidden ones are what is listed.
+      var pool = SCREEN && !state.hidden ? results.filter(function (x) { return !S.Hidden.has(kind, x.id); }) : results;
+      if (pool.length) open(pool[Math.floor(Math.random() * Math.min(pool.length, 400))].id);
+      return;
+    }
+    if (t.closest('#hideBtn') && current) {
+      var hid = current.id, hide = !S.Hidden.has(kind, hid);
+      setHidden(hid, hide);
+      if (hide) S.toast('Hidden from trailers and suggestions', { host: detailDlg, action: ['Undo', function () { setHidden(hid, false); }] });
+      else S.toast('Back in trailers and suggestions', { host: detailDlg });
       return;
     }
     if (t.closest('#saveBtn') && current) {
@@ -805,8 +862,9 @@
     if (new URLSearchParams(location.search).get('view') === 'trailers') return;
     if (window.ShelfReels && window.ShelfReels.isOpen()) { reelsPushed = false; window.ShelfReels.close(true); }
     state.view = '';
-    // Genres or filters changed inside the feed carry over to the grid.
-    if (loaded) { writeURL(); apply(true); }
+    // Genres or filters changed inside the feed carry over to the grid, and a feed opened
+    // from a title's details goes back to those details.
+    if (loaded) { writeURL(); apply(true); openFromHash(); }
   });
 
   window.ShelfCatalog = {
@@ -820,6 +878,7 @@
     setOrder: function (v) { state.rsort = v; writeURL(); if (window.ShelfReels) window.ShelfReels.refresh(); },
     openFilters: openFilters,
     closeReels: closeReels,
+    setHidden: setHidden,
   };
   chipFade();   // the chip row the page was built with may already overflow
   if (kind === 'movies' || kind === 'shows') {

@@ -1,13 +1,16 @@
 /* Metacritic scores, read from the same backend metacritic.com's own pages
    call. Films and series come from the browse ("finder") listing, 50 titles
    per request, so a full pass over all ~21,000 scored titles is a few hundred
-   small requests. Games use the per-title page, which carries the PC score. */
+   small requests. Games use the per-title page, which carries the PC score.
+   User scores come a title at a time from each title's user-review stats, the
+   only place that says how many people rated it. */
 import { get, log, loadCache, saveCache, fold } from './lib.mjs';
 
 /* The public key metacritic.com's front end sends with every request. */
 const KEY = '1MOZgmNFxvmljaQR1X9KAij9Mo4xAY3u';
 const FINDER = 'https://backend.metacritic.com/finder/metacritic/web';
 const PAGE = 'https://backend.metacritic.com/composer/metacritic/pages';
+const USER = 'https://backend.metacritic.com/reviews/metacritic/user';
 
 function reduce(i) {
   const m = (i.image?.filename || '').match(/^5-(tt\d+)\./);
@@ -18,6 +21,7 @@ function reduce(i) {
     year: i.premiereYear || null,
     score: i.criticScoreSummary?.score ?? null,
     n: i.criticScoreSummary?.reviewCount ?? null,
+    user: i.userScore?.score ?? null,
     imdb: m ? m[1] : null,
   };
 }
@@ -72,7 +76,7 @@ export function matchScreen(titles, mcRows, wikidata, kindPrefix) {
   }
   const used = new Set();
   const result = new Map();
-  const claim = (t, r, how) => { result.set(t.id, { score: r.score, n: r.n, slug: r.slug, how }); used.add(r.mcId); };
+  const claim = (t, r, how) => { result.set(t.id, { score: r.score, n: r.n, user: r.user ?? null, slug: r.slug, how }); used.add(r.mcId); };
 
   for (const t of titles) {
     const r = byImdb.get(t.id);
@@ -110,6 +114,65 @@ export async function gameScore(slug) {
     year: item.premiereYear || null,
     pc: Boolean(pc),
   };
+}
+
+/** A title's user-review stats: { score, n } (score null until enough have rated it). */
+export function userOf(j) {
+  const it = j?.data?.item;
+  if (!it) return null;
+  const n = Number(it.reviewCount) || 0;
+  const score = it.score == null || it.score === '' ? null : Number(it.score);
+  return { score: n > 0 && Number.isFinite(score) ? score : null, n };
+}
+
+/** type: 'movies' | 'shows' | 'games'. platform: 'pc' for a game's PC page. Null when there is no such page. */
+export async function userStats(type, slug, platform) {
+  const p = platform ? `${type}/${slug}/platform/${platform}` : `${type}/${slug}`;
+  const j = await get(`${USER}/${p}/stats/web?apiKey=${KEY}`, { paceMs: 700 });
+  return j ? userOf(j) : null;
+}
+
+/**
+ * Metacritic user scores for jobs ({ id, type, slug, platform?, year, rank }): never-checked
+ * first (most popular first, by rank), then the longest unchecked. A recent title is due
+ * again after two weeks, an older one after four months, since a score settles once a
+ * title has been out a while. Cache: { id: { slug, score, n, at } | { slug, none, n, at } }.
+ */
+export async function refreshMcUsers(jobs, { budgetMin = 55, cacheName = 'mc-user' } = {}) {
+  const cache = loadCache(cacheName);
+  const recent = new Date().getFullYear() - 1;
+  const due = (j) => {
+    const c = cache[j.id];
+    return !c || c.slug !== j.slug || Date.now() - c.at > ((j.year || 0) >= recent ? 14 : 120) * 864e5;
+  };
+  const todo = jobs.filter(due);
+  const fresh = todo.filter((j) => !cache[j.id]).sort((a, b) => a.rank - b.rank);
+  const stale = todo.filter((j) => cache[j.id]).sort((a, b) => cache[a.id].at - cache[b.id].at);
+  const deadline = Date.now() + budgetMin * 60e3;
+  log(`metacritic users: ${todo.length} of ${jobs.length} due`);
+  let done = 0, scored = 0, failedRun = 0;
+  for (const j of [...fresh, ...stale]) {
+    if (Date.now() > deadline) break;
+    let r;
+    try {
+      r = await userStats(j.type, j.slug, j.platform);
+      // A game that is not on PC has no PC page: its score across platforms instead.
+      if (!r && j.platform) r = await userStats(j.type, j.slug);
+      failedRun = 0;
+    } catch (e) {
+      log(`metacritic users ${j.type}/${j.slug}: ${e.message}`);
+      // Twenty failures in a row: the backend has changed or is refusing us. The health check will say so.
+      if (++failedRun >= 20) { log('metacritic users: stopping after 20 failures in a row'); break; }
+      continue;
+    }
+    cache[j.id] = r && r.score != null ? { slug: j.slug, score: r.score, n: r.n, at: Date.now() } : { slug: j.slug, none: true, n: r ? r.n : null, at: Date.now() };
+    done++;
+    if (r && r.score != null) scored++;
+    if (done % 200 === 0) { saveCache(cacheName, cache); log(`metacritic users: ${done}/${todo.length}, ${scored} scored`); }
+  }
+  saveCache(cacheName, cache);
+  log(`metacritic users: ${done} checked, ${scored} scored`);
+  return cache;
 }
 
 export async function crawlAll() {

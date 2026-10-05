@@ -55,6 +55,7 @@ export async function mergeScreen(prevMovies, prevShows) {
   const rtFound = loadCache('rt-guess');
   const mcMovies = loadCache('mc-movies', []);
   const mcTv = loadCache('mc-tv', []);
+  const mcUser = loadCache('mc-user');
   const cats = loadCache('wp-categories');
   const trailer = loadTrailers();
   const prev = {};
@@ -97,8 +98,8 @@ export async function mergeScreen(prevMovies, prevShows) {
       by: (t.kind === 'movies' ? (t.directors || []).slice(0, 2).join(', ')
         : known && w.creators && w.creators.length ? w.creators.slice(0, 2).join(', ') : (o.by || (t.directors || []).slice(0, 2).join(', '))) || null,
       imdb: t.imdb, votes: t.votes,
-      mc: null, mcN: null, mcSlug: null,
-      rt: null, rtN: null, rtPath: null,
+      mc: null, mcN: null, mcu: null, mcuN: null, mcSlug: null,
+      rt: null, rtN: null, rta: null, rtaN: null, rtPath: null,
       // Series: TVmaze's portrait art first; Wikipedia's lead image is often a logo.
       img: (t.kind === 'shows' && (tvmaze[t.id]?.img || (/tvmaze/.test(o.img || '') ? o.img : null))) || wikiImg || o.img || null,
       wiki: w.wiki || o.wiki || null,
@@ -108,6 +109,12 @@ export async function mergeScreen(prevMovies, prevShows) {
     };
     if (m) { row.mc = m.score; row.mcN = m.n; row.mcSlug = m.slug; }
     else if (o.mc != null) { row.mc = o.mc; row.mcN = o.mcN || null; row.mcSlug = o.mcSlug || null; }
+    // Metacritic's users: the title's own stats (score and count), else the score its listing
+    // shows, else the last one. A film with no Metascore can still have users, and a page to link.
+    const u = mcUser[t.id];
+    if (u && !u.none) { row.mcu = u.score; row.mcuN = u.n; row.mcSlug = row.mcSlug || u.slug; }
+    else if (!u && m?.user != null) row.mcu = m.user;
+    else if (!u && o.mcu != null) { row.mcu = o.mcu; row.mcuN = o.mcuN || null; row.mcSlug = row.mcSlug || o.mcSlug || null; }
     // RT's page at the address Wikidata gives, or failing that one found at RT's own address.
     // A page with too few critics for a Tomatometer keeps its count, so the site can say so.
     const g = rtFound[t.id];
@@ -115,7 +122,14 @@ export async function mergeScreen(prevMovies, prevShows) {
     if (page) {
       if (page.score != null) { row.rt = page.score; row.rtN = page.n; row.rtPath = page.path; }
       else if (page.n > 0) { row.rtN = page.n; row.rtPath = page.path; }
-    } else if (!r && !g && o.rt != null) { row.rt = o.rt; row.rtN = o.rtN || null; row.rtPath = o.rtPath || null; }
+      // The audience's score from the same page; a page read before it was keeps the last one.
+      const read = 'aud' in page;
+      const aud = read ? page.aud : o.rta ?? null;
+      if (aud != null) { row.rta = aud; row.rtaN = read ? page.audN : o.rtaN || null; row.rtPath = page.path; }
+    } else if (!r && !g) {
+      if (o.rt != null) { row.rt = o.rt; row.rtN = o.rtN || null; row.rtPath = o.rtPath || null; }
+      if (o.rta != null) { row.rta = o.rta; row.rtaN = o.rtaN || null; row.rtPath = o.rtPath || null; }
+    }
     if (t.kind === 'shows') {
       row.end = t.end;
       row.mini = t.type === 'tvMiniSeries' || null;
@@ -131,8 +145,9 @@ export async function mergeScreen(prevMovies, prevShows) {
   tidy(shows);
   for (const list of [movies, shows]) list.sort((a, b) => (b.votes || 0) - (a.votes || 0));
   const count = (l, k) => l.filter((r) => r[k] != null).length;
-  log(`movies ${movies.length}: mc ${count(movies, 'mc')}, rt ${count(movies, 'rt')}, img ${count(movies, 'img')}`);
-  log(`shows ${shows.length}: mc ${count(shows, 'mc')}, rt ${count(shows, 'rt')}, img ${count(shows, 'img')}`);
+  for (const [name, l] of [['movies', movies], ['shows', shows]]) {
+    log(`${name} ${l.length}: mc ${count(l, 'mc')}, mc users ${count(l, 'mcu')}, rt ${count(l, 'rt')}, rt audience ${count(l, 'rta')}, img ${count(l, 'img')}`);
+  }
   // TMDB's terms ask for its logo wherever its data is used; the build shows it when this is above zero.
   const tmdb = [...movies, ...shows].filter((r) => trailer.fromTmdb(r.id, r.yt)).length;
   return { movies, shows, tmdb };
@@ -204,6 +219,7 @@ export function mergeGames(prevGames, { newApps = [] } = {}) {
   const details = loadCache('steam-details');
   const wds = loadCache('wikidata-steam');
   const mcg = loadCache('mc-games');
+  const mcUser = loadCache('mc-user');
   const gimg = loadCache('images-games');
   const assets = loadCache('steam-assets');
   const rows = [];
@@ -233,6 +249,9 @@ export function mergeGames(prevGames, { newApps = [] } = {}) {
     }
     const f = freshMc(row);
     if (f && f.score != null) { row.mc = f.score; row.mcN = f.n || null; row.mcSlug = f.slug || null; }
+    // Metacritic's users (on PC where the game is sold there), once checked for this page.
+    const u = row.id && mcUser[row.id];
+    if (u && u.slug === row.mcSlug) { row.mcu = u.none ? null : u.score; row.mcuN = u.none ? null : u.n; }
     return row;
   };
 
@@ -241,7 +260,7 @@ export function mergeGames(prevGames, { newApps = [] } = {}) {
     rows.push(finish({
       id: g.id, title: g.title, year: g.year, genres: g.genres,
       steamId: g.steamId || null,
-      mc: g.mc ?? null, mcN: g.mcN ?? null, mcSlug: g.mcSlug ?? null,
+      mc: g.mc ?? null, mcN: g.mcN ?? null, mcu: g.mcu ?? null, mcuN: g.mcuN ?? null, mcSlug: g.mcSlug ?? null,
       steam: g.steam ?? null, steamN: g.steamN ?? null,
       ign: g.ign ?? null, ignUrl: g.ignUrl ?? null,
       tags: g.tags || [], wiki: g.wiki || null, img: g.img || null, free: g.free || null,
@@ -287,7 +306,7 @@ export function mergeGames(prevGames, { newApps = [] } = {}) {
     taken.add(id);
     r.id = id;
   }
-  log(`games ${kept.length} (dropped ${rows.length - kept.length} with no verifiable score): mc ${kept.filter((r) => r.mc != null).length}, steam ${kept.filter((r) => r.steam != null).length}`);
+  log(`games ${kept.length} (dropped ${rows.length - kept.length} with no verifiable score): mc ${kept.filter((r) => r.mc != null).length}, mc users ${kept.filter((r) => r.mcu != null).length}, steam ${kept.filter((r) => r.steam != null).length}`);
   return kept;
 }
 

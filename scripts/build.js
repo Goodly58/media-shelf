@@ -181,9 +181,9 @@ function page({ file, title, description, body, kind, current, scripts = '', hea
 }
 
 const SORTS = {
-  movies: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metascore'], ['rt', 'Rotten Tomatoes'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
-  shows: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metascore'], ['rt', 'Rotten Tomatoes'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
-  games: [['top', 'Top rated'], ['steam', 'Steam rating'], ['popular', 'Most reviewed'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
+  movies: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metacritic critics'], ['mcu', 'Metacritic users'], ['rt', 'Rotten Tomatoes critics'], ['rta', 'Rotten Tomatoes audience'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
+  shows: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metacritic critics'], ['mcu', 'Metacritic users'], ['rt', 'Rotten Tomatoes critics'], ['rta', 'Rotten Tomatoes audience'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
+  games: [['top', 'Top rated'], ['steam', 'Steam rating'], ['mcu', 'Metacritic users'], ['popular', 'Most reviewed'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
   books: [['top', 'Top rated'], ['popular', 'Most rated'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z'], ['author', 'Author']],
 };
 const CAT = {

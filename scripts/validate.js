@@ -57,7 +57,7 @@ ok.push(`${scripts.length} scripts parse; ${shell.length} precached files exist`
 
 /* ---------- data ---------- */
 const MIN = { games: 1000, books: 1500, movies: 5000, shows: 1500 };
-const RANGE = { imdb: [1, 10], mc: [0, 100], rt: [0, 100], steam: [0, 100], rating: [1, 5], ign: [0, 10] };
+const RANGE = { imdb: [1, 10], mc: [0, 100], mcu: [0, 10], rt: [0, 100], rta: [0, 100], steam: [0, 100], rating: [1, 5], ign: [0, 10] };
 let total = 0;
 for (const kind of Object.keys(MIN)) {
   let rows;

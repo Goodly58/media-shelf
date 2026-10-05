@@ -41,7 +41,9 @@
     }).sort(function (a, b) { return b[0] - a[0]; }).map(function (x) { return x[1]; });
   }
   function order(startId) {
-    var rows = C.results().filter(function (r) { return r.yt; });
+    // Hidden titles never come up, unless hidden ones are what the filters ask for.
+    var skip = !C.state().hidden;
+    var rows = C.results().filter(function (r) { return r.yt && !(skip && S.Hidden.has(kind, r.id)); });
     var by = C.state().rsort;
     rows = by === 'shuffle' || !C.sorters[by] ? shuffle(rows) : rows.slice().sort(C.sorters[by]);
     if (startId) {
@@ -64,18 +66,32 @@
     if (r.by) b.push(r.by.split(',')[0]);
     return b.filter(Boolean).map(esc).join(' · ');
   }
-  function score(href, value, label, count) {
-    return '<a href="' + esc(href) + '" target="_blank" rel="noopener"><b>' + value + '</b>' + label + (count ? '<small>' + count + '</small>' : '') + '</a>';
+  /* Each source's scores under its name: IMDb, then Metacritic and Rotten Tomatoes with
+     their critics' and audience scores side by side, each with how many it comes from. */
+  function score(href, value, count) {
+    return '<a href="' + esc(href) + '" target="_blank" rel="noopener"><b>' + value + '</b><small>' + count + '</small></a>';
+  }
+  function group(name, items) {
+    items = items.filter(Boolean);
+    return items.length ? '<span class="grp"><span class="src">' + name + '</span>' + items.join('') + '</span>' : '';
   }
   function plural(n, one) { return S.compact(n) + ' ' + one + (n === 1 ? '' : 's'); }
   function scores(r) {
-    var s = [];
-    if (r.imdb != null) s.push(score('https://www.imdb.com/title/' + r.id + '/', r.imdb.toFixed(1), 'IMDb', r.votes ? plural(r.votes, 'vote') : ''));
-    if (r.mc != null) s.push(score('https://www.metacritic.com/' + (kind === 'movies' ? 'movie' : 'tv') + '/' + (r.mcSlug || '') + '/', r.mc, 'Metascore', r.mcN ? plural(r.mcN, 'critic') : ''));
-    if (r.rt != null) s.push(score('https://www.rottentomatoes.com/' + (r.rtPath || ''), r.rt + '%', 'Rotten Tomatoes', r.rtN ? plural(r.rtN, 'review') : ''));
-    // A page with too few critics for a Tomatometer says so, rather than the score just being absent.
-    else if (r.rtN != null && r.rtPath) s.push(score('https://www.rottentomatoes.com/' + r.rtPath, '–', 'Rotten Tomatoes', plural(r.rtN, 'review') + (r.rtN < 5 ? ', too few to score' : ', no score yet')));
-    return s.join('');
+    var mc = 'https://www.metacritic.com/' + (kind === 'movies' ? 'movie' : 'tv') + '/' + (r.mcSlug || '') + '/';
+    var rt = 'https://www.rottentomatoes.com/' + (r.rtPath || '');
+    return [
+      group('IMDb', [r.imdb != null && score('https://www.imdb.com/title/' + r.id + '/', r.imdb.toFixed(1), r.votes ? plural(r.votes, 'vote') : 'votes')]),
+      group('Metacritic', [
+        r.mc != null && score(mc, r.mc, r.mcN ? plural(r.mcN, 'critic') : 'critics'),
+        r.mcu != null && score(mc + 'user-reviews/', r.mcu.toFixed(1), r.mcuN ? plural(r.mcuN, 'user') : 'users'),
+      ]),
+      group('Rotten Tomatoes', [
+        r.rt != null ? score(rt, r.rt + '%', r.rtN ? plural(r.rtN, 'critic') : 'critics')
+          // Too few critics for a Tomatometer: said, rather than the score just being absent.
+          : r.rtN != null && r.rtPath && score(rt, '–', r.rtN < 5 ? 'too few critics' : 'no score yet'),
+        r.rta != null && score(rt, r.rta + '%', r.rtaN ? S.compact(r.rtaN) + '+ audience' : 'audience'),
+      ]),
+    ].join('');
   }
   function soundLabel() { return icon(muted ? 'mute' : 'sound', 'sm') + '<span>' + (muted ? 'Sound off' : 'Sound on') + '</span>'; }
   function slide(r, i) {
@@ -83,7 +99,7 @@
     var tags = (r.tags || []).slice(0, 4).map(function (t) {
       return '<button class="chip" type="button" data-tag="' + esc(t) + '" aria-pressed="' + (picked.indexOf(t) >= 0) + '">' + esc(t) + '</button>';
     }).join('');
-    var saved = S.Favs.has(kind, r.id);
+    var saved = S.Favs.has(kind, r.id), hid = S.Hidden.has(kind, r.id);
     return '<section class="reel" data-i="' + i + '" aria-roledescription="trailer" aria-label="' + esc(r.title) + '">' +
       '<div class="reel-bg" data-bg="' + esc(S.imgUrl(kind, r) || '') + '"></div>' +
       '<div class="reel-in">' +
@@ -94,6 +110,7 @@
         '<div class="reel-act">' +
           '<button class="btn sm" type="button" data-reel-sound>' + soundLabel() + '</button>' +
           '<button class="btn sm reel-fav' + (saved ? ' on' : '') + '" type="button" data-fav="' + esc(r.id) + '" aria-label="Save">' + icon('heart', 'sm') + '<span>Save</span></button>' +
+          '<button class="btn sm reel-hide" type="button" data-reel-hide aria-pressed="' + hid + '" title="Never show this one again">' + icon('eyeOff', 'sm') + '<span>' + (hid ? 'Hidden' : 'Hide') + '</span></button>' +
           '<button class="btn sm" type="button" data-reel-detail="' + esc(r.id) + '">' + icon('info', 'sm') + '<span>Details</span></button>' +
           '<button class="icon-btn reel-next" type="button" data-reel-next aria-label="Next trailer">' + icon('chevD') + '</button>' +
         '</div>' +
@@ -281,6 +298,40 @@
   }
   function labels() { dlg.querySelectorAll('[data-reel-sound]').forEach(function (b) { b.innerHTML = soundLabel(); b.setAttribute('aria-pressed', String(!muted)); }); }
 
+  /* ------------------------------------------------------------ hiding */
+  /* Hide: the trailer goes, the next one starts, and the title never comes up in the feed
+     (or among suggestions) again. The catalogue keeps the list; Undo is a tap away. */
+  function hideAt(i) {
+    var r = list[i];
+    if (!r) return;
+    var on = !S.Hidden.has(kind, r.id);
+    C.setHidden(r.id, on);
+    if (!on) return;
+    S.toast('Hidden', { host: dlg, action: ['Undo', function () {
+      C.setHidden(r.id, false);
+      var el = slideAt(i);
+      if (el && i !== active) el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    }] });
+    if (i === active) next();
+  }
+  // A slide follows its title's hidden state: its player gives way to a note, and comes back.
+  function mark(i, on) {
+    var el = slideAt(i), box = slot(i);
+    if (!el || !box) return;
+    var b = el.querySelector('.reel-act [data-reel-hide]');
+    b.setAttribute('aria-pressed', String(on));
+    b.lastChild.textContent = on ? 'Hidden' : 'Hide';
+    if (on && !box.classList.contains('hid')) {
+      destroy(i);
+      box.classList.add('gone', 'hid');
+      box.innerHTML = '<div><p>Hidden</p><button class="btn sm" type="button" data-reel-hide>Undo</button></div>';
+    } else if (!on && box.classList.contains('hid')) {
+      box.classList.remove('gone', 'hid');
+      box.innerHTML = '<div class="reel-slot"></div>';
+      if (i === active) start(i);
+    }
+  }
+
   loadApi().catch(function () {});
 
   /* ------------------------------------------------------------ panels over the feed */
@@ -328,6 +379,7 @@
       }
       var d = t.closest('[data-reel-detail]');
       if (d) { C.open(d.getAttribute('data-reel-detail')); return; }
+      if (t.closest('[data-reel-hide]')) { hideAt(Number(t.closest('.reel').getAttribute('data-i'))); return; }
     });
     dlg.querySelector('#reelsSort').addEventListener('change', function () { C.setOrder(this.value); });
     dlg.addEventListener('keydown', function (e) {
@@ -367,5 +419,10 @@
     isOpen: function () { return Boolean(dlg && dlg.open); },
     // The catalogue changed (genres, filters, order): deal a new feed.
     refresh: function () { if (dlg && dlg.open) refresh(); },
+    // A title was hidden or brought back (here or from its details).
+    sync: function (id) {
+      if (!dlg || !dlg.open) return;
+      for (var i = 0; i < rendered; i++) if (list[i].id === id) mark(i, S.Hidden.has(kind, id));
+    },
   };
 })();

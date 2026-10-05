@@ -26,6 +26,7 @@
     mute: '<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m22 9-6 6M16 9l6 6"/>',
     info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
     chevD: '<path d="m6 9 6 6 6-6"/>',
+    eyeOff: '<path d="M10.7 5.1A10.7 10.7 0 0 1 21.9 11.7a1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"/><path d="M14.1 14.2a3 3 0 0 1-4.3-4.3"/><path d="M17.5 17.5A10.7 10.7 0 0 1 2.1 12.3a1 1 0 0 1 0-.7 10.7 10.7 0 0 1 4.4-5.1"/><path d="m2 2 20 20"/>',
   };
   function icon(name, cls) {
     return '<svg class="i' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
@@ -74,26 +75,38 @@
   var METRICS = {
     imdb: { label: 'IMDb', v: function (r) { return r.imdb; }, badge: function (r) { return r.imdb == null ? '' : '<span class="badge star">' + icon('star') + '<b>' + r.imdb.toFixed(1) + '</b></span>'; } },
     mc: { label: 'Metacritic', v: function (r) { return r.mc; }, badge: function (r) { return r.mc == null ? '' : '<span class="badge ' + tone(r.mc) + '">' + r.mc + '</span>'; } },
+    mcu: { label: 'Metacritic users', v: function (r) { return r.mcu; }, badge: function (r) { return r.mcu == null ? '' : '<span class="badge ' + tone(Math.round(r.mcu * 10)) + '">' + r.mcu.toFixed(1) + '</span>'; } },
     rt: { label: 'Rotten Tomatoes', v: function (r) { return r.rt; }, badge: function (r) { return r.rt == null ? '' : '<span class="badge ' + (r.rt >= 60 ? 'good' : 'bad') + '">' + r.rt + '%</span>'; } },
+    rta: { label: 'Rotten Tomatoes audience', v: function (r) { return r.rta; }, badge: function (r) { return r.rta == null ? '' : '<span class="badge ' + (r.rta >= 60 ? 'good' : 'bad') + '">' + r.rta + '%</span>'; } },
     steam: { label: 'Steam', v: function (r) { return r.steam; }, badge: function (r) { return r.steam == null ? '' : '<span class="badge ' + tone(r.steam) + '">' + r.steam + '%</span>'; } },
     rating: { label: 'Goodreads', v: function (r) { return r.rating; }, badge: function (r) { return r.rating == null ? '' : '<span class="badge star">' + icon('star') + '<b>' + r.rating.toFixed(2) + '</b></span>'; } },
   };
 
-  /* --------------------------------------------------------- favourites */
-  var FAV_KEY = 'shelf_favs_v2';
-  var favs = {};
-  try { favs = JSON.parse(localStorage.getItem(FAV_KEY) || '{}') || {}; } catch (e) { favs = {}; }
-  var Favs = {
-    has: function (kind, id) { return Boolean(favs[kind] && favs[kind].indexOf(id) >= 0); },
-    toggle: function (kind, id) {
-      var list = favs[kind] || (favs[kind] = []);
-      var i = list.indexOf(id);
-      if (i >= 0) list.splice(i, 1); else list.unshift(id);
-      try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch (e) {}
-      return i < 0;
-    },
-    list: function (kind) { return (favs[kind] || []).slice(); },
-  };
+  /* ---------------------------------------------- saved and hidden titles */
+  // Kept in this browser only, as { kind: [id, ...] }, newest first.
+  function idStore(key) {
+    var data = {}, sets = {};
+    try { data = JSON.parse(localStorage.getItem(key) || '{}') || {}; } catch (e) { data = {}; }
+    function set(kind) {
+      if (!sets[kind]) { sets[kind] = {}; (data[kind] || []).forEach(function (id) { sets[kind][id] = 1; }); }
+      return sets[kind];
+    }
+    return {
+      has: function (kind, id) { return Boolean(set(kind)[id]); },
+      toggle: function (kind, id) {
+        var list = data[kind] || (data[kind] = []);
+        var i = list.indexOf(id);
+        if (i >= 0) list.splice(i, 1); else list.unshift(id);
+        sets[kind] = null;
+        try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) {}
+        return i < 0;
+      },
+      list: function (kind) { return (data[kind] || []).slice(); },
+    };
+  }
+  var Favs = idStore('shelf_favs_v2');
+  // Films and series hidden from the trailer feed and from suggestions (More like this, Surprise me).
+  var Hidden = idStore('shelf_hidden');
 
   /* -------------------------------------------------------------- cards */
   function coverHTML(kind, r, opts) {
@@ -130,13 +143,39 @@
   }
 
   /* -------------------------------------------------------------- toast */
-  var toastEl, toastT;
-  function toast(msg) {
-    if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'toast'; toastEl.setAttribute('role', 'status'); document.body.appendChild(toastEl); }
+  /* A note at the foot of the screen, with at most one action: opts.action = [label, fn].
+     Over an open dialog it goes inside that dialog (opts.host, or the one in use), since
+     anything outside sits beneath it, out of sight and out of reach. */
+  var toastEl, toastT, toastAct;
+  function toast(msg, opts) {
+    opts = opts || {};
+    if (!toastEl) {
+      toastEl = document.createElement('div');
+      toastEl.className = 'toast';
+      toastEl.setAttribute('role', 'status');
+      toastEl.addEventListener('click', function (e) {
+        if (!toastAct || !e.target.closest('button')) return;
+        var f = toastAct;
+        toastAct = null;
+        toastEl.classList.remove('on');
+        f();
+      });
+    }
+    var a = document.activeElement;
+    var host = opts.host || (a && a.closest && a.closest('dialog[open]')) || document.body;
+    if (toastEl.parentNode !== host) host.appendChild(toastEl);
     toastEl.textContent = msg;
+    toastAct = opts.action ? opts.action[1] : null;
+    if (opts.action) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = opts.action[0];
+      toastEl.appendChild(b);
+    }
+    toastEl.classList.toggle('act', Boolean(opts.action));
     toastEl.classList.add('on');
     clearTimeout(toastT);
-    toastT = setTimeout(function () { toastEl.classList.remove('on'); }, 1800);
+    toastT = setTimeout(function () { toastEl.classList.remove('on'); toastAct = null; }, opts.action ? 5000 : 1800);
   }
 
   /* -------------------------------------------------------------- theme */
@@ -286,7 +325,7 @@
   var api = {
     icon: icon, esc: esc, compact: compact, KINDS: KINDS, METRICS: METRICS, tone: tone,
     imgUrl: imgUrl, coverHTML: coverHTML, cardHTML: cardHTML,
-    Favs: Favs, toast: toast, openSearch: openSearch, fold: fold, warmTrailers: warmTrailers,
+    Favs: Favs, Hidden: Hidden, toast: toast, openSearch: openSearch, fold: fold, warmTrailers: warmTrailers,
   };
   for (var k in api) S[k] = api[k];
 })();

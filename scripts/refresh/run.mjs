@@ -15,7 +15,7 @@ import path from 'node:path';
 import { loadCache, saveCache, readData, writeData, writeMeta, compact, log, traffic, CACHE } from './lib.mjs';
 import { loadImdb } from './imdb.mjs';
 import { resolveWikidata, resolveSteam } from './wikidata.mjs';
-import { crawlAll, gameScore } from './metacritic.mjs';
+import { crawlAll, gameScore, refreshMcUsers } from './metacritic.mjs';
 import { resolveImages, searchArticle } from './wikipedia.mjs';
 import { resolveCategories } from './categories.mjs';
 import { resolveTrailers } from './trailers.mjs';
@@ -121,12 +121,32 @@ await Promise.all([
     const titles = selected().map((t) => ({ id: t.id, title: t.title, votes: t.votes, rt: wd[t.id]?.rt })).filter((t) => t.rt)
       // never-checked first, then the most popular
       .sort((a, b) => (prev.get(a.id)?.rt != null) - (prev.get(b.id)?.rt != null) || b.votes - a.votes);
-    await refreshRT(titles, { budgetMin: BUDGET });
+    // A catch-up run (--only) keeps to its budget: a quarter of it goes to finding missing pages.
+    const findMin = ONLY ? Math.round(BUDGET / 4) : 12;
+    await refreshRT(titles, { budgetMin: ONLY ? BUDGET - findMin : BUDGET });
     // Films with no usable link on Wikidata (none, or one to another film's page): RT's own addresses.
     const rtc = { ...loadCache('rt-b'), ...loadCache('rt') };
     const lost = selected().filter((t) => t.kind === 'movies' && (!wd[t.id]?.rt || rtc[t.id]?.mismatch || rtc[t.id]?.missing))
       .sort((a, b) => b.votes - a.votes);
-    await findRT(lost, { budgetMin: ONLY === 'rt' ? BUDGET : 12 });
+    await findRT(lost, { budgetMin: findMin });
+  }),
+  step('mcusers', async () => {
+    // Metacritic user scores. Its listing has them without a count, so each title's own stats instead.
+    // Films and series Metacritic has no Metascore for still have a page (and users) when Wikidata links one.
+    const wd = loadCache('wikidata');
+    const slug = (r, prefix) => {
+      if (r.mcSlug) return r.mcSlug;
+      const w = wd[r.id]?.mc || '';
+      return w.startsWith(prefix + '/') ? w.slice(prefix.length + 1).replace(/\/.*$/, '') || null : null;
+    };
+    // Each catalogue in order of popularity; rank is the share ahead, so a short budget covers each alike.
+    const ranked = (rows, pop) => rows.slice().sort((a, b) => pop(b) - pop(a)).map((r, i, l) => [r, i / l.length]);
+    const jobs = [
+      ...ranked(before.movies, (r) => r.votes || 0).map(([r, rank]) => ({ id: r.id, type: 'movies', slug: slug(r, 'movie'), year: r.year, rank })),
+      ...ranked(before.shows, (r) => r.votes || 0).map(([r, rank]) => ({ id: r.id, type: 'shows', slug: slug(r, 'tv'), year: r.year, rank })),
+      ...ranked(before.games, (r) => r.steamN || 0).map(([r, rank]) => ({ id: r.id, type: 'games', slug: r.mcSlug || null, platform: r.steamId ? 'pc' : null, year: r.year, rank })),
+    ].filter((j) => j.slug);
+    await refreshMcUsers(jobs, { budgetMin: BUDGET });
   }),
   step('steam', async () => {
     const ids = steamIds();

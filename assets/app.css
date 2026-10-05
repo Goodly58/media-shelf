@@ -271,6 +271,9 @@ dialog::backdrop { background: rgba(4, 6, 10, .62); backdrop-filter: blur(3px); 
 dialog[open] .sheet { animation: pop .18s ease-out; }
 @keyframes pop { from { opacity: 0; transform: translateY(10px) scale(.985); } }
 .sheet-x { position: sticky; top: 12px; float: right; margin: 12px 12px 0 0; z-index: 3; }
+/* Over a title's details it has no height (its bottom margin cancels it), so it takes no width
+   from the details beside it; the title keeps clear of it with its own padding. */
+#detailDlg .sheet-x { margin-bottom: -50px; }
 @media (max-width: 640px) {
   dialog.as-sheet { margin: auto 0 0; width: 100%; }
   dialog.as-sheet .sheet { width: 100%; max-height: 88vh; border-radius: 20px 20px 0 0; border-bottom: 0; }
@@ -312,7 +315,7 @@ a.score:hover { border-color: var(--mut-2); }
   .detail > .cover { grid-row: 1; }
   .d-head { justify-content: center; }
   .d-body { grid-column: 1 / -1; }
-  .d-title { font-size: 22px; padding-right: 30px; }
+  .d-title { font-size: 22px; padding-right: 40px; }
   .d-meta { flex-direction: column; gap: 2px; }
   .similar { padding: 0 18px 22px; }
 }
@@ -568,3 +571,29 @@ dialog.reels::backdrop { background: #05060a; }
 .reel-scores a { display: inline-flex; align-items: baseline; gap: 0; color: rgba(255, 255, 255, .72); }
 .reel-scores a:hover { color: #fff; }
 .reel-scores small { margin-left: 6px; font-size: 12px; color: rgba(255, 255, 255, .5); }
+
+/* A source with a critics' and an audience score: one block, both scores under its name */
+.score.duo { flex-direction: column; align-items: flex-start; gap: 6px; padding: 8px 14px 10px 10px; }
+.score.duo .src { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--mut-2); padding-left: 2px; }
+.duo-in { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+.part { display: flex; align-items: center; gap: 10px; min-width: 0; }
+a.part:hover .l b { text-decoration: underline; text-underline-offset: 2px; }
+.reel-scores .grp { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
+.reel-scores .src { color: rgba(255, 255, 255, .55); font-size: 12.5px; font-weight: 600; }
+.reel-scores .grp small { margin-left: 0; }
+/* Hiding a title */
+#hideBtn[aria-pressed="true"] .i, .reel-hide[aria-pressed="true"] .i { color: var(--k-movies); }
+.reel-act .reel-hide[aria-pressed="true"] { background: rgba(255, 255, 255, .2); border-color: rgba(255, 255, 255, .4); }
+.reel-player.hid { color: #fff; font-weight: 650; }
+.reel-player.hid p { margin-bottom: 10px; font-size: 15px; }
+.reel-player.hid .btn { background: rgba(255, 255, 255, .1); border-color: rgba(255, 255, 255, .25); color: #fff; }
+/* A toast with an action (Undo) can be tapped */
+.toast.act { pointer-events: auto; display: flex; align-items: center; gap: 6px; padding: 6px 6px 6px 18px; }
+.toast button { border: 0; background: none; color: inherit; font: inherit; font-weight: 750; padding: 4px 12px; border-radius: 999px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.toast button:hover { background: color-mix(in srgb, currentColor 12%, transparent); }
+dialog.reels .toast { background: #f3f5fa; color: #05060a; }
+/* Phones: a source to a row, its two scores side by side where they fit */
+@media (max-width: 560px) {
+  .scores .score { flex: 1 1 100%; }
+  .duo-in { gap: 8px 16px; }
+}
