@@ -821,5 +821,6 @@
     openFilters: openFilters,
     closeReels: closeReels,
   };
+  chipFade();   // the chip row the page was built with may already overflow
   load();
 })();
