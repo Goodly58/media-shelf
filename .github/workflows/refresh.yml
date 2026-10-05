@@ -37,7 +37,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 240
     steps:
+      # The branch as it is when the run starts, not as it was when the run was queued:
+      # a run that waited behind another must build on that one's data, or its own
+      # commit cannot be replayed on top.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
 
       - uses: actions/setup-node@v4
         with:

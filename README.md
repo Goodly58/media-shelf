@@ -22,8 +22,8 @@ published, and leaves it empty if it cannot:
 | Source | How |
 | --- | --- |
 | IMDb | Official datasets: rating, votes, genres, runtime, directors, episodes |
-| Metacritic | The same backend metacritic.com uses, matched by IMDb id or Wikidata link |
-| Rotten Tomatoes | The title's own page, at the address Wikidata records |
+| Metacritic | Critics' Metascore and the users' score with its count, from the same backend metacritic.com uses, matched by IMDb id or Wikidata link |
+| Rotten Tomatoes | Critics' Tomatometer and the audience's Popcornmeter, from the title's own page at the address Wikidata records (or RT's own address when Wikidata has none) |
 | Steam | The store's review summary for each app |
 | Goodreads | Genre lists for new books, then each book's own page by its Goodreads id or ISBN |
 | Wikipedia | Each article's categories, for the subgenres, themes and countries of films and series |
