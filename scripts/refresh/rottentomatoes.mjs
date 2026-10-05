@@ -36,12 +36,62 @@ export async function rtScore(path) {
   try { card = JSON.parse(html.slice(s, html.indexOf('</script>', s))); } catch {}
   const cs = card?.criticsScore || {};
   const score = cs.score === '' || cs.score == null ? null : Number(cs.score);
+  // The page's structured data near the top carries its release date.
+  const year = Number((html.match(/"dateCreated":"(\d{4})/) || [])[1]) || null;
   return {
     score: Number.isFinite(score) ? score : null,
     n: cs.reviewCount ?? cs.ratingCount ?? null,
     title,
+    year,
     path: finalPath,
   };
+}
+
+/** RT's address for a film title: lower case, words joined by underscores ("m/the_dark_knight"). */
+export function slugRT(title) {
+  // Not fold(): RT keeps a leading "the" ("m/the_dark_knight").
+  return decode(String(title)).normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+    .replace(/(\d),(?=\d)/g, '$1').replace(/['\u2019]/g, '').replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+}
+
+// Titles compared without spaces or punctuation: "Alien 3" and "Alien³", "Hara-Kiri" and "Harakiri".
+const same = (a, b) => fold(a).replace(/ /g, '') === fold(b).replace(/ /g, '');
+
+/**
+ * Films Wikidata has no Rotten Tomatoes link for (or a wrong one): try RT's own addresses,
+ * the title with its year first, then the bare title, then (for two words) the words run
+ * together ("m/trollhunter"). A page counts only when its title is the same as ours and its
+ * year within two of ours (a foreign film often reaches the US a year or two later), so a
+ * remake or namesake never does.
+ * titles: [{ id, title, year }]. Cache: { id: { score, n, title, year, path, at } | { none, at } }.
+ */
+export async function findRT(titles, { budgetMin = 12, maxAgeDays = 90, cacheName = 'rt-guess' } = {}) {
+  const cache = loadCache(cacheName);
+  const stale = Date.now() - maxAgeDays * 864e5;
+  const deadline = Date.now() + budgetMin * 60e3;
+  const todo = titles.filter((t) => !cache[t.id] || cache[t.id].at < stale);
+  let n = 0, found = 0;
+  for (const t of todo) {
+    if (Date.now() > deadline) break;
+    const base = slugRT(t.title);
+    if (!base) continue;
+    let hit = null;
+    const paths = [`m/${base}_${t.year}`, `m/${base}`];
+    if (base.split('_').length === 2) paths.push(`m/${base.replace('_', '')}`);
+    for (const path of paths) {
+      let r;
+      try { r = await rtScore(path); } catch (e) { log(`rt find ${path}: ${e.message}`); continue; }
+      // A guessed page must also have a score: an unscored one is too thin to tell a namesake apart.
+      if (r && !r.missing && r.score != null && same(r.title, t.title) && r.year && Math.abs(r.year - t.year) <= 2) { hit = r; break; }
+    }
+    cache[t.id] = hit ? { ...hit, at: Date.now() } : { none: true, at: Date.now() };
+    n++;
+    if (hit) found++;
+    if (n % 50 === 0) saveCache(cacheName, cache);
+  }
+  saveCache(cacheName, cache);
+  log(`rt find: ${n} of ${todo.length} films tried, ${found} found`);
+  return cache;
 }
 
 /**

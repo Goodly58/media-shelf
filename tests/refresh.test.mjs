@@ -5,6 +5,7 @@ import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTag
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
 import { pickTrailer, kinoPick, tmdbPick } from '../scripts/refresh/trailers.mjs';
+import { slugRT } from '../scripts/refresh/rottentomatoes.mjs';
 
 let pass = 0, fail = 0;
 function ok(label, cond, detail) {
@@ -83,6 +84,12 @@ ok('KinoCheck: nothing for a clip', kinoPick({ trailer: null, videos: [{ youtube
 ok('KinoCheck: nothing for an error', kinoPick({ error: 'Error', message: 'movie not found' }) === null);
 ok('TMDB: the official trailer', tmdbPick({ results: [{ site: 'YouTube', key: 'aaaaaaaaaaa', type: 'Teaser', official: true }, { site: 'YouTube', key: 'bbbbbbbbbbb', type: 'Trailer', official: true }, { site: 'Vimeo', key: 'x', type: 'Trailer' }] }) === 'bbbbbbbbbbb');
 ok('TMDB: nothing but featurettes', tmdbPick({ results: [{ site: 'YouTube', key: 'aaaaaaaaaaa', type: 'Featurette', official: true }] }) === null);
+
+console.log('rotten tomatoes addresses');
+ok('a title becomes RT\'s address', slugRT('The Dark Knight') === 'the_dark_knight');
+ok('apostrophes go, accents fold', slugRT("Schindler's List") === 'schindlers_list' && slugRT('Amélie') === 'amelie', [slugRT("Schindler's List"), slugRT('Amélie')]);
+ok('punctuation becomes one underscore', slugRT('Spider-Man: No Way Home') === 'spider_man_no_way_home', slugRT('Spider-Man: No Way Home'));
+ok('commas inside numbers go', slugRT('10,000 BC') === '10000_bc', slugRT('10,000 BC'));
 
 console.log('source health');
 const now = Date.now(), old = now - 9e9;

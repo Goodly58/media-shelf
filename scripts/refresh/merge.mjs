@@ -52,6 +52,7 @@ export async function mergeScreen(prevMovies, prevShows) {
   const images = loadCache('images');
   const tvmaze = loadCache('tvmaze');
   const rt = { ...loadCache('rt-b'), ...loadCache('rt') };
+  const rtFound = loadCache('rt-guess');
   const mcMovies = loadCache('mc-movies', []);
   const mcTv = loadCache('mc-tv', []);
   const cats = loadCache('wp-categories');
@@ -107,9 +108,14 @@ export async function mergeScreen(prevMovies, prevShows) {
     };
     if (m) { row.mc = m.score; row.mcN = m.n; row.mcSlug = m.slug; }
     else if (o.mc != null) { row.mc = o.mc; row.mcN = o.mcN || null; row.mcSlug = o.mcSlug || null; }
-    if (r) {
-      if (!r.missing && !r.mismatch && r.score != null) { row.rt = r.score; row.rtN = r.n; row.rtPath = r.path; }
-    } else if (o.rt != null) { row.rt = o.rt; row.rtN = o.rtN || null; row.rtPath = o.rtPath || null; }
+    // RT's page at the address Wikidata gives, or failing that one found at RT's own address.
+    // A page with too few critics for a Tomatometer keeps its count, so the site can say so.
+    const g = rtFound[t.id];
+    const page = r && !r.missing && !r.mismatch ? r : g && !g.none ? g : null;
+    if (page) {
+      if (page.score != null) { row.rt = page.score; row.rtN = page.n; row.rtPath = page.path; }
+      else if (page.n > 0) { row.rtN = page.n; row.rtPath = page.path; }
+    } else if (!r && !g && o.rt != null) { row.rt = o.rt; row.rtN = o.rtN || null; row.rtPath = o.rtPath || null; }
     if (t.kind === 'shows') {
       row.end = t.end;
       row.mini = t.type === 'tvMiniSeries' || null;

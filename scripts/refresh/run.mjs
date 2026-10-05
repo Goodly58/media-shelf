@@ -19,7 +19,7 @@ import { crawlAll, gameScore } from './metacritic.mjs';
 import { resolveImages, searchArticle } from './wikipedia.mjs';
 import { resolveCategories } from './categories.mjs';
 import { resolveTrailers } from './trailers.mjs';
-import { refreshRT } from './rottentomatoes.mjs';
+import { refreshRT, findRT } from './rottentomatoes.mjs';
 import { refreshReviews, refreshTags, popularApps, appDetails, refreshAssets } from './steam.mjs';
 import { refreshBooks, refreshEditionCovers } from './books.mjs';
 import { resolveTvmaze } from './tvmaze.mjs';
@@ -122,6 +122,11 @@ await Promise.all([
       // never-checked first, then the most popular
       .sort((a, b) => (prev.get(a.id)?.rt != null) - (prev.get(b.id)?.rt != null) || b.votes - a.votes);
     await refreshRT(titles, { budgetMin: BUDGET });
+    // Films with no usable link on Wikidata (none, or one to another film's page): RT's own addresses.
+    const rtc = { ...loadCache('rt-b'), ...loadCache('rt') };
+    const lost = selected().filter((t) => t.kind === 'movies' && (!wd[t.id]?.rt || rtc[t.id]?.mismatch || rtc[t.id]?.missing))
+      .sort((a, b) => b.votes - a.votes);
+    await findRT(lost, { budgetMin: ONLY === 'rt' ? BUDGET : 12 });
   }),
   step('steam', async () => {
     const ids = steamIds();
