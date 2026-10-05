@@ -212,15 +212,16 @@
       players[i] = p;
     }, function () { offline(i); });
   }
-  // Browsers may refuse to start a trailer with sound before a tap: fall back to muted.
+  // Browsers may refuse to start a trailer with sound before a tap: if it never started
+  // at all (still unstarted or cued, so not an ad or buffering), fall back to muted.
   function watch(i) {
     clearTimeout(timers.check);
     timers.check = setTimeout(function () {
       var p = players[i];
       if (i !== active || !p || !p.ready || muted) return;
       var st = p.getPlayerState();
-      if (st !== 1 && st !== 3) { muted = true; sound(p); p.playVideo(); labels(); }
-    }, 1800);
+      if (st === -1 || st === 5) { muted = true; sound(p); p.playVideo(); labels(); }
+    }, 3500);
   }
   function sound(p) {
     if (!p || !p.ready) return;
