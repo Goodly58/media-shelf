@@ -24,7 +24,7 @@ import { refreshReviews, refreshTags, popularApps, appDetails, refreshAssets } f
 import { refreshBooks, refreshEditionCovers } from './books.mjs';
 import { resolveTvmaze } from './tvmaze.mjs';
 import { crawlGenreLists } from './goodreads-lists.mjs';
-import { mergeScreen, mergeGames, mergeBooks, slugify, articleMatches } from './merge.mjs';
+import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, slugify, articleMatches } from './merge.mjs';
 import { storeCovers, pruneCovers } from './covers.mjs';
 import { snapshot, assess, save as saveHealth } from './health.mjs';
 
@@ -210,6 +210,11 @@ writeMeta({ tmdbTrailers: tmdb });
 for (const k of ['movies', 'shows']) writeBackups(k, backups[k]);
 const games = mergeGames(before.games, { newApps: loadCache('steam-popular', []).filter((a) => a.reviews >= MIN_STEAM_REVIEWS) });
 const books = mergeBooks(before.books);
+// Books new this run (or with a new cover) get their cover kept now, not a week later.
+if (want('covers')) {
+  const lacking = books.filter((b) => !b.cv && (b.cover || b.gr));
+  if (lacking.length) { await storeCovers(lacking, { budgetMin: 10 }); setCoverFiles(books); }
+}
 
 function diff(kind, a, b) {
   // Compared as written, so a field that is empty either way is not a change.

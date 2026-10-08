@@ -370,6 +370,13 @@ export function bookGenre(listGenre, subjects) {
 const mainTitle = (t) => fold(String(t).split(/[:(]|,\s*(vol|or)\b/i)[0]);
 
 
+/** Each book's cover kept with the site (covers/), named by its source; until there is one, the site asks Open Library. */
+export function setCoverFiles(rows) {
+  const grCovers = loadCache('gr-covers');
+  for (const r of rows) { const stem = coverStem(r, grCovers); r.cv = stem && fs.existsSync(coverFile(stem)) ? stem : null; }
+  log(`books: ${rows.filter((r) => r.cv).length} covers served with the site, ${rows.filter((r) => !r.cv && r.cover).length} still from Open Library, ${rows.filter((r) => !r.cv && !r.cover).length} without one`);
+}
+
 export function mergeBooks(prevBooks) {
   const gr = loadCache('goodreads');
   const ol = { ...loadCache('ol-covers'), ...loadCache('openlibrary') };
@@ -442,10 +449,7 @@ export function mergeBooks(prevBooks) {
   tidy(out);
   const ids = new Set();
   for (const r of out) { while (ids.has(r.id)) r.id += '-' + (r.year || 'b'); ids.add(r.id); }
-  // A cover kept with the site (covers/), named by its source; until it is, the site asks Open Library.
-  const grCovers = loadCache('gr-covers');
-  for (const r of out) { const stem = coverStem(r, grCovers); r.cv = stem && fs.existsSync(coverFile(stem)) ? stem : null; }
-  log(`books: ${out.filter((r) => r.cv).length} covers served with the site, ${out.filter((r) => !r.cv && r.cover).length} still from Open Library, ${out.filter((r) => !r.cv && !r.cover).length} without one`);
+  setCoverFiles(out);
   log(`books ${out.length}: ${fresh} confirmed on Goodreads now, ${kept} confirmed earlier, ${added} added from Goodreads lists, ${dropped} dropped as unverifiable, ${rows.length - out.length} duplicates merged`);
   return out;
 }
