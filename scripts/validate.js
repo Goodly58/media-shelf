@@ -19,7 +19,7 @@ if (!has('index.html')) {
 }
 
 /* ---------- pages ---------- */
-const PAGES = ['index.html', 'games.html', 'books.html', 'movies.html', 'shows.html', 'backlog.html', '404.html'];
+const PAGES = ['index.html', 'games.html', 'books.html', 'movies.html', 'shows.html', 'backlog.html', 'faq.html', '404.html'];
 const sw = has('sw.js') ? read('sw.js') : '';
 const version = (sw.match(/var VERSION = '([^']+)'/) || [])[1];
 if (!version) fail.push('sw.js has no VERSION');

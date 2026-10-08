@@ -618,3 +618,18 @@ dialog.reels .toast { background: #f3f5fa; color: #05060a; }
 .d-awards li > .i { color: var(--star); margin-top: 2px; flex: none; }
 .d-awards b { font-weight: 700; }
 .d-aw-c { display: block; color: var(--mut); font-size: 12.5px; }
+
+/* FAQ: questions that open in place */
+.faq-list { max-width: 760px; margin-top: 8px; border-top: 1px solid var(--line); }
+.faq-list details { border-bottom: 1px solid var(--line); }
+.faq-list summary {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 2px;
+  font-weight: 650; font-size: 16px; cursor: pointer; list-style: none;
+}
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-list summary::after {
+  content: ''; flex: none; width: 8px; height: 8px; margin-right: 6px;
+  border-right: 2px solid var(--mut-2); border-bottom: 2px solid var(--mut-2); transform: rotate(45deg); transition: transform .2s;
+}
+.faq-list details[open] summary::after { transform: rotate(-135deg); }
+.faq-list p { color: var(--mut); font-size: 15px; line-height: 1.6; max-width: 65ch; padding: 0 2px 20px; }

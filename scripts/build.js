@@ -328,6 +328,36 @@ page({
   scripts: `<script src="assets/backlog.js?v=${BUILD}" defer></script>\n<script src="assets/whatnext.js?v=${BUILD}" defer></script>`,
 });
 
+/* ------------------------------------------------------------------- FAQ */
+// [question, answer]. The page shows them as a list to open; search engines get the same as FAQPage data.
+const FAQ = [
+  ['Where do the scores come from?', 'From each source directly: IMDb, Metacritic (critics and users), Rotten Tomatoes (critics and audience), Steam and Goodreads. Every score links to its page there, and none is typed in by hand. Awards come from Wikidata.'],
+  ['Why is a score missing?', 'That site has not scored the title, or too few people have rated it yet. Rotten Tomatoes, for one, waits for five critics before it gives a Tomatometer, and the title\'s details say so.'],
+  ['How does Top rated order things?', 'By rating, weighed by how many people gave it, so a 9.0 from a few thousand votes does not outrank an 8.8 from a million. To see one source\'s own score, sort by it.'],
+  ['Which titles are listed?', 'Films and series with 10,000 or more IMDb votes, books with 10,000 or more Goodreads ratings, and PC games scored by Metacritic or with 10,000 or more Steam reviews.'],
+  ['How often is it updated?', 'Scores and new titles every week, trailers every day.'],
+  ['Why does a trailer sometimes skip?', 'Videos get taken down, or blocked in some countries. The feed then plays the title\'s backup trailer, or moves on to the next title.'],
+  ['What does Hide do?', 'It keeps a title out of the trailer feed, More like this and Surprise me. The title stays in the catalogue: to bring it back, open Filters and choose Show: Hidden.'],
+  ['Where are my saved and hidden titles kept?', 'In this browser only. There is no account, so they do not carry over to another device, and clearing your browsing data clears them.'],
+  ['What happens to the file I give What next?', 'It never leaves your device: the list is read and ranked in your browser, and the site has no server to send it to.'],
+  ['Does Shelf track me?', 'No accounts, no ads and no analytics. Trailers play in YouTube\'s privacy-enhanced mode, or in Steam\'s own player for games.'],
+];
+const faqLd = JSON.stringify({
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: FAQ.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+}).replace(/</g, '\\u003c');
+page({
+  file: 'faq.html', title: 'FAQ · Shelf', current: 'faq',
+  description: 'Where Shelf\'s scores come from, how it orders titles, and what it keeps in your browser.',
+  head: `<script type="application/ld+json">${faqLd}</script>`,
+  body: `<main id="main" class="wrap faq">
+  <header class="cat-head"><div class="cat-title" style="--k:var(--acc)"><h1>FAQ</h1></div></header>
+  <div class="faq-list">
+${FAQ.map(([q, a]) => `    <details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join('\n')}
+  </div>
+</main>`,
+});
+
 page({
   file: '404.html', title: 'Not found · Shelf', description: 'This page does not exist.',
   // Served for any missing path, however deep, so links must resolve from the site root.
@@ -343,14 +373,14 @@ if (fs.existsSync(path.join(ROOT, 'covers'))) fs.cpSync(path.join(ROOT, 'covers'
 fs.writeFileSync(path.join(OUT, 'data/search.json'), searchIndex());
 fs.copyFileSync(path.join(ROOT, 'manifest.webmanifest'), path.join(OUT, 'manifest.webmanifest'));
 
-const shell = ['./', 'index.html', ...KINDS.map((k) => PAGE[k]), 'backlog.html', '404.html',
+const shell = ['./', 'index.html', ...KINDS.map((k) => PAGE[k]), 'backlog.html', 'faq.html', '404.html',
   `assets/app.css?v=${BUILD}`, `assets/app.js?v=${BUILD}`, `assets/catalog.js?v=${BUILD}`,
   `assets/backlog.js?v=${BUILD}`, `assets/whatnext.js?v=${BUILD}`, 'assets/icon.svg', 'assets/inter-latin.woff2', 'manifest.webmanifest'];
 fs.writeFileSync(path.join(OUT, 'sw.js'), serviceWorker(shell));
 
 fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE}sitemap.xml\n`);
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-  ['', ...KINDS.map((k) => PAGE[k]), 'backlog.html'].map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join('\n') + '\n</urlset>\n');
+  ['', ...KINDS.map((k) => PAGE[k]), 'backlog.html', 'faq.html'].map((p) => `  <url><loc>${SITE}${p}</loc></url>`).join('\n') + '\n</urlset>\n');
 
 const counts = KINDS.map((k) => `${DATA[k].length} ${k}`).join(', ');
 console.log(`built ${BUILD} into _site/: ${counts}`);
