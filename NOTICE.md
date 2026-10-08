@@ -14,6 +14,10 @@ The SVG paths are inlined in `assets/app.js`.
 Copyright (c) 2016 The Inter Project Authors. <https://github.com/rsms/inter>
 The font files and the full licence are in `assets/` (`inter-LICENSE.txt`).
 
+**hls.js** (<https://github.com/video-dev/hls.js>), which plays Steam's game trailers in
+browsers without built-in HLS: Copyright (c) 2017 Dailymotion, Apache License 2.0. The
+file is `assets/hls.min.js`, its licence `assets/hls-LICENSE.txt`.
+
 ## Loaded at runtime
 
 **Cover art and posters**: loaded on demand from Wikimedia (Wikipedia), TVmaze

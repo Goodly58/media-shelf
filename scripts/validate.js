@@ -96,11 +96,15 @@ for (const kind of Object.keys(MIN)) {
   ok.push(`data/${kind}.json: ${rows.length} rows, ids unique, scores in range`);
 }
 
-for (const kind of ['movies', 'shows']) {
+for (const kind of ['movies', 'shows', 'games']) {
   let b;
   try { b = JSON.parse(read(`data/${kind}-trailers.json`)); } catch (e) { if (e.code !== 'ENOENT') fail.push(`data/${kind}-trailers.json: ${e.message}`); continue; }
-  const bad = Object.entries(b).filter(([id, l]) => !/^tt\d+$/.test(id) || !Array.isArray(l) || l.some((v) => !/^[\w-]{11}$/.test(v))).length;
-  if (bad) fail.push(`data/${kind}-trailers.json: ${bad} entries that are not lists of YouTube ids`);
+  // Films and series: backup YouTube ids. Games: Steam videos, [id, path of the stream].
+  const ok1 = kind === 'games'
+    ? (id, l) => Array.isArray(l) && l.length && l.every((v) => Array.isArray(v) && Number.isInteger(v[0]) && /^[\w/.?=-]+\.m3u8\?t=\d+$/.test(v[1]))
+    : (id, l) => /^tt\d+$/.test(id) && Array.isArray(l) && l.every((v) => /^[\w-]{11}$/.test(v));
+  const bad = Object.entries(b).filter(([id, l]) => !ok1(id, l)).length;
+  if (bad) fail.push(`data/${kind}-trailers.json: ${bad} entries that are not trailer lists`);
   else ok.push(`data/${kind}-trailers.json: backups for ${Object.keys(b).length} titles`);
 }
 

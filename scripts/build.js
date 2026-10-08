@@ -49,7 +49,7 @@ const h = crypto.createHash('sha256');
 for (const f of hashed) { h.update(f); h.update(fs.readFileSync(path.join(ROOT, f))); }
 for (const k of KINDS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}.json`)));
 // The player's backup trailers, read only when the trailer feed opens.
-const BACKUPS = ['movies', 'shows'].filter((k) => fs.existsSync(path.join(DATA_DIR, `${k}-trailers.json`)));
+const BACKUPS = ['movies', 'shows', 'games'].filter((k) => fs.existsSync(path.join(DATA_DIR, `${k}-trailers.json`)));
 for (const k of BACKUPS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}-trailers.json`)));
 let META = {};
 try { META = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'meta.json'), 'utf8')); } catch {}

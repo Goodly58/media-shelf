@@ -5,7 +5,8 @@
   var kind = document.body.getAttribute('data-kind');
   var K = S.KINDS[kind];
   var THIS_YEAR = new Date().getFullYear();
-  var SCREEN = kind === 'movies' || kind === 'shows';   // films and series: trailers, and titles that can be hidden
+  // Shelves with a trailer feed (films, series, games), whose titles can also be hidden.
+  var TRAILERS = kind === 'movies' || kind === 'shows' || kind === 'games';
 
   /* Bayesian average: a 9.0 from 12k votes should not outrank an 8.8 from 1M. */
   function weighted(v, n, m, c) { return v == null ? -1 : (n / (n + m)) * v + (m / (n + m)) * c; }
@@ -79,8 +80,8 @@
     s.len = p.get('length') || '';
     s.status = p.get('status') || '';
     s.saved = p.get('saved') === '1';
-    s.hidden = SCREEN && !s.saved && p.get('hidden') === '1';
-    s.view = p.get('view') === 'trailers' && (kind === 'movies' || kind === 'shows') ? 'trailers' : '';
+    s.hidden = TRAILERS && !s.saved && p.get('hidden') === '1';
+    s.view = p.get('view') === 'trailers' && TRAILERS ? 'trailers' : '';
     if (CONFIG.sorts.some(function (x) { return x[0] === p.get('rsort'); })) s.rsort = p.get('rsort');
     return s;
   }
@@ -470,7 +471,7 @@
     }
     // Hidden titles can be listed (and brought back) once there are any.
     var show = [['', 'Everything'], ['saved', 'Saved only']];
-    if (SCREEN && (state.hidden || S.Hidden.list(kind).length)) show.push(['hidden', 'Hidden']);
+    if (TRAILERS && (state.hidden || S.Hidden.list(kind).length)) show.push(['hidden', 'Hidden']);
     html += seg('Show', 'show', show);
     $('#filterBody').innerHTML = html;
     if (!filtersDlg.open) filtersDlg.showModal();
@@ -553,8 +554,10 @@
     var l = [];
     if (r.wiki) l.push(['Wikipedia', 'https://en.wikipedia.org/wiki/' + encodeURIComponent(r.wiki.replace(/ /g, '_'))]);
     if (kind === 'games' && r.steamId) l.push(['Steam store', 'https://store.steampowered.com/app/' + r.steamId + '/']);
+    // Prices and sales, from SteamDB's own pages rather than a copy of them here.
+    if (kind === 'games' && r.steamId) l.push(['Price history', 'https://steamdb.info/app/' + r.steamId + '/', 'Prices and sales on SteamDB']);
     if ((kind === 'movies' || kind === 'shows')) l.push(['IMDb', 'https://www.imdb.com/title/' + r.id + '/']);
-    return l.map(function (x) { return '<a class="btn sm" href="' + esc(x[1]) + '" target="_blank" rel="noopener">' + x[0] + icon('ext', 'sm') + '</a>'; }).join('');
+    return l.map(function (x) { return '<a class="btn sm" href="' + esc(x[1]) + '" target="_blank" rel="noopener"' + (x[2] ? ' title="' + esc(x[2]) + '"' : '') + '>' + x[0] + icon('ext', 'sm') + '</a>'; }).join('');
   }
 
   function open(id, push) {
@@ -578,8 +581,8 @@
           '<p class="summary" id="summary">' + (r.blurb ? esc(r.blurb) : '') + '</p>' +
           '<div class="d-actions">' +
             '<button class="btn sm" id="saveBtn" aria-pressed="' + saved + '">' + icon('heart', 'sm') + (saved ? 'Saved' : 'Save') + '</button>' +
-            (SCREEN ? hideButton(S.Hidden.has(kind, r.id)) : '') +
-            (r.yt ? '<button class="btn sm primary" id="trailerBtn">' + icon('play', 'sm') + 'Trailer</button>' : '') +
+            (TRAILERS ? hideButton(S.Hidden.has(kind, r.id)) : '') +
+            (r.yt || r.tr ? '<button class="btn sm primary" id="trailerBtn">' + icon('play', 'sm') + 'Trailer</button>' : '') +
             '<button class="btn sm" id="shareBtn">' + icon('link', 'sm') + 'Copy link</button>' +
             linksHTML(r) +
           '</div>' +
@@ -650,7 +653,7 @@
     var out = [];
     for (var i = 0; i < items.length; i++) {
       var x = items[i];
-      if (x === r || (SCREEN && S.Hidden.has(kind, x.id))) continue;
+      if (x === r || (TRAILERS && S.Hidden.has(kind, x.id))) continue;
       var s = 0, shared = 0;
       // Shared genres count for their rarity; genres the original lacks count a little against.
       if (x.genres) for (var a = 0; a < x.genres.length; a++) {
@@ -734,7 +737,7 @@
     if (ct) { toggleIn(state.country, ct.getAttribute('data-country')); apply(true); return; }
     if (t.closest('[data-more-countries]')) { allCountries = true; openFilters(); return; }
     if (t.closest('#filtersBtn')) { openFilters(); return; }
-    if (t.closest('[data-trailers]') && (kind === 'movies' || kind === 'shows') && loaded) { e.preventDefault(); openReels(null, true); return; }
+    if (t.closest('[data-trailers]') && TRAILERS && loaded) { e.preventDefault(); openReels(null, true); return; }
     if (t.closest('#trailerBtn') && current) {
       var tid = current.id;
       detailDlg.close();
@@ -785,7 +788,7 @@
     }
     if (t.closest('#surprise')) {
       // A surprise is a suggestion too: never a hidden title, unless hidden ones are what is listed.
-      var pool = SCREEN && !state.hidden ? results.filter(function (x) { return !S.Hidden.has(kind, x.id); }) : results;
+      var pool = TRAILERS && !state.hidden ? results.filter(function (x) { return !S.Hidden.has(kind, x.id); }) : results;
       if (pool.length) open(pool[Math.floor(Math.random() * Math.min(pool.length, 400))].id);
       return;
     }
@@ -851,7 +854,7 @@
   /* push: add a history entry, so Back (or a phone's back gesture) closes the feed
      rather than leaving the page. Opened from the address, there is none to add. */
   function openReels(startId, push) {
-    if (!(kind === 'movies' || kind === 'shows') || !loaded) return;
+    if (!TRAILERS || !loaded) return;
     state.view = 'trailers';
     if (push) { history.pushState({ reels: 1 }, '', location.pathname + location.search + location.hash); reelsPushed = true; }
     writeURL();
@@ -884,7 +887,7 @@
     setHidden: setHidden,
   };
   chipFade();   // the chip row the page was built with may already overflow
-  if (kind === 'movies' || kind === 'shows') {
+  if (TRAILERS) {
     document.addEventListener('shelf:trailers', function () { loadReels().catch(function () {}); });
     if (state.view === 'trailers') S.warmTrailers();
   }

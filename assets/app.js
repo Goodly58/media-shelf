@@ -307,7 +307,10 @@
   function warmTrailers() {
     if (warmed) return;
     warmed = true;
-    ['https://www.youtube-nocookie.com', 'https://www.youtube.com', 'https://i.ytimg.com'].forEach(function (h) {
+    // Games play Steam's own videos; films and series, YouTube's.
+    var steam = document.body.getAttribute('data-kind') === 'games';
+    (steam ? ['https://video.akamai.steamstatic.com', 'https://shared.akamai.steamstatic.com']
+      : ['https://www.youtube-nocookie.com', 'https://www.youtube.com', 'https://i.ytimg.com']).forEach(function (h) {
       var l = document.createElement('link');
       l.rel = 'preconnect'; l.href = h;
       document.head.appendChild(l);

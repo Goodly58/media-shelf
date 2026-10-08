@@ -8,6 +8,7 @@ import { pickTrailer, pickTrailers, kinoPick, kinoRanked, tmdbPick, tmdbRanked }
 import { slugRT, audienceOf } from '../scripts/refresh/rottentomatoes.mjs';
 import { userOf } from '../scripts/refresh/metacritic.mjs';
 import { coverStem } from '../scripts/refresh/covers.mjs';
+import { steamTrailers } from '../scripts/refresh/gametrailers.mjs';
 
 let pass = 0, fail = 0;
 function ok(label, cond, detail) {
@@ -122,6 +123,18 @@ ok('Metacritic users: score and count', JSON.stringify(userOf({ data: { item: { 
 ok('Metacritic users: nobody has rated it', userOf({ data: { item: { score: 0, reviewCount: 0 } } }).score === null);
 ok('Metacritic users: not enough to score yet', userOf({ data: { item: { score: null, reviewCount: 2 } } }).score === null);
 ok('Metacritic users: no such page', userOf({ errors: [{ code: 404 }] }) === null);
+
+console.log('game trailers');
+{
+  const base = 'https://video.akamai.steamstatic.com/store_trailers/10/';
+  const mv = (id, name, highlight, path = id + '/abc/1/hls_264_master.m3u8?t=5') => ({ id, name, highlight, hls_h264: base + path });
+  const j = { 10: { success: true, data: { movies: [mv(1, 'Gameplay', false), mv(2, 'Launch Trailer', true), mv(3, 'Trailer DE USK', true), mv(4, 'Story Trailer', true), mv(5, 'Old', true, '5/x/1/hls.m3u8'.replace('5/x', '5/x'))] } } };
+  const t = steamTrailers(10, j);
+  ok('Steam: highlighted first, in the order Steam gives', JSON.stringify(t.map((x) => x[0])) === JSON.stringify([2, 4, 5]));
+  ok('Steam: a version made for another country is left out', !t.some((x) => x[0] === 3));
+  ok('Steam: the stream path after the folder of the app', t[0][1] === '2/abc/1/hls_264_master.m3u8?t=5');
+  ok('Steam: a game with no videos', steamTrailers(10, { 10: { success: true, data: [] } }).length === 0 && steamTrailers(10, null).length === 0);
+}
 
 console.log('book covers');
 ok('a kept cover is named for its Open Library id', coverStem({ cover: 12836879, gr: '1' }) === '12836879');

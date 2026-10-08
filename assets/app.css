@@ -608,3 +608,6 @@ dialog.reels .toast { background: #f3f5fa; color: #05060a; }
   background-size: 300% 100%; animation: shimmer 1.4s linear infinite;
 }
 @media (prefers-reduced-motion: reduce) { .cover .ph::after { animation: none; } }
+
+/* Steam's videos for games play in a plain video element, filling the same frame */
+.reel-player > video { position: absolute; inset: 0; width: 100%; height: 100%; background: #000; object-fit: contain; }

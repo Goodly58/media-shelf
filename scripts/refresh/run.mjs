@@ -26,6 +26,7 @@ import { resolveTvmaze } from './tvmaze.mjs';
 import { crawlGenreLists } from './goodreads-lists.mjs';
 import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, slugify, articleMatches } from './merge.mjs';
 import { storeCovers, pruneCovers } from './covers.mjs';
+import { refreshGameTrailers, attachGameTrailers } from './gametrailers.mjs';
 import { snapshot, assess, save as saveHealth } from './health.mjs';
 
 const arg = (name, dflt) => {
@@ -149,6 +150,11 @@ await Promise.all([
     ].filter((j) => j.slug);
     await refreshMcUsers(jobs, { budgetMin: BUDGET });
   }),
+  step('gametrailers', async () => {
+    // Steam's own trailers for the games in the trailer feed, the most reviewed games first.
+    const ids = before.games.filter((g) => g.steamId).sort((a, b) => (b.steamN || 0) - (a.steamN || 0)).map((g) => g.steamId);
+    await refreshGameTrailers(ids, { budgetMin: BUDGET });
+  }),
   step('steam', async () => {
     const ids = steamIds();
     await refreshAssets(ids);
@@ -209,6 +215,7 @@ const { movies, shows, tmdb, backups } = await mergeScreen(before.movies, before
 writeMeta({ tmdbTrailers: tmdb });
 for (const k of ['movies', 'shows']) writeBackups(k, backups[k]);
 const games = mergeGames(before.games, { newApps: loadCache('steam-popular', []).filter((a) => a.reviews >= MIN_STEAM_REVIEWS) });
+writeBackups('games', attachGameTrailers(games));
 const books = mergeBooks(before.books);
 // Books new this run (or with a new cover) get their cover kept now, not a week later.
 if (want('covers')) {

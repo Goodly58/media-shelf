@@ -1,6 +1,7 @@
-/* Shelf · trailer reels for films and series. A vertical feed of YouTube trailers that
+/* Shelf · trailer reels for films, series and games. A vertical feed of trailers that
    follows the catalogue's own genres, themes, filters and order, loaded by catalog.js
-   when someone opens it.
+   when someone opens it. Films and series play YouTube trailers; games play Steam's own
+   videos (HLS streams) in a plain video element.
 
    YouTube's rules for embedded players shape the layout: nothing is drawn over a
    player or its controls, at most one plays at a time, and playback starts only once
@@ -9,7 +10,8 @@
 (function () {
   'use strict';
   var S = window.Shelf, C = window.ShelfCatalog, icon = S.icon, esc = S.esc;
-  var kind = C.kind;
+  var kind = C.kind, GAMES = kind === 'games';
+  var STEAM_VIDEO = 'https://video.akamai.steamstatic.com/store_trailers/';
   var SEEN_KEY = 'shelf_seen_trailers', CHUNK = 30;
   var reduce = Boolean(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
@@ -39,9 +41,21 @@
     if (keys.length > 300) keys.sort(function (a, b) { return bad[a] - bad[b]; }).slice(0, keys.length - 300).forEach(function (k) { delete bad[k]; });
     try { localStorage.setItem(BAD_KEY, JSON.stringify(bad)); } catch (e) {}
   }
-  // A title's videos still worth trying here, best first.
+  // A title's videos still worth trying here, best first: YouTube ids, or for a game the ids of
+  // Steam's videos, whose streams' addresses come with the backups file.
   function videos(r) {
-    return [r.yt].concat((backups && backups[r.id]) || []).filter(function (v) { return v && !bad[v] && !failedNow[v]; });
+    var all = GAMES ? ((backups && backups[r.id]) || []).map(function (x) { return String(x[0]); })
+      : [r.yt].concat((backups && backups[r.id]) || []);
+    return all.filter(function (v) { return v && !bad[v] && !failedNow[v]; });
+  }
+  function has(r) { return GAMES ? r.tr : r.yt; }
+  function stillOf(key) {
+    return GAMES ? 'https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/' + key + '/movie.293x165.jpg' : 'https://i.ytimg.com/vi/' + key + '/hqdefault.jpg';
+  }
+  function streamOf(r, key) {
+    var t = (backups && backups[r.id]) || [];
+    for (var i = 0; i < t.length; i++) if (String(t[i][0]) === key) return STEAM_VIDEO + r.steamId + '/' + t[i][1];
+    return null;
   }
 
   /* ------------------------------------------------------------ seen */
@@ -72,13 +86,13 @@
     // Hidden titles never come up, unless hidden ones are what the filters ask for.
     var skip = !C.state().hidden;
     // Titles none of whose videos play here are left out, once the backups say so.
-    var rows = C.results().filter(function (r) { return r.yt && !(skip && S.Hidden.has(kind, r.id)) && (!backups || videos(r).length); });
+    var rows = C.results().filter(function (r) { return has(r) && !(skip && S.Hidden.has(kind, r.id)) && (!backups || videos(r).length); });
     var by = C.state().rsort;
     rows = by === 'shuffle' || !C.sorters[by] ? shuffle(rows) : rows.slice().sort(C.sorters[by]);
     if (startId) {
       var at = -1;
       for (var i = 0; i < rows.length; i++) if (rows[i].id === startId) { at = i; break; }
-      if (at < 0 && C.byId(startId) && C.byId(startId).yt) rows.unshift(C.byId(startId));
+      if (at < 0 && C.byId(startId) && has(C.byId(startId))) rows.unshift(C.byId(startId));
       else if (at > 0) rows.unshift(rows.splice(at, 1)[0]);
     }
     return rows;
@@ -88,6 +102,7 @@
   function runtime(m) { if (!m) return ''; var h = Math.floor(m / 60), r = m % 60; return h ? h + 'h' + (r ? ' ' + r + 'm' : '') : r + 'm'; }
   function sub(r) {
     var b = [];
+    if (GAMES) b.push(r.year);
     if (kind === 'shows') b.push(r.end && r.end !== r.year ? r.year + '–' + r.end : r.year);
     (r.genres || []).slice(0, 2).forEach(function (g) { b.push(g); });
     if (kind === 'movies' && r.runtime) b.push(runtime(r.runtime));
@@ -106,7 +121,14 @@
   }
   function plural(n, one) { return S.compact(n) + ' ' + one + (n === 1 ? '' : 's'); }
   function scores(r) {
-    var mc = 'https://www.metacritic.com/' + (kind === 'movies' ? 'movie' : 'tv') + '/' + (r.mcSlug || '') + '/';
+    var mc = 'https://www.metacritic.com/' + { movies: 'movie', shows: 'tv', games: 'game' }[kind] + '/' + (r.mcSlug || '') + '/';
+    if (GAMES) return [
+      group('Metacritic', [
+        r.mc != null && score(mc, r.mc, r.mcN ? plural(r.mcN, 'critic') : 'critics'),
+        r.mcu != null && score(mc + 'user-reviews/', r.mcu.toFixed(1), r.mcuN ? plural(r.mcuN, 'user') : 'users'),
+      ]),
+      group('Steam', [r.steam != null && score('https://store.steampowered.com/app/' + r.steamId + '/', r.steam + '%', r.steamN ? plural(r.steamN, 'review') : 'reviews')]),
+    ].join('');
     var rt = 'https://www.rottentomatoes.com/' + (r.rtPath || '');
     return [
       group('IMDb', [r.imdb != null && score('https://www.imdb.com/title/' + r.id + '/', r.imdb.toFixed(1), r.votes ? plural(r.votes, 'vote') : 'votes')]),
@@ -133,7 +155,7 @@
       '<div class="reel-bg" data-bg="' + esc(S.imgUrl(kind, r) || '') + '"></div>' +
       '<div class="reel-in">' +
         '<div class="reel-head"><h2>' + esc(r.title) + '</h2><div class="reel-sub">' + sub(r) + '</div></div>' +
-        '<div class="reel-player" data-thumb="https://i.ytimg.com/vi/' + esc(videos(r)[0] || r.yt) + '/hqdefault.jpg"><div class="reel-slot"></div></div>' +
+        '<div class="reel-player" data-thumb="' + esc(stillOf(videos(r)[0] || String(has(r)))) + '"><div class="reel-slot"></div></div>' +
         (scores(r) ? '<div class="reel-scores">' + scores(r) + '</div>' : '') +
         (tags ? '<div class="reel-tags">' + tags + '</div>' : '') +
         '<div class="reel-act">' +
@@ -151,7 +173,7 @@
     var cur = C.state().rsort;
     return '<div class="reels-bar">' +
       '<button class="icon-btn" type="button" data-reels-close aria-label="Close trailers">' + icon('x') + '</button>' +
-      '<nav class="reels-kinds" aria-label="Trailers">' + ['movies', 'shows'].map(function (k) {
+      '<nav class="reels-kinds" aria-label="Trailers">' + ['movies', 'shows', 'games'].map(function (k) {
         return '<a href="' + S.KINDS[k].page + '?view=trailers"' + (k === kind ? ' aria-current="page"' : '') + '>' + S.KINDS[k].label + '</a>';
       }).join('') + '</nav>' +
       '<select class="select" id="reelsSort" aria-label="Order">' + sorts.map(function (s) {
@@ -253,7 +275,8 @@
       return;
     }
     // The still behind the player follows the video it is about to play.
-    if (yt !== r.yt) box.style.backgroundImage = 'url("https://i.ytimg.com/vi/' + yt + '/hqdefault.jpg")';
+    if (yt !== String(has(r))) box.style.backgroundImage = 'url("' + stillOf(yt) + '")';
+    if (GAMES) { createVideo(i, autoplay, yt); return; }
     var f = document.createElement('iframe');
     f.src = embed(yt, autoplay);
     f.title = 'Trailer: ' + list[i].title;
@@ -286,6 +309,63 @@
       });
     }, function () {});
   }
+  /* Games play Steam's stream in a plain video element: HLS, which Safari plays itself and other
+     browsers through hls.js (fetched when the feed opens). Each entry: { f: video, v: true,
+     h: hls.js instance, ready, auto, yt: Steam's video id }. */
+  var hlsP = null, nativeHls = Boolean(document.createElement('video').canPlayType('application/vnd.apple.mpegurl'));
+  function loadHls() {
+    if (!hlsP) {
+      hlsP = new Promise(function (resolve, reject) {
+        if (window.Hls) { resolve(window.Hls); return; }
+        var s = document.createElement('script');
+        s.src = 'assets/hls.min.js?v=' + BUILD;
+        s.onload = function () { resolve(window.Hls); };
+        s.onerror = function () { hlsP = null; reject(new Error('player did not load')); };
+        document.head.appendChild(s);
+      });
+    }
+    return hlsP;
+  }
+  function createVideo(i, autoplay, key) {
+    var box = slot(i), r = list[i], url = streamOf(r, key);
+    var v = document.createElement('video');
+    v.controls = true; v.playsInline = true; v.setAttribute('playsinline', '');
+    v.preload = 'metadata'; v.muted = muted; v.poster = stillOf(key);
+    v.setAttribute('aria-label', 'Trailer: ' + r.title);
+    var old = box.querySelector('.reel-slot');
+    if (old) box.replaceChild(v, old); else box.appendChild(v);
+    var e = players[i] = { f: v, v: true, h: null, ready: true, auto: Boolean(autoplay), yt: key };
+    if (!url) { failed(i, 0); return; }
+    v.addEventListener('playing', function () {
+      if (players[i] !== e || i !== active) return;
+      skips = 0;
+      clearTimeout(timers.seen);
+      timers.seen = setTimeout(function () { if (i === active) markSeen(list[i].id); }, 3000);
+    });
+    v.addEventListener('ended', function () { if (players[i] === e && i === active) next(); });
+    v.addEventListener('error', function () { if (players[i] === e) failed(i, 0); });
+    var go = function () { if (players[i] === e && i === active && autoplay && !blocked && !reduce) { play(e); cueNext(i); } };
+    if (nativeHls) { v.src = url; go(); return; }
+    loadHls().then(function (Hls) {
+      if (players[i] !== e) return;
+      if (!Hls || !Hls.isSupported()) { failed(i, 0); return; }
+      var h = e.h = new Hls({ capLevelToPlayerSize: true, maxBufferLength: 20 });
+      h.on(Hls.Events.ERROR, function (ev, data) { if (data && data.fatal && players[i] === e) failed(i, 0); });
+      h.loadSource(url);
+      h.attachMedia(v);
+      go();
+    }, function () { if (players[i] === e) failed(i, 0); });
+  }
+  function play(e) {
+    if (!e.v) { e.p.playVideo(); return; }
+    var p = e.f.play();
+    // Sound before a tap may be refused: then muted, which browsers allow.
+    if (p && p.catch) p.catch(function (err) {
+      if (err && err.name === 'NotAllowedError' && !e.f.muted) { muted = true; e.f.muted = true; labels(); e.f.play().catch(function () {}); }
+    });
+  }
+  function playing(e) { return e.v ? !e.f.paused && !e.f.ended : e.p.getPlayerState() === 1; }
+
   // Browsers may refuse to start a trailer with sound before a tap: if it never started
   // at all (still unstarted or cued, so not an ad or buffering), fall back to muted.
   function watch(i) {
@@ -299,13 +379,14 @@
   }
   function sound(e) {
     if (!e || !e.ready) return;
+    if (e.v) { e.f.muted = muted; if (!muted) e.f.volume = 1; return; }
     if (muted) e.p.mute(); else { e.p.unMute(); e.p.setVolume(100); }
   }
   function start(i) {
     if (blocked) return;
     var e = players[i];
     if (!e) { create(i, !reduce); return; }
-    if (e.ready) { sound(e); if (!reduce) { e.p.playVideo(); watch(i); } cueNext(i); }
+    if (e.ready) { sound(e); if (!reduce) { play(e); if (!e.v) watch(i); } cueNext(i); }
   }
   function cueNext(i) { if (list[i + 1] && !players[i + 1]) create(i + 1, false); }
   // A frame that started by itself and that the API has not reached yet cannot be paused,
@@ -313,6 +394,7 @@
   function pause(i) {
     var e = players[i];
     if (!e) return;
+    if (e.v) { e.f.pause(); return; }
     if (e.ready) { if (e.p.getPlayerState() === 1) e.p.pauseVideo(); }
     else if (e.auto) destroy(i);
   }
@@ -320,6 +402,8 @@
     var e = players[i];
     delete players[i];
     if (e) {
+      if (e.h) { try { e.h.destroy(); } catch (x) {} }
+      if (e.v) { try { e.f.pause(); e.f.removeAttribute('src'); e.f.load(); } catch (x) {} }
       if (e.p && e.p.destroy) { try { e.p.destroy(); } catch (x) {} }
       if (e.f && e.f.parentNode) e.f.parentNode.removeChild(e.f);
     }
@@ -346,7 +430,9 @@
     var box = slot(i), r = list[i];
     if (box && r) {
       box.classList.add('gone');
-      box.innerHTML = '<p>This trailer is unavailable. <a href="https://www.youtube.com/results?search_query=' + encodeURIComponent(r.title + ' ' + (r.year || '') + ' trailer') + '" target="_blank" rel="noopener">Search YouTube</a></p>';
+      var where = GAMES ? ['https://store.steampowered.com/app/' + r.steamId + '/', 'Watch on Steam']
+        : ['https://www.youtube.com/results?search_query=' + encodeURIComponent(r.title + ' ' + (r.year || '') + ' trailer'), 'Search YouTube'];
+      box.innerHTML = '<p>This trailer is unavailable. <a href="' + esc(where[0]) + '" target="_blank" rel="noopener">' + where[1] + '</a></p>';
     }
     // Straight on to the next; after three in a row it waits for a swipe, rather than racing on.
     if (i === active && skips < 3) { skips++; setTimeout(function () { if (i === active) next(); }, 500); }
@@ -387,7 +473,7 @@
     }
   }
 
-  loadApi().catch(function () {});
+  if (!GAMES) loadApi().catch(function () {});
 
   /* ------------------------------------------------------------ panels over the feed */
   // Genres, filters and details open on top of the feed: the trailer waits until they close.
@@ -429,7 +515,7 @@
       if (t.closest('[data-reel-sound]')) {
         muted = !muted; labels();
         var cur = players[active];
-        if (cur && cur.ready) { sound(cur); if (cur.p.getPlayerState() !== 1 && !blocked) cur.p.playVideo(); }
+        if (cur && cur.ready) { sound(cur); if (!playing(cur) && !blocked) play(cur); }
         return;
       }
       var d = t.closest('[data-reel-detail]');
@@ -455,9 +541,11 @@
     if (!dlg) build();
     document.documentElement.classList.add('reels-open');
     if (!dlg.open) { dlg.showModal(); dlg.focus(); }
+    // A game's videos are in the backups file, so it comes at once (with the player, where needed);
+    // for films and series, once the first trailer has had the connection to itself.
+    if (GAMES) { loadBackups(); if (!nativeHls) loadHls().catch(function () {}); }
     refresh(opts.start);
-    // Backups come once the first trailer has had the connection to itself.
-    setTimeout(loadBackups, 1500);
+    if (!GAMES) setTimeout(loadBackups, 1500);
   }
   // quiet: the page is already closing it (Back was pressed), so do not tell it again.
   function close(quiet) {
