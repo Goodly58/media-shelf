@@ -76,6 +76,7 @@ for (const kind of Object.keys(MIN)) {
       if (r[k] != null && !(typeof r[k] === 'number' && r[k] >= lo && r[k] <= hi)) fail.push(`${kind} ${r.id}: ${k}=${r[k]} is out of range`);
     }
     if (r.genres && !Array.isArray(r.genres)) fail.push(`${kind} ${r.id}: genres is not a list`);
+    if (r.aw != null && !(Array.isArray(r.aw) && r.aw.every((a) => Array.isArray(a) && a.length >= 3 && a.every((x) => typeof x === 'string')))) fail.push(`${kind} ${r.id}: awards are not [key, years, category, ...] lists`);
   }
   if (kind === 'games') {
     const bare = rows.filter((r) => r.mc == null && r.steam == null).length;

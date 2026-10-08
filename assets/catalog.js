@@ -19,7 +19,7 @@
       badge: { mc: 'mc', mcu: 'mcu', rt: 'rt', rta: 'rta' }, defBadge: 'imdb', avg: 'imdb',
       min: { key: 'imdb', max: 10, step: 0.5, fmt: function (v) { return '★ ' + v.toFixed(1); } },
       fields: function (r) { return [r.title, r.alt, r.by].join(' '); },
-      meta: function (r) { return (r.genres || [])[0]; },
+      meta: function (r) { return S.awardLine(r) || (r.genres || [])[0]; },
       top: function (r, c) { return weighted(r.imdb, r.votes || 0, 25000, c); },
       popular: function (r) { return r.votes || 0; },
     },
@@ -28,7 +28,7 @@
       badge: { mc: 'mc', mcu: 'mcu', rt: 'rt', rta: 'rta' }, defBadge: 'imdb', avg: 'imdb',
       min: { key: 'imdb', max: 10, step: 0.5, fmt: function (v) { return '★ ' + v.toFixed(1); } },
       fields: function (r) { return [r.title, r.alt, r.by].join(' '); },
-      meta: function (r) { return (r.genres || [])[0]; },
+      meta: function (r) { return S.awardLine(r) || (r.genres || [])[0]; },
       top: function (r, c) { return weighted(r.imdb, r.votes || 0, 15000, c); },
       popular: function (r) { return r.votes || 0; },
     },
@@ -37,7 +37,7 @@
       badge: { steam: 'steam', popular: 'steam', mcu: 'mcu' }, defBadge: 'mc', avg: 'mc',
       min: { key: 'mc', max: 100, step: 5, fmt: function (v) { return v + '+'; } },
       fields: function (r) { return [r.title].concat(r.tags || []).join(' '); },
-      meta: function (r) { return (r.genres || [])[0]; },
+      meta: function (r) { return S.awardLine(r) || (r.genres || [])[0]; },
       top: function (r) { return r.mc != null ? r.mc + 100 : r.steam != null ? r.steam * 0.9 : -1; },
       popular: function (r) { return r.steamN || 0; },
     },
@@ -62,7 +62,7 @@
   // Ids of the cards the page was built with (the default list), if they are still on it.
   var pre = [].map.call(grid.querySelectorAll('.card[data-id]'), function (c) { return c.getAttribute('data-id'); });
 
-  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, hidden: false, view: '', rsort: 'shuffle' }; }
+  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, hidden: false, award: [], view: '', rsort: 'shuffle' }; }
 
   /* ------------------------------------------------------------- url state */
   function readURL() {
@@ -74,6 +74,7 @@
     s.tags = (p.get('theme') || '').split(',').filter(Boolean);
     s.match = p.get('match') === 'any' ? 'any' : 'all';
     s.country = (p.get('country') || '').split(',').filter(Boolean);
+    s.award = (p.get('award') || '').split(',').filter(function (k) { return S.AWARD_NAMES[k]; });
     var y = (p.get('years') || '').split('-');
     s.from = Number(y[0]) || null; s.to = Number(y[1]) || null;
     s.min = p.get('min') != null ? Number(p.get('min')) : null;
@@ -93,6 +94,7 @@
     if (state.tags.length) p.set('theme', state.tags.join(','));
     if (state.match === 'any' && state.genres.length + state.tags.length) p.set('match', 'any');
     if (state.country.length) p.set('country', state.country.join(','));
+    if (state.award.length) p.set('award', state.award.join(','));
     if (state.from || state.to) p.set('years', (state.from || '') + '-' + (state.to || ''));
     if (state.min != null) p.set('min', state.min);
     if (state.len) p.set('length', state.len);
@@ -136,6 +138,7 @@
         byId[r.id] = r;
         r._i = i;
         r._f = S.fold(CONFIG.fields(r));
+        r._aw = S.awardKeys(r);
         (r.genres || []).forEach(function (g) { genreCount[g] = (genreCount[g] || 0) + 1; });
         (r.tags || []).forEach(function (t) { tagCount[t] = (tagCount[t] || 0) + 1; });
         var v = S.METRICS[CONFIG.min.key].v(r);
@@ -180,6 +183,8 @@
       if (s.status === 'ended' && (mini || !r.end)) return false;
     }
     if (s.country.length && !(r.country && s.country.some(function (c) { return r.country.indexOf(c) >= 0; }))) return false;
+    // Awards: any of those picked.
+    if (s.award.length && !s.award.some(function (k) { return r._aw.indexOf(k) >= 0; })) return false;
     if (s.saved && !S.Favs.has(kind, r.id)) return false;
     if (s.hidden && !S.Hidden.has(kind, r.id)) return false;
     return true;
@@ -310,7 +315,7 @@
   window.addEventListener('resize', chipFade);
 
   function filterCount() {
-    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.hidden ? 1 : 0) + (state.country.length ? 1 : 0);
+    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.hidden ? 1 : 0) + (state.country.length ? 1 : 0) + (state.award.length ? 1 : 0);
   }
   function renderActive() {
     var pills = [];
@@ -320,6 +325,7 @@
     if (state.len) add({ short: 'Under 90 min', mid: '90 to 120 min', long: 'Over 2 hours' }[state.len], 'len');
     if (state.status) add({ ongoing: 'Ongoing', ended: 'Ended', mini: 'Miniseries' }[state.status], 'status');
     state.country.forEach(function (c) { add(c, 'country', c); });
+    state.award.forEach(function (k) { add(S.AWARD_NAMES[k][0], 'award', k); });
     if (state.saved) add('Saved', 'saved');
     if (state.hidden) add('Hidden', 'hidden');
     if (state.q) add('“' + state.q + '”', 'q');
@@ -444,7 +450,23 @@
       b.setAttribute('aria-pressed', String(state.country.indexOf(x) >= 0));
       b.lastChild.textContent = (cc[x] || 0).toLocaleString();
     });
+    var ac = awardCounts();
+    filtersDlg.querySelectorAll('[data-award]').forEach(function (b) {
+      var k = b.getAttribute('data-award');
+      b.setAttribute('aria-pressed', String(state.award.indexOf(k) >= 0));
+      b.lastChild.textContent = (ac[k] || 0).toLocaleString();
+    });
   }
+  /* Award winners per award, within everything else picked. */
+  function awardCounts() {
+    var s2 = Object.assign({}, state, { award: [] }), ac = {};
+    for (var i = 0; i < items.length; i++) {
+      var r = items[i];
+      if (r._aw.length && matches(r, s2)) for (var j = 0; j < r._aw.length; j++) ac[r._aw[j]] = (ac[r._aw[j]] || 0) + 1;
+    }
+    return ac;
+  }
+  var AWARD_ORDER = ['picture', 'oscar', 'palme', 'lion', 'bear', 'bafta', 'globe', 'emmy', 'pulitzer', 'booker', 'intbooker', 'nba', 'hugo', 'nebula', 'womens', 'newbery', 'goty', 'tga', 'baftag', 'dice', 'gdc', 'joystick'];
 
   function openFilters() {
     var m = CONFIG.min;
@@ -472,6 +494,11 @@
     // Hidden titles can be listed (and brought back) once there are any.
     var show = [['', 'Everything'], ['saved', 'Saved only']];
     if (TRAILERS && (state.hidden || S.Hidden.list(kind).length)) show.push(['hidden', 'Hidden']);
+    // Awards this shelf's titles have won, with how many of those listed have won each.
+    var ac = awardCounts(), ak = AWARD_ORDER.filter(function (k) { return ac[k] || state.award.indexOf(k) >= 0; });
+    if (ak.length) html += '<div class="row-field"><label>Awards</label><div class="seg">' + ak.map(function (k) {
+      return '<button class="chip" type="button" data-award="' + k + '" aria-pressed="' + (state.award.indexOf(k) >= 0) + '">' + esc(S.AWARD_NAMES[k][0]) + '<small>' + (ac[k] || 0).toLocaleString() + '</small></button>';
+    }).join('') + '</div></div>';
     html += seg('Show', 'show', show);
     $('#filterBody').innerHTML = html;
     if (!filtersDlg.open) filtersDlg.showModal();
@@ -542,6 +569,18 @@
     }
     return h.join('');
   }
+  /* Each award with its year(s) and categories: "Oscars 2017 · Best Picture, Best Supporting Actor". */
+  function awardsHTML(r) {
+    if (!r.aw || !r.aw.length) return '';
+    // The award's top category (Best Picture, Outstanding Drama Series, Game of the Year) leads.
+    var top = /^(best picture|best film|best motion picture|outstanding (drama|comedy|limited|miniseries)|best television series|(ultimate )?game of the year|best game|best novel|fiction)/i;
+    return '<ul class="d-awards" aria-label="Awards">' + r.aw.map(function (a) {
+      var n = S.AWARD_NAMES[a[0]] || [a[0]], cats = a.slice(2).filter(Boolean);
+      cats.sort(function (x, y) { return top.test(y) - top.test(x); });
+      return '<li>' + icon('trophy', 'sm') + '<span><b>' + esc(cats.length > 1 && n[1] ? n[1] : n[0]) + '</b>' + (a[1] ? ' ' + esc(a[1]) : '') +
+        (cats.length ? '<span class="d-aw-c">' + esc(cats.join(', ')) + '</span>' : '') + '</span></li>';
+    }).join('') + '</ul>';
+  }
   function metaBits(r) {
     var b = [];
     if (kind === 'books') { b.push(esc(r.author)); if (r.year) b.push(r.year < 0 ? -r.year + ' BC' : r.year); }
@@ -578,6 +617,7 @@
         '<div class="d-body">' +
           (tags ? '<div class="d-genres">' + tags + '</div>' : '') +
           '<div class="scores">' + scoresHTML(r) + '</div>' +
+          awardsHTML(r) +
           '<p class="summary" id="summary">' + (r.blurb ? esc(r.blurb) : '') + '</p>' +
           '<div class="d-actions">' +
             '<button class="btn sm" id="saveBtn" aria-pressed="' + saved + '">' + icon('heart', 'sm') + (saved ? 'Saved' : 'Save') + '</button>' +
@@ -735,6 +775,8 @@
     if (ex) { expanded[ex.getAttribute('data-expand')] = true; layoutPicker(); return; }
     var ct = t.closest('[data-country]');
     if (ct) { toggleIn(state.country, ct.getAttribute('data-country')); apply(true); return; }
+    var aw = t.closest('[data-award]');
+    if (aw) { toggleIn(state.award, aw.getAttribute('data-award')); apply(true); return; }
     if (t.closest('[data-more-countries]')) { allCountries = true; openFilters(); return; }
     if (t.closest('#filtersBtn')) { openFilters(); return; }
     if (t.closest('[data-trailers]') && TRAILERS && loaded) { e.preventDefault(); openReels(null, true); return; }
@@ -774,6 +816,7 @@
       else if (d === 'saved') state.saved = false;
       else if (d === 'hidden') state.hidden = false;
       else if (d === 'country') state.country = state.country.filter(function (c) { return c !== drop.getAttribute('data-val'); });
+      else if (d === 'award') state.award = state.award.filter(function (k) { return k !== drop.getAttribute('data-val'); });
       else state[d] = '';
       apply(true);
       return;

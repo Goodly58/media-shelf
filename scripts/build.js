@@ -83,7 +83,7 @@ const smallImg = (kind, x) => (imgUrl(kind, x) || '').replace('/330px-', '/250px
 const anon = (url) => (/\.wikimedia\.org\//.test(url) ? ' crossorigin="anonymous"' : '');
 const fb = (kind, x) => (Shelf.imgFallback(kind, x) ? ` data-fb="${esc(Shelf.imgFallback(kind, x))}"` : '');
 const card = (kind, x, meta) => Shelf.cardHTML(kind, x, { href: `${PAGE[kind]}#${encodeURIComponent(x.id)}`, meta, badge: badge(kind, x) });
-const metaOf = (kind, x) => (kind === 'books' ? x.author : (x.genres || [])[0]);
+const metaOf = (kind, x) => (kind === 'books' ? x.author : Shelf.awardLine(x) || (x.genres || [])[0]);
 
 const withArt = (kind) => (x) => Boolean(imgUrl(kind, x));
 /* Best n titles passing `filter`. Titles with artwork are preferred; if too

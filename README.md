@@ -27,6 +27,7 @@ published, and leaves it empty if it cannot:
 | Steam | The store's review summary for each app |
 | Goodreads | Genre lists for new books, then each book's own page by its Goodreads id or ISBN |
 | Wikipedia | Each article's categories, for the subgenres, themes and countries of films and series |
+| Wikidata awards | Oscars, Palme d'Or, Golden Lion, Golden Bear, BAFTA and Golden Globes for films; Emmys and Golden Globes for series; Pulitzer, Booker, International Booker, National Book Award, Hugo, Nebula, Women's Prize and Newbery for books; The Game Awards, BAFTA Games, D.I.C.E., GDC and Golden Joystick for games |
 | Wikidata, TVmaze, Open Library | Links between sites, posters and covers. Book covers are fetched once, shrunk to WebP and kept in `covers/`, so they load from GitHub's CDN |
 | Steam | Game trailers: Steam's own videos (HLS streams) for each game, played by the trailer feed |
 | TMDB, KinoCheck, Wikidata, YouTube | Trailers: official ones from TMDB and KinoCheck, and YouTube ids recorded on Wikidata, with up to two backups per title (from another channel where possible). Every video in use is checked with YouTube's oEmbed, again each month, and the player switches to a backup when one will not play where the viewer is |

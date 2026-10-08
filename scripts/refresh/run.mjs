@@ -27,6 +27,7 @@ import { crawlGenreLists } from './goodreads-lists.mjs';
 import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, slugify, articleMatches } from './merge.mjs';
 import { storeCovers, pruneCovers } from './covers.mjs';
 import { refreshGameTrailers, attachGameTrailers } from './gametrailers.mjs';
+import { refreshAwards, attachAwards } from './awards.mjs';
 import { snapshot, assess, save as saveHealth } from './health.mjs';
 
 const arg = (name, dflt) => {
@@ -75,6 +76,8 @@ await step('imdb', async () => {
 const selected = () => loadCache('imdb-selected', []);
 
 await step('wikidata', async () => { await resolveWikidata(selected()); });
+// Oscars, Emmys, Bookers, Game of the Year and the rest, a Wikidata query per award, monthly.
+await step('awards', async () => { await refreshAwards(); });
 
 await Promise.all([
   step('metacritic', async () => { await crawlAll(); }),
@@ -217,6 +220,7 @@ for (const k of ['movies', 'shows']) writeBackups(k, backups[k]);
 const games = mergeGames(before.games, { newApps: loadCache('steam-popular', []).filter((a) => a.reviews >= MIN_STEAM_REVIEWS) });
 writeBackups('games', attachGameTrailers(games));
 const books = mergeBooks(before.books);
+for (const [k, rows] of [['movies', movies], ['shows', shows], ['games', games], ['books', books]]) attachAwards(k, rows);
 // Books new this run (or with a new cover) get their cover kept now, not a week later.
 if (want('covers')) {
   const lacking = books.filter((b) => !b.cv && (b.cover || b.gr));

@@ -26,6 +26,7 @@
     mute: '<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="m22 9-6 6M16 9l6 6"/>',
     info: '<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
     chevD: '<path d="m6 9 6 6 6-6"/>',
+    trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.7V17c0 .6-.5 1-1 1.2C7.9 18.8 7 20.2 7 22M14 14.7V17c0 .6.5 1 1 1.2 1.1.6 2 2 2 3.8M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
     eyeOff: '<path d="M10.7 5.1A10.7 10.7 0 0 1 21.9 11.7a1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"/><path d="M14.1 14.2a3 3 0 0 1-4.3-4.3"/><path d="M17.5 17.5A10.7 10.7 0 0 1 2.1 12.3a1 1 0 0 1 0-.7 10.7 10.7 0 0 1 4.4-5.1"/><path d="m2 2 20 20"/>',
   };
   function icon(name, cls) {
@@ -85,6 +86,45 @@
     steam: { label: 'Steam', v: function (r) { return r.steam; }, badge: function (r) { return r.steam == null ? '' : '<span class="badge ' + tone(r.steam) + '">' + r.steam + '%</span>'; } },
     rating: { label: 'Goodreads', v: function (r) { return r.rating; }, badge: function (r) { return r.rating == null ? '' : '<span class="badge star">' + icon('star') + '<b>' + r.rating.toFixed(2) + '</b></span>'; } },
   };
+
+  /* ------------------------------------------------------------- awards */
+  // r.aw: [[key, years, category, ...], ...] (scripts/refresh/awards.mjs). [one, many].
+  var AWARD_NAMES = {
+    picture: ['Best Picture'], oscar: ['Oscar', 'Oscars'], palme: ["Palme d'Or"], lion: ['Golden Lion'], bear: ['Golden Bear'],
+    bafta: ['BAFTA', 'BAFTAs'], globe: ['Golden Globe', 'Golden Globes'], emmy: ['Emmy', 'Emmys'],
+    pulitzer: ['Pulitzer Prize'], booker: ['Booker Prize'], intbooker: ['International Booker'], nba: ['National Book Award'],
+    hugo: ['Hugo Award'], nebula: ['Nebula Award'], womens: ["Women's Prize"], newbery: ['Newbery Medal'],
+    goty: ['Game of the Year'], tga: ['The Game Awards'], baftag: ['BAFTA Games Award', 'BAFTA Games Awards'],
+    dice: ['D.I.C.E. Award', 'D.I.C.E. Awards'], gdc: ['GDC Award', 'GDC Awards'], joystick: ['Golden Joystick', 'Golden Joysticks'],
+  };
+  // Best Picture and Game of the Year count as awards of their own, for the filter and the headline.
+  function awardKeys(r) {
+    var keys = [];
+    (r.aw || []).forEach(function (a) {
+      keys.push(a[0]);
+      if (a[0] === 'oscar' && a.indexOf('Best Picture') > 1) keys.push('picture');
+      if (a.slice(2).some(function (c) { return /game of the year|^best game$/i.test(c); }) && keys.indexOf('goty') < 0) keys.push('goty');
+    });
+    return keys;
+  }
+  /* The one line a card shows for an award winner ("Best Picture", "7 Oscars", "Emmy winner"): the
+     most prestigious award first. Only a film's Oscars and BAFTAs are counted, since a film wins
+     them at one ceremony; a series wins over years, so its categories would undercount. */
+  var COUNTED = { oscar: 1, bafta: 1 };
+  var HEADLINE = ['picture', 'goty', 'palme', 'lion', 'bear', 'oscar', 'emmy', 'pulitzer', 'booker', 'intbooker', 'nba', 'hugo', 'nebula', 'womens', 'newbery', 'tga', 'baftag', 'dice', 'gdc', 'bafta', 'globe', 'joystick'];
+  function awardLine(r) {
+    if (!r.aw) return '';
+    var keys = awardKeys(r);
+    for (var i = 0; i < HEADLINE.length; i++) {
+      var k = HEADLINE[i];
+      if (keys.indexOf(k) < 0) continue;
+      var name = AWARD_NAMES[k];
+      if (!name[1]) return name[0];
+      var e = r.aw.filter(function (a) { return a[0] === k; })[0], n = e ? e.slice(2).filter(Boolean).length : 0;
+      return COUNTED[k] && n > 1 ? n + ' ' + name[1] : name[0] + ' winner';
+    }
+    return '';
+  }
 
   /* ---------------------------------------------- saved and hidden titles */
   // Kept in this browser only, as { kind: [id, ...] }, newest first.
@@ -335,6 +375,7 @@
   var api = {
     icon: icon, esc: esc, compact: compact, KINDS: KINDS, METRICS: METRICS, tone: tone,
     imgUrl: imgUrl, imgFallback: imgFallback, coverHTML: coverHTML, cardHTML: cardHTML,
+    AWARD_NAMES: AWARD_NAMES, awardKeys: awardKeys, awardLine: awardLine,
     Favs: Favs, Hidden: Hidden, toast: toast, openSearch: openSearch, fold: fold, warmTrailers: warmTrailers,
   };
   for (var k in api) S[k] = api[k];

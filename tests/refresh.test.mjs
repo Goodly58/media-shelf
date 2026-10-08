@@ -9,6 +9,7 @@ import { slugRT, audienceOf } from '../scripts/refresh/rottentomatoes.mjs';
 import { userOf } from '../scripts/refresh/metacritic.mjs';
 import { coverStem } from '../scripts/refresh/covers.mjs';
 import { steamTrailers } from '../scripts/refresh/gametrailers.mjs';
+import { category } from '../scripts/refresh/awards.mjs';
 
 let pass = 0, fail = 0;
 function ok(label, cond, detail) {
@@ -135,6 +136,12 @@ console.log('game trailers');
   ok('Steam: the stream path after the folder of the app', t[0][1] === '2/abc/1/hls_264_master.m3u8?t=5');
   ok('Steam: a game with no videos', steamTrailers(10, { 10: { success: true, data: [] } }).length === 0 && steamTrailers(10, null).length === 0);
 }
+
+console.log('awards');
+ok('a category without its award name', category('Academy Award for Best Picture', 'Academy Awards') === 'Best Picture');
+ok('game awards use a minus sign', category('The Game Awards − Best Art Direction', 'The Game Awards') === 'Best Art Direction');
+ok('an award with no categories', category("Palme d'Or", "Palme d'Or") === '' && category('Booker Prize', 'Booker Prize') === '');
+ok('a prize for a kind of book', category('Pulitzer Prize for Fiction', 'Pulitzer Prize') === 'Fiction');
 
 console.log('book covers');
 ok('a kept cover is named for its Open Library id', coverStem({ cover: 12836879, gr: '1' }) === '12836879');
