@@ -597,3 +597,14 @@ dialog.reels .toast { background: #f3f5fa; color: #05060a; }
   .scores .score { flex: 1 1 100%; }
   .duo-in { gap: 8px 16px; }
 }
+
+/* A picture on its way: the card shows the cover's own colour (or a plain tone) with a soft
+   sheen, and no text. The title and author show only when there is no picture at all. */
+.cover:has(> img) .ph { background: var(--cc, var(--card-2)); }
+.cover:has(> img) .ph > * { visibility: hidden; }
+.cover:has(> img:not(.on)) .ph::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .08) 50%, transparent 70%);
+  background-size: 300% 100%; animation: shimmer 1.4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) { .cover .ph::after { animation: none; } }

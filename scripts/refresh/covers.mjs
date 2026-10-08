@@ -87,6 +87,28 @@ export async function storeCovers(books, { budgetMin = 60 } = {}) {
   saveCache('gr-covers', grCovers);
   saveCache('cover-misses', misses);
   log(`covers: ${stored} stored, ${failed} with nothing usable; ${fs.readdirSync(COVER_DIR).length} on file`);
+  await colourCovers();
+}
+
+/** A cover's average colour as hex ("3a2f1e"): the card shows it while the picture is on its way. */
+export async function colourOf(file) {
+  const sharp = (await import('sharp')).default;
+  const { channels } = await sharp(file).stats();
+  return channels.slice(0, 3).map((c) => Math.round(c.mean).toString(16).padStart(2, '0')).join('');
+}
+
+/** The colour of every kept cover that has none yet. Cache 'cover-colours': { stem: hex }. */
+export async function colourCovers() {
+  if (!fs.existsSync(COVER_DIR)) return;
+  const colours = loadCache('cover-colours');
+  let n = 0;
+  for (const f of fs.readdirSync(COVER_DIR)) {
+    const stem = f.replace(/\.webp$/, '');
+    if (stem === f || colours[stem]) continue;
+    try { colours[stem] = await colourOf(path.join(COVER_DIR, f)); n++; } catch (e) { log(`covers: colour of ${f}: ${e.message}`); }
+  }
+  saveCache('cover-colours', colours);
+  if (n) log(`covers: ${n} colours worked out`);
 }
 
 /** Remove covers no book uses any more (one replaced by its edition's, a book dropped). */

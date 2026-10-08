@@ -72,5 +72,9 @@ window.Shelf={
 </footer>
 <script src="assets/app.js?v={{build}}" defer></script>
 {{scripts}}
+<script type="speculationrules">
+{"prerender": [{"source": "document", "eagerness": "moderate",
+  "where": {"and": [{"selector_matches": ".nav-links a, a.logo, .kinds a"}, {"not": {"selector_matches": "[data-trailers], [aria-current]"}}]}}]}
+</script>
 </body>
 </html>

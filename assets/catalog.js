@@ -118,6 +118,8 @@
     sortEl.value = state.sort;
     // With the first screen already drawn, its posters get the connection first and the full
     // list follows once they are in, after 2.5 s at most, or as soon as someone reaches for a control.
+    // Prepared ahead of a click (speculation rules), the page waits for the click before the full list.
+    if (document.prerendering) { document.addEventListener('prerenderingchange', load, { once: true }); return; }
     if (!pre.length || document.readyState === 'complete') return fetchData();
     var started = false;
     var go = function () { if (!started) { started = true; fetchData(); } };
@@ -258,7 +260,8 @@
     var html = '';
     for (var i = shown; i < end; i++) {
       var r = results[i];
-      html += S.cardHTML(kind, r, { meta: CONFIG.meta(r), badge: badgeFor(r), fav: true, eager: i < 6, high: i < 3 });
+      // The first two rows load at once, the first row ahead of everything; the rest as they near the screen.
+      html += S.cardHTML(kind, r, { meta: CONFIG.meta(r), badge: badgeFor(r), fav: true, eager: i < 14, high: i < 7 });
     }
     grid.insertAdjacentHTML('beforeend', html);
     shown = end;

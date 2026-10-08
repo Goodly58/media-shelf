@@ -117,7 +117,9 @@
     opts = opts || {};
     var url = imgUrl(kind, r);
     var sub = r.year || '';
-    var html = '<span class="cover" style="--k:var(--k-' + kind + ')">' +
+    // A cover's own colour (where known) fills the card while the picture loads.
+    var hue = r.cc && /^[0-9a-f]{6}$/.test(r.cc) ? ';--cc:#' + r.cc : '';
+    var html = '<span class="cover" style="--k:var(--k-' + kind + ')' + hue + '">' +
       '<span class="ph" aria-hidden="true"><b>' + esc(r.title) + '</b><span>' + esc(r.author || r.by || sub) + '</span></span>';
     if (url) {
       // Wikimedia sets cookies on every image it serves; an anonymous request keeps them out.

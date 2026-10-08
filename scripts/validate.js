@@ -34,7 +34,9 @@ for (const p of PAGES) {
   for (const m of h.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/g)) {
     if (/\bsrc=/.test(m[1])) continue;
     n++;
-    try { new Function(m[2]); } catch (e) { fail.push(`${p}: inline script #${n}: ${e.message}`); }
+    // Speculation rules (and any other typed block) are JSON, not script.
+    const json = /\btype="(speculationrules|application\/(ld\+)?json)"/.test(m[1]);
+    try { if (json) JSON.parse(m[2]); else new Function(m[2]); } catch (e) { fail.push(`${p}: inline ${json ? 'JSON' : 'script'} #${n}: ${e.message}`); }
   }
   for (const m of h.matchAll(/(?:href|src)="((?:assets|data)\/[^"?#]+)/g)) {
     if (!has(m[1])) fail.push(`${p} references ${m[1]}, which is not in _site/`);
@@ -84,6 +86,8 @@ for (const kind of Object.keys(MIN)) {
     if (bare) fail.push(`books: ${bare} rows have no Goodreads rating`);
     const lost = rows.filter((r) => r.cv && !has(`covers/${r.cv}.webp`)).length;
     if (lost) fail.push(`books: ${lost} rows name a kept cover that is not in covers/`);
+    const hue = rows.filter((r) => r.cc != null && !/^[0-9a-f]{6}$/.test(r.cc)).length;
+    if (hue) fail.push(`books: ${hue} rows with a cover colour that is not six hex digits`);
   }
   if (kind === 'movies' || kind === 'shows') {
     const bad = rows.filter((r) => !/^tt\d+$/.test(r.id)).length;

@@ -103,7 +103,7 @@ const NOUN = { games: ['game', 'games'], books: ['book', 'books'], movies: ['fil
 function firstScreen(kind) {
   const rows = DATA[kind];
   const list = rows.slice().sort((a, b) => TOP[kind](b) - TOP[kind](a)).slice(0, FIRST);
-  const cards = list.map((x, i) => Shelf.cardHTML(kind, x, { meta: metaOf(kind, x), badge: badge(kind, x), fav: true, eager: i < 6, high: i < 3 })).join('');
+  const cards = list.map((x, i) => Shelf.cardHTML(kind, x, { meta: metaOf(kind, x), badge: badge(kind, x), fav: true, eager: i < 14, high: i < 7 })).join('');
   const count = {};
   for (const x of rows) for (const g of x.genres || []) count[g] = (count[g] || 0) + 1;
   const genres = Object.keys(count).sort((a, b) => count[b] - count[a] || a.localeCompare(b)).slice(0, 12);
@@ -240,13 +240,17 @@ self.addEventListener('fetch', function (e) {
   var url = new URL(req.url);
   var same = url.origin === self.location.origin;
 
+  // Pages: one seen in the last day opens at once from the cache and is brought up to date
+  // for next time; an older one waits for the network (the cache stands in when offline).
   if (req.mode === 'navigate') {
-    e.respondWith(fetch(req).then(function (res) {
-      var copy = res.clone();
-      caches.open(CORE).then(function (c) { c.put(req, copy); });
-      return res;
-    }).catch(function () {
-      return caches.match(req, { ignoreSearch: true }).then(function (hit) { return hit || caches.match('index.html'); });
+    var key = url.origin + url.pathname;
+    e.respondWith(caches.open(CORE).then(function (c) {
+      return c.match(key).then(function (hit) {
+        var net = fetch(req).then(function (res) { if (res.ok) c.put(key, res.clone()); return res; });
+        var age = hit ? Date.now() - new Date(hit.headers.get('date') || 0).getTime() : Infinity;
+        if (hit && age < 864e5) { e.waitUntil(net.catch(function () {})); return hit; }
+        return net.catch(function () { return hit || caches.match('index.html'); });
+      });
     }));
     return;
   }

@@ -372,8 +372,13 @@ const mainTitle = (t) => fold(String(t).split(/[:(]|,\s*(vol|or)\b/i)[0]);
 
 /** Each book's cover kept with the site (covers/), named by its source; until there is one, the site asks Open Library. */
 export function setCoverFiles(rows) {
-  const grCovers = loadCache('gr-covers');
-  for (const r of rows) { const stem = coverStem(r, grCovers); r.cv = stem && fs.existsSync(coverFile(stem)) ? stem : null; }
+  const grCovers = loadCache('gr-covers'), colours = loadCache('cover-colours');
+  for (const r of rows) {
+    const stem = coverStem(r, grCovers);
+    r.cv = stem && fs.existsSync(coverFile(stem)) ? stem : null;
+    // Its average colour, shown while the picture loads.
+    r.cc = (r.cv && colours[r.cv]) || null;
+  }
   log(`books: ${rows.filter((r) => r.cv).length} covers served with the site, ${rows.filter((r) => !r.cv && r.cover).length} still from Open Library, ${rows.filter((r) => !r.cv && !r.cover).length} without one`);
 }
 
