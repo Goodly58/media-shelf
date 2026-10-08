@@ -26,15 +26,16 @@
 <link rel="preconnect" href="https://upload.wikimedia.org">
 <link rel="dns-prefetch" href="https://cdn.cloudflare.steamstatic.com">
 <link rel="dns-prefetch" href="https://static.tvmaze.com">
-<link rel="dns-prefetch" href="https://covers.openlibrary.org">
 <script>
 (function(){try{var t=localStorage.getItem('shelf_theme');if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',t)}catch(e){}})();
 // Image handlers live here rather than in app.js so they cover images that settle before it runs.
 window.Shelf={
   // Open Library answers a missing cover with a 1x1 gif rather than a 404.
   imgOn:function(e){if(e.naturalWidth<8){e.remove();return}e.classList.add('on')},
-  // Steam portrait art falls back to the store header, a Wikipedia thumbnail to the original file.
-  imgFail:function(e){var s=e.getAttribute('data-steam'),o=e.src.replace(/\/thumb(\/\w\/\w\w\/[^/]+)\/250px-[^/]+$/,'$1');
+  // A kept cover not there yet falls back to its source, Steam portrait art to the store header,
+  // a Wikipedia thumbnail to the original file.
+  imgFail:function(e){var f=e.getAttribute('data-fb');if(f){e.removeAttribute('data-fb');e.src=f;return}
+    var s=e.getAttribute('data-steam'),o=e.src.replace(/\/thumb(\/\w\/\w\w\/[^/]+)\/250px-[^/]+$/,'$1');
     if(s&&e.src.indexOf('library_600x900')>0){e.src='https://cdn.cloudflare.steamstatic.com/steam/apps/'+s+'/header.jpg';e.parentNode.classList.add('wide-art');return}
     if(o!==e.src){e.src=o;return}e.remove()}
 };

@@ -54,12 +54,16 @@
 
   /* ------------------------------------------------------------- images */
   var STEAM = 'https://cdn.cloudflare.steamstatic.com/steam/apps/';
+  var OL_COVER = 'https://covers.openlibrary.org/b/id/';
+  // Where to look if a kept cover is missing (it is on its way): Open Library's own copy.
+  function imgFallback(kind, r) { return kind === 'books' && r.cv && r.cover ? OL_COVER + r.cover + '-M.jpg' : ''; }
   // A poster file on Wikipedia, as opposed to one of its thumbnails.
   var WIKI_FILE = /^(https:\/\/upload\.wikimedia\.org\/wikipedia\/(?:en|commons))\/(\w\/\w\w)\/([^/]+\.jpe?g)$/i;
   function imgUrl(kind, r) {
     if (kind === 'games' && r.img) return r.img;
     if (kind === 'games' && r.steamId) return STEAM + r.steamId + '/library_600x900.jpg';
-    if (kind === 'books' && r.cover) return 'https://covers.openlibrary.org/b/id/' + r.cover + '-M.jpg';
+    // Book covers are kept with the site; Open Library's own address stands in until one is.
+    if (kind === 'books') return r.cv ? 'covers/' + r.cv + '.webp' : r.cover ? OL_COVER + r.cover + '-M.jpg' : null;
     if (!r.img) return null;
     // Wikipedia's 250px thumbnail is the same poster re-encoded, often a fifth of the bytes.
     // PNG thumbnails stay PNG and come out no smaller, so those are left alone.
@@ -120,6 +124,7 @@
       html += '<img src="' + esc(url) + '" alt=""' + (/\.wikimedia\.org\//.test(url) ? ' crossorigin="anonymous"' : '') +
         ' loading="' + (opts.eager ? 'eager' : 'lazy') + '"' + (opts.high ? ' fetchpriority="high"' : '') + ' decoding="async"' +
         (kind === 'games' && r.steamId ? ' data-steam="' + r.steamId + '"' : '') +
+        (imgFallback(kind, r) ? ' data-fb="' + esc(imgFallback(kind, r)) + '"' : '') +
         ' referrerpolicy="no-referrer" onload="Shelf.imgOn(this)" onerror="Shelf.imgFail(this)">';
     }
     if (opts.badge) html += opts.badge;
@@ -324,7 +329,7 @@
   var S = window.Shelf || (window.Shelf = {});
   var api = {
     icon: icon, esc: esc, compact: compact, KINDS: KINDS, METRICS: METRICS, tone: tone,
-    imgUrl: imgUrl, coverHTML: coverHTML, cardHTML: cardHTML,
+    imgUrl: imgUrl, imgFallback: imgFallback, coverHTML: coverHTML, cardHTML: cardHTML,
     Favs: Favs, Hidden: Hidden, toast: toast, openSearch: openSearch, fold: fold, warmTrailers: warmTrailers,
   };
   for (var k in api) S[k] = api[k];

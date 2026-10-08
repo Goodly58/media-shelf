@@ -81,6 +81,7 @@ const imgUrl = (kind, x) => Shelf.imgUrl(kind, x);
 const smallImg = (kind, x) => (imgUrl(kind, x) || '').replace('/330px-', '/250px-');
 // Wikimedia sets cookies on every image it serves; an anonymous request keeps them out.
 const anon = (url) => (/\.wikimedia\.org\//.test(url) ? ' crossorigin="anonymous"' : '');
+const fb = (kind, x) => (Shelf.imgFallback(kind, x) ? ` data-fb="${esc(Shelf.imgFallback(kind, x))}"` : '');
 const card = (kind, x, meta) => Shelf.cardHTML(kind, x, { href: `${PAGE[kind]}#${encodeURIComponent(x.id)}`, meta, badge: badge(kind, x) });
 const metaOf = (kind, x) => (kind === 'books' ? x.author : (x.genres || [])[0]);
 
@@ -120,7 +121,7 @@ function firstScreen(kind) {
 /* ------------------------------------------------------------------ home */
 function wallRow(items) {
   // The first screenful loads straight away, the rest as the row drifts into view.
-  const cells = items.map(([kind, x], i) => `<img src="${esc(smallImg(kind, x))}" alt=""${anon(smallImg(kind, x))}${i >= 4 ? ' loading="lazy"' : ''} decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
+  const cells = items.map(([kind, x], i) => `<img src="${esc(smallImg(kind, x))}" alt=""${anon(smallImg(kind, x))}${fb(kind, x)}${i >= 4 ? ' loading="lazy"' : ''} decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
   return `<div class="wall-row">${cells}${cells}</div>`;
 }
 function homePage() {
@@ -134,7 +135,7 @@ function homePage() {
 
   const blurb = { games: 'Metacritic and Steam', books: 'Goodreads', movies: 'IMDb, Metacritic, Rotten Tomatoes', shows: 'IMDb, Metacritic, Rotten Tomatoes' };
   const shelves = KINDS.map((k) => {
-    const fan = top(k, 3, (x) => POP[k](x) > 0, { strict: true }).map((x) => `<img src="${esc(smallImg(k, x))}" alt=""${anon(smallImg(k, x))} loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
+    const fan = top(k, 3, (x) => POP[k](x) > 0, { strict: true }).map((x) => `<img src="${esc(smallImg(k, x))}" alt=""${anon(smallImg(k, x))}${fb(k, x)} loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="Shelf.imgFail(this)">`).join('');
     return `<a class="shelf" href="${PAGE[k]}" style="--k:var(--k-${k})"><div class="fan" aria-hidden="true">${fan}</div><h2>${LABEL[k]}</h2><p>${blurb[k]}</p></a>`;
   }).join('');
 
@@ -218,7 +219,7 @@ function serviceWorker(shell) {
 var VERSION = '${BUILD}';
 var SHELL = ${JSON.stringify(shell)};
 var CORE = 'shelf-core-' + VERSION, DATA = 'shelf-data-' + VERSION, IMG = 'shelf-art-v1', FONT = 'shelf-font-v1';
-var IMG_MAX = 400;
+var IMG_MAX = 900;
 
 self.addEventListener('install', function (e) {
   e.waitUntil(caches.open(CORE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); }));
@@ -264,11 +265,9 @@ self.addEventListener('fetch', function (e) {
     }));
     return;
   }
-  if (same) {
-    e.respondWith(caches.match(req).then(function (hit) { return hit || fetch(req); }));
-    return;
-  }
-  if (req.destination === 'image') {
+  // Art from elsewhere, and book covers from here: an address is one picture for good, so it
+  // is kept until the cache is full.
+  if (req.destination === 'image' && (!same || url.pathname.indexOf('/covers/') >= 0)) {
     e.respondWith(caches.open(IMG).then(function (c) {
       return c.match(req).then(function (hit) {
         return hit || fetch(req).then(function (res) {
@@ -277,7 +276,9 @@ self.addEventListener('fetch', function (e) {
         });
       });
     }));
+    return;
   }
+  if (same) e.respondWith(caches.match(req).then(function (hit) { return hit || fetch(req); }));
 });
 `;
 }
@@ -333,6 +334,8 @@ page({
 for (const f of fs.readdirSync(path.join(ROOT, 'assets'))) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(OUT, 'assets', f));
 for (const k of KINDS) fs.copyFileSync(path.join(DATA_DIR, `${k}.json`), path.join(OUT, `data/${k}.json`));
 for (const k of BACKUPS) fs.copyFileSync(path.join(DATA_DIR, `${k}-trailers.json`), path.join(OUT, `data/${k}-trailers.json`));
+// Book covers kept with the site (scripts/refresh/covers.mjs).
+if (fs.existsSync(path.join(ROOT, 'covers'))) fs.cpSync(path.join(ROOT, 'covers'), path.join(OUT, 'covers'), { recursive: true });
 fs.writeFileSync(path.join(OUT, 'data/search.json'), searchIndex());
 fs.copyFileSync(path.join(ROOT, 'manifest.webmanifest'), path.join(OUT, 'manifest.webmanifest'));
 

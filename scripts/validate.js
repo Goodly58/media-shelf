@@ -82,6 +82,8 @@ for (const kind of Object.keys(MIN)) {
   if (kind === 'books') {
     const bare = rows.filter((r) => r.rating == null).length;
     if (bare) fail.push(`books: ${bare} rows have no Goodreads rating`);
+    const lost = rows.filter((r) => r.cv && !has(`covers/${r.cv}.webp`)).length;
+    if (lost) fail.push(`books: ${lost} rows name a kept cover that is not in covers/`);
   }
   if (kind === 'movies' || kind === 'shows') {
     const bad = rows.filter((r) => !/^tt\d+$/.test(r.id)).length;

@@ -48,6 +48,10 @@ jobs:
         with:
           node-version: '22'
 
+      # sharp, which shrinks book covers (scripts/refresh/covers.mjs).
+      - name: Install tools
+        run: npm install --no-audit --no-fund
+
       - name: Restore fetch caches
         uses: actions/cache/restore@v4
         with:
@@ -75,7 +79,7 @@ jobs:
 
       - name: Commit
         run: |
-          git add data
+          git add -A data covers
           if git diff --cached --quiet; then
             echo "Nothing changed."
             exit 0

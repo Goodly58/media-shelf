@@ -62,7 +62,9 @@ async function goodreadsPage(url) {
   const author = Array.isArray(ld.author) ? ld.author[0]?.name : ld.author?.name;
   // The page's own genre shelves, most-shelved first: the best genre source for a book.
   const genres = [...new Set([...html.matchAll(/BookPageMetadataSection__genreButton"><a href="https:\/\/www\.goodreads\.com\/genres\/[^"]+"[^>]*><span class="Button__labelItem">([^<]+)</g)].map((m) => decode(m[1])))];
-  return { rating: Number(ar.ratingValue), count: Number(ar.ratingCount), title: decode(ld.name || ''), author: decode(author || ''), id, isbn: ld.isbn || null, genres };
+  // The cover on the page (Goodreads' placeholder for a book without one does not count).
+  const img = typeof ld.image === 'string' && /^https:\/\//.test(ld.image) && !/nophoto/i.test(ld.image) ? ld.image : null;
+  return { rating: Number(ar.ratingValue), count: Number(ar.ratingCount), title: decode(ld.name || ''), author: decode(author || ''), id, isbn: ld.isbn || null, genres, img };
 }
 
 /**

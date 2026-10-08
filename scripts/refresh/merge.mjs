@@ -11,6 +11,7 @@ import { matchScreen } from './metacritic.mjs';
 import { loadEpisodes } from './imdb.mjs';
 import { SCREEN_TAGS, GAME_TAGS, screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags } from './taxonomy.mjs';
 import { loadTrailers } from './trailers.mjs';
+import { coverStem, coverFile } from './covers.mjs';
 
 const SCREEN_TAG_NAMES = new Set(SCREEN_TAGS.map((x) => x[0]));
 const GAME_NAMES = new Set(GAME_TAGS.map((x) => x[1]));
@@ -441,6 +442,10 @@ export function mergeBooks(prevBooks) {
   tidy(out);
   const ids = new Set();
   for (const r of out) { while (ids.has(r.id)) r.id += '-' + (r.year || 'b'); ids.add(r.id); }
+  // A cover kept with the site (covers/), named by its source; until it is, the site asks Open Library.
+  const grCovers = loadCache('gr-covers');
+  for (const r of out) { const stem = coverStem(r, grCovers); r.cv = stem && fs.existsSync(coverFile(stem)) ? stem : null; }
+  log(`books: ${out.filter((r) => r.cv).length} covers served with the site, ${out.filter((r) => !r.cv && r.cover).length} still from Open Library, ${out.filter((r) => !r.cv && !r.cover).length} without one`);
   log(`books ${out.length}: ${fresh} confirmed on Goodreads now, ${kept} confirmed earlier, ${added} added from Goodreads lists, ${dropped} dropped as unverifiable, ${rows.length - out.length} duplicates merged`);
   return out;
 }

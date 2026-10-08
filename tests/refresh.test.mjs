@@ -7,6 +7,7 @@ import { assess } from '../scripts/refresh/health.mjs';
 import { pickTrailer, pickTrailers, kinoPick, kinoRanked, tmdbPick, tmdbRanked } from '../scripts/refresh/trailers.mjs';
 import { slugRT, audienceOf } from '../scripts/refresh/rottentomatoes.mjs';
 import { userOf } from '../scripts/refresh/metacritic.mjs';
+import { coverStem } from '../scripts/refresh/covers.mjs';
 
 let pass = 0, fail = 0;
 function ok(label, cond, detail) {
@@ -121,6 +122,11 @@ ok('Metacritic users: score and count', JSON.stringify(userOf({ data: { item: { 
 ok('Metacritic users: nobody has rated it', userOf({ data: { item: { score: 0, reviewCount: 0 } } }).score === null);
 ok('Metacritic users: not enough to score yet', userOf({ data: { item: { score: null, reviewCount: 2 } } }).score === null);
 ok('Metacritic users: no such page', userOf({ errors: [{ code: 404 }] }) === null);
+
+console.log('book covers');
+ok('a kept cover is named for its Open Library id', coverStem({ cover: 12836879, gr: '1' }) === '12836879');
+ok('no Open Library cover: the Goodreads one, by Goodreads id', coverStem({ gr: '1237398' }, { 1237398: { img: 'https://example.org/c.jpg' } }) === 'g1237398');
+ok('no cover anywhere: nothing to keep', coverStem({ gr: '5' }, { 5: { none: true } }) === null && coverStem({}) === null);
 
 console.log('source health');
 const now = Date.now(), old = now - 9e9;

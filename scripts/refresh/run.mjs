@@ -25,6 +25,7 @@ import { refreshBooks, refreshEditionCovers } from './books.mjs';
 import { resolveTvmaze } from './tvmaze.mjs';
 import { crawlGenreLists } from './goodreads-lists.mjs';
 import { mergeScreen, mergeGames, mergeBooks, slugify, articleMatches } from './merge.mjs';
+import { storeCovers, pruneCovers } from './covers.mjs';
 import { snapshot, assess, save as saveHealth } from './health.mjs';
 
 const arg = (name, dflt) => {
@@ -175,6 +176,10 @@ await Promise.all([
     }
     saveCache('mc-games', mcg);
   }),
+  step('covers', async () => {
+    // Book covers kept with the site, so they load from GitHub's CDN rather than Open Library's server.
+    await storeCovers(before.books, { budgetMin: BUDGET });
+  }),
   step('books', async () => {
     // New books from Goodreads' genre lists (re-crawled about monthly), then rolling re-verification.
     await crawlGenreLists({ listsPerGenre: 2, pages: 3 });
@@ -226,6 +231,8 @@ for (const [k, rows] of Object.entries(out)) {
     continue;
   }
   writeData(k, rows);
+  // Covers no book uses any more go once the books are written.
+  if (k === 'books') pruneCovers(rows);
 }
 health(refused);
 

@@ -27,7 +27,7 @@ published, and leaves it empty if it cannot:
 | Steam | The store's review summary for each app |
 | Goodreads | Genre lists for new books, then each book's own page by its Goodreads id or ISBN |
 | Wikipedia | Each article's categories, for the subgenres, themes and countries of films and series |
-| Wikidata, TVmaze, Open Library | Links between sites, posters and covers |
+| Wikidata, TVmaze, Open Library | Links between sites, posters and covers. Book covers are fetched once, shrunk to WebP and kept in `covers/`, so they load from GitHub's CDN |
 | TMDB, KinoCheck, Wikidata, YouTube | Trailers: official ones from TMDB and KinoCheck, and YouTube ids recorded on Wikidata, with up to two backups per title (from another channel where possible). Every video in use is checked with YouTube's oEmbed, again each month, and the player switches to a backup when one will not play where the viewer is |
 
 Genres and themes come from one curated list, `scripts/refresh/taxonomy.mjs`,

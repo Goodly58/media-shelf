@@ -10,5 +10,6 @@
     "refresh": "node scripts/refresh/run.mjs",
     "serve": "node scripts/serve.js"
   },
-  "engines": { "node": ">=22.12" }
+  "engines": { "node": ">=22.12" },
+  "devDependencies": { "sharp": "0.35.5" }
 }
