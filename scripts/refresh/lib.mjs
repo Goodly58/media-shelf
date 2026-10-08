@@ -103,6 +103,12 @@ export function writeMeta(meta) {
   fs.writeFileSync(path.join(ROOT, 'data', 'meta.json'), JSON.stringify(meta, null, 2) + '\n');
 }
 
+/** data/{kind}-trailers.json: { id: [backup, ...] }, a title to a line. */
+export function writeBackups(kind, map) {
+  const ids = Object.keys(map).sort();
+  fs.writeFileSync(path.join(ROOT, 'data', `${kind}-trailers.json`), '{\n' + ids.map((id) => JSON.stringify(id) + ':' + JSON.stringify(map[id])).join(',\n') + '\n}\n');
+}
+
 /* One object per line: small diffs, still valid JSON. */
 /** A row as written: empty fields left out. */
 export function compact(r) {

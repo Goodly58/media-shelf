@@ -4,7 +4,7 @@ import { slugify, broadGenres, articleMatches, classifyGame, bookGenre } from '.
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
-import { pickTrailer, kinoPick, tmdbPick } from '../scripts/refresh/trailers.mjs';
+import { pickTrailer, pickTrailers, kinoPick, kinoRanked, tmdbPick, tmdbRanked } from '../scripts/refresh/trailers.mjs';
 import { slugRT, audienceOf } from '../scripts/refresh/rottentomatoes.mjs';
 import { userOf } from '../scripts/refresh/metacritic.mjs';
 
@@ -85,6 +85,24 @@ ok('KinoCheck: nothing for a clip', kinoPick({ trailer: null, videos: [{ youtube
 ok('KinoCheck: nothing for an error', kinoPick({ error: 'Error', message: 'movie not found' }) === null);
 ok('TMDB: the official trailer', tmdbPick({ results: [{ site: 'YouTube', key: 'aaaaaaaaaaa', type: 'Teaser', official: true }, { site: 'YouTube', key: 'bbbbbbbbbbb', type: 'Trailer', official: true }, { site: 'Vimeo', key: 'x', type: 'Trailer' }] }) === 'bbbbbbbbbbb');
 ok('TMDB: nothing but featurettes', tmdbPick({ results: [{ site: 'YouTube', key: 'aaaaaaaaaaa', type: 'Featurette', official: true }] }) === null);
+ok('TMDB: the others kept in order', JSON.stringify(tmdbRanked({ results: [
+  { site: 'YouTube', key: 'teaser00000', type: 'Teaser', official: true, published_at: '2020' },
+  { site: 'YouTube', key: 'trailer1old', type: 'Trailer', official: true, published_at: '2019' },
+  { site: 'YouTube', key: 'trailer2new', type: 'Trailer', official: true, published_at: '2021' },
+  { site: 'YouTube', key: 'fanmade0000', type: 'Trailer', official: false, published_at: '2022' },
+  { site: 'YouTube', key: 'clip0000000', type: 'Clip', official: true },
+] })) === JSON.stringify(['trailer2new', 'trailer1old', 'fanmade0000', 'teaser00000']));
+ok('KinoCheck: its pick, then the rest', JSON.stringify(kinoRanked({ trailer: { youtube_video_id: 'aaaaaaaaaaa', categories: ['Trailer'] }, videos: [{ youtube_video_id: 'bbbbbbbbbbb', categories: ['Teaser'] }, { youtube_video_id: 'aaaaaaaaaaa', categories: ['Trailer'] }, { youtube_video_id: 'ccccccccccc', categories: ['Trailer'] }] })) === JSON.stringify(['aaaaaaaaaaa', 'ccccccccccc', 'bbbbbbbbbbb']));
+{
+  const tmdb = { tt5: { yt: 'main0000000', alt: ['studio20000', 'studio30000'] } };
+  const kino = { tt5: { yt: 'kino0000000' } };
+  const check = { main0000000: { ok: true, by: 'Studio' }, studio20000: { ok: true, by: 'Studio' }, kino0000000: { ok: true, by: 'KinoCheck' } };
+  ok('backups: a trailer and two more', JSON.stringify(pickTrailers('tt5', { tmdb, kino, check })) === JSON.stringify(['main0000000', 'kino0000000', 'studio20000']));
+  ok('backups: another channel comes first', pickTrailers('tt5', { tmdb, kino, check })[1] === 'kino0000000');
+  ok('backups: a dead trailer hands over to the next', pickTrailers('tt5', { tmdb, kino, check: { ...check, main0000000: { ok: false } } })[0] === 'studio20000');
+  ok('backups: none known yet is undecided', pickTrailers('tt6', { tmdb, kino, check }) === undefined);
+  ok('backups: the trailer alone is the first of them', pickTrailer('tt5', { tmdb, kino, check }) === 'main0000000');
+}
 
 console.log('rotten tomatoes addresses');
 ok('a title becomes RT\'s address', slugRT('The Dark Knight') === 'the_dark_knight');

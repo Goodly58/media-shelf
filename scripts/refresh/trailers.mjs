@@ -1,4 +1,5 @@
-/* Trailers for films and series: one YouTube video per title, for the reels view.
+/* Trailers for films and series: a YouTube video per title for the reels view, and up to
+   two backups the player turns to when one will not play.
 
    Sources, best first:
    - TMDB, only when TMDB_API_KEY is set: official trailers for nearly every title.
@@ -8,10 +9,13 @@
      the statement is marked as a trailer or teaser. Unmarked ids are nearly always
      YouTube's paid listing of the whole film (titled just "The Godfather"), not a trailer.
 
-   Every id is checked with YouTube's oEmbed endpoint, which answers only for public,
-   embeddable videos, so a removed or locked trailer is dropped. Official trailers are
-   used before their check comes back (the page skips any that fail to play); Wikidata
-   ids wait for it. Each source keeps its own cache; pickTrailer() makes the choice. */
+   Every id in use is checked with YouTube's oEmbed endpoint, which answers only for
+   public, embeddable videos, and checked again each month: a trailer found dead gives
+   way to the next. Official trailers are used before their check comes back (the page
+   turns to a backup if one fails to play); Wikidata ids wait for it. A check cannot see
+   a video blocked in the viewer's country or behind an age gate, which is what the
+   backups on the page are for. Each source keeps its own cache; pickTrailers() makes
+   the choice. */
 import { get, log, loadCache, saveCache } from './lib.mjs';
 
 const SPARQL = 'https://query.wikidata.org/sparql';
@@ -27,25 +31,52 @@ function rankWikidata(c) {
 }
 
 /**
- * The trailer for one title from the caches, or null when the sources say there is none.
- * Returns undefined when no source has looked at the title yet.
+ * Every usable trailer for one title, best first: TMDB's (its best, then its others),
+ * KinoCheck's, then Wikidata's once YouTube has confirmed them. Videos YouTube has said
+ * will not play are left out. Returns undefined when no source has looked at the title yet.
  */
-export function pickTrailer(id, { tmdb = {}, kino = {}, wd = {}, check = {} }) {
-  const known = tmdb[id] || kino[id] || wd[id];
-  if (!known) return undefined;
-  const dead = (yt) => check[yt] && check[yt].ok === false;
-  for (const src of [tmdb[id], kino[id]]) if (src && src.yt && !dead(src.yt)) return src.yt;
+export function rankTrailers(id, { tmdb = {}, kino = {}, wd = {}, check = {} }) {
+  if (!(tmdb[id] || kino[id] || wd[id])) return undefined;
+  const out = [];
+  const add = (yt) => { if (yt && !(check[yt] && check[yt].ok === false) && !out.includes(yt)) out.push(yt); };
+  for (const src of [tmdb[id], kino[id]]) if (src) { add(src.yt); (src.alt || []).forEach(add); }
   // Wikidata's ids wait for YouTube to confirm they still play.
-  for (const [yt] of rankWikidata(wd[id] && wd[id].c)) if (check[yt] && check[yt].ok) return yt;
-  return null;
+  for (const [yt] of rankWikidata(wd[id] && wd[id].c)) if (check[yt] && check[yt].ok) add(yt);
+  return out;
 }
 
-/** The pick for every title, from the current caches. pick.fromTmdb(id, yt) says whether TMDB supplied it. */
+/**
+ * A title's trailer and up to two backups ([] when the sources know of none, undefined when
+ * none has looked). Backups from another YouTube channel come first: a studio that takes one
+ * trailer down, or is blocked somewhere, usually takes or has all of its own with it.
+ */
+export function pickTrailers(id, caches) {
+  const ranked = rankTrailers(id, caches);
+  if (!ranked || ranked.length < 3) return ranked;
+  const [first, ...rest] = ranked;
+  const by = (yt) => caches.check && caches.check[yt] && caches.check[yt].by;
+  const elsewhere = by(first) ? rest.filter((yt) => by(yt) && by(yt) !== by(first)) : [];
+  return [first, ...new Set([...elsewhere, ...rest])].slice(0, 3);
+}
+
+/** The trailer alone: a video id, null when there is none, undefined when no source has looked. */
+export function pickTrailer(id, caches) {
+  const l = rankTrailers(id, caches);
+  return l === undefined ? undefined : l[0] || null;
+}
+
+/**
+ * The choice for every title, from the current caches: list(id) gives pickTrailers(), has(id)
+ * whether there is a trailer at all, and fromTmdb(id, yt) whether TMDB supplied a video.
+ */
 export function loadTrailers() {
   const caches = { tmdb: loadCache('tmdb-videos'), kino: loadCache('kinocheck'), wd: loadCache('wikidata-yt'), check: loadCache('yt-check') };
-  const pick = (id) => pickTrailer(id, caches);
-  pick.fromTmdb = (id, yt) => Boolean(yt && caches.tmdb[id] && caches.tmdb[id].yt === yt);
-  return pick;
+  return {
+    caches,
+    list: (id) => pickTrailers(id, caches),
+    has: (id) => Boolean(pickTrailer(id, caches)),
+    fromTmdb: (id, yt) => Boolean(yt && caches.tmdb[id] && (caches.tmdb[id].yt === yt || (caches.tmdb[id].alt || []).includes(yt))),
+  };
 }
 
 /* --------------------------------------------------------------- Wikidata */
@@ -86,14 +117,16 @@ async function wikidataIds(titles, { maxAgeDays = 60, batch = 300 } = {}) {
 
 /* -------------------------------------------------------------- KinoCheck */
 
-/** The best trailer in a KinoCheck answer: its own pick, then any trailer, then a teaser. */
-export function kinoPick(j) {
-  if (!j || j.error) return null;
-  const vids = (j.trailer ? [j.trailer] : []).concat(j.videos || []);
+/** The trailers in a KinoCheck answer, best first: its own pick, then any trailer, then teasers. */
+export function kinoRanked(j) {
+  if (!j || j.error) return [];
+  const vids = (j.trailer ? [j.trailer] : []).concat(j.videos || []).filter((v) => YT_ID.test((v && v.youtube_video_id) || ''));
   const is = (v, re) => (v.categories || []).some((c) => re.test(c));
-  const v = (j.trailer && j.trailer.youtube_video_id ? j.trailer : null) || vids.find((x) => is(x, /trailer/i)) || vids.find((x) => is(x, /teaser/i));
-  return v && YT_ID.test(v.youtube_video_id || '') ? v.youtube_video_id : null;
+  const own = j.trailer && YT_ID.test(j.trailer.youtube_video_id || '') ? [j.trailer] : [];
+  const keys = [...own, ...vids.filter((x) => is(x, /trailer/i)), ...vids.filter((x) => is(x, /teaser/i))].map((v) => v.youtube_video_id);
+  return [...new Set(keys)];
 }
+export function kinoPick(j) { return kinoRanked(j)[0] || null; }
 
 async function kinocheck(titles, has, { limit = 950, deadline } = {}) {
   const cache = loadCache('kinocheck');
@@ -116,9 +149,9 @@ async function kinocheck(titles, has, { limit = 950, deadline } = {}) {
     let j;
     try { j = await get(url, { paceMs: 1100 }); } catch (e) { log(`trailers: kinocheck ${t.id}: ${e.message}`); continue; }
     n++;
-    const yt = kinoPick(j);
-    cache[t.id] = yt ? { yt, at: Date.now() } : { none: true, at: Date.now() };
-    if (yt) found++;
+    const ranked = kinoRanked(j);
+    cache[t.id] = ranked.length ? { yt: ranked[0], alt: ranked.slice(1, 4), at: Date.now() } : { none: true, at: Date.now() };
+    if (ranked.length) found++;
     if (n % 100 === 0) saveCache('kinocheck', cache);
   }
   saveCache('kinocheck', cache);
@@ -128,18 +161,21 @@ async function kinocheck(titles, has, { limit = 950, deadline } = {}) {
 
 /* ------------------------------------------------------------------- TMDB */
 
-/** The best video in a TMDB /videos answer: an official trailer, any trailer, then a teaser. */
-export function tmdbPick(j) {
+/** The videos in a TMDB /videos answer worth showing, best first: official trailers, other
+    trailers, then teasers, newest first within each. */
+export function tmdbRanked(j) {
   const yt = ((j && j.results) || []).filter((v) => v.site === 'YouTube' && YT_ID.test(v.key || ''));
   const rank = (v) => (v.type === 'Trailer' ? 2 : v.type === 'Teaser' ? 1 : 0) * 2 + (v.official ? 1 : 0);
-  const best = yt.filter((v) => rank(v) >= 2).sort((a, b) => rank(b) - rank(a) || String(b.published_at).localeCompare(String(a.published_at)))[0];
-  return best ? best.key : null;
+  return [...new Set(yt.filter((v) => rank(v) >= 2).sort((a, b) => rank(b) - rank(a) || String(b.published_at).localeCompare(String(a.published_at))).map((v) => v.key))];
 }
+export function tmdbPick(j) { return tmdbRanked(j)[0] || null; }
 
 async function tmdb(titles, has, key, { deadline } = {}) {
   const cache = loadCache('tmdb-videos');
   const stale = Date.now() - 120 * DAY;
-  const order = titles.filter((t) => !cache[t.id] || cache[t.id].at < stale).sort((a, b) => (has(a.id) - has(b.id)) || (b.votes - a.votes));
+  // Due: never asked, asked four months ago, or asked before the other videos were kept.
+  const due = (c) => !c || c.at < stale || (!c.none && !c.alt);
+  const order = titles.filter((t) => due(cache[t.id])).sort((a, b) => (has(a.id) - has(b.id)) || (b.votes - a.votes));
   const api = (path) => `https://api.themoviedb.org/3${path}${path.includes('?') ? '&' : '?'}api_key=${encodeURIComponent(key)}`;
   let n = 0, found = 0, errors = 0;
   for (const t of order) {
@@ -147,12 +183,17 @@ async function tmdb(titles, has, key, { deadline } = {}) {
     // A bad key fails every request: stop rather than run through the whole catalogue.
     if (errors >= 20) { log('trailers: tmdb keeps failing; stopping'); break; }
     try {
-      const f = await get(api(`/find/${t.id}?external_source=imdb_id`), { paceMs: 120 });
-      const hit = f && (t.kind === 'shows' ? f.tv_results : f.movie_results)?.[0];
-      const v = hit ? await get(api(`/${t.kind === 'shows' ? 'tv' : 'movie'}/${hit.id}/videos?language=en-US`), { paceMs: 120 }) : null;
-      const yt = tmdbPick(v);
-      cache[t.id] = yt ? { yt, at: Date.now() } : { none: true, at: Date.now() };
-      n++; errors = 0; if (yt) found++;
+      // TMDB's own id, kept from the first look, saves the lookup by IMDb id next time.
+      let tm = cache[t.id] && cache[t.id].tm;
+      if (!tm) {
+        const f = await get(api(`/find/${t.id}?external_source=imdb_id`), { paceMs: 120 });
+        const hit = f && (t.kind === 'shows' ? f.tv_results : f.movie_results)?.[0];
+        tm = hit ? hit.id : null;
+      }
+      const v = tm ? await get(api(`/${t.kind === 'shows' ? 'tv' : 'movie'}/${tm}/videos?language=en-US`), { paceMs: 120 }) : null;
+      const ranked = tmdbRanked(v);
+      cache[t.id] = ranked.length ? { yt: ranked[0], alt: ranked.slice(1, 4), tm, at: Date.now() } : { none: true, tm, at: Date.now() };
+      n++; errors = 0; if (ranked.length) found++;
     } catch (e) { errors++; log(`trailers: tmdb ${t.id}: ${e.message}`); }
     if (n % 200 === 0) saveCache('tmdb-videos', cache);
   }
@@ -163,32 +204,53 @@ async function tmdb(titles, has, key, { deadline } = {}) {
 
 /* ------------------------------------------------------------- YouTube */
 
-/** Ask YouTube about each candidate video once (again after 120 days), most popular titles first. */
-async function verify(titles, { deadline } = {}) {
-  const check = loadCache('yt-check');
-  const [kino, tm, wd] = [loadCache('kinocheck'), loadCache('tmdb-videos'), loadCache('wikidata-yt')];
-  const stale = Date.now() - 120 * DAY;
-  const want = new Set();
-  for (const t of titles.slice().sort((a, b) => b.votes - a.votes)) {
-    for (const yt of [tm[t.id]?.yt, kino[t.id]?.yt, ...rankWikidata(wd[t.id]?.c).map((c) => c[0]).slice(0, 3)]) {
-      if (yt && (!check[yt] || check[yt].at < stale)) want.add(yt);
-    }
-  }
-  let n = 0, ok = 0;
-  for (const yt of want) {
-    if (Date.now() > deadline) break;
+/**
+ * Ask YouTube about the videos the site uses: every title's trailer first (most popular titles
+ * first), then the first backups, then the second, then anything last asked a month ago. A video
+ * found dead hands its place to the next, which is asked about in the next round.
+ */
+async function verify(titles, { deadline, paceMs = 450 } = {}) {
+  const caches = { tmdb: loadCache('tmdb-videos'), kino: loadCache('kinocheck'), wd: loadCache('wikidata-yt'), check: loadCache('yt-check') };
+  const check = caches.check;
+  const byVotes = titles.slice().sort((a, b) => b.votes - a.votes);
+  // Wikidata's ids are only used once confirmed, so they are asked about too, after the rest.
+  const wdIds = (id) => rankWikidata(caches.wd[id] && caches.wd[id].c).map((c) => c[0]).slice(0, 2);
+  let n = 0, ok = 0, total = 0;
+  const ask = async (yt) => {
     let r;
     try {
-      r = await get(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent('https://www.youtube.com/watch?v=' + yt)}`, { paceMs: 900, answers: [400, 401, 403] });
-    } catch (e) { log(`trailers: youtube ${yt}: ${e.message}`); continue; }
+      r = await get(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent('https://www.youtube.com/watch?v=' + yt)}`, { paceMs, answers: [400, 401, 403] });
+    } catch (e) { log(`trailers: youtube ${yt}: ${e.message}`); return; }
     n++;
-    // 401 and 403: embedding is switched off; 400 and 404: no such video.
-    check[yt] = r && r.title ? { ok: true, title: String(r.title).slice(0, 120), at: Date.now() } : { ok: false, at: Date.now() };
+    // 401 and 403: private, or embedding switched off; 400 and 404: no such video.
+    check[yt] = r && r.title
+      ? { ok: true, title: String(r.title).slice(0, 120), by: String(r.author_name || '').slice(0, 80), at: Date.now() }
+      : { ok: false, at: Date.now() };
     if (check[yt].ok) ok++;
     if (n % 200 === 0) saveCache('yt-check', check);
+  };
+  for (let round = 0; round < 5 && Date.now() < deadline; round++) {
+    const want = new Set();
+    for (const slot of [0, 1, 2]) {
+      for (const t of byVotes) {
+        const yt = (pickTrailers(t.id, caches) || [])[slot];
+        if (yt && !check[yt]) want.add(yt);
+      }
+    }
+    for (const t of byVotes) for (const yt of wdIds(t.id)) if (!check[yt]) want.add(yt);
+    if (!want.size) break;
+    total += want.size;
+    for (const yt of want) { if (Date.now() > deadline) break; await ask(yt); }
   }
+  // Videos in use asked about a month ago or more, oldest first: trailers go private over time.
+  const stale = Date.now() - 30 * DAY;
+  const used = new Set();
+  for (const t of byVotes) for (const yt of pickTrailers(t.id, caches) || []) used.add(yt);
+  const old = [...used].filter((yt) => check[yt] && check[yt].at < stale).sort((a, b) => check[a].at - check[b].at);
+  total += old.length;
+  for (const yt of old) { if (Date.now() > deadline) break; await ask(yt); }
   saveCache('yt-check', check);
-  log(`trailers: youtube checked ${n} of ${want.size} videos, ${ok} playable`);
+  log(`trailers: youtube checked ${n} of ${total} videos, ${ok} playable`);
   return check;
 }
 
@@ -201,16 +263,17 @@ async function verify(titles, { deadline } = {}) {
 export async function resolveTrailers(titles, { budgetMin = 50, kinoLimit = 950 } = {}) {
   const deadline = Date.now() + budgetMin * 60e3;
   await wikidataIds(titles);
-  const has = () => {
-    const pick = loadTrailers();
-    return (id) => Boolean(pick(id));
-  };
+  const has = () => loadTrailers().has;
   const key = process.env.TMDB_API_KEY;
   if (key) await tmdb(titles, has(), key, { deadline: Date.now() + budgetMin * 30e3 });
   await kinocheck(titles, has(), { limit: kinoLimit, deadline: deadline - 15 * 60e3 });
   await verify(titles, { deadline });
   const pick = loadTrailers();
-  const n = { movies: 0, shows: 0 };
-  for (const t of titles) if (pick(t.id)) n[t.kind]++;
-  log(`trailers: ${n.movies} films and ${n.shows} series have one`);
+  const n = { movies: 0, shows: 0 }, backed = { movies: 0, shows: 0 };
+  for (const t of titles) {
+    const l = pick.list(t.id) || [];
+    if (l.length) n[t.kind]++;
+    if (l.length > 1) backed[t.kind]++;
+  }
+  log(`trailers: ${n.movies} films and ${n.shows} series have one; ${backed.movies} and ${backed.shows} have a backup`);
 }

@@ -48,6 +48,9 @@ const hashed = [
 const h = crypto.createHash('sha256');
 for (const f of hashed) { h.update(f); h.update(fs.readFileSync(path.join(ROOT, f))); }
 for (const k of KINDS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}.json`)));
+// The player's backup trailers, read only when the trailer feed opens.
+const BACKUPS = ['movies', 'shows'].filter((k) => fs.existsSync(path.join(DATA_DIR, `${k}-trailers.json`)));
+for (const k of BACKUPS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}-trailers.json`)));
 let META = {};
 try { META = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'meta.json'), 'utf8')); } catch {}
 h.update(JSON.stringify(META));
@@ -329,6 +332,7 @@ page({
 
 for (const f of fs.readdirSync(path.join(ROOT, 'assets'))) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(OUT, 'assets', f));
 for (const k of KINDS) fs.copyFileSync(path.join(DATA_DIR, `${k}.json`), path.join(OUT, `data/${k}.json`));
+for (const k of BACKUPS) fs.copyFileSync(path.join(DATA_DIR, `${k}-trailers.json`), path.join(OUT, `data/${k}-trailers.json`));
 fs.writeFileSync(path.join(OUT, 'data/search.json'), searchIndex());
 fs.copyFileSync(path.join(ROOT, 'manifest.webmanifest'), path.join(OUT, 'manifest.webmanifest'));
 

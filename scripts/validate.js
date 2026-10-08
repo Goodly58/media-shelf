@@ -90,6 +90,14 @@ for (const kind of Object.keys(MIN)) {
   ok.push(`data/${kind}.json: ${rows.length} rows, ids unique, scores in range`);
 }
 
+for (const kind of ['movies', 'shows']) {
+  let b;
+  try { b = JSON.parse(read(`data/${kind}-trailers.json`)); } catch (e) { if (e.code !== 'ENOENT') fail.push(`data/${kind}-trailers.json: ${e.message}`); continue; }
+  const bad = Object.entries(b).filter(([id, l]) => !/^tt\d+$/.test(id) || !Array.isArray(l) || l.some((v) => !/^[\w-]{11}$/.test(v))).length;
+  if (bad) fail.push(`data/${kind}-trailers.json: ${bad} entries that are not lists of YouTube ids`);
+  else ok.push(`data/${kind}-trailers.json: backups for ${Object.keys(b).length} titles`);
+}
+
 try {
   const s = JSON.parse(read('data/search.json'));
   if (s.items.length !== total) fail.push(`search.json holds ${s.items.length} titles, the catalogues ${total}`);

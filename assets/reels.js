@@ -14,7 +14,35 @@
   var reduce = Boolean(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   var dlg, track, empty, io, list = [], active = -1, rendered = 0;
-  var players = {}, muted = true, api = null, blocked = false, timers = {};
+  var players = {}, muted = true, api = null, blocked = false, timers = {}, skips = 0;
+  var BUILD = (document.querySelector('meta[name="shelf-build"]') || {}).content || '';
+
+  /* ------------------------------------------------------------ backups */
+  /* A trailer can stop playing between the nightly checks (taken private or down) or never
+     play in some places (blocked in a country, or age-gated), which no check from elsewhere
+     can see. So each title brings up to two backups, in a file fetched once the feed is open,
+     and a video that fails here is remembered on this device for a month and not tried again. */
+  var backups = null, backupsP = null;
+  function loadBackups() {
+    if (!backupsP) {
+      backupsP = fetch('data/' + kind + '-trailers.json?v=' + BUILD).then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; }).then(function (b) { backups = b; return b; });
+    }
+    return backupsP;
+  }
+  var BAD_KEY = 'shelf_bad_trailers', bad = {}, failedNow = {};
+  try { bad = JSON.parse(localStorage.getItem(BAD_KEY) || '{}') || {}; } catch (e) { bad = {}; }
+  Object.keys(bad).forEach(function (k) { if (!(bad[k] > Date.now() - 30 * 864e5)) delete bad[k]; });
+  function remember(yt) {
+    bad[yt] = Date.now();
+    var keys = Object.keys(bad);
+    if (keys.length > 300) keys.sort(function (a, b) { return bad[a] - bad[b]; }).slice(0, keys.length - 300).forEach(function (k) { delete bad[k]; });
+    try { localStorage.setItem(BAD_KEY, JSON.stringify(bad)); } catch (e) {}
+  }
+  // A title's videos still worth trying here, best first.
+  function videos(r) {
+    return [r.yt].concat((backups && backups[r.id]) || []).filter(function (v) { return v && !bad[v] && !failedNow[v]; });
+  }
 
   /* ------------------------------------------------------------ seen */
   // Trailers watched lately go to the back of a shuffle, so the feed does not repeat itself.
@@ -43,7 +71,8 @@
   function order(startId) {
     // Hidden titles never come up, unless hidden ones are what the filters ask for.
     var skip = !C.state().hidden;
-    var rows = C.results().filter(function (r) { return r.yt && !(skip && S.Hidden.has(kind, r.id)); });
+    // Titles none of whose videos play here are left out, once the backups say so.
+    var rows = C.results().filter(function (r) { return r.yt && !(skip && S.Hidden.has(kind, r.id)) && (!backups || videos(r).length); });
     var by = C.state().rsort;
     rows = by === 'shuffle' || !C.sorters[by] ? shuffle(rows) : rows.slice().sort(C.sorters[by]);
     if (startId) {
@@ -104,7 +133,7 @@
       '<div class="reel-bg" data-bg="' + esc(S.imgUrl(kind, r) || '') + '"></div>' +
       '<div class="reel-in">' +
         '<div class="reel-head"><h2>' + esc(r.title) + '</h2><div class="reel-sub">' + sub(r) + '</div></div>' +
-        '<div class="reel-player" data-thumb="https://i.ytimg.com/vi/' + esc(r.yt) + '/hqdefault.jpg"><div class="reel-slot"></div></div>' +
+        '<div class="reel-player" data-thumb="https://i.ytimg.com/vi/' + esc(videos(r)[0] || r.yt) + '/hqdefault.jpg"><div class="reel-slot"></div></div>' +
         (scores(r) ? '<div class="reel-scores">' + scores(r) + '</div>' : '') +
         (tags ? '<div class="reel-tags">' + tags + '</div>' : '') +
         '<div class="reel-act">' +
@@ -212,19 +241,28 @@
   /* A player's frame goes in at once and starts loading (and, for the trailer on screen,
      playing) by itself. YouTube's API, which may still be on its way, takes hold of the
      frame when it arrives, to pause, mute and follow it. Each entry: { f: frame, p: player,
-     ready, auto: started playing by itself }. */
+     ready, auto: started playing by itself, yt: the video it plays }. */
   function create(i, autoplay) {
-    var box = slot(i);
-    if (players[i] || !list[i] || !box || box.classList.contains('gone')) return;
+    var box = slot(i), r = list[i];
+    if (players[i] || !r || !box || box.classList.contains('gone')) return;
+    var yt = videos(r)[0];
+    if (!yt) {
+      // Nothing left to try until the backups are in, or nothing at all.
+      if (backups) gone(i);
+      else loadBackups().then(function () { if (list[i] === r && !players[i]) { if (videos(r).length) create(i, autoplay && i === active); else gone(i); } });
+      return;
+    }
+    // The still behind the player follows the video it is about to play.
+    if (yt !== r.yt) box.style.backgroundImage = 'url("https://i.ytimg.com/vi/' + yt + '/hqdefault.jpg")';
     var f = document.createElement('iframe');
-    f.src = embed(list[i].yt, autoplay);
+    f.src = embed(yt, autoplay);
     f.title = 'Trailer: ' + list[i].title;
     f.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
     f.setAttribute('allowfullscreen', '');
     f.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
     var old = box.querySelector('.reel-slot');
     if (old) box.replaceChild(f, old); else box.appendChild(f);
-    var e = players[i] = { f: f, p: null, ready: false, auto: Boolean(autoplay) };
+    var e = players[i] = { f: f, p: null, ready: false, auto: Boolean(autoplay), yt: yt };
     loadApi().then(function (YT) {
       if (players[i] !== e) return;
       e.p = new YT.Player(f, {
@@ -237,12 +275,13 @@
           onStateChange: function (ev) {
             if (i !== active) return;
             if (ev.data === YT.PlayerState.PLAYING) {
+              skips = 0;
               clearTimeout(timers.check);
               clearTimeout(timers.seen);
               timers.seen = setTimeout(function () { if (i === active) markSeen(list[i].id); }, 3000);
             } else if (ev.data === YT.PlayerState.ENDED) next();
           },
-          onError: function () { gone(i); },
+          onError: function (ev) { if (players[i] === e) failed(i, ev.data); },
         },
       });
     }, function () {});
@@ -287,14 +326,30 @@
     var box = slot(i);
     if (box && !box.querySelector('.reel-slot') && !box.classList.contains('gone')) box.insertAdjacentHTML('afterbegin', '<div class="reel-slot"></div>');
   }
+  /* A video that will not play gives way to the title's next one, at once and in place. YouTube's
+     100 (removed or private), 101 and 150 (not allowed here, or age-gated) are remembered on this
+     device; 2 and 5 only for now. When nothing is left, the feed moves on. */
+  function failed(i, code) {
+    var e = players[i], r = list[i];
+    if (!e || !r) return;
+    failedNow[e.yt] = 1;
+    if (code === 100 || code === 101 || code === 150) remember(e.yt);
+    destroy(i);
+    loadBackups().then(function () {
+      if (list[i] !== r || players[i]) return;
+      if (videos(r).length) create(i, i === active && !blocked && !reduce);
+      else gone(i);
+    });
+  }
   function gone(i) {
     destroy(i);
-    var box = slot(i);
-    if (box) {
+    var box = slot(i), r = list[i];
+    if (box && r) {
       box.classList.add('gone');
-      box.innerHTML = '<p>This trailer is no longer available. <a href="https://www.youtube.com/watch?v=' + esc(list[i].yt) + '" target="_blank" rel="noopener">Try YouTube</a></p>';
+      box.innerHTML = '<p>This trailer is unavailable. <a href="https://www.youtube.com/results?search_query=' + encodeURIComponent(r.title + ' ' + (r.year || '') + ' trailer') + '" target="_blank" rel="noopener">Search YouTube</a></p>';
     }
-    if (i === active) setTimeout(function () { if (i === active) next(); }, 1500);
+    // Straight on to the next; after three in a row it waits for a swipe, rather than racing on.
+    if (i === active && skips < 3) { skips++; setTimeout(function () { if (i === active) next(); }, 500); }
   }
   function labels() { dlg.querySelectorAll('[data-reel-sound]').forEach(function (b) { b.innerHTML = soundLabel(); b.setAttribute('aria-pressed', String(!muted)); }); }
 
@@ -401,6 +456,8 @@
     document.documentElement.classList.add('reels-open');
     if (!dlg.open) { dlg.showModal(); dlg.focus(); }
     refresh(opts.start);
+    // Backups come once the first trailer has had the connection to itself.
+    setTimeout(loadBackups, 1500);
   }
   // quiet: the page is already closing it (Back was pressed), so do not tell it again.
   function close(quiet) {

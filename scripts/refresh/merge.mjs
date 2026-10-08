@@ -4,7 +4,9 @@
    pipeline, or confirmed against the source by an earlier verification pass
    (and not yet re-fetched). Anything else is dropped, so every number on the
    site traces back to IMDb, Metacritic, Rotten Tomatoes, Steam or Goodreads. */
-import { loadCache, readData, writeData, fold, decode, log } from './lib.mjs';
+import fs from 'node:fs';
+import path from 'node:path';
+import { loadCache, readData, writeData, fold, decode, log, ROOT } from './lib.mjs';
 import { matchScreen } from './metacritic.mjs';
 import { loadEpisodes } from './imdb.mjs';
 import { SCREEN_TAGS, GAME_TAGS, screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags } from './taxonomy.mjs';
@@ -46,6 +48,11 @@ export function broadGenres(labels) {
 
 /* -------------------------------------------------------------- screen */
 
+/** The backup trailers of each title, for the player: data/{movies,shows}-trailers.json. */
+function readBackups(kind) {
+  try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', `${kind}-trailers.json`), 'utf8')); } catch { return {}; }
+}
+
 export async function mergeScreen(prevMovies, prevShows) {
   const selected = loadCache('imdb-selected', []);
   const wd = loadCache('wikidata');
@@ -58,6 +65,7 @@ export async function mergeScreen(prevMovies, prevShows) {
   const mcUser = loadCache('mc-user');
   const cats = loadCache('wp-categories');
   const trailer = loadTrailers();
+  const backups = { movies: {}, shows: {} }, prevBackups = { movies: readBackups('movies'), shows: readBackups('shows') };
   const prev = {};
   for (const r of [...prevMovies, ...prevShows]) prev[r.id] = r;
 
@@ -104,8 +112,14 @@ export async function mergeScreen(prevMovies, prevShows) {
       img: (t.kind === 'shows' && (tvmaze[t.id]?.img || (/tvmaze/.test(o.img || '') ? o.img : null))) || wikiImg || o.img || null,
       wiki: w.wiki || o.wiki || null,
       blurb: o.blurb || null,
-      // A YouTube trailer for the reels view. Until a source has looked at a title, the last one stands.
-      yt: (() => { const p = trailer(t.id); return p === undefined ? o.yt || null : p; })(),
+      // A YouTube trailer for the reels view (its backups go to their own file, read only by the
+      // player). Until a source has looked at a title, the last ones stand.
+      yt: (() => {
+        const l = trailer.list(t.id);
+        const alt = l === undefined ? prevBackups[t.kind][t.id] : l.slice(1);
+        if (alt && alt.length) backups[t.kind][t.id] = alt;
+        return l === undefined ? o.yt || null : l[0] || null;
+      })(),
     };
     if (m) { row.mc = m.score; row.mcN = m.n; row.mcSlug = m.slug; }
     else if (o.mc != null) { row.mc = o.mc; row.mcN = o.mcN || null; row.mcSlug = o.mcSlug || null; }
@@ -150,7 +164,7 @@ export async function mergeScreen(prevMovies, prevShows) {
   }
   // TMDB's terms ask for its logo wherever its data is used; the build shows it when this is above zero.
   const tmdb = [...movies, ...shows].filter((r) => trailer.fromTmdb(r.id, r.yt)).length;
-  return { movies, shows, tmdb };
+  return { movies, shows, tmdb, backups };
 }
 
 /* Genres held by only a handful of titles are noise in a filter list, and a
