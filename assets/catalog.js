@@ -853,7 +853,7 @@
       var t = g.t[p[0]][p[1]], no = 'S' + g.n[p[0]] + ' E' + epNo(g, p[0], p[1]);
       return t ? '<b>' + esc(t) + '</b> (' + no + ')' : '<b>' + no + '</b>';
     };
-    var names = at.slice(0, 2).map(name).join(' and ') + (at.length > 2 ? ' and ' + (at.length - 2) + ' more' : '');
+    var names = at.slice(0, 2).map(name).join(at.length > 2 ? ', ' : ' and ') + (at.length > 2 ? ' and ' + (at.length - 2) + ' more' : '');
     return 'Best rated: ' + names + ', ' + top.toFixed(1);
   }
   function episodes(r) {
