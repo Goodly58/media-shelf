@@ -83,10 +83,12 @@
     }).sort(function (a, b) { return b[0] - a[0]; }).map(function (x) { return x[1]; });
   }
   function order(startId) {
-    // Hidden titles never come up, unless hidden ones are what the filters ask for.
-    var skip = !C.state().hidden;
+    // Hidden and finished titles never come up, unless those are what the filters ask for.
+    var skip = !C.state().hidden, skipDone = C.state().done !== 'yes';
     // Titles none of whose videos play here are left out, once the backups say so.
-    var rows = C.results().filter(function (r) { return has(r) && !(skip && S.Hidden.has(kind, r.id)) && (!backups || videos(r).length); });
+    var rows = C.results().filter(function (r) {
+      return has(r) && !(skip && S.Hidden.has(kind, r.id)) && !(skipDone && S.Done.has(kind, r.id)) && (!backups || videos(r).length);
+    });
     var by = C.state().rsort;
     rows = by === 'shuffle' || !C.sorters[by] ? shuffle(rows) : rows.slice().sort(C.sorters[by]);
     if (startId) {

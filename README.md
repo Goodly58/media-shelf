@@ -14,6 +14,8 @@ backend, no accounts, no tracking.
 | Books | Books with 10,000+ Goodreads ratings from Goodreads' genre lists, by rating |
 | What next | Drop in a Goodreads, Letterboxd or IMDb export and get your backlog ranked |
 
+On every shelf, titles can be marked watched (read, played), one by one or all at once from a Letterboxd export, IMDb ratings or a Goodreads library export. They get a tick and stay out of the trailer feed and the suggestions. Saved, watched and hidden titles live in the browser only.
+
 ## Every score comes from its source
 
 No score is typed in. `scripts/refresh/` reads each number from where it is

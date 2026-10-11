@@ -341,8 +341,9 @@ const FAQ = [
   ['How often is it updated?', 'Scores and new titles every week, trailers every day.'],
   ['Why does a trailer sometimes skip?', 'Videos get taken down, or blocked in some countries. The feed then plays the title\'s backup trailer, or moves on to the next title.'],
   ['What does Hide do?', 'It keeps a title out of the trailer feed, More like this and Surprise me. The title stays in the catalogue: to bring it back, open Filters and choose Show: Hidden.'],
-  ['Where are my saved and hidden titles kept?', 'In this browser only. There is no account, so they do not carry over to another device, and clearing your browsing data clears them.'],
-  ['What happens to the file I give What next?', 'It never leaves your device: the list is read and ranked in your browser, and the site has no server to send it to.'],
+  ['Can I mark what I have already watched or read?', 'Yes: Mark watched (or read, or played) in a title\'s details, or bring in everything at once from Filters with a Letterboxd export, your IMDb ratings or a Goodreads library export. Those get a tick and stay out of the trailer feed, More like this and Surprise me.'],
+  ['Where are my saved, watched and hidden titles kept?', 'In this browser only. There is no account, so they do not carry over to another device, and clearing your browsing data clears them.'],
+  ['What happens to a file I import, or give What next?', 'It never leaves your device: it is read in your browser, and the site has no server to send it to.'],
   ['Does Shelf track me?', 'No accounts, no ads and no analytics. Trailers play in YouTube\'s privacy-enhanced mode, or in Steam\'s own player for games.'],
 ];
 const faqLd = JSON.stringify({

@@ -113,6 +113,7 @@
             year: num(r['Original Publication Year']) || num(r['Year Published']),
             pages: num(r['Number of Pages']),
             isbn: unwrapExcel(r.ISBN13) || unwrapExcel(r.ISBN),
+            grId: (r['Book Id'] || '').trim(),
             myRating: num(r['My Rating']) || null,
             theirRating: num(r['Average Rating']),
             status: shelf === 'read' ? 'done' : shelf === 'currently-reading' ? 'doing' : 'todo',
@@ -416,6 +417,138 @@
     };
   }
 
+  /* ---------------------------------------------------------------------
+     7. Already finished
+     The same exports, read for what is done rather than what is left: every
+     film in a Letterboxd watched, diary or ratings file (its watchlist has
+     the very same columns, so only its name tells it apart), every title an
+     IMDb ratings export rates, every book on the Goodreads "read" shelf.
+     ------------------------------------------------------------------ */
+
+  /**
+   * @param {string} text a CSV export
+   * @param {string} [name] its file name
+   * @returns {{ source: string|null, items: object[], error?: string }}
+   *   error: unknown (not an export we read), watchlist, unrated (an IMDb list
+   *   that rates nothing) or none (nothing on the read shelf)
+   */
+  function readFinished(text, name) {
+    const parsed = readExport(text);
+    const id = parsed.source && parsed.source.id;
+    if (!id) return { source: null, items: [], error: 'unknown' };
+    if (id === 'letterboxd') {
+      if (/watchlist/i.test(name || '')) return { source: id, items: [], error: 'watchlist' };
+      return { source: id, items: parsed.items };
+    }
+    const done = parsed.items.filter(function (i) { return i.status === 'done'; });
+    if (!done.length) return { source: id, items: [], error: id === 'imdb' ? 'unrated' : 'none' };
+    return { source: id, items: done };
+  }
+
+  /**
+   * The CSV files in a ZIP (Letterboxd exports a ZIP), as [{ name, text }].
+   * Exports hold stored and deflated entries only; the browser's own
+   * DecompressionStream inflates them.
+   * @param {ArrayBuffer} buf
+   * @returns {Promise<{name: string, text: string}[]>}
+   */
+  async function readZip(buf) {
+    const v = new DataView(buf), u8 = new Uint8Array(buf), dec = new TextDecoder();
+    // The directory's end record sits within the last 64 KB (its comment) and 22 bytes.
+    let end = -1;
+    for (let i = buf.byteLength - 22; i >= Math.max(0, buf.byteLength - 65557); i--) {
+      if (v.getUint32(i, true) === 0x06054b50) { end = i; break; }
+    }
+    if (end < 0) throw new Error('not a zip file');
+    const out = [];
+    let p = v.getUint32(end + 16, true);
+    for (let n = v.getUint16(end + 10, true); n > 0; n--) {
+      if (v.getUint32(p, true) !== 0x02014b50) break;
+      const method = v.getUint16(p + 10, true), size = v.getUint32(p + 20, true);
+      const nameLen = v.getUint16(p + 28, true), skip = v.getUint16(p + 30, true) + v.getUint16(p + 32, true);
+      const local = v.getUint32(p + 42, true);
+      const name = dec.decode(u8.subarray(p + 46, p + 46 + nameLen));
+      p += 46 + nameLen + skip;
+      if (!/\.csv$/i.test(name) || (method !== 0 && method !== 8)) continue;
+      const start = local + 30 + v.getUint16(local + 26, true) + v.getUint16(local + 28, true);
+      let bytes = u8.subarray(start, start + size);
+      if (method === 8) bytes = new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+      out.push({ name: name, text: dec.decode(bytes) });
+    }
+    return out;
+  }
+
+  /** A Letterboxd export's watched films: watched.csv, with the diary and ratings for good measure. */
+  function finishedFromZip(files) {
+    const items = [], have = new Set();
+    let source = null;
+    files.filter(function (f) { return /^(watched|diary|ratings)\.csv$/i.test(f.name); }).forEach(function (f) {
+      const got = readFinished(f.text, f.name);
+      if (got.error) return;
+      source = got.source;
+      got.items.forEach(function (it) {
+        const key = fold(it.title) + '|' + (it.year || '');
+        if (!have.has(key)) { have.add(key); items.push(it); }
+      });
+    });
+    return source ? { source: source, items: items } : { source: null, items: [], error: 'unknown' };
+  }
+
+  /* "The Way of Kings (The Stormlight Archive, #1)": Goodreads names the series; the catalogue does not. */
+  function bookTitle(s) { return String(s || '').replace(/\s*\([^()]*#\s*[\d.\-–]+\)\s*$/, ''); }
+  function lastName(s) { return fold(String(s || '').trim().split(/\s+/).pop()); }
+
+  /**
+   * The catalogue's ids for what an export says is finished: { movies: [id], shows: [id], books: [id] }.
+   * IMDb exports match by IMDb id; Letterboxd's films by title and year (or any other title the film
+   * goes by, as matchOne does); Goodreads' books by Goodreads id, then ISBN, then title and author.
+   * @param {{source: string, items: object[]}} found from readFinished or finishedFromZip
+   * @param {Record<string, object[]>} catalogues the site's rows, by kind
+   */
+  function matchFinished(found, catalogues) {
+    const sets = {};
+    const add = function (kind, id) { (sets[kind] || (sets[kind] = new Set())).add(id); };
+    if (found.source === 'imdb') {
+      const kindOf = new Map();
+      ['movies', 'shows'].forEach(function (k) { (catalogues[k] || []).forEach(function (r) { kindOf.set(r.id, k); }); });
+      found.items.forEach(function (it) { if (kindOf.has(it.imdbId)) add(kindOf.get(it.imdbId), it.imdbId); });
+    } else if (found.source === 'letterboxd') {
+      const films = catalogues.movies || [];
+      const index = indexCatalogue(films);
+      // A film listed under its original title as well (alt) can be found by either.
+      films.forEach(function (r) {
+        if (!r.alt) return;
+        const key = fold(r.alt);
+        if (!key) return;
+        if (!index.has(key)) index.set(key, []);
+        if (index.get(key).indexOf(r) < 0) index.get(key).push(r);
+      });
+      found.items.forEach(function (it) { const r = matchOne(it, index); if (r) add('movies', r.id); });
+    } else if (found.source === 'goodreads') {
+      const books = catalogues.books || [], byGr = new Map(), byIsbn = new Map(), byName = new Map();
+      // By title and author's surname: the whole title, then the title before any subtitle
+      // ("The Hobbit, or There and Back Again" is The Hobbit).
+      const names = function (title, author) {
+        const t = bookTitle(title), whole = fold(t), main = fold(t.split(/:|,\s+or\s+|\s\(/)[0]), who = '|' + lastName(author);
+        return main && main !== whole ? [whole + who, main + who] : [whole + who];
+      };
+      books.forEach(function (b) {
+        if (b.gr) byGr.set(String(b.gr), b);
+        if (b.isbn) byIsbn.set(String(b.isbn), b);
+        // Two books under one name: neither, rather than a guess.
+        names(b.title, b.author).forEach(function (k) { byName.set(k, byName.has(k) ? null : b); });
+      });
+      found.items.forEach(function (it) {
+        let b = (it.grId && byGr.get(it.grId)) || (it.isbn && byIsbn.get(it.isbn)) || null;
+        if (!b) names(it.title, it.creator).some(function (k) { b = byName.get(k) || null; return b; });
+        if (b) add('books', b.id);
+      });
+    }
+    const out = {};
+    Object.keys(sets).forEach(function (k) { out[k] = Array.from(sets[k]); });
+    return out;
+  }
+
   /* ------------------------------------------------------------------ */
 
   const api = {
@@ -430,6 +563,10 @@
     minutesFor: minutesFor,
     qualityOf: qualityOf,
     build: build,
+    readFinished: readFinished,
+    readZip: readZip,
+    finishedFromZip: finishedFromZip,
+    matchFinished: matchFinished,
     SOURCES: SOURCES,
     MINUTES_PER_PAGE: MINUTES_PER_PAGE
   };

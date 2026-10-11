@@ -7,6 +7,9 @@
   var THIS_YEAR = new Date().getFullYear();
   // Shelves with a trailer feed (films, series, games), whose titles can also be hidden.
   var TRAILERS = kind === 'movies' || kind === 'shows' || kind === 'games';
+  // Where a shelf's finished titles can be imported from (backlog.js reads each kind of export).
+  var IMPORT = { movies: 'Letterboxd or IMDb', shows: 'IMDb', books: 'Goodreads' };
+  var BUILD = (document.querySelector('meta[name="shelf-build"]') || {}).content || '';
 
   /* Bayesian average: a 9.0 from 12k votes should not outrank an 8.8 from 1M. */
   function weighted(v, n, m, c) { return v == null ? -1 : (n / (n + m)) * v + (m / (n + m)) * c; }
@@ -62,7 +65,8 @@
   // Ids of the cards the page was built with (the default list), if they are still on it.
   var pre = [].map.call(grid.querySelectorAll('.card[data-id]'), function (c) { return c.getAttribute('data-id'); });
 
-  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, hidden: false, award: [], view: '', rsort: 'shuffle' }; }
+  // done: '' any, 'no' only those not finished yet, 'yes' only finished ones (watched, read, played).
+  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, hidden: false, done: '', award: [], view: '', rsort: 'shuffle' }; }
 
   /* ------------------------------------------------------------- url state */
   function readURL() {
@@ -82,6 +86,7 @@
     s.status = p.get('status') || '';
     s.saved = p.get('saved') === '1';
     s.hidden = TRAILERS && !s.saved && p.get('hidden') === '1';
+    s.done = p.get('seen') === 'no' || p.get('seen') === 'yes' ? p.get('seen') : '';
     s.view = p.get('view') === 'trailers' && TRAILERS ? 'trailers' : '';
     if (CONFIG.sorts.some(function (x) { return x[0] === p.get('rsort'); })) s.rsort = p.get('rsort');
     return s;
@@ -101,6 +106,7 @@
     if (state.status) p.set('status', state.status);
     if (state.saved) p.set('saved', '1');
     if (state.hidden) p.set('hidden', '1');
+    if (state.done) p.set('seen', state.done);
     if (state.view) p.set('view', state.view);
     if (state.view && state.rsort !== 'shuffle') p.set('rsort', state.rsort);
     var qs = p.toString();
@@ -187,6 +193,7 @@
     if (s.award.length && !s.award.some(function (k) { return r._aw.indexOf(k) >= 0; })) return false;
     if (s.saved && !S.Favs.has(kind, r.id)) return false;
     if (s.hidden && !S.Hidden.has(kind, r.id)) return false;
+    if (s.done && (s.done === 'yes') !== S.Done.has(kind, r.id)) return false;
     return true;
   }
   function hasAll(r, s) {
@@ -233,6 +240,7 @@
     if (keep) {
       shown = pre.length;
       grid.querySelectorAll('[data-fav]').forEach(function (f) { f.classList.toggle('on', S.Favs.has(kind, f.getAttribute('data-fav'))); });
+      paintDone();
     } else {
       shown = 0;
       grid.innerHTML = '';
@@ -315,7 +323,7 @@
   window.addEventListener('resize', chipFade);
 
   function filterCount() {
-    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.hidden ? 1 : 0) + (state.country.length ? 1 : 0) + (state.award.length ? 1 : 0);
+    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.hidden ? 1 : 0) + (state.done ? 1 : 0) + (state.country.length ? 1 : 0) + (state.award.length ? 1 : 0);
   }
   function renderActive() {
     var pills = [];
@@ -328,6 +336,7 @@
     state.award.forEach(function (k) { add(S.AWARD_NAMES[k][0], 'award', k); });
     if (state.saved) add('Saved', 'saved');
     if (state.hidden) add('Hidden', 'hidden');
+    if (state.done) add(S.DONE[kind][state.done === 'yes' ? 0 : 2], 'done');
     if (state.q) add('“' + state.q + '”', 'q');
     var total = pills.length + state.genres.length + state.tags.length;
     activeEl.innerHTML = pills.join('') + (total > 1 ? '<button class="link-btn" data-reset>Clear all</button>' : '');
@@ -499,15 +508,23 @@
     if (ak.length) html += '<div class="row-field"><label>Awards</label><div class="seg">' + ak.map(function (k) {
       return '<button class="chip" type="button" data-award="' + k + '" aria-pressed="' + (state.award.indexOf(k) >= 0) + '">' + esc(S.AWARD_NAMES[k][0]) + '<small>' + (ac[k] || 0).toLocaleString() + '</small></button>';
     }).join('') + '</div></div>';
+    // Finished titles (watched, read, played) can be left out, or listed alone, once there are any;
+    // an export from where they were logged marks them all at once.
+    var D = S.DONE[kind], any = state.done || S.Done.list(kind).length;
+    var imp = IMPORT[kind] ? '<button class="btn sm imp" type="button" data-import>' + icon('upload', 'sm') + 'Import from ' + IMPORT[kind] + '</button>' : '';
+    if (any || imp) html += '<div class="row-field"><label>' + D[0] + '</label><div class="seg">' +
+      (any ? seg(null, 'done', [['', 'Any'], ['no', D[2]], ['yes', D[0]]]) : '') + imp + '</div></div>';
     html += seg('Show', 'show', show);
     $('#filterBody').innerHTML = html;
     if (!filtersDlg.open) filtersDlg.showModal();
   }
+  /* A row of choices, one of them on. With no label, the choices alone, for a row built around them. */
   function seg(label, key, opts) {
     var cur = key === 'show' ? (state.saved ? 'saved' : state.hidden ? 'hidden' : '') : state[key];
-    return '<div class="row-field"><label>' + label + '</label><div class="seg">' + opts.map(function (o) {
+    var chips = opts.map(function (o) {
       return '<button class="chip" data-seg="' + key + '" data-val="' + o[0] + '" aria-pressed="' + (cur === o[0]) + '">' + o[1] + '</button>';
-    }).join('') + '</div></div>';
+    }).join('');
+    return label == null ? chips : '<div class="row-field"><label>' + label + '</label><div class="seg">' + chips + '</div></div>';
   }
   filtersDlg.addEventListener('input', function (e) {
     if (e.target.id === 'fMin') {
@@ -621,6 +638,7 @@
           '<p class="summary" id="summary">' + (r.blurb ? esc(r.blurb) : '') + '</p>' +
           '<div class="d-actions">' +
             '<button class="btn sm" id="saveBtn" aria-pressed="' + saved + '">' + icon('heart', 'sm') + (saved ? 'Saved' : 'Save') + '</button>' +
+            doneButton(S.Done.has(kind, r.id)) +
             (TRAILERS ? hideButton(S.Hidden.has(kind, r.id)) : '') +
             (r.yt || r.tr ? '<button class="btn sm primary" id="trailerBtn">' + icon('play', 'sm') + 'Trailer</button>' : '') +
             '<button class="btn sm" id="shareBtn">' + icon('link', 'sm') + 'Copy link</button>' +
@@ -637,6 +655,96 @@
     if (push !== false) history.replaceState(null, '', location.pathname + location.search + '#' + encodeURIComponent(r.id));
     summary(r);
     if (r.epg) episodes(r);
+  }
+
+  function doneButton(on) {
+    return '<button class="btn sm" id="doneBtn" aria-pressed="' + on + '">' + icon('check', 'sm') + S.DONE[kind][on ? 0 : 1] + '</button>';
+  }
+  /* Finished titles keep their place in the catalogue, with a tick, and leave the feed and the suggestions. */
+  function setDone(id, on) {
+    if (S.Done.has(kind, id) !== on) S.Done.toggle(kind, id);
+    var b = $('#doneBtn');
+    if (b && current && current.id === id) { b.setAttribute('aria-pressed', String(on)); b.innerHTML = icon('check', 'sm') + S.DONE[kind][on ? 0 : 1]; }
+    paintDone();
+    if (state.done) apply(true);
+  }
+  /* The ticks on the grid's cards, after titles are marked (or on the cards the page was built with). */
+  function paintDone() {
+    grid.querySelectorAll('.card[data-id]').forEach(function (c) {
+      var on = S.Done.has(kind, c.getAttribute('data-id')), tick = c.querySelector('.cover > .done');
+      if (on && !tick) c.querySelector('.cover').insertAdjacentHTML('beforeend', S.doneTick(kind));
+      else if (!on && tick) tick.remove();
+    });
+  }
+
+  /* --------------------------------------------------- importing finished */
+  /* An export from Letterboxd, IMDb or Goodreads marks everything it says was finished, all at once.
+     backlog.js reads it, in this browser; an IMDb export marks series as well as films. */
+  var picker = null, backlogJs = null;
+  var IMPORT_SAYS = {
+    unknown: 'That is not an export from Letterboxd, IMDb or Goodreads',
+    watchlist: 'That is a watchlist. Choose watched.csv, or the whole export',
+    unrated: 'That list rates nothing. Export your ratings instead',
+    none: 'Nothing in it is on the read shelf',
+  };
+  function loadBacklog() {
+    if (window.ShelfBacklog) return Promise.resolve();
+    if (!backlogJs) backlogJs = new Promise(function (resolve, reject) {
+      var sc = document.createElement('script');
+      sc.src = 'assets/backlog.js?v=' + BUILD;
+      sc.onload = resolve;
+      sc.onerror = function () { backlogJs = null; reject(); };
+      document.head.appendChild(sc);
+    });
+    return backlogJs;
+  }
+  function pickImport() {
+    if (!picker) {
+      picker = document.createElement('input');
+      picker.type = 'file';
+      picker.accept = '.csv,.zip,text/csv,application/zip';
+      picker.hidden = true;
+      picker.addEventListener('change', function () { var f = picker.files && picker.files[0]; picker.value = ''; if (f) importFile(f); });
+      // Inside the open panel: everything outside a modal dialog is out of reach.
+      filtersDlg.appendChild(picker);
+    }
+    picker.click();
+  }
+  function rowsOf(k) {
+    return k === kind && loaded ? Promise.resolve(items) : fetch('data/' + k + '.json?v=' + BUILD).then(function (x) { return x.json(); });
+  }
+  function importFile(file) {
+    var B, say = function (msg, action) { S.toast(msg, { host: filtersDlg.open ? filtersDlg : null, action: action }); };
+    loadBacklog().then(function () { B = window.ShelfBacklog; return file.arrayBuffer(); }).then(function (buf) {
+      var head = new Uint8Array(buf.slice(0, 2));
+      // "PK": a ZIP, as Letterboxd's whole export comes.
+      if (head[0] === 0x50 && head[1] === 0x4b) return B.readZip(buf).then(B.finishedFromZip);
+      return B.readFinished(new TextDecoder().decode(buf), file.name);
+    }).then(function (found) {
+      if (found.error) return say(IMPORT_SAYS[found.error] || IMPORT_SAYS.unknown);
+      var kinds = found.source === 'imdb' ? ['movies', 'shows'] : found.source === 'goodreads' ? ['books'] : ['movies'];
+      return Promise.all(kinds.map(rowsOf)).then(function (lists) {
+        var cats = {}, added = {}, parts = [];
+        kinds.forEach(function (k, i) { cats[k] = lists[i]; });
+        var ids = B.matchFinished(found, cats);
+        kinds.forEach(function (k) {
+          var n = (ids[k] || []).length;
+          added[k] = S.Done.addAll(k, ids[k] || []);
+          if (n) parts.push(n.toLocaleString() + ' ' + (n === 1 ? S.KINDS[k].one : S.KINDS[k].many));
+        });
+        if (!parts.length) return say('None of them are on Shelf');
+        doneChanged();
+        say(parts.join(' and ') + ' marked ' + (found.source === 'goodreads' ? 'read' : 'watched'), ['Undo', function () {
+          kinds.forEach(function (k) { S.Done.removeAll(k, added[k]); });
+          doneChanged();
+        }]);
+      });
+    }).catch(function () { say('That file could not be read'); });
+  }
+  function doneChanged() {
+    paintDone();
+    apply(true);
+    if (filtersDlg.open) openFilters();
   }
 
   function hideButton(on) {
@@ -811,7 +919,7 @@
     var out = [];
     for (var i = 0; i < items.length; i++) {
       var x = items[i];
-      if (x === r || (TRAILERS && S.Hidden.has(kind, x.id))) continue;
+      if (x === r || (TRAILERS && S.Hidden.has(kind, x.id)) || S.Done.has(kind, x.id)) continue;
       var s = 0, shared = 0;
       // Shared genres count for their rarity; genres the original lacks count a little against.
       if (x.genres) for (var a = 0; a < x.genres.length; a++) {
@@ -948,11 +1056,15 @@
       return;
     }
     if (t.closest('#surprise')) {
-      // A surprise is a suggestion too: never a hidden title, unless hidden ones are what is listed.
-      var pool = TRAILERS && !state.hidden ? results.filter(function (x) { return !S.Hidden.has(kind, x.id); }) : results;
+      // A surprise is a suggestion too: never a hidden or finished title, unless those are what is listed.
+      var pool = results.filter(function (x) {
+        return (!TRAILERS || state.hidden || !S.Hidden.has(kind, x.id)) && (state.done === 'yes' || !S.Done.has(kind, x.id));
+      });
       if (pool.length) open(pool[Math.floor(Math.random() * Math.min(pool.length, 400))].id);
       return;
     }
+    if (t.closest('#doneBtn') && current) { setDone(current.id, !S.Done.has(kind, current.id)); return; }
+    if (t.closest('[data-import]')) { pickImport(); return; }
     if (t.closest('#hideBtn') && current) {
       var hid = current.id, hide = !S.Hidden.has(kind, hid);
       setHidden(hid, hide);
@@ -1046,6 +1158,7 @@
     openFilters: openFilters,
     closeReels: closeReels,
     setHidden: setHidden,
+    importFile: importFile,
   };
   chipFade();   // the chip row the page was built with may already overflow
   if (TRAILERS) {

@@ -28,6 +28,8 @@
     chevD: '<path d="m6 9 6 6 6-6"/>',
     trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.7V17c0 .6-.5 1-1 1.2C7.9 18.8 7 20.2 7 22M14 14.7V17c0 .6.5 1 1 1.2 1.1.6 2 2 2 3.8M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
     eyeOff: '<path d="M10.7 5.1A10.7 10.7 0 0 1 21.9 11.7a1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"/><path d="M14.1 14.2a3 3 0 0 1-4.3-4.3"/><path d="M17.5 17.5A10.7 10.7 0 0 1 2.1 12.3a1 1 0 0 1 0-.7 10.7 10.7 0 0 1 4.4-5.1"/><path d="m2 2 20 20"/>',
+    check: '<path d="M20 6 9 17l-5-5"/>',
+    upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
   };
   function icon(name, cls) {
     return '<svg class="i' + (cls ? ' ' + cls : '') + '" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
@@ -126,7 +128,7 @@
     return '';
   }
 
-  /* ---------------------------------------------- saved and hidden titles */
+  /* ------------------------------------- saved, finished and hidden titles */
   // Kept in this browser only, as { kind: [id, ...] }, newest first.
   function idStore(key) {
     var data = {}, sets = {};
@@ -135,6 +137,7 @@
       if (!sets[kind]) { sets[kind] = {}; (data[kind] || []).forEach(function (id) { sets[kind][id] = 1; }); }
       return sets[kind];
     }
+    function save() { try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) {} }
     return {
       has: function (kind, id) { return Boolean(set(kind)[id]); },
       toggle: function (kind, id) {
@@ -142,8 +145,23 @@
         var i = list.indexOf(id);
         if (i >= 0) list.splice(i, 1); else list.unshift(id);
         sets[kind] = null;
-        try { localStorage.setItem(key, JSON.stringify(data)); } catch (e) {}
+        save();
         return i < 0;
+      },
+      // Many at once (an import): returns the ones that were not there already, for an undo.
+      addAll: function (kind, ids) {
+        var have = set(kind), list = data[kind] || (data[kind] = []), added = [];
+        ids.forEach(function (id) { if (!have[id]) { have[id] = 1; added.push(id); } });
+        data[kind] = added.slice().reverse().concat(list);
+        save();
+        return added;
+      },
+      removeAll: function (kind, ids) {
+        var drop = {};
+        ids.forEach(function (id) { drop[id] = 1; });
+        data[kind] = (data[kind] || []).filter(function (id) { return !drop[id]; });
+        sets[kind] = null;
+        save();
       },
       list: function (kind) { return (data[kind] || []).slice(); },
     };
@@ -151,6 +169,14 @@
   var Favs = idStore('shelf_favs_v2');
   // Films and series hidden from the trailer feed and from suggestions (More like this, Surprise me).
   var Hidden = idStore('shelf_hidden');
+  // Titles finished (watched, read, played): ticked on their covers, and kept out of the trailer
+  // feed and the suggestions like hidden ones, but listed (and filtered) as finished.
+  var Done = idStore('shelf_done');
+  // Per shelf: [the state, the button that marks it, the filter for the rest].
+  var DONE = {
+    movies: ['Watched', 'Mark watched', 'Not watched'], shows: ['Watched', 'Mark watched', 'Not watched'],
+    books: ['Read', 'Mark read', 'Not read'], games: ['Played', 'Mark played', 'Not played'],
+  };
 
   /* -------------------------------------------------------------- cards */
   function coverHTML(kind, r, opts) {
@@ -173,9 +199,11 @@
     if (opts.fav) {
       var on = Favs.has(kind, r.id);
       html += '<span class="fav' + (on ? ' on' : '') + '" aria-hidden="true" data-fav="' + esc(r.id) + '">' + icon('heart') + '</span>';
+      if (Done.has(kind, r.id)) html += doneTick(kind);
     }
     return html + '</span>';
   }
+  function doneTick(kind) { return '<span class="done">' + icon('check') + '<span class="sr">' + DONE[kind][0] + '</span></span>'; }
 
   function cardHTML(kind, r, opts) {
     opts = opts || {};
@@ -376,7 +404,7 @@
     icon: icon, esc: esc, compact: compact, KINDS: KINDS, METRICS: METRICS, tone: tone,
     imgUrl: imgUrl, imgFallback: imgFallback, coverHTML: coverHTML, cardHTML: cardHTML,
     AWARD_NAMES: AWARD_NAMES, awardKeys: awardKeys, awardLine: awardLine,
-    Favs: Favs, Hidden: Hidden, toast: toast, openSearch: openSearch, fold: fold, warmTrailers: warmTrailers,
+    Favs: Favs, Hidden: Hidden, Done: Done, DONE: DONE, doneTick: doneTick, toast: toast, openSearch: openSearch, fold: fold, warmTrailers: warmTrailers,
   };
   for (var k in api) S[k] = api[k];
 })();

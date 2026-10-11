@@ -689,3 +689,9 @@ dialog.reels .toast { background: #f3f5fa; color: #05060a; }
 :root[data-theme="light"] .ep-grid .h9 { background: #184f95; color: #fff; }
 :root[data-theme="light"] .ep-grid .h10 { background: #104281; color: #fff; }
 :root[data-theme="light"] .ep-grid .h11 { background: #0d366b; color: #fff; }
+
+/* Finished (watched, read, played): a tick in the cover's corner, and the button that sets it. */
+.cover .done { position: absolute; right: 8px; bottom: 8px; z-index: 2; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: #16a34a; color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, .4); }
+.cover .done .i { width: 14px; height: 14px; stroke-width: 3; }
+#doneBtn[aria-pressed="true"] .i { color: #22c55e; stroke-width: 3; }
+:root[data-theme="light"] #doneBtn[aria-pressed="true"] .i { color: #15803d; }

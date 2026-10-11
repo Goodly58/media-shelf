@@ -7,6 +7,7 @@
 
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
+import zlib from 'node:zlib';
 
 const require = createRequire(import.meta.url);
 const B = require('../assets/backlog.js');
@@ -137,6 +138,76 @@ console.log('edges');
 ok('no items is not a crash', B.build({ items: [], catalogue: BOOKS, kind: 'books' }).rows.length === 0);
 ok('no catalogue is not a crash', B.build({ items: gr.items, catalogue: [], kind: 'books', status: 'todo' }).rows.length > 0);
 ok('junk in does not throw', (() => { try { B.build({ items: [{}], catalogue: BOOKS, kind: 'books', status: 'todo' }); return true; } catch { return false; } })());
+
+/* ------------------------------ finished ---------------------------------- */
+
+console.log('already finished');
+const IMDB_RATINGS = [
+  'Const,Your Rating,Date Rated,Title,Original Title,URL,Title Type,IMDb Rating,Runtime (mins),Year,Genres,Num Votes,Release Date,Directors',
+  'tt0111161,10,2024-01-01,The Shawshank Redemption,The Shawshank Redemption,https://www.imdb.com/title/tt0111161/,Movie,9.3,142,1994,Drama,3000000,1994-09-23,Frank Darabont',
+  'tt0903747,9,2024-01-02,Breaking Bad,Breaking Bad,https://www.imdb.com/title/tt0903747/,TV Series,9.5,49,2008,Drama,2000000,2008-01-20,',
+  'tt2301451,10,2024-01-03,Breaking Bad: Ozymandias,Ozymandias,https://www.imdb.com/title/tt2301451/,TV Episode,9.5,47,2013,Drama,500000,2013-09-15,Rian Johnson',
+].join('\n');
+const IMDB_WATCHLIST = IMDB_RATINGS.replace('Const,Your Rating,', 'Const,Position,').replace(/^(tt\d+),(\d+),/gm, '$1,,');
+const CATS = {
+  movies: [{ id: 'tt0111161', title: 'The Shawshank Redemption', year: 1994 }, { id: 'tt2582802', title: 'Whiplash', year: 2014 },
+    { id: 'tt0054215', title: 'Psycho', year: 1960 }, { id: 'tt0155975', title: 'Psycho', year: 1998 }, { id: 'tt0245429', title: 'Spirited Away', alt: 'Sen to Chihiro no kamikakushi', year: 2001 }],
+  shows: [{ id: 'tt0903747', title: 'Breaking Bad', year: 2008 }],
+  books: [{ id: 'gatsby', title: 'The Great Gatsby', author: 'F. Scott Fitzgerald', gr: '4671', year: 1925 },
+    { id: 'kings', title: 'The Way of Kings', author: 'Brandon Sanderson', gr: '7235533', year: 2010 },
+    { id: 'emma-a', title: 'Emma', author: 'Jane Austen', year: 1815 }],
+};
+const fromImdb = B.readFinished(IMDB_RATINGS, 'ratings.csv');
+const imdbIds = B.matchFinished(fromImdb, CATS);
+ok('IMDb ratings: rated films and series are watched, by IMDb id', String(imdbIds.movies) === 'tt0111161' && String(imdbIds.shows) === 'tt0903747', JSON.stringify(imdbIds));
+ok('an IMDb list that rates nothing says so', B.readFinished(IMDB_WATCHLIST, 'watchlist.csv').error === 'unrated');
+ok('a Letterboxd watchlist is not what was watched', B.readFinished(LETTERBOXD_WATCHLIST, 'watchlist.csv').error === 'watchlist');
+const LETTERBOXD_WATCHED = LETTERBOXD_WATCHLIST + '\n2024-01-08,Whiplash,2014,https://boxd.it/d\n2024-01-09,Sen to Chihiro no kamikakushi,2001,https://boxd.it/e';
+const lbIds = B.matchFinished(B.readFinished(LETTERBOXD_WATCHED, 'watched.csv'), CATS);
+ok('Letterboxd watched: every film, matched by title and year', lbIds.movies.indexOf('tt2582802') >= 0 && lbIds.movies.indexOf('tt0054215') >= 0, JSON.stringify(lbIds));
+ok('the year tells Psycho (1960) from Psycho (1998)', lbIds.movies.indexOf('tt0155975') < 0);
+ok('a film is found under its original title too', lbIds.movies.indexOf('tt0245429') >= 0);
+const GR_READ = GOODREADS + '\n7235533,"The Way of Kings (The Stormlight Archive, #1)",Brandon Sanderson,"Sanderson, Brandon",,="",="",5,4.65,Tor,Hardcover,1007,2010,2010,2024/05/01,2024/04/01,,,read,,,,1,1' +
+  '\n1,"Emma",Jane Austen,"Austen, Jane",,="",="",4,4.0,Penguin,Paperback,474,2003,1815,2024/06/01,2024/05/01,,,read,,,,1,1';
+const grIds = B.matchFinished(B.readFinished(GR_READ, 'goodreads_library_export.csv'), CATS);
+ok('Goodreads: only the read shelf', grIds.books.indexOf('gatsby') >= 0 && grIds.books.indexOf('kings') >= 0 && grIds.books.length === 3, JSON.stringify(grIds));
+ok('Goodreads: a book with another id is found by title (series dropped) and author', grIds.books.indexOf('emma-a') >= 0);
+const HOBBITS = { books: [{ id: 'hobbit', title: 'The Hobbit', author: 'J. R. R. Tolkien', gr: '228531324' }, { id: 'hobbit-dixon', title: 'The Hobbit', author: 'Chuck Dixon', gr: '659469' },
+  { id: 'sapiens', title: 'Sapiens: A Brief History of Humankind', author: 'Yuval Noah Harari' }, { id: 'sapiens-graphic', title: 'Sapiens: A Graphic History', author: 'Yuval Noah Harari' }] };
+const grHead = GOODREADS.split('\n')[0];
+const hob = B.matchFinished(B.readFinished(grHead + '\n5907,"The Hobbit, or There and Back Again",J.R.R. Tolkien,"Tolkien, J.R.R.",,="",="",5,4.3,Mariner,Paperback,366,2012,1937,2024/05/01,2024/04/01,,,read,,,,1,1' +
+  '\n9,"Sapiens",Yuval Noah Harari,"Harari, Yuval Noah",,="",="",5,4.3,Harper,Paperback,443,2015,2011,2024/05/01,2024/04/01,,,read,,,,1,1', 'x.csv'), HOBBITS);
+ok('Goodreads: the title before its subtitle, by the same author', String(hob.books) === 'hobbit', JSON.stringify(hob));
+ok('Goodreads: a short title two of the author\'s books share matches neither', hob.books.indexOf('sapiens') < 0 && hob.books.indexOf('sapiens-graphic') < 0);
+ok('a file that is no export says so', B.readFinished('a,b\n1,2', 'x.csv').error === 'unknown');
+
+// A Letterboxd export in miniature: a ZIP with a stored and a deflated CSV, built here.
+function zipOf(files) {
+  const parts = [], dir = [];
+  let off = 0;
+  files.forEach(([name, text, deflate]) => {
+    const raw = Buffer.from(text), body = deflate ? zlib.deflateRawSync(raw) : raw, nm = Buffer.from(name);
+    const local = Buffer.alloc(30); local.writeUInt32LE(0x04034b50, 0); local.writeUInt16LE(deflate ? 8 : 0, 8);
+    local.writeUInt32LE(body.length, 18); local.writeUInt32LE(raw.length, 22); local.writeUInt16LE(nm.length, 26);
+    const cen = Buffer.alloc(46); cen.writeUInt32LE(0x02014b50, 0); cen.writeUInt16LE(deflate ? 8 : 0, 10);
+    cen.writeUInt32LE(body.length, 20); cen.writeUInt32LE(raw.length, 24); cen.writeUInt16LE(nm.length, 28); cen.writeUInt32LE(off, 42);
+    parts.push(local, nm, body); dir.push(cen, nm); off += 30 + nm.length + body.length;
+  });
+  const cd = Buffer.concat(dir), end = Buffer.alloc(22);
+  end.writeUInt32LE(0x06054b50, 0); end.writeUInt16LE(files.length, 8); end.writeUInt16LE(files.length, 10);
+  end.writeUInt32LE(cd.length, 12); end.writeUInt32LE(off, 16);
+  const all = Buffer.concat([...parts, cd, end]);
+  return all.buffer.slice(all.byteOffset, all.byteOffset + all.length);
+}
+const zip = zipOf([['watched.csv', LETTERBOXD_WATCHED, true], ['watchlist.csv', LETTERBOXD_WATCHLIST, false], ['ratings.csv', LETTERBOXD_RATINGS, false], ['lists/x.csv', 'junk', true]]);
+const files = await B.readZip(zip);
+ok('reads the CSVs inside a ZIP, stored or deflated', files.length === 4 && files[0].text === LETTERBOXD_WATCHED, JSON.stringify(files.map((f) => f.name)));
+const zipped = B.finishedFromZip(files);
+ok('a Letterboxd ZIP gives its watched films, not its watchlist', zipped.source === 'letterboxd' && zipped.items.length === 5, zipped.items.map((i) => i.title).join(', '));
+ok('a ZIP with no export in it says so', B.finishedFromZip([{ name: 'profile.csv', text: 'a,b\n1,2' }]).error === 'unknown');
+let threw = false;
+try { await B.readZip(new ArrayBuffer(10)); } catch { threw = true; }
+ok('a file that is not a ZIP is refused', threw);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exitCode = fail ? 1 : 0;
