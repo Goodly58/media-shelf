@@ -628,12 +628,15 @@
           '</div>' +
         '</div>' +
       '</div>' +
+      (kind === 'shows' && r.epg ? '<section class="eps" id="eps" aria-labelledby="epsTitle"><h3 id="epsTitle">Episodes<small>IMDb ratings</small></h3>' +
+        '<div class="eps-scroll"></div><p class="eps-best"></p><div class="ep-tip" role="tooltip" hidden></div></section>' : '') +
       '<div class="similar"><h3>More like this</h3><div class="mini-row" id="simRow"></div></div>';
     $('#simRow').innerHTML = similar(r).map(function (x) { return S.cardHTML(kind, x, { meta: CONFIG.meta(x) }); }).join('');
     if (!detailDlg.open) detailDlg.showModal();
     detailDlg.querySelector('.sheet').scrollTop = 0;
     if (push !== false) history.replaceState(null, '', location.pathname + location.search + '#' + encodeURIComponent(r.id));
     summary(r);
+    if (r.epg) episodes(r);
   }
 
   function hideButton(on) {
@@ -671,6 +674,121 @@
         done(sumCache[r.id][0], sumCache[r.id][1]);
       }).catch(function () {});
   }
+
+  /* --------------------------------------------------------- episode grid */
+  /* A series' episodes in shades of their IMDb ratings, a row a season, or a column a season where
+     its longest season will not fit across (a phone, a 24-episode season). Each series' grid is a
+     small file of its own (data/episodes/), read when its details open; r.epg = [seasons, longest
+     season] keeps the room for it meanwhile. In a grid file, a title of null marks an episode
+     number IMDb has nothing for, and e (where a season counts on from the last) the real numbers. */
+  var epFiles = {}, epNow = null;
+  var EP_CELL = 38, EP_HEAD = 50;
+  // 0 (6.0 or less) to 11 (9.3 and up): the shades in app.css, darker for better in the light theme.
+  function shade(v) { return 'h' + Math.max(0, Math.min(11, Math.round((v - 6) / 0.3))); }
+  function epNo(g, s, i) { return g.e && g.e[s] ? g.e[s][i] : i + 1; }
+  function epAvg(list) {
+    var sum = 0, n = 0;
+    list.forEach(function (v) { if (v != null) { sum += v; n++; } });
+    return n ? sum / n : null;
+  }
+  function epCell(g, s, i) {
+    if (!g) return '<td class="sk"></td>';
+    if (i >= g.r[s].length || (g.r[s][i] == null && g.t[s][i] == null)) return '<td class="gap"></td>';
+    var v = g.r[s][i];
+    return '<td class="' + (v == null ? 'na' : shade(v)) + '" data-ep="' + s + ',' + i + '">' + (v == null ? '' : v.toFixed(1)) + '</td>';
+  }
+  function avgCell(g, s) {
+    var a = g ? epAvg(g.r[s]) : null;
+    return '<td class="avg ' + (!g ? 'sk' : a == null ? 'na' : shade(a)) + '">' + (a == null ? '' : a.toFixed(1)) + '</td>';
+  }
+  /* g null: the grid's frame, while its file loads. */
+  function epTable(r, g, across) {
+    var seasons = r.epg[0], longest = r.epg[1], h = '', s, i;
+    var sLabel = function (x) { return 'S' + (g ? g.n[x] : x + 1); };
+    if (across) {
+      h += '<thead><tr><td></td><th scope="col">Avg</th><td class="sp"></td>';
+      for (i = 0; i < longest; i++) h += '<th scope="col">E' + (i + 1) + '</th>';
+      h += '</tr></thead><tbody>';
+      for (s = 0; s < seasons; s++) {
+        h += '<tr><th scope="row">' + sLabel(s) + '</th>' + avgCell(g, s) + '<td class="sp"></td>';
+        for (i = 0; i < longest; i++) h += epCell(g, s, i);
+        h += '</tr>';
+      }
+    } else {
+      h += '<thead><tr><td></td>';
+      for (s = 0; s < seasons; s++) h += '<th scope="col">' + sLabel(s) + '</th>';
+      h += '</tr></thead><tbody><tr><th scope="row">Avg</th>';
+      for (s = 0; s < seasons; s++) h += avgCell(g, s);
+      h += '</tr><tr class="sp"><td></td></tr>';
+      for (i = 0; i < longest; i++) {
+        h += '<tr><th scope="row">E' + (i + 1) + '</th>';
+        for (s = 0; s < seasons; s++) h += epCell(g, s, i);
+        h += '</tr>';
+      }
+    }
+    return '<table class="ep-grid' + (across ? ' across' : '') + '">' + h + '</tbody></table>';
+  }
+  function epLine(g, s, i) {
+    var t = g.t[s][i];
+    return 'S' + g.n[s] + ' E' + epNo(g, s, i) + (t ? ' · ' + t : '');
+  }
+  /* The best-rated episode, or the first two of those tied for it. */
+  function bestEp(g) {
+    var top = null, at = [];
+    g.r.forEach(function (l, s) { l.forEach(function (v, i) {
+      if (v == null || (top != null && v < top)) return;
+      if (top == null || v > top) { top = v; at = []; }
+      at.push([s, i]);
+    }); });
+    if (top == null) return '';
+    var name = function (p) {
+      var t = g.t[p[0]][p[1]], no = 'S' + g.n[p[0]] + ' E' + epNo(g, p[0], p[1]);
+      return t ? '<b>' + esc(t) + '</b> (' + no + ')' : '<b>' + no + '</b>';
+    };
+    var names = at.slice(0, 2).map(name).join(' and ') + (at.length > 2 ? ' and ' + (at.length - 2) + ' more' : '');
+    return 'Best rated: ' + names + ', ' + top.toFixed(1);
+  }
+  function episodes(r) {
+    var sec = $('#eps');
+    if (!sec) return;
+    // Seasons as rows when the longest fits across: the label, the average, a gap, the episodes.
+    var across = sec.clientWidth >= EP_HEAD + EP_CELL * (r.epg[1] + 1) + 8;
+    var done = function (g) {
+      var now = $('#eps');
+      if (current !== r || !now) return;
+      if (!g) { now.remove(); return; }
+      epNow = g;
+      now.querySelector('.eps-scroll').innerHTML = epTable(r, g, across);
+      now.querySelector('.eps-best').innerHTML = bestEp(g);
+    };
+    if (epFiles[r.id]) return done(epFiles[r.id]);
+    sec.querySelector('.eps-scroll').innerHTML = epTable(r, null, across);
+    fetch('data/episodes/' + encodeURIComponent(r.id) + '.json?v=' + ((document.querySelector('meta[name="shelf-build"]') || {}).content || ''))
+      .then(function (x) { return x.ok ? x.json() : null; })
+      .then(function (g) { if (g) epFiles[r.id] = g; done(g); }, function () { done(null); });
+  }
+  /* The episode under the pointer (or tapped): its rating, number and title, above it. */
+  function epTip(td) {
+    var sec = $('#eps'), tip = sec && sec.querySelector('.ep-tip');
+    if (!tip) return;
+    var on = sec.querySelector('td.on');
+    if (on) on.classList.remove('on');
+    if (!td || !epNow) { tip.hidden = true; return; }
+    var p = td.getAttribute('data-ep').split(','), s = Number(p[0]), i = Number(p[1]), v = epNow.r[s][i];
+    tip.innerHTML = '<b>' + (v == null ? 'Not rated yet' : v.toFixed(1)) + '</b><span>' + esc(epLine(epNow, s, i)) + '</span>';
+    tip.hidden = false;
+    td.classList.add('on');
+    var c = td.getBoundingClientRect(), b = sec.getBoundingClientRect(), w = tip.offsetWidth;
+    var x = c.left - b.left + c.width / 2;
+    tip.style.left = Math.max(w / 2, Math.min(b.width - w / 2, x)) + 'px';
+    tip.style.top = (c.top - b.top - 6) + 'px';
+  }
+  detailDlg.addEventListener('pointerover', function (e) {
+    var td = e.target.closest && e.target.closest('#eps td[data-ep]');
+    if (td) epTip(td);
+    else if (!e.target.closest || !e.target.closest('#eps .ep-grid')) epTip(null);
+  });
+  detailDlg.addEventListener('scroll', function () { epTip(null); }, true);
 
   /* Same-shelf recommendations: shared genres and themes, weighted by how rare
      they are, plus the same director or author, nudged towards better-rated

@@ -56,6 +56,53 @@ export async function loadEpisodes(ids) {
   return out;
 }
 
+/* An episode's title, or '' for one that only numbers it ("Episode #1.3", "Episode dated 4 May 2005"). */
+const NUMBERED = /^(episode\s*#?\s*[\d.]+|episode dated\b.*|ep(isode)?\.?\s*\d+)$/i;
+export const episodeTitle = (s) => (s && !NUMBERED.test(s.trim()) ? s.trim() : '');
+
+/**
+ * Every numbered episode of the given series with its IMDb rating (null before it has one) and
+ * title, for the grid in a series' details:
+ * { seriesId: { n: [season, ...], e: [[episode, ...] per season], r: [[rating, ...]], t: [[title, ...]] } }.
+ * Specials (season or episode 0, or none) are left out.
+ */
+export async function loadEpisodeGrid(ids) {
+  const eps = new Map();
+  for await (const [id, parent, season, episode] of rows(await ensure('title.episode'))) {
+    if (!ids.has(parent)) continue;
+    const s = Number(season), e = Number(episode);
+    if (!(s >= 1 && s < 200 && e >= 1 && e < 10000)) continue;
+    eps.set(id, [parent, s, e]);
+  }
+  const rating = new Map();
+  for await (const [id, avg] of rows(await ensure('title.ratings'))) if (eps.has(id)) rating.set(id, Number(avg));
+  const name = new Map();
+  for await (const [id, type, primary] of rows(await ensure('title.basics'))) {
+    if (type === 'tvEpisode' && eps.has(id) && episodeTitle(primary)) name.set(id, episodeTitle(primary));
+  }
+  const bySeries = new Map();
+  for (const [id, [parent, s, e]] of eps) {
+    const list = bySeries.get(parent) || [];
+    list.push([s, e, rating.get(id) ?? null, name.get(id) || '']);
+    bySeries.set(parent, list);
+  }
+  const out = {};
+  for (const [parent, list] of bySeries) {
+    list.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    const g = { n: [], e: [], r: [], t: [] };
+    for (const [s, e, r, t] of list) {
+      if (g.n[g.n.length - 1] !== s) { g.n.push(s); g.e.push([]); g.r.push([]); g.t.push([]); }
+      const i = g.n.length - 1;
+      // The same number twice (an episode listed twice) keeps the rated one.
+      if (g.e[i][g.e[i].length - 1] === e) { if (r != null && g.r[i][g.r[i].length - 1] == null) { g.r[i][g.r[i].length - 1] = r; g.t[i][g.t[i].length - 1] = t; } continue; }
+      g.e[i].push(e); g.r[i].push(r); g.t[i].push(t);
+    }
+    out[parent] = g;
+  }
+  log(`episodes: ${eps.size} across ${Object.keys(out).length} series, ${rating.size} rated`);
+  return out;
+}
+
 /**
  * Every film and series with at least `minVotes` IMDb votes, plus any title
  * in `keep` (ids already in the catalogue), with directors resolved to names.

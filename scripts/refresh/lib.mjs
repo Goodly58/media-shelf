@@ -109,6 +109,12 @@ export function writeBackups(kind, map) {
   fs.writeFileSync(path.join(ROOT, 'data', `${kind}-trailers.json`), '{\n' + ids.map((id) => JSON.stringify(id) + ':' + JSON.stringify(map[id])).join(',\n') + '\n}\n');
 }
 
+/** data/shows-episodes.json: { seriesId: episode grid }, a series to a line (merge.mjs episodeGrids). */
+export function writeEpisodes(map) {
+  const ids = Object.keys(map).sort();
+  fs.writeFileSync(path.join(ROOT, 'data', 'shows-episodes.json'), '{\n' + ids.map((id) => JSON.stringify(id) + ':' + JSON.stringify(map[id])).join(',\n') + '\n}\n');
+}
+
 /* One object per line: small diffs, still valid JSON. */
 /** A row as written: empty fields left out. */
 export function compact(r) {

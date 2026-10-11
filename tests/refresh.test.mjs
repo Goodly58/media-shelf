@@ -1,6 +1,7 @@
 /* Unit tests for the refresh pipeline's matching and cleaning rules. No
    network: these are the pure functions that decide what gets written. */
-import { slugify, broadGenres, articleMatches, classifyGame, bookGenre } from '../scripts/refresh/merge.mjs';
+import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid } from '../scripts/refresh/merge.mjs';
+import { episodeTitle } from '../scripts/refresh/imdb.mjs';
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
@@ -165,6 +166,23 @@ ok('RT pages that stop giving the audience score are a problem', /audience/.test
 ok('a failed step is a problem', /rt: failed/.test(run([{ name: 'rt', seconds: 1, error: 'timeout' }], { rt: entries(100, 88) }).problems.join()));
 ok('a crawl that shrank is a problem', /shrank/.test(run(['metacritic'], { 'mc-movies': new Array(5000), 'mc-tv': new Array(3300) }, { 'mc-movies': 17000, 'mc-tv': 3300 }).problems.join()));
 ok('notes from the run are problems', !run(['rt'], { rt: entries(100, 88) }, {}, ['books: would have shrunk']).ok);
+ok('episodes that came back empty are a problem', /IMDb episodes/.test(run(['episodes'], { 'imdb-episodes': {} }, { 'imdb-episodes': 2800 }).problems.join()));
+
+console.log('episode grids');
+ok('a numbered-only title is no title', ['Episode #1.3', 'Episode dated 4 May 2005', 'Episode 12', 'Ep. 4'].every((t) => episodeTitle(t) === ''));
+ok('a real title is kept, trimmed', episodeTitle('  Ozymandias ') === 'Ozymandias' && episodeTitle('The Episode') === 'The Episode' && episodeTitle('Episode IX') === 'Episode IX');
+const grid = (e, r, t) => ({ n: e.map((_, i) => i + 1), e, r, t: t || e.map((l) => l.map((x) => 'T' + x)) });
+const plain = shapeGrid(grid([[1, 2, 3], [1, 2]], [[8, 8.5, 9], [7, null]]));
+ok('seasons numbered 1, 2, 3 keep their order and need no numbers', plain && !plain.e && JSON.stringify(plain.r) === '[[8,8.5,9],[7,null]]' && plain.t[1][1] === 'T2', plain);
+const holed = shapeGrid(grid([[1, 2, 4]], [[8, 8, 9]]));
+ok('a missing episode leaves an empty cell in its place', holed && !holed.e && JSON.stringify(holed.r) === '[[8,8,null,9]]' && holed.t[0][2] === null, holed);
+const late = shapeGrid(grid([[2, 3, 4]], [[8, 8, 9]]));
+ok('a season starting at episode 2 keeps episode 1 empty', late && late.r[0].length === 4 && late.t[0][0] === null, late);
+const on = shapeGrid(grid([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10], [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]], [new Array(10).fill(8), new Array(10).fill(7)]));
+ok('a season numbered on from the last keeps its numbers', on && on.e && on.e[0] === 0 && on.e[1][0] === 11 && on.r[1].length === 10, on);
+ok('one rated episode makes no grid', shapeGrid(grid([[1, 2, 3]], [[8, null, null]])) === null);
+ok('a season of hundreds (a daily show) makes no grid', shapeGrid(grid([Array.from({ length: 61 }, (_, i) => i + 1)], [new Array(61).fill(7)])) === null);
+ok('no episodes, no grid', shapeGrid(null) === null && shapeGrid({ n: [], e: [], r: [], t: [] }) === null);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

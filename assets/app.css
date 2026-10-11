@@ -633,3 +633,59 @@ dialog.reels .toast { background: #f3f5fa; color: #05060a; }
 }
 .faq-list details[open] summary::after { transform: rotate(-135deg); }
 .faq-list p { color: var(--mut); font-size: 15px; line-height: 1.6; max-width: 65ch; padding: 0 2px 20px; }
+
+/* Episode grid: a series' episodes in shades of their IMDb ratings. One hue, 6.0 or less (h0) to
+   9.3 and up (h11): darker for better on the light theme; on the dark one the scale turns round,
+   so a weak episode sinks towards the background. Each shade carries the text that reads on it. */
+.eps { position: relative; padding: 0 28px 26px; }
+.eps h3 { display: flex; align-items: baseline; gap: 10px; font-size: 16px; margin-bottom: 12px; }
+.eps h3 small { font-size: 12.5px; font-weight: 600; color: var(--mut-2); }
+.eps-scroll { overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
+.ep-grid { border-collapse: separate; border-spacing: 2px; font-size: 11.5px; font-variant-numeric: tabular-nums; }
+.ep-grid th { padding: 0 8px 0 0; font-size: 11px; font-weight: 600; color: var(--mut-2); text-align: left; white-space: nowrap; }
+.ep-grid thead th { padding: 0 0 3px; text-align: center; }
+.ep-grid tbody th { position: sticky; left: 0; z-index: 1; background: var(--bg-2); }
+.ep-grid td { width: 36px; min-width: 36px; height: 24px; padding: 0; border-radius: 4px; text-align: center; font-weight: 650; }
+.ep-grid td.avg { font-weight: 800; }
+.ep-grid td.na { outline: 1px dashed var(--line); outline-offset: -1px; }
+.ep-grid td.sk { background: var(--card); }
+.ep-grid td.sp { width: 4px; min-width: 4px; }
+.ep-grid tr.sp td { height: 2px; }
+.ep-grid td[data-ep] { cursor: default; }
+/* Ringed outside the cell, so it shows on the palest shade as on the darkest. */
+.ep-grid td.on { position: relative; z-index: 2; outline: 2px solid var(--text); outline-offset: 1px; }
+.ep-tip {
+  position: absolute; z-index: 5; transform: translate(-50%, -100%); pointer-events: none; max-width: min(360px, 90%);
+  display: flex; align-items: baseline; gap: 8px; padding: 6px 10px; border-radius: 8px; white-space: nowrap;
+  background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); font-size: 12.5px; color: var(--mut);
+}
+.ep-tip b { flex: none; color: var(--text); font-size: 13.5px; }
+.ep-tip span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.eps-best { margin-top: 10px; font-size: 13px; color: var(--mut); }
+.eps-best:empty { display: none; }
+.eps-best b { color: var(--text); font-weight: 650; }
+@media (max-width: 640px) { .eps { padding: 0 18px 22px; } }
+.ep-grid .h0 { background: #0d366b; color: #fff; }
+.ep-grid .h1 { background: #104281; color: #fff; }
+.ep-grid .h2 { background: #184f95; color: #fff; }
+.ep-grid .h3 { background: #1c5cab; color: #fff; }
+.ep-grid .h4 { background: #256abf; color: #fff; }
+.ep-grid .h5 { background: #3987e5; color: #10131b; }
+.ep-grid .h6 { background: #5598e7; color: #10131b; }
+.ep-grid .h7 { background: #6da7ec; color: #10131b; }
+.ep-grid .h8 { background: #86b6ef; color: #10131b; }
+.ep-grid .h9 { background: #9ec5f4; color: #10131b; }
+.ep-grid .h10 { background: #b7d3f6; color: #10131b; }
+.ep-grid .h11 { background: #cde2fb; color: #10131b; }
+:root[data-theme="light"] .ep-grid .h0 { background: #cde2fb; color: #10131b; }
+:root[data-theme="light"] .ep-grid .h1 { background: #b7d3f6; color: #10131b; }
+:root[data-theme="light"] .ep-grid .h2 { background: #9ec5f4; color: #10131b; }
+:root[data-theme="light"] .ep-grid .h3 { background: #86b6ef; color: #10131b; }
+:root[data-theme="light"] .ep-grid .h4 { background: #6da7ec; color: #10131b; }
+:root[data-theme="light"] .ep-grid .h5 { background: #5598e7; color: #10131b; }
+:root[data-theme="light"] .ep-grid .h6 { background: #3987e5; color: #10131b; }
+:root[data-theme="light"] .ep-grid .h7 { background: #256abf; color: #fff; }
+:root[data-theme="light"] .ep-grid .h8 { background: #1c5cab; color: #fff; }
+:root[data-theme="light"] .ep-grid .h9 { background: #184f95; color: #fff; }
+:root[data-theme="light"] .ep-grid .h10 { background: #104281; color: #fff; }
+:root[data-theme="light"] .ep-grid .h11 { background: #0d366b; color: #fff; }

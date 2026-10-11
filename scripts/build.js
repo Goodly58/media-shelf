@@ -51,6 +51,9 @@ for (const k of KINDS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}.json`)
 // The player's backup trailers, read only when the trailer feed opens.
 const BACKUPS = ['movies', 'shows', 'games'].filter((k) => fs.existsSync(path.join(DATA_DIR, `${k}-trailers.json`)));
 for (const k of BACKUPS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}-trailers.json`)));
+// Each series' episodes and their ratings, a file per series, read when its details open.
+const EPISODES = path.join(DATA_DIR, 'shows-episodes.json');
+if (fs.existsSync(EPISODES)) h.update(fs.readFileSync(EPISODES));
 let META = {};
 try { META = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'meta.json'), 'utf8')); } catch {}
 h.update(JSON.stringify(META));
@@ -368,6 +371,10 @@ page({
 for (const f of fs.readdirSync(path.join(ROOT, 'assets'))) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(OUT, 'assets', f));
 for (const k of KINDS) fs.copyFileSync(path.join(DATA_DIR, `${k}.json`), path.join(OUT, `data/${k}.json`));
 for (const k of BACKUPS) fs.copyFileSync(path.join(DATA_DIR, `${k}-trailers.json`), path.join(OUT, `data/${k}-trailers.json`));
+if (fs.existsSync(EPISODES)) {
+  fs.mkdirSync(path.join(OUT, 'data/episodes'), { recursive: true });
+  for (const [id, g] of Object.entries(JSON.parse(fs.readFileSync(EPISODES, 'utf8')))) fs.writeFileSync(path.join(OUT, 'data/episodes', id + '.json'), JSON.stringify(g));
+}
 // Book covers kept with the site (scripts/refresh/covers.mjs).
 if (fs.existsSync(path.join(ROOT, 'covers'))) fs.cpSync(path.join(ROOT, 'covers'), path.join(OUT, 'covers'), { recursive: true });
 fs.writeFileSync(path.join(OUT, 'data/search.json'), searchIndex());

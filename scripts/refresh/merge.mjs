@@ -182,6 +182,60 @@ function tidy(rows) {
   }
 }
 
+/* ------------------------------------------------------- episode grids */
+// Daily shows, soaps and long-running anime (hundreds of episodes a season) make no useful grid.
+const GRID_MAX_SEASON = 60, GRID_MAX_EPISODES = 1200;
+
+/**
+ * One series' grid as the site keeps it (imdb.mjs loadEpisodeGrid gives { n, e, r, t }): a cell per
+ * episode, a season's cells in episode order. A season missing a number or two (IMDb lacks that
+ * episode) keeps its numbering with an empty cell (rating and title null); one numbered on from the
+ * season before (23, 24 and so on) keeps its numbers in e. Null when the grid would say nothing.
+ */
+export function shapeGrid(g) {
+  if (!g || !g.n || !g.n.length) return null;
+  const count = g.e.reduce((a, l) => a + l.length, 0);
+  const rated = g.r.reduce((a, l) => a + l.filter((v) => v != null).length, 0);
+  if (rated < 2 || count > GRID_MAX_EPISODES) return null;
+  const out = { n: g.n.slice(), r: [], t: [] }, e = [];
+  g.e.forEach((nums, i) => {
+    const last = nums[nums.length - 1];
+    if (last <= nums.length + 3) {
+      // In order with at most a few gaps: cell k is episode k.
+      const r = new Array(last).fill(null), t = new Array(last).fill(null);
+      nums.forEach((x, j) => { r[x - 1] = g.r[i][j]; t[x - 1] = g.t[i][j]; });
+      out.r.push(r); out.t.push(t); e.push(0);
+    } else {
+      out.r.push(g.r[i].slice()); out.t.push(g.t[i].slice()); e.push(nums.slice());
+    }
+  });
+  if (out.r.some((l) => l.length > GRID_MAX_SEASON)) return null;
+  if (e.some(Boolean)) out.e = e;
+  return out;
+}
+
+/** data/shows-episodes.json: { seriesId: grid }, a series to a line. */
+function readEpisodes() {
+  try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'shows-episodes.json'), 'utf8')); } catch { return {}; }
+}
+
+/**
+ * Every listed series' episode grid, from the episodes step's cache, or as last written when this
+ * run has none. Each series row gets epg = [seasons, rows], the grid's size, so its details can
+ * keep room for it before it loads (and skip it where there is none).
+ */
+export function episodeGrids(shows) {
+  const fresh = loadCache('imdb-episodes', null), prev = fresh ? null : readEpisodes();
+  const out = {};
+  for (const r of shows) {
+    const g = fresh ? shapeGrid(fresh[r.id]) : prev[r.id];
+    r.epg = g ? [g.n.length, Math.max(...g.r.map((l) => l.length))] : null;
+    if (g) out[r.id] = g;
+  }
+  log(`episode grids: ${Object.keys(out).length} of ${shows.length} series${fresh ? '' : ' (kept from the last run)'}`);
+  return out;
+}
+
 /* --------------------------------------------------------------- games */
 
 const RULES = [

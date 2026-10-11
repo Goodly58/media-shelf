@@ -109,6 +109,29 @@ for (const kind of ['movies', 'shows', 'games']) {
   else ok.push(`data/${kind}-trailers.json: backups for ${Object.keys(b).length} titles`);
 }
 
+/* Each series with an episode grid (epg = [seasons, rows]) has its file, the same size:
+   a list of ratings (1 to 10, or null) and titles (text, or null for a missing episode) per season. */
+{
+  let shows = [], bad = 0, grids = 0;
+  try { shows = JSON.parse(read('data/shows.json')); } catch {}
+  for (const r of shows) {
+    if (r.epg == null) continue;
+    grids++;
+    let g = null;
+    try { g = JSON.parse(read(`data/episodes/${r.id}.json`)); } catch {}
+    const okSize = Array.isArray(r.epg) && r.epg.length === 2 && r.epg.every((x) => Number.isInteger(x) && x > 0);
+    const okGrid = g && Array.isArray(g.n) && g.n.length === r.epg[0] && g.n.every((x) => Number.isInteger(x) && x > 0) &&
+      Array.isArray(g.r) && Array.isArray(g.t) && g.r.length === g.n.length && g.t.length === g.n.length &&
+      g.r.every((l, i) => Array.isArray(l) && l.length === g.t[i].length && l.every((v) => v === null || (typeof v === 'number' && v >= 1 && v <= 10))) &&
+      g.t.every((l) => l.every((v) => v === null || typeof v === 'string')) &&
+      Math.max(...g.r.map((l) => l.length)) === r.epg[1] &&
+      (g.e == null || (g.e.length === g.n.length && g.e.every((l, i) => l === 0 || (Array.isArray(l) && l.length === g.r[i].length))));
+    if (!okSize || !okGrid) bad++;
+  }
+  if (bad) fail.push(`episodes: ${bad} series whose grid is missing or does not match its size`);
+  else ok.push(`data/episodes/: a grid for ${grids} series, each matching its size`);
+}
+
 try {
   const s = JSON.parse(read('data/search.json'));
   if (s.items.length !== total) fail.push(`search.json holds ${s.items.length} titles, the catalogues ${total}`);

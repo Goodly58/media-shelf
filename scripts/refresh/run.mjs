@@ -12,8 +12,8 @@
    that fails is logged and skipped; it never blocks the others. */
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadCache, saveCache, readData, writeData, writeMeta, writeBackups, compact, log, traffic, CACHE } from './lib.mjs';
-import { loadImdb } from './imdb.mjs';
+import { loadCache, saveCache, readData, writeData, writeMeta, writeBackups, writeEpisodes, compact, log, traffic, CACHE } from './lib.mjs';
+import { loadImdb, loadEpisodeGrid } from './imdb.mjs';
 import { resolveWikidata, resolveSteam } from './wikidata.mjs';
 import { crawlAll, gameScore, refreshMcUsers } from './metacritic.mjs';
 import { resolveImages, searchArticle } from './wikipedia.mjs';
@@ -24,7 +24,7 @@ import { refreshReviews, refreshTags, popularApps, appDetails, refreshAssets } f
 import { refreshBooks, refreshEditionCovers } from './books.mjs';
 import { resolveTvmaze } from './tvmaze.mjs';
 import { crawlGenreLists } from './goodreads-lists.mjs';
-import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, slugify, articleMatches } from './merge.mjs';
+import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, episodeGrids, slugify, articleMatches } from './merge.mjs';
 import { storeCovers, pruneCovers } from './covers.mjs';
 import { refreshGameTrailers, attachGameTrailers } from './gametrailers.mjs';
 import { refreshAwards, attachAwards } from './awards.mjs';
@@ -74,6 +74,10 @@ await step('imdb', async () => {
   saveCache('imdb-selected', [...titles.values()]);
 });
 const selected = () => loadCache('imdb-selected', []);
+// Every episode's IMDb rating, for the grid in a series' details (from the datasets the imdb step fetched).
+await step('episodes', async () => {
+  saveCache('imdb-episodes', await loadEpisodeGrid(new Set(selected().filter((t) => t.kind === 'shows').map((t) => t.id))));
+});
 
 await step('wikidata', async () => { await resolveWikidata(selected()); });
 // Oscars, Emmys, Bookers, Game of the Year and the rest, a Wikidata query per award, monthly.
@@ -217,6 +221,8 @@ if (arg('no-merge', false)) { health(); log('fetch only: data/ left as it was');
 const { movies, shows, tmdb, backups } = await mergeScreen(before.movies, before.shows);
 writeMeta({ tmdbTrailers: tmdb });
 for (const k of ['movies', 'shows']) writeBackups(k, backups[k]);
+// Each series' episodes (its rows get the grid's size), written below with the series.
+const grids = episodeGrids(shows);
 const games = mergeGames(before.games, { newApps: loadCache('steam-popular', []).filter((a) => a.reviews >= MIN_STEAM_REVIEWS) });
 writeBackups('games', attachGameTrailers(games));
 const books = mergeBooks(before.books);
@@ -249,6 +255,7 @@ for (const [k, rows] of Object.entries(out)) {
   writeData(k, rows);
   // Covers no book uses any more go once the books are written.
   if (k === 'books') pruneCovers(rows);
+  if (k === 'shows') writeEpisodes(grids);
 }
 health(refused);
 

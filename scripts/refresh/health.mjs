@@ -42,6 +42,7 @@ export const SOURCES = [
 // Full crawls, judged by size against the previous run: [cache, label, step, smallest share kept].
 export const CRAWLS = [
   ['imdb-selected', 'IMDb titles', 'imdb', 0.9],
+  ['imdb-episodes', 'IMDb episodes', 'episodes', 0.9],
   ['mc-movies', 'Metacritic films', 'metacritic', 0.8],
   ['mc-tv', 'Metacritic series', 'metacritic', 0.8],
   ['steam-popular', 'Steam popular list', 'steamlist', 0.5],
