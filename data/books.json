@@ -6252,6 +6252,6 @@
 {"id":"sunday-morning-ann","title":"Sunday Morning","author":"Jewel E. Ann","genres":["Children & Middle Grade"],"rating":4.13,"ratings":19357,"gr":"218149428","cv":"g218149428","cc":"a09376"},
 {"id":"nothing-better-than-you-painter","title":"Nothing Better Than You","author":"Lynn Painter","genres":["Children & Middle Grade"],"rating":4.46,"ratings":13694,"gr":"218371653","cv":"g218371653","cc":"ef97c2"},
 {"id":"weave-world-barker","title":"Weave World","author":"Clive Barker","genres":["Fantasy","Horror","Science Fiction"],"rating":4.13,"ratings":34932,"isbn":"9780007117147","gr":"52640","tags":["Dark Fantasy","Urban Fantasy"],"cv":"g52640","cc":"223865"},
-{"title":"The Wall","author":"Jean-Paul Sartre","genres":["Philosophy & Psychology"],"rating":4.07,"ratings":27997,"gr":"10031","id":"the-wall-sartre"},
-{"title":"The Warrior's Apprentice","author":"Lois McMaster Bujold","genres":["Science Fiction"],"rating":4.26,"ratings":31184,"gr":"61906","id":"the-warriors-apprentice-bujold"}
+{"id":"the-wall-sartre","title":"The Wall","author":"Jean-Paul Sartre","genres":["Philosophy & Psychology"],"rating":4.07,"ratings":27997,"gr":"10031"},
+{"id":"the-warriors-apprentice-bujold","title":"The Warrior's Apprentice","author":"Lois McMaster Bujold","genres":["Science Fiction"],"rating":4.26,"ratings":31184,"gr":"61906"}
 ]
