@@ -7,6 +7,8 @@
   var THIS_YEAR = new Date().getFullYear();
   // Shelves with a trailer feed (films, series, games), whose titles can also be hidden.
   var TRAILERS = kind === 'movies' || kind === 'shows' || kind === 'games';
+  // Shelves whose titles have a billed cast (data/{kind}-cast.json), and whose people can be followed.
+  var CAST = kind === 'movies' || kind === 'shows';
   // Where a shelf's finished titles can be imported from (backlog.js reads each kind of export).
   var IMPORT = { movies: 'Letterboxd or IMDb', shows: 'IMDb', books: 'Goodreads' };
   var BUILD = (document.querySelector('meta[name="shelf-build"]') || {}).content || '';
@@ -66,7 +68,8 @@
   var pre = [].map.call(grid.querySelectorAll('.card[data-id]'), function (c) { return c.getAttribute('data-id'); });
 
   // done: '' any, 'no' only those not finished yet, 'yes' only finished ones (watched, read, played).
-  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, hidden: false, done: '', award: [], view: '', rsort: 'shuffle' }; }
+  // who: a person (cast or director), only their titles.
+  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, hidden: false, done: '', who: '', award: [], view: '', rsort: 'shuffle' }; }
 
   /* ------------------------------------------------------------- url state */
   function readURL() {
@@ -87,6 +90,7 @@
     s.saved = p.get('saved') === '1';
     s.hidden = TRAILERS && !s.saved && p.get('hidden') === '1';
     s.done = p.get('seen') === 'no' || p.get('seen') === 'yes' ? p.get('seen') : '';
+    s.who = CAST ? (p.get('who') || '').trim() : '';
     s.view = p.get('view') === 'trailers' && TRAILERS ? 'trailers' : '';
     if (CONFIG.sorts.some(function (x) { return x[0] === p.get('rsort'); })) s.rsort = p.get('rsort');
     return s;
@@ -107,6 +111,7 @@
     if (state.saved) p.set('saved', '1');
     if (state.hidden) p.set('hidden', '1');
     if (state.done) p.set('seen', state.done);
+    if (state.who) p.set('who', state.who);
     if (state.view) p.set('view', state.view);
     if (state.view && state.rsort !== 'shuffle') p.set('rsort', state.rsort);
     var qs = p.toString();
@@ -152,17 +157,52 @@
       });
       avgTop = n ? sum / n : 0;
       items.forEach(function (r) { r._top = CONFIG.top(r, avgTop); });
+      attachCast();
       state = readURL();
-      loaded = true;
-      apply();
-      openFromHash();
-      // Panels opened while the data was on its way.
-      if (genresDlg.open) layoutPicker();
-      if (filtersDlg.open) openFilters();
-      if (state.view === 'trailers') openReels();
+      // An address that asks for one person's titles waits for the cast.
+      return (state.who ? loadCast().catch(function () {}) : Promise.resolve()).then(function () {
+        loaded = true;
+        apply();
+        openFromHash();
+        // Panels opened while the data was on its way.
+        if (genresDlg.open) layoutPicker();
+        if (filtersDlg.open) openFilters();
+        if (state.view === 'trailers') openReels();
+      });
     }).catch(function () {
       grid.innerHTML = '<div class="empty"><h2>Could not load the catalogue</h2><p>Check your connection and reload.</p></div>';
     });
+  }
+
+  /* ------------------------------------------------------------------ cast */
+  // Each title's billed cast (data/{kind}-cast.json), fetched once, when it is first wanted: a
+  // title's details, a search, or an address asking for one person's titles.
+  var castData = null, castReq = null;
+  function loadCast() {
+    if (!CAST) return Promise.resolve();
+    if (!castReq) castReq = fetch('data/' + kind + '-cast.json?v=' + BUILD).then(function (x) { return x.json(); }).then(function (c) {
+      castData = c;
+      attachCast();
+    }, function (err) { castReq = null; throw err; });
+    return castReq;
+  }
+  // Each title gets its cast, and its names become searchable.
+  function attachCast() {
+    if (!castData) return;
+    items.forEach(function (r) {
+      if (r._cast !== undefined) return;
+      r._cast = castData[r.id] || null;
+      if (r._cast) r._f = S.fold(CONFIG.fields(r) + ' ' + r._cast.join(' '));
+    });
+  }
+  function personLink(n) { return '<a href="?who=' + encodeURIComponent(n) + '" data-who="' + esc(n) + '">' + esc(n) + '</a>'; }
+  /* "With Tim Robbins, Morgan Freeman and Bob Gunton" under a title's summary, once the cast is in. */
+  function castLine(r) {
+    var el = $('#dCast');
+    if (!el || current !== r) return;
+    if (!r._cast) { el.remove(); return; }
+    var l = r._cast.map(personLink);
+    el.innerHTML = 'With ' + (l.length > 1 ? l.slice(0, -1).join(', ') + ' and ' + l[l.length - 1] : l[0]);
   }
 
   /* -------------------------------------------------------------- filtering */
@@ -194,8 +234,11 @@
     if (s.saved && !S.Favs.has(kind, r.id)) return false;
     if (s.hidden && !S.Hidden.has(kind, r.id)) return false;
     if (s.done && (s.done === 'yes') !== S.Done.has(kind, r.id)) return false;
+    if (s.who && !hasPerson(r, s.who)) return false;
     return true;
   }
+  /* In the billed cast, or among the directors (series: creators). */
+  function hasPerson(r, who) { return (r._cast && r._cast.indexOf(who) >= 0) || names(r.by).indexOf(who) >= 0; }
   function hasAll(r, s) {
     for (var g = 0; g < s.genres.length; g++) if (!r.genres || r.genres.indexOf(s.genres[g]) < 0) return false;
     for (var t = 0; t < s.tags.length; t++) if (!r.tags || r.tags.indexOf(s.tags[t]) < 0) return false;
@@ -328,6 +371,7 @@
   function renderActive() {
     var pills = [];
     var add = function (label, key, val) { pills.push('<button class="pill" data-drop="' + key + '" data-val="' + esc(val || '') + '">' + esc(label) + icon('x') + '</button>'); };
+    if (state.who) add(state.who, 'who');
     if (state.from || state.to) add(state.from && state.to ? (state.from === state.to ? state.from : state.from + '–' + state.to) : state.from ? state.from + ' or later' : 'Up to ' + state.to, 'years');
     if (state.min != null) add(S.METRICS[CONFIG.min.key].label + ' ' + CONFIG.min.fmt(state.min) + (CONFIG.min.key === 'mc' ? '' : '+'), 'min');
     if (state.len) add({ short: 'Under 90 min', mid: '90 to 120 min', long: 'Over 2 hours' }[state.len], 'len');
@@ -601,8 +645,8 @@
   function metaBits(r) {
     var b = [];
     if (kind === 'books') { b.push(esc(r.author)); if (r.year) b.push(r.year < 0 ? -r.year + ' BC' : r.year); }
-    else if (kind === 'shows') { b.push(years(r)); if (r.seasons) b.push(r.seasons + (r.seasons === 1 ? ' season' : ' seasons')); if (r.runtime) b.push(runtime(r.runtime) + ' episodes'); if (r.by) b.push('By ' + esc(r.by)); }
-    else if (kind === 'movies') { b.push(r.year); if (r.runtime) b.push(runtime(r.runtime)); if (r.by) b.push('Directed by ' + esc(r.by)); }
+    else if (kind === 'shows') { b.push(years(r)); if (r.seasons) b.push(r.seasons + (r.seasons === 1 ? ' season' : ' seasons')); if (r.runtime) b.push(runtime(r.runtime) + ' episodes'); if (r.by) b.push('By ' + names(r.by).map(personLink).join(', ')); }
+    else if (kind === 'movies') { b.push(r.year); if (r.runtime) b.push(runtime(r.runtime)); if (r.by) b.push('Directed by ' + names(r.by).map(personLink).join(', ')); }
     else { b.push(r.year); if (r.steamId) b.push('On Steam'); }
     return b.filter(Boolean).map(function (x) { return '<span>' + x + '</span>'; }).join('');
   }
@@ -636,6 +680,7 @@
           '<div class="scores">' + scoresHTML(r) + '</div>' +
           awardsHTML(r) +
           '<p class="summary" id="summary">' + (r.blurb ? esc(r.blurb) : '') + '</p>' +
+          (CAST ? '<p class="d-cast" id="dCast">' + (r._cast ? '' : '&nbsp;') + '</p>' : '') +
           '<div class="d-actions">' +
             '<button class="btn sm" id="saveBtn" aria-pressed="' + saved + '">' + icon('heart', 'sm') + (saved ? 'Saved' : 'Save') + '</button>' +
             doneButton(S.Done.has(kind, r.id)) +
@@ -654,6 +699,7 @@
     detailDlg.querySelector('.sheet').scrollTop = 0;
     if (push !== false) history.replaceState(null, '', location.pathname + location.search + '#' + encodeURIComponent(r.id));
     summary(r);
+    if (CAST) loadCast().then(function () { castLine(r); }, function () { var el = $('#dCast'); if (el && current === r) el.remove(); });
     if (r.epg) episodes(r);
   }
 
@@ -951,9 +997,11 @@
   }
 
   /* -------------------------------------------------------------- events */
-  var qT;
+  var qT, castAsked = false;
   qEl.addEventListener('input', function () {
     qEl.parentNode.classList.toggle('has-value', Boolean(qEl.value));
+    // A search can be for a name in the cast: fetch the cast with the first keystroke.
+    if (CAST && !castAsked) { castAsked = true; loadCast().then(function () { if (state.q) apply(true); }, function () { castAsked = false; }); }
     clearTimeout(qT);
     qT = setTimeout(function () { state.q = qEl.value.trim(); apply(); }, 140);
   });
@@ -972,6 +1020,19 @@
       document.querySelectorAll('[data-fav="' + CSS.escape(fid) + '"]').forEach(function (f) { f.classList.toggle('on', on); });
       S.toast(on ? 'Saved' : 'Removed from saved');
       if (state.saved) apply(true);
+      return;
+    }
+    // A name (cast, director, creator): everything this shelf has with that person, nothing else filtered.
+    var who = t.closest('[data-who]');
+    if (who) {
+      e.preventDefault();
+      var person = who.getAttribute('data-who'), sortWas = state.sort;
+      state = defaults();
+      state.sort = sortWas;
+      state.who = person;
+      qEl.value = ''; qEl.parentNode.classList.remove('has-value');
+      if (detailDlg.open) detailDlg.close();
+      loadCast().catch(function () {}).then(function () { apply(); });
       return;
     }
     var chip = t.closest('[data-chip]');

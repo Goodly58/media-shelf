@@ -12,8 +12,8 @@
    that fails is logged and skipped; it never blocks the others. */
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadCache, saveCache, readData, writeData, writeMeta, writeBackups, writeEpisodes, compact, log, traffic, CACHE, EXCLUDED } from './lib.mjs';
-import { loadImdb, loadEpisodeGrid } from './imdb.mjs';
+import { loadCache, saveCache, readData, writeData, writeMeta, writeBackups, writeEpisodes, writeCast, compact, log, traffic, CACHE, EXCLUDED } from './lib.mjs';
+import { loadImdb, loadEpisodeGrid, loadCast } from './imdb.mjs';
 import { resolveWikidata, resolveSteam } from './wikidata.mjs';
 import { crawlAll, gameScore, refreshMcUsers } from './metacritic.mjs';
 import { resolveImages, searchArticle } from './wikipedia.mjs';
@@ -24,7 +24,7 @@ import { refreshReviews, refreshTags, popularApps, appDetails, refreshAssets } f
 import { refreshBooks, refreshEditionCovers } from './books.mjs';
 import { resolveTvmaze } from './tvmaze.mjs';
 import { crawlGenreLists } from './goodreads-lists.mjs';
-import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, episodeGrids, slugify, articleMatches } from './merge.mjs';
+import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, episodeGrids, castLists, slugify, articleMatches } from './merge.mjs';
 import { storeCovers, pruneCovers } from './covers.mjs';
 import { refreshGameTrailers, attachGameTrailers } from './gametrailers.mjs';
 import { refreshAwards, attachAwards } from './awards.mjs';
@@ -78,6 +78,10 @@ const selected = () => loadCache('imdb-selected', []).filter((t) => !EXCLUDED[t.
 // Every episode's IMDb rating, for the grid in a series' details (from the datasets the imdb step fetched).
 await step('episodes', async () => {
   saveCache('imdb-episodes', await loadEpisodeGrid(new Set(selected().filter((t) => t.kind === 'shows').map((t) => t.id))));
+});
+// The billed cast of every film and series, for its details and for finding a person's other titles.
+await step('cast', async () => {
+  saveCache('imdb-cast', await loadCast(new Set(selected().map((t) => t.id))));
 });
 
 await step('wikidata', async () => { await resolveWikidata(selected()); });
@@ -268,6 +272,7 @@ for (const [k, rows] of Object.entries(out)) {
   // Covers no book uses any more go once the books are written.
   if (k === 'books') pruneCovers(rows);
   if (k === 'shows') writeEpisodes(grids);
+  if (k === 'movies' || k === 'shows') writeCast(k, castLists(k, rows));
 }
 health(refused);
 

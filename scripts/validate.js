@@ -97,6 +97,16 @@ for (const kind of Object.keys(MIN)) {
   ok.push(`data/${kind}.json: ${rows.length} rows, ids unique, scores in range`);
 }
 
+/* The billed cast of films and series: a list of names per title the shelf lists. */
+for (const kind of ['movies', 'shows']) {
+  let cast, ids;
+  try { cast = JSON.parse(read(`data/${kind}-cast.json`)); } catch (e) { if (e.code !== 'ENOENT') fail.push(`data/${kind}-cast.json: ${e.message}`); continue; }
+  try { ids = new Set(JSON.parse(read(`data/${kind}.json`)).map((r) => r.id)); } catch { continue; }
+  const bad = Object.entries(cast).filter(([id, l]) => !ids.has(id) || !Array.isArray(l) || !l.length || l.length > 5 || !l.every((n) => typeof n === 'string' && n.trim())).length;
+  if (bad) fail.push(`data/${kind}-cast.json: ${bad} entries that are not a listed title's cast`);
+  else ok.push(`data/${kind}-cast.json: cast for ${Object.keys(cast).length} titles`);
+}
+
 /* Titles kept off the site (scripts/refresh/excluded.json) stay off it. */
 {
   const excluded = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts', 'refresh', 'excluded.json'), 'utf8'));

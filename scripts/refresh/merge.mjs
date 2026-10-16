@@ -251,6 +251,24 @@ export function episodeGrids(shows) {
   return out;
 }
 
+/* ---------------------------------------------------------------- cast */
+
+/**
+ * The billed cast of each listed film or series, from the cast step's cache, or as last written
+ * (data/{kind}-cast.json) when this run has none.
+ */
+export function castLists(kind, rows) {
+  const fresh = loadCache('imdb-cast', null);
+  let prev = {};
+  if (!fresh) { try { prev = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', `${kind}-cast.json`), 'utf8')); } catch {} }
+  const out = {};
+  for (const r of rows) {
+    const c = (fresh || prev)[r.id];
+    if (c && c.length) out[r.id] = c;
+  }
+  return out;
+}
+
 /* --------------------------------------------------------------- games */
 
 const RULES = [

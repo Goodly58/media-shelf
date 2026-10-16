@@ -54,6 +54,9 @@ for (const k of BACKUPS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}-trai
 // Each series' episodes and their ratings, a file per series, read when its details open.
 const EPISODES = path.join(DATA_DIR, 'shows-episodes.json');
 if (fs.existsSync(EPISODES)) h.update(fs.readFileSync(EPISODES));
+// Each film's and series' billed cast, read when a title's details open or a name is searched.
+const CASTS = ['movies', 'shows'].filter((k) => fs.existsSync(path.join(DATA_DIR, `${k}-cast.json`)));
+for (const k of CASTS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}-cast.json`)));
 let META = {};
 try { META = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'meta.json'), 'utf8')); } catch {}
 h.update(JSON.stringify(META));
@@ -196,8 +199,8 @@ const SORTS = {
 const CAT = {
   games: { title: 'Games · Shelf', desc: 'PC games ranked by Metacritic and Steam reviews. Filter by genre, tag and year.', ph: 'Search games or tags' },
   books: { title: 'Books · Shelf', desc: 'Books ranked by Goodreads rating. Filter by genre and year.', ph: 'Search books or authors' },
-  movies: { title: 'Films · Shelf', desc: 'Films ranked by IMDb, Metacritic and Rotten Tomatoes. Filter by genre, subgenre, year and length.', ph: 'Search films or directors' },
-  shows: { title: 'Series · Shelf', desc: 'TV series ranked by IMDb, Metacritic and Rotten Tomatoes. Filter by genre, subgenre and year.', ph: 'Search series or creators' },
+  movies: { title: 'Films · Shelf', desc: 'Films ranked by IMDb, Metacritic and Rotten Tomatoes. Filter by genre, subgenre, year and length.', ph: 'Search films, cast or directors' },
+  shows: { title: 'Series · Shelf', desc: 'TV series ranked by IMDb, Metacritic and Rotten Tomatoes. Filter by genre, subgenre and year.', ph: 'Search series, cast or creators' },
 };
 
 /* ------------------------------------------------------------ search.json */
@@ -372,6 +375,7 @@ page({
 for (const f of fs.readdirSync(path.join(ROOT, 'assets'))) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(OUT, 'assets', f));
 for (const k of KINDS) fs.copyFileSync(path.join(DATA_DIR, `${k}.json`), path.join(OUT, `data/${k}.json`));
 for (const k of BACKUPS) fs.copyFileSync(path.join(DATA_DIR, `${k}-trailers.json`), path.join(OUT, `data/${k}-trailers.json`));
+for (const k of CASTS) fs.copyFileSync(path.join(DATA_DIR, `${k}-cast.json`), path.join(OUT, `data/${k}-cast.json`));
 if (fs.existsSync(EPISODES)) {
   fs.mkdirSync(path.join(OUT, 'data/episodes'), { recursive: true });
   for (const [id, g] of Object.entries(JSON.parse(fs.readFileSync(EPISODES, 'utf8')))) fs.writeFileSync(path.join(OUT, 'data/episodes', id + '.json'), JSON.stringify(g));

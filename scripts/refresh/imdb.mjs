@@ -103,6 +103,51 @@ export async function loadEpisodeGrid(ids) {
   return out;
 }
 
+/* Who counts as cast: actors, actresses, and people as themselves (documentaries, talk shows). */
+const CAST = new Set(['actor', 'actress', 'self']);
+
+/**
+ * The billed cast of each of the given titles, in IMDb's billing order, up to `max` names:
+ * { titleId: [name, ...] }. A name two people in the cast share carries the year one of them
+ * was born ("Chris Evans (1981)"), so a click on it finds one person's titles, not both.
+ */
+export async function loadCast(ids, { max = 5 } = {}) {
+  const cast = new Map(), people = new Map();
+  for await (const [id, , nconst, category] of rows(await ensure('title.principals'))) {
+    if (!ids.has(id) || !CAST.has(category)) continue;
+    const list = cast.get(id) || [];
+    if (list.length >= max || list.includes(nconst)) continue;
+    list.push(nconst);
+    cast.set(id, list);
+    people.set(nconst, null);
+  }
+  for await (const [nconst, name, born] of rows(await ensure('name.basics'))) {
+    if (people.has(nconst) && name) people.set(nconst, [name, val(born)]);
+  }
+  const out = castNames(cast, people);
+  log(`cast: ${Object.keys(out).length} titles, ${people.size} people`);
+  return out;
+}
+
+/**
+ * Titles' cast (Map titleId -> [IMDb person id]) as names, given people (Map id -> [name, born]).
+ * A name that two of the people share gets a birth year (or, without one, IMDb's id).
+ */
+export function castNames(cast, people) {
+  const shared = new Map();
+  for (const p of people.values()) if (p) shared.set(p[0], (shared.get(p[0]) || 0) + 1);
+  const label = (n) => {
+    const p = people.get(n);
+    return !p ? null : shared.get(p[0]) > 1 ? `${p[0]} (${p[1] || n})` : p[0];
+  };
+  const out = {};
+  for (const [id, list] of cast) {
+    const names = list.map(label).filter(Boolean);
+    if (names.length) out[id] = names;
+  }
+  return out;
+}
+
 /**
  * Every film and series with at least `minVotes` IMDb votes, plus any title
  * in `keep` (ids already in the catalogue), with directors resolved to names.

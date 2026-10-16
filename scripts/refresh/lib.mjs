@@ -106,17 +106,17 @@ export function writeMeta(meta) {
   fs.writeFileSync(path.join(ROOT, 'data', 'meta.json'), JSON.stringify(meta, null, 2) + '\n');
 }
 
-/** data/{kind}-trailers.json: { id: [backup, ...] }, a title to a line. */
-export function writeBackups(kind, map) {
+/* data/{name}.json as { id: value }, a title to a line in id order: small diffs, still valid JSON. */
+function writeLines(name, map) {
   const ids = Object.keys(map).sort();
-  fs.writeFileSync(path.join(ROOT, 'data', `${kind}-trailers.json`), '{\n' + ids.map((id) => JSON.stringify(id) + ':' + JSON.stringify(map[id])).join(',\n') + '\n}\n');
+  fs.writeFileSync(path.join(ROOT, 'data', `${name}.json`), '{\n' + ids.map((id) => JSON.stringify(id) + ':' + JSON.stringify(map[id])).join(',\n') + '\n}\n');
 }
-
-/** data/shows-episodes.json: { seriesId: episode grid }, a series to a line (merge.mjs episodeGrids). */
-export function writeEpisodes(map) {
-  const ids = Object.keys(map).sort();
-  fs.writeFileSync(path.join(ROOT, 'data', 'shows-episodes.json'), '{\n' + ids.map((id) => JSON.stringify(id) + ':' + JSON.stringify(map[id])).join(',\n') + '\n}\n');
-}
+/** data/{kind}-trailers.json: { id: [backup, ...] }. */
+export function writeBackups(kind, map) { writeLines(`${kind}-trailers`, map); }
+/** data/shows-episodes.json: { seriesId: episode grid } (merge.mjs episodeGrids). */
+export function writeEpisodes(map) { writeLines('shows-episodes', map); }
+/** data/{kind}-cast.json: { id: [name, ...] }, the billed cast (merge.mjs castLists). */
+export function writeCast(kind, map) { writeLines(`${kind}-cast`, map); }
 
 /* One object per line: small diffs, still valid JSON. */
 /** A row as written: empty fields left out. */

@@ -2,7 +2,7 @@
    network: these are the pure functions that decide what gets written. */
 import fs from 'node:fs';
 import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid, setCoverFiles, isVideoExtra } from '../scripts/refresh/merge.mjs';
-import { episodeTitle } from '../scripts/refresh/imdb.mjs';
+import { episodeTitle, castNames } from '../scripts/refresh/imdb.mjs';
 import { tmdbPoster } from '../scripts/refresh/posters.mjs';
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
@@ -185,6 +185,14 @@ ok('a season numbered on from the last keeps its numbers', on && on.e && on.e[0]
 ok('one rated episode makes no grid', shapeGrid(grid([[1, 2, 3]], [[8, null, null]])) === null);
 ok('a season of hundreds (a daily show) makes no grid', shapeGrid(grid([Array.from({ length: 61 }, (_, i) => i + 1)], [new Array(61).fill(7)])) === null);
 ok('no episodes, no grid', shapeGrid(null) === null && shapeGrid({ n: [], e: [], r: [], t: [] }) === null);
+
+console.log('cast');
+const people = new Map([['nm1', ['Chris Evans', '1981']], ['nm2', ['Chris Evans', '1966']], ['nm3', ['Scarlett Johansson', '1984']], ['nm4', ['Sam Smith', null]], ['nm5', ['Sam Smith', null]], ['nm6', null]]);
+const named = castNames(new Map([['tt1', ['nm1', 'nm3']], ['tt2', ['nm2']], ['tt3', ['nm4', 'nm5', 'nm6']], ['tt4', ['nm6']]]), people);
+ok('names in billing order', JSON.stringify(named.tt1) === '["Chris Evans (1981)","Scarlett Johansson"]', named.tt1);
+ok('two people with one name are told apart by birth year', named.tt2[0] === 'Chris Evans (1966)');
+ok('without a birth year, by IMDb id', JSON.stringify(named.tt3) === '["Sam Smith (nm4)","Sam Smith (nm5)"]', named.tt3);
+ok('someone IMDb has no name for is left out, and a title with nobody has no cast', !('tt4' in named));
 
 console.log('TMDB posters');
 const found = { movie_results: [{ id: 1, poster_path: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg' }], tv_results: [{ id: 2, poster_path: '/ggFHVNu6YYI5L9pCfOacjizRGt.jpg' }] };

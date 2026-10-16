@@ -695,3 +695,8 @@ dialog.reels .toast { background: #f3f5fa; color: #05060a; }
 .cover .done .i { width: 14px; height: 14px; stroke-width: 3; }
 #doneBtn[aria-pressed="true"] .i { color: #22c55e; stroke-width: 3; }
 :root[data-theme="light"] #doneBtn[aria-pressed="true"] .i { color: #15803d; }
+
+/* Cast, and directors and creators: each name leads to everything else on the shelf with them. */
+.d-cast { color: var(--mut); font-size: 14px; line-height: 1.7; }
+.d-cast a, .d-meta a { color: var(--text); font-weight: 600; text-decoration: none; }
+.d-cast a:hover, .d-meta a:hover, .d-cast a:focus-visible, .d-meta a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
