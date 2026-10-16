@@ -155,7 +155,9 @@ export async function mergeScreen(prevMovies, prevShows) {
     return row;
   };
 
-  const movies = films.map((t) => build(t, mcFilm));
+  const built = films.map((t) => [t, build(t, mcFilm)]);
+  const movies = built.filter(([t, row]) => !isVideoExtra(t.type, row)).map(([, row]) => row);
+  if (built.length > movies.length) log(`films: ${built.length - movies.length} home-video extras left out`);
   const shows = series.map((t) => build(t, mcShow));
   tidy(movies);
   tidy(shows);
@@ -167,6 +169,14 @@ export async function mergeScreen(prevMovies, prevShows) {
   // TMDB's terms ask for its logo wherever its data is used; the build shows it when this is above zero.
   const tmdb = [...movies, ...shows].filter((r) => trailer.fromTmdb(r.id, r.yt)).length;
   return { movies, shows, tmdb, backups };
+}
+
+/* IMDb files a film's home-video extras (deleted scenes, featurettes, making-ofs, bloopers),
+   audiobooks and the odd joke entry as "video" titles, and their votes can pass the bar. A video
+   with no Wikipedia article and no critics' reviews is one of those rather than a film; a real
+   direct-to-video film (DC's animated ones, say) has an article. */
+export function isVideoExtra(type, row) {
+  return type === 'video' && !row.wiki && row.mc == null && row.rt == null && row.rtN == null;
 }
 
 /* Genres held by only a handful of titles are noise in a filter list, and a

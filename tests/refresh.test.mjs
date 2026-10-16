@@ -1,7 +1,7 @@
 /* Unit tests for the refresh pipeline's matching and cleaning rules. No
    network: these are the pure functions that decide what gets written. */
 import fs from 'node:fs';
-import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid, setCoverFiles } from '../scripts/refresh/merge.mjs';
+import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid, setCoverFiles, isVideoExtra } from '../scripts/refresh/merge.mjs';
 import { episodeTitle } from '../scripts/refresh/imdb.mjs';
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
@@ -184,6 +184,12 @@ ok('a season numbered on from the last keeps its numbers', on && on.e && on.e[0]
 ok('one rated episode makes no grid', shapeGrid(grid([[1, 2, 3]], [[8, null, null]])) === null);
 ok('a season of hundreds (a daily show) makes no grid', shapeGrid(grid([Array.from({ length: 61 }, (_, i) => i + 1)], [new Array(61).fill(7)])) === null);
 ok('no episodes, no grid', shapeGrid(null) === null && shapeGrid({ n: [], e: [], r: [], t: [] }) === null);
+
+console.log('home-video extras');
+ok('a video with no article and no critics is an extra, not a film', isVideoExtra('video', { title: 'Star Wars: Episode V - Deleted Scenes' }));
+ok('a video with a Wikipedia article is a film (DC animated)', !isVideoExtra('video', { wiki: 'Batman: The Dark Knight Returns (film)' }));
+ok('a video critics reviewed is a film', !isVideoExtra('video', { mc: 70 }) && !isVideoExtra('video', { rt: 88 }) && !isVideoExtra('video', { rtN: 3 }));
+ok('a film is a film, article or not', !isVideoExtra('movie', {}) && !isVideoExtra('tvMovie', {}));
 
 console.log('kept covers');
 // Real files in covers/: a book's new cover that is not kept yet must not cost it the old one.
