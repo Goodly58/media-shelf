@@ -227,10 +227,11 @@ const games = mergeGames(before.games, { newApps: loadCache('steam-popular', [])
 writeBackups('games', attachGameTrailers(games));
 const books = mergeBooks(before.books);
 for (const [k, rows] of [['movies', movies], ['shows', shows], ['games', games], ['books', books]]) attachAwards(k, rows);
-// Books new this run (or with a new cover) get their cover kept now, not a week later.
-if (want('covers')) {
-  const lacking = books.filter((b) => !b.cv && (b.cover || b.gr));
-  if (lacking.length) { await storeCovers(lacking, { budgetMin: 10 }); setCoverFiles(books); }
+// Covers the books lack (a new book's, a new edition's, or ones a run fetched but could not push)
+// are fetched now, on every run, not a week later; storeCovers asks only for those missing.
+if (!MERGE_ONLY) {
+  try { await storeCovers(books, { budgetMin: 10 }); } catch (e) { log(`covers: ${e.message}`); }
+  setCoverFiles(books);
 }
 
 function diff(kind, a, b) {

@@ -1,6 +1,7 @@
 /* Unit tests for the refresh pipeline's matching and cleaning rules. No
    network: these are the pure functions that decide what gets written. */
-import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid } from '../scripts/refresh/merge.mjs';
+import fs from 'node:fs';
+import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid, setCoverFiles } from '../scripts/refresh/merge.mjs';
 import { episodeTitle } from '../scripts/refresh/imdb.mjs';
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
@@ -183,6 +184,20 @@ ok('a season numbered on from the last keeps its numbers', on && on.e && on.e[0]
 ok('one rated episode makes no grid', shapeGrid(grid([[1, 2, 3]], [[8, null, null]])) === null);
 ok('a season of hundreds (a daily show) makes no grid', shapeGrid(grid([Array.from({ length: 61 }, (_, i) => i + 1)], [new Array(61).fill(7)])) === null);
 ok('no episodes, no grid', shapeGrid(null) === null && shapeGrid({ n: [], e: [], r: [], t: [] }) === null);
+
+console.log('kept covers');
+// Real files in covers/: a book's new cover that is not kept yet must not cost it the old one.
+const kept = fs.readdirSync(new URL('../covers/', import.meta.url)).map((f) => f.replace(/\.webp$/, '')).filter((s) => /^\d+$/.test(s));
+const [had, other] = kept;
+const books = [
+  { id: 'new-edition', cover: 999999999, cv: had },        // a new edition's cover, not fetched yet
+  { id: 'arrived', cover: Number(other), cv: had },         // the new one is kept now
+  { id: 'never', cover: 999999998 },                        // nothing kept, ever
+];
+setCoverFiles(books);
+ok('a new cover not kept yet leaves the old one standing in', books[0].cv === had, books[0].cv);
+ok('once the new cover is kept, it takes over', books[1].cv === other, books[1].cv);
+ok('no cover kept, none named', books[2].cv === null, books[2].cv);
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

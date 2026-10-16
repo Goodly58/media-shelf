@@ -429,7 +429,8 @@ export function setCoverFiles(rows) {
   const grCovers = loadCache('gr-covers'), colours = loadCache('cover-colours');
   for (const r of rows) {
     const stem = coverStem(r, grCovers);
-    r.cv = stem && fs.existsSync(coverFile(stem)) ? stem : null;
+    // A cover not kept yet (a new edition's, say) leaves the one the book had standing in.
+    r.cv = stem && fs.existsSync(coverFile(stem)) ? stem : r.cv && fs.existsSync(coverFile(r.cv)) ? r.cv : null;
     // Its average colour, shown while the picture loads.
     r.cc = (r.cv && colours[r.cv]) || null;
   }
@@ -451,6 +452,7 @@ export function mergeBooks(prevBooks) {
       rating: b.rating ?? null, ratings: b.ratings ?? null, isbn: b.isbn || null, gr: b.gr || null,
       cover: ol[k]?.cover || b.cover || null,
       blurb: b.blurb || null,
+      cv: b.cv || null,   // replaced by setCoverFiles, which keeps it while a new cover is on its way
     };
     if (g && g.rating) { row.rating = g.rating; row.ratings = g.count; row.gr = g.id || row.gr; row.isbn = g.isbn || row.isbn; fresh++; }
     else if (row.rating != null) kept++;
