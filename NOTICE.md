@@ -21,7 +21,7 @@ file is `assets/hls.min.js`, its licence `assets/hls-LICENSE.txt`.
 ## Loaded at runtime
 
 **Cover art and posters**: loaded on demand from Wikimedia (Wikipedia), TVmaze
-and Steam. Book covers are small copies of Open Library's (Goodreads' where Open
+and Steam, and from TMDB for films and series that have none there. Book covers are small copies of Open Library's (Goodreads' where Open
 Library has none), kept in `covers/` so they load quickly. All of it remains
 copyright of the respective publishers and studios. TVmaze data is
 used under CC BY-SA 4.0 (<https://www.tvmaze.com>).

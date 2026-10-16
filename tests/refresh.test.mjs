@@ -3,6 +3,7 @@
 import fs from 'node:fs';
 import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid, setCoverFiles, isVideoExtra } from '../scripts/refresh/merge.mjs';
 import { episodeTitle } from '../scripts/refresh/imdb.mjs';
+import { tmdbPoster } from '../scripts/refresh/posters.mjs';
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
@@ -184,6 +185,13 @@ ok('a season numbered on from the last keeps its numbers', on && on.e && on.e[0]
 ok('one rated episode makes no grid', shapeGrid(grid([[1, 2, 3]], [[8, null, null]])) === null);
 ok('a season of hundreds (a daily show) makes no grid', shapeGrid(grid([Array.from({ length: 61 }, (_, i) => i + 1)], [new Array(61).fill(7)])) === null);
 ok('no episodes, no grid', shapeGrid(null) === null && shapeGrid({ n: [], e: [], r: [], t: [] }) === null);
+
+console.log('TMDB posters');
+const found = { movie_results: [{ id: 1, poster_path: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg' }], tv_results: [{ id: 2, poster_path: '/ggFHVNu6YYI5L9pCfOacjizRGt.jpg' }] };
+ok('a film gets the film result\'s poster', tmdbPoster(found, 'movies') === '/qJ2tW6WMUDux911r6m7haRef0WH.jpg');
+ok('a series gets the series result\'s poster', tmdbPoster(found, 'shows') === '/ggFHVNu6YYI5L9pCfOacjizRGt.jpg');
+ok('no result, or no poster, is no poster', tmdbPoster({ movie_results: [] }, 'movies') === null && tmdbPoster({ movie_results: [{ poster_path: null }] }, 'movies') === null && tmdbPoster(null, 'movies') === null);
+ok('a path that is not an image name is refused', tmdbPoster({ movie_results: [{ poster_path: '/../x.jpg' }] }, 'movies') === null && tmdbPoster({ movie_results: [{ poster_path: 'https://evil.example/x.jpg' }] }, 'movies') === null);
 
 console.log('home-video extras');
 ok('a video with no article and no critics is an extra, not a film', isVideoExtra('video', { title: 'Star Wars: Episode V - Deleted Scenes' }));

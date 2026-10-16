@@ -12,6 +12,7 @@ import { loadEpisodes } from './imdb.mjs';
 import { SCREEN_TAGS, GAME_TAGS, screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags } from './taxonomy.mjs';
 import { loadTrailers } from './trailers.mjs';
 import { coverStem, coverFile } from './covers.mjs';
+import { TMDB_IMG } from './posters.mjs';
 
 const SCREEN_TAG_NAMES = new Set(SCREEN_TAGS.map((x) => x[0]));
 const GAME_NAMES = new Set(GAME_TAGS.map((x) => x[1]));
@@ -60,6 +61,7 @@ export async function mergeScreen(prevMovies, prevShows) {
   const wd = loadCache('wikidata');
   const images = loadCache('images');
   const tvmaze = loadCache('tvmaze');
+  const posters = loadCache('tmdb-posters');
   const rt = { ...loadCache('rt-b'), ...loadCache('rt') };
   const rtFound = loadCache('rt-guess');
   const mcMovies = loadCache('mc-movies', []);
@@ -110,8 +112,10 @@ export async function mergeScreen(prevMovies, prevShows) {
       imdb: t.imdb, votes: t.votes,
       mc: null, mcN: null, mcu: null, mcuN: null, mcSlug: null,
       rt: null, rtN: null, rta: null, rtaN: null, rtPath: null,
-      // Series: TVmaze's portrait art first; Wikipedia's lead image is often a logo.
-      img: (t.kind === 'shows' && (tvmaze[t.id]?.img || (/tvmaze/.test(o.img || '') ? o.img : null))) || wikiImg || o.img || null,
+      // Series: TVmaze's portrait art first; Wikipedia's lead image is often a logo. TMDB's poster
+      // stands in where neither has one (scripts/refresh/posters.mjs).
+      img: (t.kind === 'shows' && (tvmaze[t.id]?.img || (/tvmaze/.test(o.img || '') ? o.img : null))) || wikiImg || o.img ||
+        (posters[t.id]?.p ? TMDB_IMG + posters[t.id].p : null),
       wiki: w.wiki || o.wiki || null,
       blurb: o.blurb || null,
       // A YouTube trailer for the reels view (its backups go to their own file, read only by the

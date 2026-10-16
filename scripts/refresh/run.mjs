@@ -28,6 +28,7 @@ import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, episodeGrids, slugi
 import { storeCovers, pruneCovers } from './covers.mjs';
 import { refreshGameTrailers, attachGameTrailers } from './gametrailers.mjs';
 import { refreshAwards, attachAwards } from './awards.mjs';
+import { refreshPosters, TMDB_IMG } from './posters.mjs';
 import { snapshot, assess, save as saveHealth } from './health.mjs';
 
 const arg = (name, dflt) => {
@@ -115,6 +116,15 @@ await Promise.all([
     saveCache('steam-details', details);
   }),
 ]);
+
+// TMDB's poster for each film and series that Wikipedia (and, for series, TVmaze) has no picture for.
+await step('posters', async () => {
+  const images = loadCache('images'), tvmaze = loadCache('tvmaze');
+  const had = new Map([...before.movies, ...before.shows].map((r) => [r.id, r.img || '']));
+  const own = (t) => images[t.id]?.img || (t.kind === 'shows' && tvmaze[t.id]?.img) || (had.get(t.id) && !had.get(t.id).startsWith(TMDB_IMG));
+  const lacking = selected().filter((t) => !own(t)).map((t) => ({ id: t.id, kind: t.kind, votes: t.votes }));
+  await refreshPosters(lacking, { budgetMin: Math.min(20, BUDGET) });
+});
 
 /* ------------------------------------------------- slow rolling refreshes */
 const steamIds = () => {
@@ -219,7 +229,8 @@ await step('gameart', async () => {
 /* ------------------------------------------------------------------ merge */
 if (arg('no-merge', false)) { health(); log('fetch only: data/ left as it was'); process.exit(0); }
 const { movies, shows, tmdb, backups } = await mergeScreen(before.movies, before.shows);
-writeMeta({ tmdbTrailers: tmdb });
+// TMDB's terms want its logo wherever its data shows: the build credits it for trailers and posters.
+writeMeta({ tmdbTrailers: tmdb, tmdbPosters: [...movies, ...shows].filter((r) => (r.img || '').startsWith(TMDB_IMG)).length });
 for (const k of ['movies', 'shows']) writeBackups(k, backups[k]);
 // Each series' episodes (its rows get the grid's size), written below with the series.
 const grids = episodeGrids(shows);
