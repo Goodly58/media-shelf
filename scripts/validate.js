@@ -97,6 +97,14 @@ for (const kind of Object.keys(MIN)) {
   ok.push(`data/${kind}.json: ${rows.length} rows, ids unique, scores in range`);
 }
 
+/* Titles kept off the site (scripts/refresh/excluded.json) stay off it. */
+{
+  const excluded = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts', 'refresh', 'excluded.json'), 'utf8'));
+  const back = ['movies', 'shows'].flatMap((k) => { try { return JSON.parse(read(`data/${k}.json`)); } catch { return []; } }).filter((r) => excluded[r.id]);
+  if (back.length) fail.push(`excluded titles are listed: ${back.map((r) => r.title).join(', ')}`);
+  else ok.push(`${Object.keys(excluded).length} excluded titles stay off the site`);
+}
+
 for (const kind of ['movies', 'shows', 'games']) {
   let b;
   try { b = JSON.parse(read(`data/${kind}-trailers.json`)); } catch (e) { if (e.code !== 'ENOENT') fail.push(`data/${kind}-trailers.json: ${e.message}`); continue; }

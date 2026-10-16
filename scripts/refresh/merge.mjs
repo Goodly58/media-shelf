@@ -6,7 +6,7 @@
    site traces back to IMDb, Metacritic, Rotten Tomatoes, Steam or Goodreads. */
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadCache, readData, writeData, fold, decode, log, ROOT } from './lib.mjs';
+import { loadCache, readData, writeData, fold, decode, log, ROOT, EXCLUDED } from './lib.mjs';
 import { matchScreen } from './metacritic.mjs';
 import { loadEpisodes } from './imdb.mjs';
 import { SCREEN_TAGS, GAME_TAGS, screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags } from './taxonomy.mjs';
@@ -55,7 +55,8 @@ function readBackups(kind) {
 }
 
 export async function mergeScreen(prevMovies, prevShows) {
-  const selected = loadCache('imdb-selected', []);
+  // A cache from before a title was excluded must not bring it back.
+  const selected = loadCache('imdb-selected', []).filter((t) => !EXCLUDED[t.id]);
   const wd = loadCache('wikidata');
   const images = loadCache('images');
   const tvmaze = loadCache('tvmaze');

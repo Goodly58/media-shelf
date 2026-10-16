@@ -93,6 +93,9 @@ export function saveCache(name, value) {
 /* --------------------------------------------------------------- catalogue */
 
 export const KINDS = ['games', 'books', 'movies', 'shows'];
+/* IMDb ids kept off the site whatever their votes (joke entries fans voted up), with why:
+   scripts/refresh/excluded.json. */
+export const EXCLUDED = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts', 'refresh', 'excluded.json'), 'utf8'));
 const dataFile = (kind) => path.join(ROOT, 'data', kind + '.json');
 
 export function readData(kind) {

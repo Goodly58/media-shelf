@@ -12,7 +12,7 @@
    that fails is logged and skipped; it never blocks the others. */
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadCache, saveCache, readData, writeData, writeMeta, writeBackups, writeEpisodes, compact, log, traffic, CACHE } from './lib.mjs';
+import { loadCache, saveCache, readData, writeData, writeMeta, writeBackups, writeEpisodes, compact, log, traffic, CACHE, EXCLUDED } from './lib.mjs';
 import { loadImdb, loadEpisodeGrid } from './imdb.mjs';
 import { resolveWikidata, resolveSteam } from './wikidata.mjs';
 import { crawlAll, gameScore, refreshMcUsers } from './metacritic.mjs';
@@ -71,9 +71,9 @@ for (const k of ['games', 'books', 'movies', 'shows']) before[k] = readData(k);
 await step('imdb', async () => {
   const keep = new Set([...before.movies, ...before.shows].map((r) => r.id));
   const { titles } = await loadImdb({ minVotes: MIN_VOTES, keep });
-  saveCache('imdb-selected', [...titles.values()]);
+  saveCache('imdb-selected', [...titles.values()].filter((t) => !EXCLUDED[t.id]));
 });
-const selected = () => loadCache('imdb-selected', []);
+const selected = () => loadCache('imdb-selected', []).filter((t) => !EXCLUDED[t.id]);
 // Every episode's IMDb rating, for the grid in a series' details (from the datasets the imdb step fetched).
 await step('episodes', async () => {
   saveCache('imdb-episodes', await loadEpisodeGrid(new Set(selected().filter((t) => t.kind === 'shows').map((t) => t.id))));
