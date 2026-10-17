@@ -85,10 +85,8 @@ Every number is read from its source by `scripts/refresh/`. Nothing is typed in,
 
 ```mermaid
 flowchart LR
-  S["IMDb · Metacritic · Rotten Tomatoes<br>Steam · Goodreads · Wikidata · TMDB"] -->|every Monday| R["Refresh<br>GitHub Actions"]
-  R --> D["data/"]
-  D --> B["Build and checks"]
-  B --> P["GitHub Pages"]
+  S["IMDb · Metacritic · Rotten Tomatoes<br>Steam · Goodreads · TMDB"] -->|every Monday| R["Refresh, build and checks<br>GitHub Actions"]
+  R --> P["The site<br>GitHub Pages"]
   R -. a source breaks .-> E["Email to the owner"]
 ```
 
