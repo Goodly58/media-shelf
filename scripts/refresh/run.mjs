@@ -12,7 +12,7 @@
    that fails is logged and skipped; it never blocks the others. */
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadCache, saveCache, readData, writeData, writeMeta, writeBackups, writeEpisodes, writeCast, compact, log, traffic, CACHE, EXCLUDED } from './lib.mjs';
+import { loadCache, saveCache, readData, writeData, writeMeta, writeBackups, writeEpisodes, writeCredits, compact, log, traffic, CACHE, EXCLUDED } from './lib.mjs';
 import { loadImdb, loadEpisodeGrid, loadCast } from './imdb.mjs';
 import { resolveWikidata, resolveSteam } from './wikidata.mjs';
 import { crawlAll, gameScore, refreshMcUsers } from './metacritic.mjs';
@@ -24,7 +24,8 @@ import { refreshReviews, refreshTags, popularApps, appDetails, refreshAssets } f
 import { refreshBooks, refreshEditionCovers } from './books.mjs';
 import { resolveTvmaze } from './tvmaze.mjs';
 import { crawlGenreLists } from './goodreads-lists.mjs';
-import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, episodeGrids, castLists, slugify, articleMatches } from './merge.mjs';
+import { mergeScreen, mergeGames, mergeBooks, setCoverFiles, episodeGrids, creditLists, slugify, articleMatches } from './merge.mjs';
+import { refreshCastPhotos } from './castphotos.mjs';
 import { storeCovers, pruneCovers } from './covers.mjs';
 import { refreshGameTrailers, attachGameTrailers } from './gametrailers.mjs';
 import { refreshAwards, attachAwards } from './awards.mjs';
@@ -171,6 +172,10 @@ await Promise.all([
     ].filter((j) => j.slug);
     await refreshMcUsers(jobs, { budgetMin: BUDGET });
   }),
+  step('castphotos', async () => {
+    // TMDB's photos of each title's billed cast, most-voted titles first, within the budget.
+    await refreshCastPhotos(selected().map((t) => ({ id: t.id, kind: t.kind, votes: t.votes })), { budgetMin: BUDGET });
+  }),
   step('gametrailers', async () => {
     // Steam's own trailers for the games in the trailer feed, the most reviewed games first.
     const ids = before.games.filter((g) => g.steamId).sort((a, b) => (b.steamN || 0) - (a.steamN || 0)).map((g) => g.steamId);
@@ -233,8 +238,11 @@ await step('gameart', async () => {
 /* ------------------------------------------------------------------ merge */
 if (arg('no-merge', false)) { health(); log('fetch only: data/ left as it was'); process.exit(0); }
 const { movies, shows, tmdb, backups } = await mergeScreen(before.movies, before.shows);
-// TMDB's terms want its logo wherever its data shows: the build credits it for trailers and posters.
-writeMeta({ tmdbTrailers: tmdb, tmdbPosters: [...movies, ...shows].filter((r) => (r.img || '').startsWith(TMDB_IMG)).length });
+// Each title's billed cast, with photos where TMDB has them (written below with the titles).
+const credits = { movies: creditLists('movies', movies), shows: creditLists('shows', shows) };
+const withFaces = Object.values(credits).reduce((n, m) => n + Object.values(m).filter((l) => l.some((c) => c[2])).length, 0);
+// TMDB's terms want its logo wherever its data shows: the build credits it for trailers, posters and cast photos.
+writeMeta({ tmdbTrailers: tmdb, tmdbPosters: [...movies, ...shows].filter((r) => (r.img || '').startsWith(TMDB_IMG)).length, tmdbFaces: withFaces });
 for (const k of ['movies', 'shows']) writeBackups(k, backups[k]);
 // Each series' episodes (its rows get the grid's size), written below with the series.
 const grids = episodeGrids(shows);
@@ -272,7 +280,7 @@ for (const [k, rows] of Object.entries(out)) {
   // Covers no book uses any more go once the books are written.
   if (k === 'books') pruneCovers(rows);
   if (k === 'shows') writeEpisodes(grids);
-  if (k === 'movies' || k === 'shows') writeCast(k, castLists(k, rows));
+  if (k === 'movies' || k === 'shows') writeCredits(k, credits[k]);
 }
 health(refused);
 

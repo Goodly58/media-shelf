@@ -115,8 +115,8 @@ function writeLines(name, map) {
 export function writeBackups(kind, map) { writeLines(`${kind}-trailers`, map); }
 /** data/shows-episodes.json: { seriesId: episode grid } (merge.mjs episodeGrids). */
 export function writeEpisodes(map) { writeLines('shows-episodes', map); }
-/** data/{kind}-cast.json: { id: [name, ...] }, the billed cast (merge.mjs castLists). */
-export function writeCast(kind, map) { writeLines(`${kind}-cast`, map); }
+/** data/{kind}-credits.json: { id: [[name, character, photo], ...] }, the billed cast (merge.mjs creditLists). */
+export function writeCredits(kind, map) { writeLines(`${kind}-credits`, map); }
 
 /* One object per line: small diffs, still valid JSON. */
 /** A row as written: empty fields left out. */

@@ -1,8 +1,9 @@
 /* Unit tests for the refresh pipeline's matching and cleaning rules. No
    network: these are the pure functions that decide what gets written. */
 import fs from 'node:fs';
-import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid, setCoverFiles, isVideoExtra } from '../scripts/refresh/merge.mjs';
-import { episodeTitle, castNames } from '../scripts/refresh/imdb.mjs';
+import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid, setCoverFiles, isVideoExtra, mergeCredits } from '../scripts/refresh/merge.mjs';
+import { episodeTitle, castNames, character } from '../scripts/refresh/imdb.mjs';
+import { tmdbFaces, facesFor } from '../scripts/refresh/castphotos.mjs';
 import { tmdbPoster } from '../scripts/refresh/posters.mjs';
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
@@ -188,11 +189,34 @@ ok('no episodes, no grid', shapeGrid(null) === null && shapeGrid({ n: [], e: [],
 
 console.log('cast');
 const people = new Map([['nm1', ['Chris Evans', '1981']], ['nm2', ['Chris Evans', '1966']], ['nm3', ['Scarlett Johansson', '1984']], ['nm4', ['Sam Smith', null]], ['nm5', ['Sam Smith', null]], ['nm6', null]]);
-const named = castNames(new Map([['tt1', ['nm1', 'nm3']], ['tt2', ['nm2']], ['tt3', ['nm4', 'nm5', 'nm6']], ['tt4', ['nm6']]]), people);
-ok('names in billing order', JSON.stringify(named.tt1) === '["Chris Evans (1981)","Scarlett Johansson"]', named.tt1);
-ok('two people with one name are told apart by birth year', named.tt2[0] === 'Chris Evans (1966)');
-ok('without a birth year, by IMDb id', JSON.stringify(named.tt3) === '["Sam Smith (nm4)","Sam Smith (nm5)"]', named.tt3);
+const named = castNames(new Map([['tt1', [['nm1', 'Steve Rogers'], ['nm3', null]]], ['tt2', [['nm2', 'Himself']]], ['tt3', [['nm4', 'A'], ['nm5', 'B'], ['nm6', 'C']]], ['tt4', [['nm6', 'D']]]]), people);
+ok('names in billing order, with their parts', JSON.stringify(named.tt1) === '[["Chris Evans (1981)","Steve Rogers"],["Scarlett Johansson",null]]', JSON.stringify(named.tt1));
+ok('two people with one name are told apart by birth year', named.tt2[0][0] === 'Chris Evans (1966)');
+ok('without a birth year, by IMDb id', named.tt3.map((c) => c[0]).join() === 'Sam Smith (nm4),Sam Smith (nm5)', JSON.stringify(named.tt3));
 ok('someone IMDb has no name for is left out, and a title with nobody has no cast', !('tt4' in named));
+ok('a part from IMDb\'s characters cell', character('["Andy Dufresne"]') === 'Andy Dufresne' && character('\\N') === null && character('[]') === null && character('not json') === null);
+
+console.log('cast photos');
+const credits = { cast: [
+  { name: 'Morgan Freeman', order: 1, profile_path: '/jPsLqiYGSofU4s6BjrxnefMfabb.jpg' },
+  { name: 'Tim Robbins', order: 0, profile_path: '/djLVFETFTvPyVUdrd7aLVykobof.jpg' },
+  { name: 'Bob Gunton', order: 2, profile_path: null },
+  { name: 'Someone', order: 3, profile_path: 'https://evil.example/x.jpg' },
+] };
+const faces = tmdbFaces(credits);
+ok('TMDB\'s cast in its billing order, only those with a photo', JSON.stringify(faces.map((f) => f[0])) === '["Tim Robbins","Morgan Freeman"]', JSON.stringify(faces));
+ok('no credits, no faces', tmdbFaces(null).length === 0 && tmdbFaces({}).length === 0);
+const matched = facesFor([['Tim Robbins', 'Andy Dufresne'], ['Morgan Freeman', "Ellis Boyd 'Red' Redding"], ['Bob Gunton', 'Warden Norton']], faces);
+ok('each billed name gets its photo by name', matched[0][2] === '/djLVFETFTvPyVUdrd7aLVykobof.jpg' && matched[1][2] === '/jPsLqiYGSofU4s6BjrxnefMfabb.jpg' && matched[2][2] === null, JSON.stringify(matched));
+ok('a name told apart by its year still finds the photo', facesFor([['Morgan Freeman (1937)', 'Red']], faces)[0][2] === '/jPsLqiYGSofU4s6BjrxnefMfabb.jpg');
+ok('accents and case do not stop a match', facesFor([['TIM ROBBINS', null]], faces)[0][2] === '/djLVFETFTvPyVUdrd7aLVykobof.jpg');
+const rowsC = [{ id: 'tt1' }, { id: 'tt2' }, { id: 'tt3' }];
+const prevC = { tt2: [['Ann Lee', 'Nurse', '/old.jpg']] };
+const mergedC = mergeCredits(rowsC, { tt1: [['Tim Robbins', 'Andy Dufresne']], tt2: [['Ann Lee', 'Nurse']] }, { tt1: { c: faces } }, prevC);
+ok('a title TMDB was asked about gets its photos', mergedC.tt1[0][2] === '/djLVFETFTvPyVUdrd7aLVykobof.jpg');
+ok('one TMDB was not asked about this run keeps the photos it had', mergedC.tt2[0][2] === '/old.jpg');
+ok('a title with no cast has none', !('tt3' in mergedC));
+ok('without IMDb\'s cast this run, the last cast stands', mergeCredits(rowsC, null, {}, prevC).tt2[0][0] === 'Ann Lee');
 
 console.log('TMDB posters');
 const found = { movie_results: [{ id: 1, poster_path: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg' }], tv_results: [{ id: 2, poster_path: '/ggFHVNu6YYI5L9pCfOacjizRGt.jpg' }] };

@@ -97,14 +97,24 @@ for (const kind of Object.keys(MIN)) {
   ok.push(`data/${kind}.json: ${rows.length} rows, ids unique, scores in range`);
 }
 
-/* The billed cast of films and series: a list of names per title the shelf lists. */
+/* The billed cast of films and series: the names of each listed title's cast (for following a
+   person), and each title's own file of [name, character, photo] for its details. */
 for (const kind of ['movies', 'shows']) {
   let cast, ids;
   try { cast = JSON.parse(read(`data/${kind}-cast.json`)); } catch (e) { if (e.code !== 'ENOENT') fail.push(`data/${kind}-cast.json: ${e.message}`); continue; }
   try { ids = new Set(JSON.parse(read(`data/${kind}.json`)).map((r) => r.id)); } catch { continue; }
-  const bad = Object.entries(cast).filter(([id, l]) => !ids.has(id) || !Array.isArray(l) || !l.length || l.length > 5 || !l.every((n) => typeof n === 'string' && n.trim())).length;
-  if (bad) fail.push(`data/${kind}-cast.json: ${bad} entries that are not a listed title's cast`);
-  else ok.push(`data/${kind}-cast.json: cast for ${Object.keys(cast).length} titles`);
+  let bad = 0, faces = 0;
+  for (const [id, l] of Object.entries(cast)) {
+    let c = null;
+    try { c = JSON.parse(read(`data/credits/${id}.json`)); } catch {}
+    const okNames = ids.has(id) && Array.isArray(l) && l.length && l.length <= 10 && l.every((n) => typeof n === 'string' && n.trim());
+    const okFile = Array.isArray(c) && c.length === l.length && c.every((p, i) => p[0] === l[i] && (p[1] === null || typeof p[1] === 'string') &&
+      (p[2] === null || /^\/[\w-]+\.(jpg|jpeg|png|webp)$/.test(p[2])));
+    if (!okNames || !okFile) bad++;
+    else if (c.some((p) => p[2])) faces++;
+  }
+  if (bad) fail.push(`data/${kind}-cast.json: ${bad} titles whose cast is not a listed title's, or whose own file does not match`);
+  else ok.push(`data/${kind}-cast.json: cast for ${Object.keys(cast).length} titles, ${faces} with photos`);
 }
 
 /* Titles kept off the site (scripts/refresh/excluded.json) stay off it. */

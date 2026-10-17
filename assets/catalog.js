@@ -196,13 +196,36 @@
     });
   }
   function personLink(n) { return '<a href="?who=' + encodeURIComponent(n) + '" data-who="' + esc(n) + '">' + esc(n) + '</a>'; }
-  /* "With Tim Robbins, Morgan Freeman and Bob Gunton" under a title's summary, once the cast is in. */
-  function castLine(r) {
-    var el = $('#dCast');
-    if (!el || current !== r) return;
-    if (!r._cast) { el.remove(); return; }
-    var l = r._cast.map(personLink);
-    el.innerHTML = 'With ' + (l.length > 1 ? l.slice(0, -1).join(', ') + ' and ' + l[l.length - 1] : l[0]);
+
+  /* The details' cast: a face (TMDB's photo, or the initials), the name and the part, each the way
+     to everything else on the shelf with that person. Each title's cast is a small file of its own
+     (data/credits/), read when its details open: [[name, character, photo], ...]. */
+  var creditFiles = {};
+  var FACE = 'https://image.tmdb.org/t/p/w185';
+  // "Chris Evans (1981)": the year tells two people apart in the filter; the row shows the name.
+  function bareName(n) { return n.replace(/\s\((\d{4}|nm\d+)\)$/, ''); }
+  function initials(n) { var w = bareName(n).split(/\s+/).filter(Boolean); return (w[0] ? w[0][0] : '') + (w.length > 1 ? w[w.length - 1][0] : ''); }
+  function personHTML(c) {
+    return '<a class="person" href="?who=' + encodeURIComponent(c[0]) + '" data-who="' + esc(c[0]) + '" title="' + esc(c[0] + (c[1] ? ' as ' + c[1] : '')) + '">' +
+      '<span class="face" data-i="' + esc(initials(c[0])) + '">' + (c[2]
+        ? '<img src="' + FACE + esc(c[2]) + '" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.parentNode.textContent=this.parentNode.getAttribute(\'data-i\')">'
+        : esc(initials(c[0]))) + '</span>' +
+      '<span class="pn">' + esc(bareName(c[0])) + '</span>' + (c[1] ? '<span class="pc">' + esc(c[1]) + '</span>' : '') + '</a>';
+  }
+  function castRow(r) {
+    var sec = $('#castRow');
+    if (!sec) return;
+    var done = function (list) {
+      var now = $('#castRow');
+      if (current !== r || !now) return;
+      if (!list || !list.length) { now.remove(); return; }
+      now.querySelector('.cast-row').innerHTML = list.map(personHTML).join('');
+    };
+    if (creditFiles[r.id]) return done(creditFiles[r.id]);
+    sec.querySelector('.cast-row').innerHTML = new Array(7).join('<span class="person sk"><span class="face"></span><span class="pn">&nbsp;</span></span>');
+    fetch('data/credits/' + encodeURIComponent(r.id) + '.json?v=' + BUILD)
+      .then(function (x) { return x.ok ? x.json() : null; })
+      .then(function (l) { if (l) creditFiles[r.id] = l; done(l); }, function () { done(null); });
   }
 
   /* -------------------------------------------------------------- filtering */
@@ -680,7 +703,6 @@
           '<div class="scores">' + scoresHTML(r) + '</div>' +
           awardsHTML(r) +
           '<p class="summary" id="summary">' + (r.blurb ? esc(r.blurb) : '') + '</p>' +
-          (CAST ? '<p class="d-cast" id="dCast">' + (r._cast ? '' : '&nbsp;') + '</p>' : '') +
           '<div class="d-actions">' +
             '<button class="btn sm" id="saveBtn" aria-pressed="' + saved + '">' + icon('heart', 'sm') + (saved ? 'Saved' : 'Save') + '</button>' +
             doneButton(S.Done.has(kind, r.id)) +
@@ -691,6 +713,7 @@
           '</div>' +
         '</div>' +
       '</div>' +
+      (CAST ? '<section class="cast" id="castRow" aria-labelledby="castTitle"><h3 id="castTitle">Cast</h3><div class="cast-row"></div></section>' : '') +
       (kind === 'shows' && r.epg ? '<section class="eps" id="eps" aria-labelledby="epsTitle"><h3 id="epsTitle">Episodes<small>IMDb ratings</small></h3>' +
         '<div class="eps-scroll"></div><p class="eps-best"></p><div class="ep-tip" role="tooltip" hidden></div></section>' : '') +
       '<div class="similar"><h3>More like this</h3><div class="mini-row" id="simRow"></div></div>';
@@ -699,7 +722,7 @@
     detailDlg.querySelector('.sheet').scrollTop = 0;
     if (push !== false) history.replaceState(null, '', location.pathname + location.search + '#' + encodeURIComponent(r.id));
     summary(r);
-    if (CAST) loadCast().then(function () { castLine(r); }, function () { var el = $('#dCast'); if (el && current === r) el.remove(); });
+    if (CAST) castRow(r);
     if (r.epg) episodes(r);
   }
 

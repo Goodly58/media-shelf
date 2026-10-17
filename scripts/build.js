@@ -54,9 +54,10 @@ for (const k of BACKUPS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}-trai
 // Each series' episodes and their ratings, a file per series, read when its details open.
 const EPISODES = path.join(DATA_DIR, 'shows-episodes.json');
 if (fs.existsSync(EPISODES)) h.update(fs.readFileSync(EPISODES));
-// Each film's and series' billed cast, read when a title's details open or a name is searched.
-const CASTS = ['movies', 'shows'].filter((k) => fs.existsSync(path.join(DATA_DIR, `${k}-cast.json`)));
-for (const k of CASTS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}-cast.json`)));
+// Each film's and series' billed cast, with photos: a file per title for its details, and the
+// names of all of them, read when a name is followed or searched for.
+const CREDITS = ['movies', 'shows'].filter((k) => fs.existsSync(path.join(DATA_DIR, `${k}-credits.json`)));
+for (const k of CREDITS) h.update(fs.readFileSync(path.join(DATA_DIR, `${k}-credits.json`)));
 let META = {};
 try { META = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'meta.json'), 'utf8')); } catch {}
 h.update(JSON.stringify(META));
@@ -170,6 +171,13 @@ function homePage() {
   return fill(r('src/home.html'), { wall, shelves, rows });
 }
 
+/* What TMDB supplies, for the credit its terms ask for: "Cast photos, some posters and trailers". */
+const TMDB_USES = (() => {
+  const l = [META.tmdbFaces > 0 && 'cast photos', META.tmdbPosters > 0 && 'some posters', META.tmdbTrailers > 0 && 'trailers'].filter(Boolean);
+  const s = l.length > 1 ? l.slice(0, -1).join(', ') + ' and ' + l[l.length - 1] : l[0] || '';
+  return s && s[0].toUpperCase() + s.slice(1);
+})();
+
 /* ------------------------------------------------------------- templates */
 function fill(tpl, vars) {
   return tpl
@@ -181,7 +189,7 @@ function page({ file, title, description, body, kind, current, scripts = '', hea
     build: BUILD, title: esc(title), description: esc(description), updated: UPDATED,
     site: SITE, url: SITE + (file === 'index.html' ? '' : file),
     // TMDB's terms: its logo, less prominent than ours, wherever its data is used.
-    credits: META.tmdbTrailers > 0 || META.tmdbPosters > 0 ? `<a class="tmdb" href="https://www.themoviedb.org/" target="_blank" rel="noopener" title="This website uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB."><span>${META.tmdbPosters > 0 ? 'Some posters and trailers via' : 'Trailers via'}</span><img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" width="92" height="12" loading="lazy" referrerpolicy="no-referrer"></a>` : '',
+    credits: TMDB_USES ? `<a class="tmdb" href="https://www.themoviedb.org/" target="_blank" rel="noopener" title="This website uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB."><span>${TMDB_USES} via</span><img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" width="92" height="12" loading="lazy" referrerpolicy="no-referrer"></a>` : '',
     body, scripts, head,
     bodyAttrs: kind ? ` data-kind="${kind}" style="--k:var(--k-${kind})"` : '',
   });
@@ -375,7 +383,15 @@ page({
 for (const f of fs.readdirSync(path.join(ROOT, 'assets'))) fs.copyFileSync(path.join(ROOT, 'assets', f), path.join(OUT, 'assets', f));
 for (const k of KINDS) fs.copyFileSync(path.join(DATA_DIR, `${k}.json`), path.join(OUT, `data/${k}.json`));
 for (const k of BACKUPS) fs.copyFileSync(path.join(DATA_DIR, `${k}-trailers.json`), path.join(OUT, `data/${k}-trailers.json`));
-for (const k of CASTS) fs.copyFileSync(path.join(DATA_DIR, `${k}-cast.json`), path.join(OUT, `data/${k}-cast.json`));
+if (CREDITS.length) fs.mkdirSync(path.join(OUT, 'data/credits'), { recursive: true });
+for (const k of CREDITS) {
+  const credits = JSON.parse(fs.readFileSync(path.join(DATA_DIR, `${k}-credits.json`), 'utf8')), names = {};
+  for (const [id, list] of Object.entries(credits)) {
+    fs.writeFileSync(path.join(OUT, 'data/credits', id + '.json'), JSON.stringify(list));
+    names[id] = list.map((c) => c[0]);
+  }
+  fs.writeFileSync(path.join(OUT, `data/${k}-cast.json`), JSON.stringify(names));
+}
 if (fs.existsSync(EPISODES)) {
   fs.mkdirSync(path.join(OUT, 'data/episodes'), { recursive: true });
   for (const [id, g] of Object.entries(JSON.parse(fs.readFileSync(EPISODES, 'utf8')))) fs.writeFileSync(path.join(OUT, 'data/episodes', id + '.json'), JSON.stringify(g));

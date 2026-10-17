@@ -13,6 +13,7 @@ import { SCREEN_TAGS, GAME_TAGS, screenTags, screenBroad, screenCountries, gameT
 import { loadTrailers } from './trailers.mjs';
 import { coverStem, coverFile } from './covers.mjs';
 import { TMDB_IMG } from './posters.mjs';
+import { facesFor } from './castphotos.mjs';
 
 const SCREEN_TAG_NAMES = new Set(SCREEN_TAGS.map((x) => x[0]));
 const GAME_NAMES = new Set(GAME_TAGS.map((x) => x[1]));
@@ -254,17 +255,25 @@ export function episodeGrids(shows) {
 /* ---------------------------------------------------------------- cast */
 
 /**
- * The billed cast of each listed film or series, from the cast step's cache, or as last written
- * (data/{kind}-cast.json) when this run has none.
+ * Each listed film's or series' billed cast as the site keeps it, data/{kind}-credits.json:
+ * { id: [[name, character, photo], ...] }. Who and as whom come from IMDb (the cast step's cache,
+ * or as last written when this run has none); the photos from TMDB's credits (castphotos.mjs),
+ * or the last ones where TMDB was not asked again.
  */
-export function castLists(kind, rows) {
-  const fresh = loadCache('imdb-cast', null);
+export function creditLists(kind, rows) {
+  const imdb = loadCache('imdb-cast', null), faces = loadCache('tmdb-cast');
   let prev = {};
-  if (!fresh) { try { prev = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', `${kind}-cast.json`), 'utf8')); } catch {} }
+  try { prev = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', `${kind}-credits.json`), 'utf8')); } catch {}
+  return mergeCredits(rows, imdb, faces, prev);
+}
+export function mergeCredits(rows, imdb, faces, prev) {
   const out = {};
   for (const r of rows) {
-    const c = (fresh || prev)[r.id];
-    if (c && c.length) out[r.id] = c;
+    const cast = (imdb ? imdb[r.id] : prev[r.id]) || [];
+    if (!cast.length) continue;
+    const had = new Map((prev[r.id] || []).map((c) => [c[0], c[2]]));
+    out[r.id] = facesFor(cast.map((c) => (typeof c === 'string' ? [c, null] : c)), faces[r.id]?.c)
+      .map(([name, role, photo]) => [name, role, photo || (faces[r.id] ? null : had.get(name) || null)]);
   }
   return out;
 }

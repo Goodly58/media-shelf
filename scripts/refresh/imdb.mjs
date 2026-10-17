@@ -107,17 +107,18 @@ export async function loadEpisodeGrid(ids) {
 const CAST = new Set(['actor', 'actress', 'self']);
 
 /**
- * The billed cast of each of the given titles, in IMDb's billing order, up to `max` names:
- * { titleId: [name, ...] }. A name two people in the cast share carries the year one of them
- * was born ("Chris Evans (1981)"), so a click on it finds one person's titles, not both.
+ * The billed cast of each of the given titles, in IMDb's billing order, up to `max`:
+ * { titleId: [[name, character], ...] }, the character null where IMDb names none. A name two
+ * people in the cast share carries the year one of them was born ("Chris Evans (1981)"), so a
+ * click on it finds one person's titles, not both.
  */
-export async function loadCast(ids, { max = 5 } = {}) {
+export async function loadCast(ids, { max = 10 } = {}) {
   const cast = new Map(), people = new Map();
-  for await (const [id, , nconst, category] of rows(await ensure('title.principals'))) {
+  for await (const [id, , nconst, category, , roles] of rows(await ensure('title.principals'))) {
     if (!ids.has(id) || !CAST.has(category)) continue;
     const list = cast.get(id) || [];
-    if (list.length >= max || list.includes(nconst)) continue;
-    list.push(nconst);
+    if (list.length >= max || list.some((c) => c[0] === nconst)) continue;
+    list.push([nconst, character(roles)]);
     cast.set(id, list);
     people.set(nconst, null);
   }
@@ -129,9 +130,19 @@ export async function loadCast(ids, { max = 5 } = {}) {
   return out;
 }
 
+/** IMDb's characters cell (["Andy Dufresne"], or \N): the first role it names, or null. */
+export function character(cell) {
+  if (!val(cell)) return null;
+  try {
+    const l = JSON.parse(cell);
+    return Array.isArray(l) && typeof l[0] === 'string' && l[0].trim() ? l[0].trim() : null;
+  } catch { return null; }
+}
+
 /**
- * Titles' cast (Map titleId -> [IMDb person id]) as names, given people (Map id -> [name, born]).
- * A name that two of the people share gets a birth year (or, without one, IMDb's id).
+ * Titles' cast (Map titleId -> [[IMDb person id, character]]) by name, given people (Map id ->
+ * [name, born]): { titleId: [[name, character], ...] }. A name that two of the people share gets
+ * a birth year (or, without one, IMDb's id).
  */
 export function castNames(cast, people) {
   const shared = new Map();
@@ -142,8 +153,8 @@ export function castNames(cast, people) {
   };
   const out = {};
   for (const [id, list] of cast) {
-    const names = list.map(label).filter(Boolean);
-    if (names.length) out[id] = names;
+    const named = list.map(([n, role]) => [label(n), role]).filter((c) => c[0]);
+    if (named.length) out[id] = named;
   }
   return out;
 }
