@@ -22,7 +22,8 @@
     movies: {
       sorts: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metacritic critics'], ['mcu', 'Metacritic users'], ['rt', 'Rotten Tomatoes critics'], ['rta', 'Rotten Tomatoes audience'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
       badge: { mc: 'mc', mcu: 'mcu', rt: 'rt', rta: 'rta' }, defBadge: 'imdb', avg: 'imdb',
-      min: { key: 'imdb', max: 10, step: 0.5, fmt: function (v) { return '★ ' + v.toFixed(1); } },
+      min: { key: 'imdb', label: 'IMDb rating', max: 10, step: 0.5, fmt: function (v) { return '★ ' + v.toFixed(1); } },
+      votes: { label: 'IMDb votes', unit: 'votes', steps: [25e3, 5e4, 1e5, 25e4, 5e5, 1e6] },
       fields: function (r) { return [r.title, r.alt, r.by].join(' '); },
       meta: function (r) { return S.awardLine(r) || (r.genres || [])[0]; },
       top: function (r, c) { return weighted(r.imdb, r.votes || 0, 25000, c); },
@@ -31,7 +32,8 @@
     shows: {
       sorts: [['top', 'Top rated'], ['popular', 'Most popular'], ['mc', 'Metacritic critics'], ['mcu', 'Metacritic users'], ['rt', 'Rotten Tomatoes critics'], ['rta', 'Rotten Tomatoes audience'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
       badge: { mc: 'mc', mcu: 'mcu', rt: 'rt', rta: 'rta' }, defBadge: 'imdb', avg: 'imdb',
-      min: { key: 'imdb', max: 10, step: 0.5, fmt: function (v) { return '★ ' + v.toFixed(1); } },
+      min: { key: 'imdb', label: 'IMDb rating', max: 10, step: 0.5, fmt: function (v) { return '★ ' + v.toFixed(1); } },
+      votes: { label: 'IMDb votes', unit: 'votes', steps: [25e3, 5e4, 1e5, 25e4, 5e5] },
       fields: function (r) { return [r.title, r.alt, r.by].join(' '); },
       meta: function (r) { return S.awardLine(r) || (r.genres || [])[0]; },
       top: function (r, c) { return weighted(r.imdb, r.votes || 0, 15000, c); },
@@ -40,7 +42,8 @@
     games: {
       sorts: [['top', 'Top rated'], ['steam', 'Steam rating'], ['mcu', 'Metacritic users'], ['popular', 'Most reviewed'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z']],
       badge: { steam: 'steam', popular: 'steam', mcu: 'mcu' }, defBadge: 'mc', avg: 'mc',
-      min: { key: 'mc', max: 100, step: 5, fmt: function (v) { return v + '+'; } },
+      min: { key: 'mc', label: 'Metascore', max: 100, step: 5, fmt: function (v) { return v + '+'; } },
+      votes: { label: 'Steam reviews', unit: 'reviews', steps: [1e3, 1e4, 5e4, 1e5, 25e4, 5e5] },
       fields: function (r) { return [r.title].concat(r.tags || []).join(' '); },
       meta: function (r) { return S.awardLine(r) || (r.genres || [])[0]; },
       top: function (r) { return r.mc != null ? r.mc + 100 : r.steam != null ? r.steam * 0.9 : -1; },
@@ -49,7 +52,8 @@
     books: {
       sorts: [['top', 'Top rated'], ['popular', 'Most rated'], ['new', 'Newest'], ['old', 'Oldest'], ['az', 'A–Z'], ['author', 'Author']],
       badge: {}, defBadge: 'rating', avg: 'rating',
-      min: { key: 'rating', max: 5, step: 0.25, fmt: function (v) { return '★ ' + v.toFixed(2); } },
+      min: { key: 'rating', label: 'Goodreads rating', max: 5, step: 0.25, fmt: function (v) { return '★ ' + v.toFixed(2); } },
+      votes: { label: 'Goodreads ratings', unit: 'ratings', steps: [1e4, 25e3, 5e4, 1e5, 25e4, 5e5, 1e6] },
       fields: function (r) { return [r.title, r.author].join(' '); },
       meta: function (r) { return r.author; },
       top: function (r, c) { return weighted(r.rating, r.ratings || 0, 4000, c); },
@@ -69,7 +73,7 @@
 
   // done: '' any, 'no' only those not finished yet, 'yes' only finished ones (watched, read, played).
   // who: a person (cast or director), only their titles.
-  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, len: '', status: '', saved: false, hidden: false, done: '', who: '', award: [], view: '', rsort: 'shuffle' }; }
+  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, votes: null, len: '', status: '', saved: false, hidden: false, done: '', who: '', award: [], view: '', rsort: 'shuffle' }; }
 
   /* ------------------------------------------------------------- url state */
   function readURL() {
@@ -85,6 +89,7 @@
     var y = (p.get('years') || '').split('-');
     s.from = Number(y[0]) || null; s.to = Number(y[1]) || null;
     s.min = p.get('min') != null ? Number(p.get('min')) : null;
+    s.votes = Number(p.get('votes')) > 0 ? Number(p.get('votes')) : null;
     s.len = p.get('length') || '';
     s.status = p.get('status') || '';
     s.saved = p.get('saved') === '1';
@@ -106,6 +111,7 @@
     if (state.award.length) p.set('award', state.award.join(','));
     if (state.from || state.to) p.set('years', (state.from || '') + '-' + (state.to || ''));
     if (state.min != null) p.set('min', state.min);
+    if (state.votes) p.set('votes', state.votes);
     if (state.len) p.set('length', state.len);
     if (state.status) p.set('status', state.status);
     if (state.saved) p.set('saved', '1');
@@ -238,6 +244,8 @@
     if (s.from && (!r.year || r.year < s.from)) return false;
     if (s.to && (!r.year || r.year > s.to)) return false;
     if (s.min != null) { var v = S.METRICS[CONFIG.min.key].v(r); if (v == null || v < s.min) return false; }
+    // How many people it is rated by: IMDb votes, Goodreads ratings, Steam reviews.
+    if (s.votes && !(CONFIG.popular(r) >= s.votes)) return false;
     if (s.len) {
       var m = r.runtime;
       if (!m) return false;
@@ -389,7 +397,7 @@
   window.addEventListener('resize', chipFade);
 
   function filterCount() {
-    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.hidden ? 1 : 0) + (state.done ? 1 : 0) + (state.country.length ? 1 : 0) + (state.award.length ? 1 : 0);
+    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.votes ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.hidden ? 1 : 0) + (state.done ? 1 : 0) + (state.country.length ? 1 : 0) + (state.award.length ? 1 : 0);
   }
   function renderActive() {
     var pills = [];
@@ -397,6 +405,7 @@
     if (state.who) add(state.who, 'who');
     if (state.from || state.to) add(state.from && state.to ? (state.from === state.to ? state.from : state.from + '–' + state.to) : state.from ? state.from + ' or later' : 'Up to ' + state.to, 'years');
     if (state.min != null) add(S.METRICS[CONFIG.min.key].label + ' ' + CONFIG.min.fmt(state.min) + (CONFIG.min.key === 'mc' ? '' : '+'), 'min');
+    if (state.votes) add(S.compact(state.votes) + '+ ' + CONFIG.votes.unit, 'votes');
     if (state.len) add({ short: 'Under 90 min', mid: '90 to 120 min', long: 'Over 2 hours' }[state.len], 'len');
     if (state.status) add({ ongoing: 'Ongoing', ended: 'Ended', mini: 'Miniseries' }[state.status], 'status');
     state.country.forEach(function (c) { add(c, 'country', c); });
@@ -526,12 +535,28 @@
       b.setAttribute('aria-pressed', String(state.country.indexOf(x) >= 0));
       b.lastChild.textContent = (cc[x] || 0).toLocaleString();
     });
+    var vc = voteCounts();
+    filtersDlg.querySelectorAll('[data-votes]').forEach(function (b) {
+      var v = Number(b.getAttribute('data-votes')) || null;
+      b.setAttribute('aria-pressed', String(state.votes === v));
+      if (v) b.lastChild.textContent = (vc[v] || 0).toLocaleString();
+    });
     var ac = awardCounts();
     filtersDlg.querySelectorAll('[data-award]').forEach(function (b) {
       var k = b.getAttribute('data-award');
       b.setAttribute('aria-pressed', String(state.award.indexOf(k) >= 0));
       b.lastChild.textContent = (ac[k] || 0).toLocaleString();
     });
+  }
+  /* Titles at or above each step of votes (ratings, reviews), within everything else picked. */
+  function voteCounts() {
+    var s2 = Object.assign({}, state, { votes: null }), vc = {}, steps = CONFIG.votes.steps;
+    for (var i = 0; i < items.length; i++) {
+      var r = items[i], n = CONFIG.popular(r);
+      if (!n || n < steps[0] || !matches(r, s2)) continue;
+      for (var j = 0; j < steps.length; j++) if (n >= steps[j]) vc[steps[j]] = (vc[steps[j]] || 0) + 1;
+    }
+    return vc;
   }
   /* Award winners per award, within everything else picked. */
   function awardCounts() {
@@ -555,8 +580,14 @@
         return '<button class="chip" data-dec="' + (d[0] || '') + '-' + (d[1] || '') + '" aria-pressed="' + on + '">' + d[2] + '</button>';
       }).join('') + '</div></div>';
     var cur = state.min != null ? state.min : 0;
-    html += '<div class="row-field"><label for="fMin">Minimum ' + S.METRICS[m.key].label + ' <output id="fMinOut">' + (cur ? m.fmt(cur) : 'Any') + '</output></label>' +
+    html += '<div class="row-field"><label for="fMin">Minimum ' + m.label + ' <output id="fMinOut">' + (cur ? m.fmt(cur) : 'Any') + '</output></label>' +
       '<input type="range" id="fMin" min="0" max="' + m.max + '" step="' + m.step + '" value="' + cur + '"></div>';
+    var vc = voteCounts();
+    html += '<div class="row-field"><label>Minimum ' + CONFIG.votes.label + '</label><div class="seg">' +
+      '<button class="chip" type="button" data-votes="" aria-pressed="' + !state.votes + '">Any</button>' +
+      CONFIG.votes.steps.map(function (v) {
+        return '<button class="chip" type="button" data-votes="' + v + '" aria-pressed="' + (state.votes === v) + '">' + S.compact(v) + '+<small>' + (vc[v] || 0).toLocaleString() + '</small></button>';
+      }).join('') + '</div></div>';
     if (kind === 'movies') html += seg('Length', 'len', [['', 'Any'], ['short', 'Under 90 min'], ['mid', '90 to 120 min'], ['long', 'Over 2 hours']]);
     if (kind === 'shows') html += seg('Status', 'status', [['', 'Any'], ['ongoing', 'Ongoing'], ['ended', 'Ended'], ['mini', 'Miniseries']]);
     if (kind === 'movies' || kind === 'shows') {
@@ -1085,6 +1116,13 @@
     if (ex) { expanded[ex.getAttribute('data-expand')] = true; layoutPicker(); return; }
     var ct = t.closest('[data-country]');
     if (ct) { toggleIn(state.country, ct.getAttribute('data-country')); apply(true); return; }
+    var vt = t.closest('[data-votes]');
+    if (vt) {
+      var vv = Number(vt.getAttribute('data-votes')) || null;
+      state.votes = state.votes === vv ? null : vv;
+      apply(true);
+      return;
+    }
     var aw = t.closest('[data-award]');
     if (aw) { toggleIn(state.award, aw.getAttribute('data-award')); apply(true); return; }
     if (t.closest('[data-more-countries]')) { allCountries = true; openFilters(); return; }
@@ -1122,6 +1160,7 @@
       var d = drop.getAttribute('data-drop');
       if (d === 'years') { state.from = null; state.to = null; }
       else if (d === 'min') state.min = null;
+      else if (d === 'votes') state.votes = null;
       else if (d === 'q') { state.q = ''; qEl.value = ''; qEl.parentNode.classList.remove('has-value'); }
       else if (d === 'saved') state.saved = false;
       else if (d === 'hidden') state.hidden = false;
