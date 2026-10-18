@@ -83,12 +83,10 @@ Every number is read from its source by `scripts/refresh/`. Nothing is typed in,
 
 ## How it stays fresh
 
-```mermaid
-flowchart LR
-  S["IMDb · Metacritic · Rotten Tomatoes<br>Steam · Goodreads · TMDB"] -->|every Monday| R["Refresh, build and checks<br>GitHub Actions"]
-  R --> P["The site<br>GitHub Pages"]
-  R -. a source breaks .-> E["Email to the owner"]
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/readme/refresh-dark.webp">
+  <img src=".github/readme/refresh-light.webp" width="100%" alt="Every Monday the refresh re-reads IMDb, Metacritic, Rotten Tomatoes, Steam, Goodreads and TMDB, builds and checks the site and publishes it to GitHub Pages. If a source breaks, the owner gets an email and the rest still update.">
+</picture>
 
 Every Monday a GitHub Action re-reads the sources, commits the new data and redeploys; trailers are checked every day. When a source breaks, the rest still update and the run fails on purpose, so GitHub emails the owner.
 
