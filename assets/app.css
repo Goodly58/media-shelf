@@ -104,7 +104,7 @@ h1, h2, h3 { margin: 0; line-height: 1.15; letter-spacing: -.02em; }
 .nav-links a { display: flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 999px; color: var(--mut); font-weight: 550; font-size: 14px; transition: color .15s, background .15s; }
 .nav-links a:hover { color: var(--text); background: var(--card); }
 .nav-links a[aria-current="page"] { color: var(--text); background: var(--card-2); }
-.nav-links a .i { width: 16px; height: 16px; }
+.nav-links a .i { width: 16px; height: 16px; color: var(--k, var(--acc)); }
 .nav-act { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .search-btn {
   display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 12px 0 12px; min-width: 220px;
@@ -404,7 +404,7 @@ dialog.palette { margin: 9vh auto auto; }
 .kinds { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .kinds a { display: flex; align-items: center; gap: 8px; height: 42px; padding: 0 18px; border-radius: 999px; background: color-mix(in srgb, var(--bg-2) 80%, transparent); border: 1px solid var(--line); font-weight: 650; transition: border-color .15s, transform .15s; }
 .kinds a:hover { border-color: var(--k); transform: translateY(-2px); }
-.kinds a .i { width: 17px; height: 17px; }
+.kinds a .i { width: 17px; height: 17px; color: var(--k); }
 
 .shelves { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; padding: 40px 0 8px; }
 @media (max-width: 960px) { .shelves { grid-template-columns: repeat(2, 1fr); } }
