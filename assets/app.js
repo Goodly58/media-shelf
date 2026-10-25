@@ -391,6 +391,21 @@
     }, { passive: true });
   });
 
+  /* ---------------------------------------------------------- home banner */
+  // The bar's shelves, Trailers and search stay out of sight while the banner's own are on screen,
+  // and come in once those have gone up under the bar.
+  // (The build runs this file with no real page, so the page is checked for first.)
+  var home = document.body && document.body.classList && document.body.classList.contains('home');
+  var kinds = home && document.querySelector('.hero .kinds');
+  if (kinds && 'IntersectionObserver' in window) {
+    var bar = document.querySelector('header.nav');
+    new IntersectionObserver(function (es) {
+      document.body.classList.toggle('at-hero', es[0].isIntersecting);
+    }, { rootMargin: '-' + (bar ? bar.offsetHeight : 64) + 'px 0px 0px 0px' }).observe(kinds);
+  } else if (home) {
+    document.body.classList.remove('at-hero');
+  }
+
   /* ------------------------------------------------------ service worker */
   if ('serviceWorker' in navigator && location.protocol === 'https:') {
     window.addEventListener('load', function () {

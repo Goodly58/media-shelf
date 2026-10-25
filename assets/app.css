@@ -718,3 +718,10 @@ dialog.reels .toast { background: #f3f5fa; color: #05060a; }
   .cast-row { grid-auto-columns: 82px; gap: 10px; }
   .person .face { width: 68px; height: 68px; font-size: 19px; }
 }
+
+/* Home: while the banner's search and shelf buttons are in view, the bar leaves out the same ones,
+   and they fade in once the banner has scrolled away (app.js). */
+.nav [data-dup] { transition: opacity .25s ease, visibility .25s, color .15s, background .15s; }
+body.at-hero .nav [data-dup] { opacity: 0; visibility: hidden; }
+@media (max-width: 900px) { body.at-hero .nav-links [data-dup] { display: none; } }
+

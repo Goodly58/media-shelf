@@ -191,7 +191,8 @@ function page({ file, title, description, body, kind, current, scripts = '', hea
     // TMDB's terms: its logo, less prominent than ours, wherever its data is used.
     credits: TMDB_USES ? `<a class="tmdb" href="https://www.themoviedb.org/" target="_blank" rel="noopener" title="This website uses TMDB and the TMDB APIs but is not endorsed, certified, or otherwise approved by TMDB."><span>${TMDB_USES} via</span><img src="https://www.themoviedb.org/assets/2/v4/logos/v2/blue_short-8e7b30f73a4020692ccca9c88bafe5dcb6f8a62a4c6bc55cd9ba82bb2cd95f6c.svg" alt="TMDB" width="92" height="12" loading="lazy" referrerpolicy="no-referrer"></a>` : '',
     body, scripts, head,
-    bodyAttrs: kind ? ` data-kind="${kind}" style="--k:var(--k-${kind})"` : '',
+    // Home starts with the banner in view, so the bar leaves out what the banner already offers (app.js).
+    bodyAttrs: kind ? ` data-kind="${kind}" style="--k:var(--k-${kind})"` : current === 'home' ? ' class="home at-hero"' : '',
   });
   html = html.replace(/\{\{cur:(\w+)\}\}/g, (m, k) => (k === current ? ' aria-current="page"' : ''));
   if (/\{\{\w+(:\w+)*\}\}/.test(html)) throw new Error(`${file}: unfilled placeholder ${html.match(/\{\{\w+(:\w+)*\}\}/)[0]}`);
