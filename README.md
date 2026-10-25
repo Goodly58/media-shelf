@@ -90,19 +90,6 @@ Every number is read from its source by `scripts/refresh/`. Nothing is typed in,
 
 Every Monday a GitHub Action re-reads the sources, commits the new data and redeploys; trailers are checked every day. When a source breaks, the rest still update and the run fails on purpose, so GitHub emails the owner.
 
-## Run it locally
-
-Node 22.12 or newer.
-
-```bash
-npm run build      # generate the site into _site/
-npm run serve      # preview it at http://localhost:8080
-npm run validate   # the checks the deploy runs
-npm test           # unit tests
-```
-
-Pushing to `main` deploys: GitHub Actions builds the site, validates it and publishes `_site/`. If validation fails, nothing is published and the live site stays as it was.
-
 <details>
 <summary><b>How each source is read</b></summary>
 
@@ -123,29 +110,11 @@ Pushing to `main` deploys: GitHub Actions builds the site, validates it and publ
 
 Genres and themes come from one curated list, `scripts/refresh/taxonomy.mjs`, matched against Wikipedia categories for films and series ("2010s satirical films"), Steam's tags for games and Goodreads' shelves for books.
 
-The slow sources are re-checked a slice at a time, oldest first, so the whole catalogue is re-verified every few weeks. `scripts/refresh/health.mjs` flags a site failing most of its requests, a source answering far less often than usual, and a crawl or catalogue that shrank sharply; each run's table is in its summary. `npm run refresh` runs the pipeline locally (slow), and `npm run refresh -- --merge` rebuilds `data/` from the fetch caches without fetching.
+The slow sources are re-checked a slice at a time, oldest first, so the whole catalogue is re-verified every few weeks. `scripts/refresh/health.mjs` flags a site failing most of its requests, a source answering far less often than usual, and a crawl or catalogue that shrank sharply; each run's table is in its summary.
 
 </details>
 
-<details>
-<summary><b>Project layout</b></summary>
-
-<br>
-
-```
-src/              page templates (layout, home, catalogue, What next)
-assets/           app.css, app.js (shared, also run by the build), catalog.js,
-                  reels.js, whatnext.js, backlog.js, the Inter font, icons
-data/             the catalogues, their trailers, cast and episode ratings
-covers/           book covers, served with the site
-scripts/
-  build.js        templates + data -> _site/, each shelf's first screen pre-drawn
-  validate.js     pre-publish checks
-  refresh/        the data pipeline, one module per source
-tests/            unit tests
-```
-
-</details>
+Want to help? See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Licence
 
