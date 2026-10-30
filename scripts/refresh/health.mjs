@@ -39,6 +39,7 @@ export const SOURCES = [
   ['goodreads', 'Goodreads', 'books', (e) => e.rating != null, 0.9],
   ['yt-check', 'YouTube trailer checks', 'trailers', (e) => e.ok === true, 0.75],
   ['tmdb-posters', 'TMDB posters', 'posters', (e) => Boolean(e.p), 0.7],
+  ['tmdb-releases', 'TMDB release dates', 'releases', (e) => Boolean(e.rel), 0.8],
 ];
 // Full crawls, judged by size against the previous run: [cache, label, step, smallest share kept].
 export const CRAWLS = [

@@ -58,6 +58,7 @@ IMDb · Metacritic · Rotten Tomatoes · Steam · Goodreads
 
 - **Filters that count.** Genres, themes, countries, years, length, awards, a minimum rating and a minimum number of votes, each showing how many titles it leaves.
 - **Follow a person.** Tap anyone in the cast, or a director, for everything else they are in.
+- **From cinema to sofa.** A film in cinemas shows when it comes to digital, streaming and Blu-ray, and Filters lists what is in cinemas now.
 - **Your shelf, no account.** Save, hide or mark titles watched, or bring in your Letterboxd, IMDb or Goodreads history. It all stays in your browser.
 - **What next.** Drop in a watchlist or a to-read export and get it ranked by score and the time you have.
 - **Quick everywhere.** Pages arrive already drawn, book covers come from the site itself, and pages you have visited open offline.
@@ -78,7 +79,7 @@ Every number is read from its source by `scripts/refresh/`. Nothing is typed in,
 | **Steam** | Review scores and counts, tags, game trailers |
 | **Goodreads** | Book ratings, shelves, new books from its genre lists |
 | **Wikidata · Wikipedia** | Links between sites, awards, subgenres and themes, posters and summaries |
-| **TMDB · KinoCheck · YouTube** | Trailers, cast photos, posters Wikipedia lacks |
+| **TMDB · KinoCheck · YouTube** | Trailers, cast photos, release dates, posters Wikipedia lacks |
 | **TVmaze · Open Library** | Series posters, book covers |
 
 ## How it stays fresh
@@ -104,7 +105,7 @@ Every Monday a GitHub Action re-reads the sources, commits the new data and rede
 | Goodreads | Genre lists for new books, then each book's own page by its Goodreads id or ISBN |
 | Wikipedia | Each article's categories, for the subgenres, themes and countries of films and series |
 | Wikidata | Links between sites, and award winners: Oscars, Palme d'Or, Golden Lion, Golden Bear, BAFTA, Golden Globes, Emmys, Pulitzer, Booker, International Booker, National Book Award, Hugo, Nebula, Women's Prize, Newbery, The Game Awards, BAFTA Games, D.I.C.E., GDC and Golden Joystick |
-| TMDB | Trailers (with `TMDB_API_KEY` set as a repository secret), cast photos matched by name to IMDb's cast, and posters where Wikipedia has none |
+| TMDB | Trailers (with `TMDB_API_KEY` set as a repository secret), cast photos matched by name to IMDb's cast, posters where Wikipedia has none, and recent films' release dates in cinemas, on digital, on streaming services and on disc (the US's, or the film's own country's), checked daily |
 | KinoCheck, YouTube | More trailers, up to two backups per title; every video in use is checked with YouTube's oEmbed each month |
 | Open Library | Book covers, fetched once, shrunk to WebP and kept in `covers/`, so they load from GitHub's CDN |
 

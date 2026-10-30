@@ -63,6 +63,7 @@ export async function mergeScreen(prevMovies, prevShows) {
   const images = loadCache('images');
   const tvmaze = loadCache('tvmaze');
   const posters = loadCache('tmdb-posters');
+  const releases = loadCache('tmdb-releases');
   const rt = { ...loadCache('rt-b'), ...loadCache('rt') };
   const rtFound = loadCache('rt-guess');
   const mcMovies = loadCache('mc-movies', []);
@@ -118,6 +119,9 @@ export async function mergeScreen(prevMovies, prevShows) {
       img: (t.kind === 'shows' && (tvmaze[t.id]?.img || (/tvmaze/.test(o.img || '') ? o.img : null))) || wikiImg || o.img ||
         (posters[t.id]?.p ? TMDB_IMG + posters[t.id].p : null),
       wiki: w.wiki || o.wiki || null,
+      // When a recent film reached (or reaches) cinemas, digital and Blu-ray (releases.mjs); a film
+      // TMDB has not been asked about keeps what it had.
+      rel: t.kind === 'movies' ? (releases[t.id] ? releases[t.id].rel || null : o.rel || null) : null,
       blurb: o.blurb || null,
       // A YouTube trailer for the reels view (its backups go to their own file, read only by the
       // player). Until a source has looked at a title, the last ones stand.

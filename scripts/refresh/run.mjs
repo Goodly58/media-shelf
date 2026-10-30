@@ -30,6 +30,7 @@ import { storeCovers, pruneCovers } from './covers.mjs';
 import { refreshGameTrailers, attachGameTrailers } from './gametrailers.mjs';
 import { refreshAwards, attachAwards } from './awards.mjs';
 import { refreshPosters, TMDB_IMG } from './posters.mjs';
+import { refreshReleases } from './releases.mjs';
 import { snapshot, assess, save as saveHealth } from './health.mjs';
 
 const arg = (name, dflt) => {
@@ -102,8 +103,10 @@ await Promise.all([
   }),
   step('trailers', async () => {
     // A YouTube trailer per film and series, for the reels view.
-    // On its own (the daily run, or a catch-up) it may use the whole budget; alongside the rest, 50 minutes.
-    await resolveTrailers(selected().map((t) => ({ id: t.id, kind: t.kind, title: t.title, year: t.year, votes: t.votes })), { budgetMin: ONLY === 'trailers' ? BUDGET : Math.min(50, BUDGET) });
+    // On its own (the daily run, with release dates, or a catch-up) it may use the whole budget;
+    // alongside the rest, 50 minutes.
+    const alone = ONLY && ONLY.split(',').every((s) => s === 'trailers' || s === 'releases');
+    await resolveTrailers(selected().map((t) => ({ id: t.id, kind: t.kind, title: t.title, year: t.year, votes: t.votes })), { budgetMin: alone ? BUDGET : Math.min(50, BUDGET) });
   }),
   step('tvmaze', async () => {
     await resolveTvmaze(selected().filter((t) => t.kind === 'shows').map((t) => t.id), { budgetMin: Math.min(20, BUDGET) });
@@ -129,6 +132,13 @@ await step('posters', async () => {
   const own = (t) => images[t.id]?.img || (t.kind === 'shows' && tvmaze[t.id]?.img) || (had.get(t.id) && !had.get(t.id).startsWith(TMDB_IMG));
   const lacking = selected().filter((t) => !own(t)).map((t) => ({ id: t.id, kind: t.kind, votes: t.votes }));
   await refreshPosters(lacking, { budgetMin: Math.min(20, BUDGET) });
+});
+
+// When the films of this year and last reach cinemas, digital and Blu-ray: TMDB's release dates,
+// every day while a film is new.
+await step('releases', async () => {
+  const from = new Date().getFullYear() - 1;
+  await refreshReleases(selected().filter((t) => t.kind === 'movies' && t.year >= from).map((t) => ({ id: t.id, votes: t.votes })), { budgetMin: Math.min(15, BUDGET) });
 });
 
 /* ------------------------------------------------- slow rolling refreshes */
@@ -241,8 +251,9 @@ const { movies, shows, tmdb, backups } = await mergeScreen(before.movies, before
 // Each title's billed cast, with photos where TMDB has them (written below with the titles).
 const credits = { movies: creditLists('movies', movies), shows: creditLists('shows', shows) };
 const withFaces = Object.values(credits).reduce((n, m) => n + Object.values(m).filter((l) => l.some((c) => c[2])).length, 0);
-// TMDB's terms want its logo wherever its data shows: the build credits it for trailers, posters and cast photos.
-writeMeta({ tmdbTrailers: tmdb, tmdbPosters: [...movies, ...shows].filter((r) => (r.img || '').startsWith(TMDB_IMG)).length, tmdbFaces: withFaces });
+// TMDB's terms want its logo wherever its data shows: the build credits it for trailers, posters,
+// cast photos and release dates.
+writeMeta({ tmdbTrailers: tmdb, tmdbPosters: [...movies, ...shows].filter((r) => (r.img || '').startsWith(TMDB_IMG)).length, tmdbFaces: withFaces, tmdbReleases: movies.filter((r) => r.rel).length });
 for (const k of ['movies', 'shows']) writeBackups(k, backups[k]);
 // Each series' episodes (its rows get the grid's size), written below with the series.
 const grids = episodeGrids(shows);

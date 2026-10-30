@@ -90,7 +90,7 @@ const smallImg = (kind, x) => (imgUrl(kind, x) || '').replace('/330px-', '/250px
 const anon = (url) => (/\.wikimedia\.org\//.test(url) ? ' crossorigin="anonymous"' : '');
 const fb = (kind, x) => (Shelf.imgFallback(kind, x) ? ` data-fb="${esc(Shelf.imgFallback(kind, x))}"` : '');
 const card = (kind, x, meta) => Shelf.cardHTML(kind, x, { href: `${PAGE[kind]}#${encodeURIComponent(x.id)}`, meta, badge: badge(kind, x) });
-const metaOf = (kind, x) => (kind === 'books' ? x.author : Shelf.awardLine(x) || (x.genres || [])[0]);
+const metaOf = (kind, x) => (kind === 'books' ? x.author : (kind === 'movies' && Shelf.relLabel(x)) || Shelf.awardLine(x) || (x.genres || [])[0]);
 
 const withArt = (kind) => (x) => Boolean(imgUrl(kind, x));
 /* Best n titles passing `filter`. Titles with artwork are preferred; if too
@@ -173,7 +173,7 @@ function homePage() {
 
 /* What TMDB supplies, for the credit its terms ask for: "Cast photos, some posters and trailers". */
 const TMDB_USES = (() => {
-  const l = [META.tmdbFaces > 0 && 'cast photos', META.tmdbPosters > 0 && 'some posters', META.tmdbTrailers > 0 && 'trailers'].filter(Boolean);
+  const l = [META.tmdbFaces > 0 && 'cast photos', META.tmdbReleases > 0 && 'release dates', META.tmdbPosters > 0 && 'some posters', META.tmdbTrailers > 0 && 'trailers'].filter(Boolean);
   const s = l.length > 1 ? l.slice(0, -1).join(', ') + ' and ' + l[l.length - 1] : l[0] || '';
   return s && s[0].toUpperCase() + s.slice(1);
 })();
@@ -350,7 +350,8 @@ const FAQ = [
   ['Why is a score missing?', 'That site has not scored the title, or too few people have rated it yet. Rotten Tomatoes, for one, waits for five critics before it gives a Tomatometer, and the title\'s details say so.'],
   ['How does Top rated order things?', 'By rating, weighed by how many people gave it, so a 9.0 from a few thousand votes does not outrank an 8.8 from a million. To see one source\'s own score, sort by it.'],
   ['Which titles are listed?', 'Films and series with 10,000 or more IMDb votes, books with 10,000 or more Goodreads ratings, and PC games scored by Metacritic or with 10,000 or more Steam reviews.'],
-  ['How often is it updated?', 'Scores and new titles every week, trailers every day.'],
+  ['How often is it updated?', 'Scores and new titles every week, trailers and release dates every day.'],
+  ['When will a film in cinemas be on streaming, digital or DVD?', 'A recent film\'s details show when it reached cinemas and when it comes to digital (to rent or buy), to a streaming service and to Blu-ray and DVD, as soon as the dates are announced. Filters, then Release, lists the films in cinemas now. The dates are the US ones (or the film\'s own country\'s, for one released at home only there), from TMDB.'],
   ['Why does a trailer sometimes skip?', 'Videos get taken down, or blocked in some countries. The feed then plays the title\'s backup trailer, or moves on to the next title.'],
   ['What does Hide do?', 'It keeps a title out of the trailer feed, More like this and Surprise me. The title stays in the catalogue: to bring it back, open Filters and choose Show: Hidden.'],
   ['Can I mark what I have already watched or read?', 'Yes: Mark watched (or read, or played) in a title\'s details, or bring in everything at once from Filters with a Letterboxd export, your IMDb ratings or a Goodreads library export. Those get a tick and stay out of the trailer feed, More like this and Surprise me.'],

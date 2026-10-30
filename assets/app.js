@@ -29,6 +29,9 @@
     trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.7V17c0 .6-.5 1-1 1.2C7.9 18.8 7 20.2 7 22M14 14.7V17c0 .6.5 1 1 1.2 1.1.6 2 2 2 3.8M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
     eyeOff: '<path d="M10.7 5.1A10.7 10.7 0 0 1 21.9 11.7a1 1 0 0 1 0 .7 10.7 10.7 0 0 1-1.4 2.5"/><path d="M14.1 14.2a3 3 0 0 1-4.3-4.3"/><path d="M17.5 17.5A10.7 10.7 0 0 1 2.1 12.3a1 1 0 0 1 0-.7 10.7 10.7 0 0 1 4.4-5.1"/><path d="m2 2 20 20"/>',
     check: '<path d="M20 6 9 17l-5-5"/>',
+    ticket: '<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 11v2M13 17v2"/>',
+    screen: '<rect x="2" y="3" width="20" height="14" rx="2"/><path d="M12 17v4M8 21h8"/><path d="M10 7.5v5l4.5-2.5Z"/>',
+    disc: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/>',
     upload: '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>',
   };
   function icon(name, cls) {
@@ -125,6 +128,45 @@
       var e = r.aw.filter(function (a) { return a[0] === k; })[0], n = e ? e.slice(2).filter(Boolean).length : 0;
       return COUNTED[k] && n > 1 ? n + ' ' + name[1] : name[0] + ' winner';
     }
+    return '';
+  }
+
+  /* ------------------------------------------------------------- releases */
+  // A recent film's release dates (r.rel, scripts/refresh/releases.mjs): c country, t cinemas (tl: a
+  // limited run), d digital (dn: the service it premieres on), p Blu-ray and DVD, s later streaming.
+  function isoToday() {
+    var n = new Date();
+    return n.getFullYear() + '-' + ('0' + (n.getMonth() + 1)).slice(-2) + '-' + ('0' + n.getDate()).slice(-2);
+  }
+  function daysFrom(a, b) { return Math.round((Date.parse(b) - Date.parse(a)) / 864e5); }
+  /* Where a film is now: 'soon' (in cinemas from t), 'cinema' (in cinemas, not at home yet), 'new'
+     (at home within six weeks), 'coming' (straight to a service or disc, not out yet), 'home', or null. */
+  function relState(r) {
+    var x = r && r.rel;
+    if (!x) return null;
+    var now = isoToday(), home = [x.d, x.p].filter(Boolean).sort()[0];
+    if (x.t && x.t > now) return 'soon';
+    if (home && home <= now) return daysFrom(home, now) <= 45 ? 'new' : 'home';
+    // Past five months with no date at home, it is surely out, the date just not known.
+    if (x.t) return daysFrom(x.t, now) <= 150 ? 'cinema' : null;
+    return home ? 'coming' : null;
+  }
+  function relDate(iso) {
+    return new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: iso.slice(0, 4) === isoToday().slice(0, 4) ? undefined : 'numeric' });
+  }
+  // "in 3 weeks", for a date in the next two months.
+  function relUntil(iso) {
+    var n = daysFrom(isoToday(), iso);
+    if (n < 0 || n > 62) return '';
+    return n === 0 ? 'today' : n === 1 ? 'tomorrow' : n < 14 ? 'in ' + n + ' days' : 'in ' + Math.round(n / 7) + ' weeks';
+  }
+  // A card's word on it: "In cinemas", "On Netflix", "Cinemas 14 Nov"; nothing once it is long out.
+  function relLabel(r) {
+    var st = relState(r), x = r.rel;
+    if (st === 'soon') return 'Cinemas ' + relDate(x.t);
+    if (st === 'cinema') return 'In cinemas';
+    if (st === 'new') return x.d && x.d <= isoToday() ? 'On ' + (x.dn || 'digital') : 'On Blu-ray & DVD';
+    if (st === 'coming') return x.d ? (x.dn || 'Digital') + ' ' + relDate(x.d) : 'Blu-ray & DVD ' + relDate(x.p);
     return '';
   }
 
@@ -419,6 +461,7 @@
     icon: icon, esc: esc, compact: compact, KINDS: KINDS, METRICS: METRICS, tone: tone,
     imgUrl: imgUrl, imgFallback: imgFallback, coverHTML: coverHTML, cardHTML: cardHTML,
     AWARD_NAMES: AWARD_NAMES, awardKeys: awardKeys, awardLine: awardLine,
+    isoToday: isoToday, relState: relState, relDate: relDate, relUntil: relUntil, relLabel: relLabel,
     Favs: Favs, Hidden: Hidden, Done: Done, DONE: DONE, doneTick: doneTick, toast: toast, openSearch: openSearch, fold: fold, warmTrailers: warmTrailers,
   };
   for (var k in api) S[k] = api[k];

@@ -25,7 +25,7 @@
       min: { key: 'imdb', label: 'IMDb rating', max: 10, step: 0.5, fmt: function (v) { return '★ ' + v.toFixed(1); } },
       votes: { label: 'IMDb votes', unit: 'votes', steps: [25e3, 5e4, 1e5, 25e4, 5e5, 1e6] },
       fields: function (r) { return [r.title, r.alt, r.by].join(' '); },
-      meta: function (r) { return S.awardLine(r) || (r.genres || [])[0]; },
+      meta: function (r) { return S.relLabel(r) || S.awardLine(r) || (r.genres || [])[0]; },
       top: function (r, c) { return weighted(r.imdb, r.votes || 0, 25000, c); },
       popular: function (r) { return r.votes || 0; },
     },
@@ -73,7 +73,7 @@
 
   // done: '' any, 'no' only those not finished yet, 'yes' only finished ones (watched, read, played).
   // who: a person (cast or director), only their titles.
-  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, votes: null, len: '', status: '', saved: false, hidden: false, done: '', who: '', award: [], view: '', rsort: 'shuffle' }; }
+  function defaults() { return { q: '', sort: 'top', genres: [], tags: [], match: 'all', country: [], from: null, to: null, min: null, votes: null, len: '', status: '', saved: false, hidden: false, done: '', who: '', rel: '', award: [], view: '', rsort: 'shuffle' }; }
 
   /* ------------------------------------------------------------- url state */
   function readURL() {
@@ -96,6 +96,7 @@
     s.hidden = TRAILERS && !s.saved && p.get('hidden') === '1';
     s.done = p.get('seen') === 'no' || p.get('seen') === 'yes' ? p.get('seen') : '';
     s.who = CAST ? (p.get('who') || '').trim() : '';
+    s.rel = kind === 'movies' && /^(cinema|new)$/.test(p.get('rel') || '') ? p.get('rel') : '';
     s.view = p.get('view') === 'trailers' && TRAILERS ? 'trailers' : '';
     if (CONFIG.sorts.some(function (x) { return x[0] === p.get('rsort'); })) s.rsort = p.get('rsort');
     return s;
@@ -118,6 +119,7 @@
     if (state.hidden) p.set('hidden', '1');
     if (state.done) p.set('seen', state.done);
     if (state.who) p.set('who', state.who);
+    if (state.rel) p.set('rel', state.rel);
     if (state.view) p.set('view', state.view);
     if (state.view && state.rsort !== 'shuffle') p.set('rsort', state.rsort);
     var qs = p.toString();
@@ -266,6 +268,8 @@
     if (s.hidden && !S.Hidden.has(kind, r.id)) return false;
     if (s.done && (s.done === 'yes') !== S.Done.has(kind, r.id)) return false;
     if (s.who && !hasPerson(r, s.who)) return false;
+    // In cinemas now, or new at home (scripts/refresh/releases.mjs).
+    if (s.rel && S.relState(r) !== s.rel) return false;
     return true;
   }
   /* In the billed cast, or among the directors (series: creators). */
@@ -397,12 +401,13 @@
   window.addEventListener('resize', chipFade);
 
   function filterCount() {
-    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.votes ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.hidden ? 1 : 0) + (state.done ? 1 : 0) + (state.country.length ? 1 : 0) + (state.award.length ? 1 : 0);
+    return (state.from || state.to ? 1 : 0) + (state.min != null ? 1 : 0) + (state.votes ? 1 : 0) + (state.len ? 1 : 0) + (state.status ? 1 : 0) + (state.saved ? 1 : 0) + (state.hidden ? 1 : 0) + (state.done ? 1 : 0) + (state.rel ? 1 : 0) + (state.country.length ? 1 : 0) + (state.award.length ? 1 : 0);
   }
   function renderActive() {
     var pills = [];
     var add = function (label, key, val) { pills.push('<button class="pill" data-drop="' + key + '" data-val="' + esc(val || '') + '">' + esc(label) + icon('x') + '</button>'); };
     if (state.who) add(state.who, 'who');
+    if (state.rel) add(REL[state.rel], 'rel');
     if (state.from || state.to) add(state.from && state.to ? (state.from === state.to ? state.from : state.from + '–' + state.to) : state.from ? state.from + ' or later' : 'Up to ' + state.to, 'years');
     if (state.min != null) add(S.METRICS[CONFIG.min.key].label + ' ' + CONFIG.min.fmt(state.min) + (CONFIG.min.key === 'mc' ? '' : '+'), 'min');
     if (state.votes) add(S.compact(state.votes) + '+ ' + CONFIG.votes.unit, 'votes');
@@ -541,6 +546,14 @@
       b.setAttribute('aria-pressed', String(state.votes === v));
       if (v) b.lastChild.textContent = (vc[v] || 0).toLocaleString();
     });
+    if (kind === 'movies') {
+      var rc = relCounts();
+      filtersDlg.querySelectorAll('[data-seg="rel"]').forEach(function (b) {
+        var v = b.getAttribute('data-val');
+        b.setAttribute('aria-pressed', String(state.rel === v));
+        if (v) b.lastChild.textContent = (rc[v] || 0).toLocaleString();
+      });
+    }
     var ac = awardCounts();
     filtersDlg.querySelectorAll('[data-award]').forEach(function (b) {
       var k = b.getAttribute('data-award');
@@ -557,6 +570,18 @@
       for (var j = 0; j < steps.length; j++) if (n >= steps[j]) vc[steps[j]] = (vc[steps[j]] || 0) + 1;
     }
     return vc;
+  }
+  /* Films in cinemas now, and new at home, within everything else picked. */
+  var REL = { cinema: 'In cinemas', new: 'New at home' };
+  function relCounts() {
+    var s2 = Object.assign({}, state, { rel: '' }), rc = {};
+    for (var i = 0; i < items.length; i++) {
+      var r = items[i];
+      if (!r.rel) continue;
+      var st = S.relState(r);
+      if ((st === 'cinema' || st === 'new') && matches(r, s2)) rc[st] = (rc[st] || 0) + 1;
+    }
+    return rc;
   }
   /* Award winners per award, within everything else picked. */
   function awardCounts() {
@@ -589,6 +614,12 @@
         return '<button class="chip" type="button" data-votes="' + v + '" aria-pressed="' + (state.votes === v) + '">' + S.compact(v) + '+<small>' + (vc[v] || 0).toLocaleString() + '</small></button>';
       }).join('') + '</div></div>';
     if (kind === 'movies') html += seg('Length', 'len', [['', 'Any'], ['short', 'Under 90 min'], ['mid', '90 to 120 min'], ['long', 'Over 2 hours']]);
+    if (kind === 'movies') {
+      var rc = relCounts();
+      if (rc.cinema || rc.new || state.rel) html += '<div class="row-field"><label>Release</label><div class="seg">' + [['', 'Any'], ['cinema', REL.cinema], ['new', REL.new]].map(function (o) {
+        return '<button class="chip" type="button" data-seg="rel" data-val="' + o[0] + '" aria-pressed="' + (state.rel === o[0]) + '">' + o[1] + (o[0] ? '<small>' + (rc[o[0]] || 0).toLocaleString() + '</small>' : '') + '</button>';
+      }).join('') + '</div></div>';
+    }
     if (kind === 'shows') html += seg('Status', 'status', [['', 'Any'], ['ongoing', 'Ongoing'], ['ended', 'Ended'], ['mini', 'Miniseries']]);
     if (kind === 'movies' || kind === 'shows') {
       var cc = countryCounts(), all = Object.keys(cc).sort(byCount(cc));
@@ -696,6 +727,29 @@
         (cats.length ? '<span class="d-aw-c">' + esc(cats.join(', ')) + '</span>' : '') + '</span></li>';
     }).join('') + '</ul>';
   }
+  /* A recent film's way home: when it reached (or reaches) cinemas, digital, streaming and Blu-ray,
+     with the step it is at now ringed. One country's dates, the US's as a rule (scripts/refresh/releases.mjs). */
+  function releaseHTML(r) {
+    var x = r.rel;
+    if (kind !== 'movies' || !x) return '';
+    var st = S.relState(r), now = S.isoToday(), here = st === 'new' ? [x.d, x.p].filter(function (v) { return v && v <= now; }).sort()[0] : null;
+    var item = function (ic, label, iso, note, on) {
+      return '<span class="rel' + (on ? ' on' : '') + '">' + icon(ic, 'sm') + '<b>' + esc(label) + '</b>' +
+        (iso ? '<span>' + esc(S.relDate(iso)) + '</span>' : '') + (note ? '<em>' + esc(note) + '</em>' : '') + '</span>';
+    };
+    // [date, html], in date order: the way from cinemas to the shelf at home.
+    var l = [];
+    if (x.t) l.push([x.t, item('ticket', 'Cinemas', x.t, x.tl ? 'limited' : S.relUntil(x.t), st === 'cinema' || st === 'soon')]);
+    if (x.d) l.push([x.d, item('screen', x.dn || 'Digital', x.d, S.relUntil(x.d), here === x.d)]);
+    else if (st === 'cinema' || st === 'soon') l.push(['~', item('screen', 'Digital', null, 'not announced yet')]);
+    (x.s || []).forEach(function (v) { l.push([v[1], item('screen', v[0], v[1], S.relUntil(v[1]))]); });
+    if (x.p) l.push([x.p, item('disc', 'Blu-ray & DVD', x.p, S.relUntil(x.p), here === x.p && here !== x.d)]);
+    l.sort(function (a, b) { return a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0; });
+    return '<div class="d-release" title="Release dates in ' + esc(countryName(x.c)) + '">' + l.map(function (v) { return v[1]; }).join('') + '</div>';
+  }
+  function countryName(c) {
+    try { return new Intl.DisplayNames(['en'], { type: 'region' }).of(c) || c; } catch (e) { return c; }
+  }
   function metaBits(r) {
     var b = [];
     if (kind === 'books') { b.push(esc(r.author)); if (r.year) b.push(r.year < 0 ? -r.year + ' BC' : r.year); }
@@ -730,6 +784,7 @@
           '<div class="d-meta">' + metaBits(r) + '</div>' +
         '</div>' +
         '<div class="d-body">' +
+          releaseHTML(r) +
           (tags ? '<div class="d-genres">' + tags + '</div>' : '') +
           '<div class="scores">' + scoresHTML(r) + '</div>' +
           awardsHTML(r) +

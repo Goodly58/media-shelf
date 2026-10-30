@@ -5,6 +5,7 @@ import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGri
 import { episodeTitle, castNames, character } from '../scripts/refresh/imdb.mjs';
 import { tmdbFaces, facesFor } from '../scripts/refresh/castphotos.mjs';
 import { tmdbPoster } from '../scripts/refresh/posters.mjs';
+import { releaseInfo, releaseDue, service } from '../scripts/refresh/releases.mjs';
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
@@ -217,6 +218,34 @@ ok('a title TMDB was asked about gets its photos', mergedC.tt1[0][2] === '/djLVF
 ok('one TMDB was not asked about this run keeps the photos it had', mergedC.tt2[0][2] === '/old.jpg');
 ok('a title with no cast has none', !('tt3' in mergedC));
 ok('without IMDb\'s cast this run, the last cast stands', mergeCredits(rowsC, null, {}, prevC).tt2[0][0] === 'Ann Lee');
+
+console.log('release dates');
+const day = (d, type, note = '') => ({ certification: '', iso_639_1: '', note, release_date: d + 'T00:00:00.000Z', type });
+const tm = (results, extra = {}) => ({ id: 1, ...extra, release_dates: { results } });
+const full = releaseInfo(tm([
+  { iso_3166_1: 'GB', release_dates: [day('2026-09-25', 3)] },
+  { iso_3166_1: 'US', release_dates: [day('2026-08-30', 1, 'Venice'), day('2026-11-21', 4), day('2026-10-03', 3), day('2026-12-09', 5, 'Blu-ray, DVD')] },
+]));
+ok('the US dates: cinemas, digital, Blu-ray and DVD', JSON.stringify(full) === '{"c":"US","t":"2026-10-03","d":"2026-11-21","p":"2026-12-09"}', JSON.stringify(full));
+const netflix = releaseInfo(tm([{ iso_3166_1: 'US', release_dates: [day('2026-10-17', 2, 'limited'), day('2026-11-07', 4, 'Netflix')] }]));
+ok('a limited run, then Netflix', JSON.stringify(netflix) === '{"c":"US","t":"2026-10-17","tl":1,"d":"2026-11-07","dn":"Netflix"}', JSON.stringify(netflix));
+const peacock = releaseInfo(tm([{ iso_3166_1: 'US', release_dates: [day('2026-10-03', 3), day('2026-11-21', 4, 'Premium VOD'), day('2027-02-06', 4, 'Peacock'), day('2027-03-01', 4, 'Peacock')] }]));
+ok('streaming after digital: a date per service', JSON.stringify(peacock.s) === '[["Peacock","2027-02-06"]]' && !peacock.dn, JSON.stringify(peacock));
+const indian = releaseInfo(tm([
+  { iso_3166_1: 'US', release_dates: [day('2026-10-02', 3)] },
+  { iso_3166_1: 'IN', release_dates: [day('2026-10-02', 3), day('2026-10-30', 4, 'Prime Video')] },
+], { origin_country: ['IN'] }));
+ok('home release only in its own country: that country\'s dates', JSON.stringify(indian) === '{"c":"IN","t":"2026-10-02","d":"2026-10-30","dn":"Prime Video"}', JSON.stringify(indian));
+const cinemaOnly = releaseInfo(tm([{ iso_3166_1: 'FR', release_dates: [day('2026-10-08', 3)] }, { iso_3166_1: 'US', release_dates: [day('2026-10-24', 3)] }], { origin_country: ['FR'] }));
+ok('in cinemas everywhere, nothing at home yet: the US', JSON.stringify(cinemaOnly) === '{"c":"US","t":"2026-10-24"}', JSON.stringify(cinemaOnly));
+ok('only a premiere, or nothing, is no release', releaseInfo(tm([{ iso_3166_1: 'US', release_dates: [day('2026-05-20', 1, 'Cannes')] }])) === null && releaseInfo(null) === null && releaseInfo({}) === null);
+ok('a date that is not one is ignored', releaseInfo(tm([{ iso_3166_1: 'US', release_dates: [{ type: 3, release_date: 'soon' }, day('2026-10-03', 3)] }])).t === '2026-10-03');
+ok('services from TMDB\'s notes', service('HBO Max') === 'Max' && service('Paramount+ with Showtime') === 'Paramount+' && service('Disney Plus') === 'Disney+' && service('Amazon Prime Video') === 'Prime Video' && service('Apple TV+') === 'Apple TV+');
+ok('a note that names no service is plain digital', service('IMAX') === null && service('Premium VOD') === null && service('Apple TV') === null && service('4K UHD') === null && service('') === null);
+const at = Date.parse('2026-10-30T12:00:00Z');
+ok('never asked: due', releaseDue(undefined, at));
+ok('a film in cinemas is asked again the next day', releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 864e5 }, at) && !releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 3600e3 }, at));
+ok('one at home for months is asked monthly', !releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 10 * 864e5 }, at) && releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 31 * 864e5 }, at));
 
 console.log('TMDB posters');
 const found = { movie_results: [{ id: 1, poster_path: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg' }], tv_results: [{ id: 2, poster_path: '/ggFHVNu6YYI5L9pCfOacjizRGt.jpg' }] };

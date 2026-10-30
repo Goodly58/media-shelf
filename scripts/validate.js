@@ -77,6 +77,15 @@ for (const kind of Object.keys(MIN)) {
     }
     if (r.genres && !Array.isArray(r.genres)) fail.push(`${kind} ${r.id}: genres is not a list`);
     if (r.aw != null && !(Array.isArray(r.aw) && r.aw.every((a) => Array.isArray(a) && a.length >= 3 && a.every((x) => typeof x === 'string')))) fail.push(`${kind} ${r.id}: awards are not [key, years, category, ...] lists`);
+    // Release dates (scripts/refresh/releases.mjs): a country, then dates in cinemas, digital and on disc.
+    if (r.rel != null) {
+      const x = r.rel, D = /^\d{4}-\d{2}-\d{2}$/;
+      const okRel = kind === 'movies' && typeof x === 'object' && /^[A-Z]{2}$/.test(x.c) && (x.t || x.d || x.p) &&
+        ['t', 'd', 'p'].every((k) => x[k] == null || D.test(x[k])) && (x.tl == null || x.tl === 1) &&
+        (x.dn == null || (typeof x.dn === 'string' && x.dn.length < 30)) &&
+        (x.s == null || (Array.isArray(x.s) && x.s.every((v) => Array.isArray(v) && typeof v[0] === 'string' && D.test(v[1]))));
+      if (!okRel) fail.push(`${kind} ${r.id}: release dates are not { c, t, d, p, ... }`);
+    }
   }
   if (kind === 'games') {
     const bare = rows.filter((r) => r.mc == null && r.steam == null).length;

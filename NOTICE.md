@@ -26,6 +26,9 @@ Library has none), kept in `covers/` so they load quickly. All of it remains
 copyright of the respective publishers and studios. TVmaze data is
 used under CC BY-SA 4.0 (<https://www.tvmaze.com>).
 
+**Release dates**: when recent films reach cinemas, digital, streaming services and
+Blu-ray and DVD come from TMDB.
+
 **Cast**: who is in each film and series, and as whom, comes from IMDb's datasets;
 their photos come from TMDB, loaded on demand from its image server.
 

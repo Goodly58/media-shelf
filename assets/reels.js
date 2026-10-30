@@ -104,6 +104,8 @@
   function runtime(m) { if (!m) return ''; var h = Math.floor(m / 60), r = m % 60; return h ? h + 'h' + (r ? ' ' + r + 'm' : '') : r + 'm'; }
   function sub(r) {
     var b = [];
+    // A film in cinemas (or new at home) says so first.
+    if (kind === 'movies' && S.relLabel(r)) b.push(S.relLabel(r));
     if (r.aw) b.push(S.awardLine(r));
     if (GAMES) b.push(r.year);
     if (kind === 'shows') b.push(r.end && r.end !== r.year ? r.year + '–' + r.end : r.year);
