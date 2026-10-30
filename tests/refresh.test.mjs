@@ -242,10 +242,12 @@ ok('only a premiere, or nothing, is no release', releaseInfo(tm([{ iso_3166_1: '
 ok('a date that is not one is ignored', releaseInfo(tm([{ iso_3166_1: 'US', release_dates: [{ type: 3, release_date: 'soon' }, day('2026-10-03', 3)] }])).t === '2026-10-03');
 ok('services from TMDB\'s notes', service('HBO Max') === 'Max' && service('Paramount+ with Showtime') === 'Paramount+' && service('Disney Plus') === 'Disney+' && service('Amazon Prime Video') === 'Prime Video' && service('Apple TV+') === 'Apple TV+');
 ok('a note that names no service is plain digital', service('IMAX') === null && service('Premium VOD') === null && service('Apple TV') === null && service('4K UHD') === null && service('') === null);
+ok('HBO, the channel, is not streaming (Max is)', service('HBO') === null && service('Max') === 'Max');
 const at = Date.parse('2026-10-30T12:00:00Z');
 ok('never asked: due', releaseDue(undefined, at));
-ok('a film in cinemas is asked again the next day', releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 864e5 }, at) && !releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 3600e3 }, at));
-ok('one at home for months is asked monthly', !releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 10 * 864e5 }, at) && releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 31 * 864e5 }, at));
+ok('a film in cinemas is asked again the next day', releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 864e5, v: 2 }, at) && !releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 3600e3, v: 2 }, at));
+ok('one at home for months is asked monthly', !releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 10 * 864e5, v: 2 }, at) && releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 31 * 864e5, v: 2 }, at));
+ok('dates worked out by an older version are asked again', releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 3600e3 }, at));
 
 console.log('TMDB posters');
 const found = { movie_results: [{ id: 1, poster_path: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg' }], tv_results: [{ id: 2, poster_path: '/ggFHVNu6YYI5L9pCfOacjizRGt.jpg' }] };

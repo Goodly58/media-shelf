@@ -3,15 +3,18 @@
    US dates, or, for a film released at home only in its own country (an Indian film on Prime
    Video, say), that country's.
 
-   Cache 'tmdb-releases': { imdbId: { rel: {...} | null, tm, at } }, rel as releaseInfo makes it. */
+   Cache 'tmdb-releases': { imdbId: { rel: {...} | null, tm, at, v } }, rel as releaseInfo makes it
+   (version v: a change to releaseInfo bumps VERSION, so every film is asked again once). */
 import { get, loadCache, saveCache, log } from './lib.mjs';
 
 const DAY = 864e5;
+const VERSION = 2;
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /* Subscription services as TMDB's notes name them ("Netflix", "HBO Max", "Paramount+ with
    Showtime"), and the name the site gives each. A note naming none ("Premium VOD", "4K UHD",
-   "Apple TV", the store) is plain digital. */
+   "Apple TV", the store) is plain digital. HBO, the TV channel, airs a film the day after Max
+   streams it, so it is not counted. */
 const SERVICES = [
   [/netflix/i, 'Netflix'],
   [/prime video|amazon prime/i, 'Prime Video'],
@@ -19,7 +22,6 @@ const SERVICES = [
   [/paramount\s*(\+|plus)/i, 'Paramount+'],
   [/apple\s*tv\s*(\+|plus)/i, 'Apple TV+'],
   [/\b(hbo\s*)?max\b/i, 'Max'],
-  [/^\s*hbo\s*$/i, 'HBO'],
   [/hulu/i, 'Hulu'],
   [/peacock/i, 'Peacock'],
   [/starz/i, 'Starz'],
@@ -84,7 +86,7 @@ export function releaseInfo(j) {
     at home (dates are announced, and move, in those weeks); monthly once it has been at home for
     two months. */
 export function releaseDue(c, now = Date.now()) {
-  if (!c) return true;
+  if (!c || c.v !== VERSION) return true;
   const home = c.rel && (c.rel.d || c.rel.p);
   const settled = home && Date.parse(home) < now - 60 * DAY;
   return now - c.at > (settled ? 30 : 0.5) * DAY;
@@ -114,7 +116,7 @@ export async function refreshReleases(films, { budgetMin = 15 } = {}) {
         tm = hit?.movie_results?.[0]?.id || null;
       }
       const rel = tm ? releaseInfo(await get(api(`/movie/${tm}?append_to_response=release_dates`), { paceMs: 120 })) : null;
-      cache[f.id] = { rel, tm, at: Date.now() };
+      cache[f.id] = { rel, tm, at: Date.now(), v: VERSION };
       n++; errors = 0;
       if (rel) found++;
     } catch (e) { errors++; log(`releases: tmdb ${f.id}: ${e.message}`); }
