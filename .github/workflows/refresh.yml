@@ -84,12 +84,15 @@ jobs:
             echo "Nothing changed."
             exit 0
           fi
-          git -c user.name=goodly2018 -c user.email=goodly2018@gmail.com commit -m "$(cat .cache/summary.txt)"
+          # Data commits are the workflow's own, so they go in as GitHub Actions' bot, not as a person.
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "$(cat .cache/summary.txt)"
           # The run takes hours; code pushed meanwhile is replayed under the data, not lost.
           # GitHub now and then turns a push away for a moment ("fatal error in commit_refs"),
           # which would lose the covers fetched this run: so it is tried a few times.
           for try in 1 2 3 4; do
-            git -c user.name=goodly2018 -c user.email=goodly2018@gmail.com pull --rebase origin main && git push && exit 0
+            git pull --rebase origin main && git push && exit 0
             echo "Push refused, trying again shortly."
             sleep $((try * 30))
           done
