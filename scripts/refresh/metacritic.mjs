@@ -107,11 +107,14 @@ export async function gameScore(slug) {
   if (!item) return null;
   const pc = (item.platforms || []).find((p) => /^PC$/i.test(p.name));
   const score = pc?.criticScoreSummary?.score ?? item.criticScoreSummary?.score ?? null;
+  // The day it came out: on PC where Metacritic lists it there, else its first release anywhere.
+  const date = (d) => (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d.slice(0, 10)) ? d.slice(0, 10) : null);
   return {
     score,
     n: pc?.criticScoreSummary?.reviewCount ?? item.criticScoreSummary?.reviewCount ?? null,
     title: item.title,
     year: item.premiereYear || null,
+    day: date(pc?.releaseDate) || date(item.releaseDate),
     pc: Boolean(pc),
   };
 }

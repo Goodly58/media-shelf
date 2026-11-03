@@ -109,7 +109,10 @@ await Promise.all([
     await resolveTrailers(selected().map((t) => ({ id: t.id, kind: t.kind, title: t.title, year: t.year, votes: t.votes })), { budgetMin: alone ? BUDGET : Math.min(50, BUDGET) });
   }),
   step('tvmaze', async () => {
-    await resolveTvmaze(selected().filter((t) => t.kind === 'shows').map((t) => t.id), { budgetMin: Math.min(20, BUDGET) });
+    // Premiere dates too, for the series TMDB has none for.
+    const rc = loadCache('tmdb-releases');
+    const ids = selected().filter((t) => t.kind === 'shows').map((t) => t.id);
+    await resolveTvmaze(ids, { budgetMin: Math.min(20, BUDGET), again: new Set(ids.filter((id) => !rc[id]?.day)) });
   }),
   step('steamlist', async () => {
     // New popular games: SteamSpy's listing, then the store says whether each is a released game.
@@ -205,7 +208,12 @@ await Promise.all([
     const pop = new Map(loadCache('steam-popular', []).map((a) => [a.appId, a]));
     const jobs = before.games.map((g) => ({ key: g.id, title: g.title, year: g.year, appId: g.steamId, slug: g.mcSlug }));
     for (const id of steamIds()) if (!before.games.some((g) => g.steamId === id)) jobs.push({ key: 'steam:' + id, title: pop.get(id)?.name, appId: id });
-    const due = jobs.filter((j) => j.title && (!mcg[j.key] || mcg[j.key].at < stale)).sort((a, b) => (mcg[a.key]?.at || 0) - (mcg[b.key]?.at || 0));
+    // Due: never asked, asked a month ago, or (for a game Steam gives no release date) asked before
+    // Metacritic's release dates were kept, those first.
+    const steamDays = loadCache('steam-movies');
+    const undated = (j) => mcg[j.key] && !mcg[j.key].none && !('day' in mcg[j.key]) && !(j.appId && steamDays[j.appId]?.day);
+    const due = jobs.filter((j) => j.title && (!mcg[j.key] || mcg[j.key].at < stale || undated(j)))
+      .sort((a, b) => (undated(b) ? 1 : 0) - (undated(a) ? 1 : 0) || (mcg[a.key]?.at || 0) - (mcg[b.key]?.at || 0));
     const deadline = Date.now() + BUDGET * 60e3;
     const norm = (s) => slugify(String(s).replace(/\s*\(\d{4}\)\s*$/, '')).replace(/-/g, '');
     for (const j of due) {
@@ -216,7 +224,7 @@ await Promise.all([
         try { r = await gameScore(slug); } catch { continue; }
         if (r && r.score != null && norm(r.title) === norm(j.title) && (!j.year || !r.year || Math.abs(r.year - j.year) <= 2)) { hit = { ...r, slug }; break; }
       }
-      mcg[j.key] = hit ? { score: hit.score, n: hit.n, slug: hit.slug, at: Date.now() } : { none: true, at: Date.now() };
+      mcg[j.key] = hit ? { score: hit.score, n: hit.n, slug: hit.slug, day: hit.day || null, at: Date.now() } : { none: true, at: Date.now() };
     }
     saveCache('mc-games', mcg);
   }),

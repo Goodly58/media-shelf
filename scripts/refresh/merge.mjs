@@ -53,6 +53,7 @@ export function broadGenres(labels) {
 
 // Films of this year and last carry their release dates in cinemas, on digital and on disc.
 const RECENT = new Date().getFullYear() - 1;
+const isDay = (d) => (typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d : null);
 /** The first of a film's release dates (releases.mjs releaseInfo), or null. */
 export function firstOfRel(rel) { return (rel && [rel.t, rel.d, rel.p].filter(Boolean).sort()[0]) || null; }
 
@@ -129,7 +130,7 @@ export async function mergeScreen(prevMovies, prevShows) {
       rel: t.kind === 'movies' && t.year >= RECENT ? (releases[t.id] ? releases[t.id].rel || null : o.rel || null) : null,
       // The day it first came out, for Newest and Oldest within a year: TMDB's release date or
       // first air date, else the first of a film's release dates, else the last one known.
-      day: releases[t.id]?.day || firstOfRel(releases[t.id]?.rel) || o.day || null,
+      day: releases[t.id]?.day || firstOfRel(releases[t.id]?.rel) || (t.kind === 'shows' && isDay(tvmaze[t.id]?.premiered)) || o.day || null,
       blurb: o.blurb || null,
       // A YouTube trailer for the reels view (its backups go to their own file, read only by the
       // player). Until a source has looked at a title, the last ones stand.
@@ -373,6 +374,8 @@ export function mergeGames(prevGames, { newApps = [] } = {}) {
     }
     const f = freshMc(row);
     if (f && f.score != null) { row.mc = f.score; row.mcN = f.n || null; row.mcSlug = f.slug || null; }
+    // A game Steam gives no release date (not sold there, or delisted): Metacritic's (on PC first).
+    if (!row.day && f && f.day) row.day = f.day;
     // Metacritic's users (on PC where the game is sold there), once checked for this page.
     const u = row.id && mcUser[row.id];
     if (u && u.slug === row.mcSlug) { row.mcu = u.none ? null : u.score; row.mcuN = u.none ? null : u.n; }
