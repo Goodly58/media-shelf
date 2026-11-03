@@ -158,6 +158,7 @@
         r._i = i;
         r._f = S.fold(CONFIG.fields(r));
         r._aw = S.awardKeys(r);
+        r._day = firstDay(r);
         (r.genres || []).forEach(function (g) { genreCount[g] = (genreCount[g] || 0) + 1; });
         (r.tags || []).forEach(function (t) { tagCount[t] = (tagCount[t] || 0) + 1; });
         var v = S.METRICS[CONFIG.min.key].v(r);
@@ -296,11 +297,23 @@
     rt: function (a, b) { return (b.rt == null ? -1 : b.rt) - (a.rt == null ? -1 : a.rt) || (b.rtN || 0) - (a.rtN || 0); },
     rta: function (a, b) { return (b.rta == null ? -1 : b.rta) - (a.rta == null ? -1 : a.rta) || (b.rtaN || 0) - (a.rtaN || 0); },
     steam: function (a, b) { return (b.steam == null ? -1 : b.steam + Math.min(b.steamN || 0, 5e4) / 1e6) - (a.steam == null ? -1 : a.steam + Math.min(a.steamN || 0, 5e4) / 1e6); },
-    new: function (a, b) { return (b.year || 0) - (a.year || 0) || b._top - a._top; },
-    old: function (a, b) { return (a.year || 9999) - (b.year || 9999) || b._top - a._top; },
+    // By year, then within it by the day it came out where that is known (a recent film's release
+    // dates), then by rating. The year leads so the years on the cards still read in order.
+    new: function (a, b) { return (b.year || 0) - (a.year || 0) || byDay(a, b, true) || b._top - a._top; },
+    old: function (a, b) { return (a.year || 9999) - (b.year || 9999) || byDay(a, b, false) || b._top - a._top; },
     az: function (a, b) { return a.title.localeCompare(b.title); },
     author: function (a, b) { return lastName(a.author).localeCompare(lastName(b.author)) || (a.year || 0) - (b.year || 0); },
   };
+  /* The day a film first came out: in cinemas, on a service or on disc, whichever came first. */
+  function firstDay(r) { var x = r.rel; return (x && [x.t, x.d, x.p].filter(Boolean).sort()[0]) || null; }
+  /* Earlier day first (later first with later); a title without one after those with one. */
+  function byDay(a, b, later) {
+    var x = a._day, y = b._day;
+    if (x === y) return 0;
+    if (!x) return 1;
+    if (!y) return -1;
+    return (x < y ? -1 : 1) * (later ? -1 : 1);
+  }
   function lastName(s) { s = (s || '').trim(); return s.split(' ').pop() + ' ' + s; }
   function userKey(r) { return r.mcu == null ? -1 : (r.mcuN || 0) < 10 ? r.mcu / 100 - 0.99 : r.mcu; }
 
