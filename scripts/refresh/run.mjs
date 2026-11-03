@@ -134,11 +134,13 @@ await step('posters', async () => {
   await refreshPosters(lacking, { budgetMin: Math.min(20, BUDGET) });
 });
 
-// When the films of this year and last reach cinemas, digital and Blu-ray: TMDB's release dates,
-// every day while a film is new.
+// When the films of this year and last reach cinemas, digital and Blu-ray (TMDB's release dates,
+// every day while a film is new), and the day every film and series first came out (once a year).
+// A targeted run (the daily one, or a catch-up) may use the whole budget; the weekly one, 15 minutes.
 await step('releases', async () => {
   const from = new Date().getFullYear() - 1;
-  await refreshReleases(selected().filter((t) => t.kind === 'movies' && t.year >= from).map((t) => ({ id: t.id, votes: t.votes })), { budgetMin: Math.min(15, BUDGET) });
+  await refreshReleases(selected().map((t) => ({ id: t.id, kind: t.kind, votes: t.votes, recent: t.kind === 'movies' && t.year >= from })),
+    { budgetMin: ONLY ? BUDGET : Math.min(15, BUDGET) });
 });
 
 /* ------------------------------------------------- slow rolling refreshes */

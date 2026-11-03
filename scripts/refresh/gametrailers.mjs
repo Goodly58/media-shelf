@@ -17,6 +17,25 @@ export const PREFIX = 'https://video.akamai.steamstatic.com/store_trailers/';
 const FOREIGN = /\b(ES-MX|ES-ES|ESRB-ES|DE|FR|IT|JA|JP|KO|ZH|CN|RU|PT-BR|PL|TR|USK|CERO|GRAC)\b|español|deutsch|français|日本語|中文/i;
 const DAY = 864e5;
 
+const MONTHS = { jan: 1, feb: 2, mar: 3, apr: 4, may: 5, jun: 6, jul: 7, aug: 8, sep: 9, oct: 10, nov: 11, dec: 12 };
+/** Steam's release date ("Dec 5, 2019", or "5 Dec, 2019" in some stores) as 2019-12-05; null for
+    one it has not set ("Coming soon", "Q1 2027"). */
+export function steamDate(s) {
+  const t = String(s || '').trim();
+  let m = t.match(/^([A-Za-z]{3})[a-z]*\.?\s+(\d{1,2}),?\s+(\d{4})$/), mon, day, year;
+  if (m) [, mon, day, year] = m;
+  else if ((m = t.match(/^(\d{1,2})\s+([A-Za-z]{3})[a-z]*\.?,?\s+(\d{4})$/))) [, day, mon, year] = m;
+  else return null;
+  const mm = MONTHS[mon.toLowerCase()], dd = Number(day);
+  if (!mm || dd < 1 || dd > 31) return null;
+  return year + '-' + String(mm).padStart(2, '0') + '-' + String(dd).padStart(2, '0');
+}
+/** The release date in an appdetails answer, or null. */
+export function steamDay(appId, j) {
+  const d = j && j[appId];
+  return (d && d.success && d.data && d.data.release_date && steamDate(d.data.release_date.date)) || null;
+}
+
 /** A game's trailers from an appdetails answer, best first: [[movieId, path], ...]. */
 export function steamTrailers(appId, j) {
   const d = j && j[appId];
@@ -28,31 +47,33 @@ export function steamTrailers(appId, j) {
 }
 
 /**
- * Ask Steam for the trailers of each game (Steam app ids, most popular first), the never-asked
- * first, then any asked two months ago. Steam allows about 200 store requests in five minutes.
- * Cache 'steam-movies': { appId: { t: [[movieId, path], ...] } | { none } }.
+ * Ask Steam for the trailers and release date of each game (Steam app ids, most popular first),
+ * the never-asked first, then any asked before release dates were kept, then any asked two months
+ * ago. Steam allows about 200 store requests in five minutes.
+ * Cache 'steam-movies': { appId: { t: [[movieId, path], ...], day } | { none, day } }.
  */
 export async function refreshGameTrailers(appIds, { budgetMin = 55, maxAgeDays = 60 } = {}) {
   const cache = loadCache('steam-movies');
   const stale = Date.now() - maxAgeDays * DAY;
   const fresh = appIds.filter((id) => !cache[id]);
-  const old = appIds.filter((id) => cache[id] && cache[id].at < stale).sort((a, b) => cache[a].at - cache[b].at);
+  const undated = appIds.filter((id) => cache[id] && !('day' in cache[id]));
+  const old = appIds.filter((id) => cache[id] && 'day' in cache[id] && cache[id].at < stale).sort((a, b) => cache[a].at - cache[b].at);
   const deadline = Date.now() + budgetMin * 60e3;
-  log(`game trailers: ${fresh.length} never asked, ${old.length} due again`);
+  log(`game trailers: ${fresh.length} never asked, ${undated.length} without a release date, ${old.length} due again`);
   let n = 0, found = 0, failedRun = 0;
-  for (const id of [...fresh, ...old]) {
+  for (const id of [...fresh, ...undated, ...old]) {
     if (Date.now() > deadline) break;
     let j;
     try {
-      j = await get(`${API}?appids=${id}&filters=movies&cc=us&l=english`, { paceMs: 1600 });
+      j = await get(`${API}?appids=${id}&filters=movies,release_date&cc=us&l=english`, { paceMs: 1600 });
       failedRun = 0;
     } catch (e) {
       log(`game trailers: ${id}: ${e.message}`);
       if (++failedRun >= 20) { log('game trailers: stopping after 20 failures in a row'); break; }
       continue;
     }
-    const t = steamTrailers(id, j);
-    cache[id] = t.length ? { t, at: Date.now() } : { none: true, at: Date.now() };
+    const t = steamTrailers(id, j), day = steamDay(id, j);
+    cache[id] = t.length ? { t, day, at: Date.now() } : { none: true, day, at: Date.now() };
     n++;
     if (t.length) found++;
     if (n % 100 === 0) saveCache('steam-movies', cache);

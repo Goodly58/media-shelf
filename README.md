@@ -76,8 +76,8 @@ Every number is read from its source by `scripts/refresh/`. Nothing is typed in,
 | **IMDb** | Ratings and votes, genres, runtimes, directors, the cast and their parts, every episode's rating |
 | **Metacritic** | The critics' Metascore and the users' score, each with its count |
 | **Rotten Tomatoes** | The Tomatometer and the Popcornmeter |
-| **Steam** | Review scores and counts, tags, game trailers |
-| **Goodreads** | Book ratings, shelves, new books from its genre lists |
+| **Steam** | Review scores and counts, tags, release dates, game trailers |
+| **Goodreads** | Book ratings, shelves, first publication dates, new books from its genre lists |
 | **Wikidata · Wikipedia** | Links between sites, awards, subgenres and themes, posters and summaries |
 | **TMDB · KinoCheck · YouTube** | Trailers, cast photos, release dates, posters Wikipedia lacks |
 | **TVmaze · Open Library** | Series posters, book covers |
@@ -101,11 +101,11 @@ Every Monday a GitHub Action re-reads the sources, commits the new data and rede
 | IMDb | The official datasets: titles, ratings, crew, principals (the billed cast, with parts) and episodes |
 | Metacritic | The backend metacritic.com itself uses, matched by IMDb id or Wikidata link; users' scores with their counts from each title's stats |
 | Rotten Tomatoes | Each title's own page, at the address Wikidata records (or RT's own address where Wikidata has none) |
-| Steam | The store's review summary and each game's videos (HLS streams, played by the trailer feed) |
-| Goodreads | Genre lists for new books, then each book's own page by its Goodreads id or ISBN |
+| Steam | The store's review summary from its browse API, 50 games a request, and each game's release date and videos (HLS streams, played by the trailer feed) |
+| Goodreads | Genre lists for new books, then each book's own page (rating, shelves, first publication date) by its Goodreads id or ISBN |
 | Wikipedia | Each article's categories, for the subgenres, themes and countries of films and series |
 | Wikidata | Links between sites, and award winners: Oscars, Palme d'Or, Golden Lion, Golden Bear, BAFTA, Golden Globes, Emmys, Pulitzer, Booker, International Booker, National Book Award, Hugo, Nebula, Women's Prize, Newbery, The Game Awards, BAFTA Games, D.I.C.E., GDC and Golden Joystick |
-| TMDB | Trailers (with `TMDB_API_KEY` set as a repository secret), cast photos matched by name to IMDb's cast, posters where Wikipedia has none, and recent films' release dates in cinemas, on digital, on streaming services and on disc (the US's, or the film's own country's), checked daily |
+| TMDB | Trailers (with `TMDB_API_KEY` set as a repository secret), cast photos matched by name to IMDb's cast, posters where Wikipedia has none, recent films' release dates in cinemas, on digital, on streaming services and on disc (the US's, or the film's own country's), checked daily, and every film's release day and series' premiere |
 | KinoCheck, YouTube | More trailers, up to two backups per title; every video in use is checked with YouTube's oEmbed each month |
 | Open Library | Book covers, fetched once, shrunk to WebP and kept in `covers/`, so they load from GitHub's CDN |
 

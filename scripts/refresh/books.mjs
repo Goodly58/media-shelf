@@ -48,6 +48,17 @@ export async function goodreadsById(id) {
   return goodreadsPage(`https://www.goodreads.com/book/show/${id}`);
 }
 
+const MONTH_NAMES = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+/** When a book first came out, from its Goodreads page ("First published June 1, 1965", or
+    "Published March 3, 2020 by Tor" for one in its first edition) as 1965-06-01; null without a day. */
+export function publishedOn(html) {
+  const m = String(html || '').match(/data-testid="publicationInfo"[^>]*>\s*(?:First published|Published|Expected publication)\s+([A-Za-z]+)\s+(\d{1,2}),\s+(\d{4})/);
+  if (!m) return null;
+  const mon = MONTH_NAMES.indexOf(m[1].toLowerCase()) + 1, day = Number(m[2]);
+  if (!mon || day < 1 || day > 31) return null;
+  return m[3] + '-' + String(mon).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+}
+
 async function goodreadsPage(url) {
   const res = await get(url, { type: 'response', paceMs: 2200, headers: { Accept: 'text/html' } });
   if (!res) return null;
@@ -64,7 +75,7 @@ async function goodreadsPage(url) {
   const genres = [...new Set([...html.matchAll(/BookPageMetadataSection__genreButton"><a href="https:\/\/www\.goodreads\.com\/genres\/[^"]+"[^>]*><span class="Button__labelItem">([^<]+)</g)].map((m) => decode(m[1])))];
   // The cover on the page (Goodreads' placeholder for a book without one does not count).
   const img = typeof ld.image === 'string' && /^https:\/\//.test(ld.image) && !/nophoto/i.test(ld.image) ? ld.image : null;
-  return { rating: Number(ar.ratingValue), count: Number(ar.ratingCount), title: decode(ld.name || ''), author: decode(author || ''), id, isbn: ld.isbn || null, genres, img };
+  return { rating: Number(ar.ratingValue), count: Number(ar.ratingCount), title: decode(ld.name || ''), author: decode(author || ''), id, isbn: ld.isbn || null, genres, img, pub: publishedOn(html) };
 }
 
 /**
@@ -84,8 +95,9 @@ export async function refreshBooks(books, { budgetMin = 60, maxAgeDays = 45, olO
     // Twenty books in a row with every request failing: Goodreads is down or blocking, so stop.
     if (streak >= 20) { log('books: Goodreads keeps failing; stopping early'); break; }
     const k = key(b);
-    // Fresh and complete (a rating with its genre shelves, or a confirmed miss): nothing to do.
-    if (gr[k] && gr[k].at > stale && (gr[k].none || gr[k].genres)) continue;
+    // Fresh and complete (a rating with its genre shelves and first-published date, or a confirmed
+    // miss): nothing to do. A page read before dates were kept is read again.
+    if (gr[k] && gr[k].at > stale && (gr[k].none || (gr[k].genres && 'pub' in gr[k]))) continue;
     // Open Library supplies the cover and first-publication year, and ISBNs when there is no Goodreads id.
     if ((!b.gr || !b.cover || !b.year) && (!ol[k] || (!olOnlyMissing && ol[k].at < stale))) {
       try { ol[k] = { ...(await openLibrary(b)), at: Date.now() }; } catch (e) { log(`openlibrary ${b.title}: ${e.message}`); }

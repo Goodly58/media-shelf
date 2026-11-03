@@ -1,16 +1,25 @@
-/* Steam: review scores from the store's own public review endpoint, player
-   tags from SteamSpy, and the list of popular PC games for discovering
-   titles the catalogue is missing. */
+/* Steam: review scores and artwork from the store's own browse API, player tags from SteamSpy,
+   and the list of popular PC games for discovering titles the catalogue is missing. */
 import { get, log, loadCache, saveCache } from './lib.mjs';
+import { steamDate } from './gametrailers.mjs';
 
-/** Share of positive reviews and the review count, straight from Steam. */
-export async function steamReviews(appId) {
-  const j = await get(`https://store.steampowered.com/appreviews/${appId}?json=1&language=all&purchase_type=all&num_per_page=0`, { paceMs: 1600 });
-  const q = j?.query_summary;
-  if (!j?.success || !q || !q.total_reviews) return { score: null, n: 0 };
-  return { score: Math.round((q.total_positive / q.total_reviews) * 100), n: q.total_reviews };
+const BROWSE = 'https://api.steampowered.com/IStoreBrowseService/GetItems/v1/';
+/** The store's browse API for up to 50 apps at once, asking for the given parts of each. */
+function browse(appIds, dataRequest) {
+  const input = { ids: appIds.map((appid) => ({ appid })), context: { language: 'english', country_code: 'US' }, data_request: dataRequest };
+  return get(`${BROWSE}?input_json=${encodeURIComponent(JSON.stringify(input))}`, { paceMs: 1500 });
 }
 
+/** A game's review score as the store shows it ("Very Positive, 92%"): the share of positive
+    reviews and their count, from a browse API item; no score without reviews. */
+export function reviewSummary(it) {
+  const s = it && it.reviews && it.reviews.summary_filtered;
+  return s && s.review_count > 0 && Number.isFinite(s.percent_positive) ? { score: s.percent_positive, n: s.review_count } : { score: null, n: 0 };
+}
+
+/* Review scores, 50 games a request. (Steam's appreviews endpoint, read one game at a time until
+   November 2026, now sends every request to the store's front page.) A game the store no longer
+   lists stays due and is asked again next time. */
 export async function refreshReviews(appIds, { budgetMin = 60, maxAgeDays = 14 } = {}) {
   const cache = loadCache('steam-reviews');
   const stale = Date.now() - maxAgeDays * 864e5;
@@ -18,13 +27,19 @@ export async function refreshReviews(appIds, { budgetMin = 60, maxAgeDays = 14 }
   const todo = appIds.filter((id) => !cache[id] || cache[id].at < stale);
   log(`steam reviews: ${todo.length} of ${appIds.length} due`);
   let done = 0;
-  for (const id of todo) {
+  for (let i = 0; i < todo.length; i += 50) {
     if (Date.now() > deadline) break;
-    try { cache[id] = { ...(await steamReviews(id)), at: Date.now() }; }
-    catch (e) { log(`steam ${id}: ${e.message}`); continue; }
-    if (++done % 100 === 0) { saveCache('steam-reviews', cache); log(`steam reviews: ${done}/${todo.length}`); }
+    let j;
+    try { j = await browse(todo.slice(i, i + 50), { include_reviews: true }); }
+    catch (e) { log(`steam reviews batch ${i}: ${e.message}`); continue; }
+    for (const it of j?.response?.store_items || []) {
+      if (!it || it.success !== 1 || !it.appid) continue;
+      cache[it.appid] = { ...reviewSummary(it), at: Date.now() };
+      done++;
+    }
   }
   saveCache('steam-reviews', cache);
+  log(`steam reviews: ${done} read`);
   return cache;
 }
 
@@ -76,7 +91,7 @@ export async function appDetails(appId) {
   const x = d.data;
   const year = Number((x.release_date?.date || '').match(/\d{4}/)?.[0]) || null;
   return {
-    type: x.type, name: x.name, year, comingSoon: Boolean(x.release_date?.coming_soon),
+    type: x.type, name: x.name, year, day: steamDate(x.release_date?.date), comingSoon: Boolean(x.release_date?.coming_soon),
     genres: (x.genres || []).map((g) => g.description),
     isFree: Boolean(x.is_free),
   };
@@ -93,9 +108,8 @@ export async function refreshAssets(appIds, { maxAgeDays = 30 } = {}) {
   log(`steam assets: ${todo.length} of ${appIds.length} due`);
   for (let i = 0; i < todo.length; i += 50) {
     const chunk = todo.slice(i, i + 50);
-    const input = { ids: chunk.map((appid) => ({ appid })), context: { language: 'english', country_code: 'US' }, data_request: { include_assets: true } };
     let j;
-    try { j = await get(`https://api.steampowered.com/IStoreBrowseService/GetItems/v1/?input_json=${encodeURIComponent(JSON.stringify(input))}`, { paceMs: 1500 }); }
+    try { j = await browse(chunk, { include_assets: true }); }
     catch (e) { log(`steam assets batch ${i}: ${e.message}`); continue; }
     const seen = new Set();
     for (const it of j?.response?.store_items || []) {

@@ -77,6 +77,8 @@ for (const kind of Object.keys(MIN)) {
     }
     if (r.genres && !Array.isArray(r.genres)) fail.push(`${kind} ${r.id}: genres is not a list`);
     if (r.aw != null && !(Array.isArray(r.aw) && r.aw.every((a) => Array.isArray(a) && a.length >= 3 && a.every((x) => typeof x === 'string')))) fail.push(`${kind} ${r.id}: awards are not [key, years, category, ...] lists`);
+    // The day it first came out (Newest and Oldest within a year): a date, and not one far in the future.
+    if (r.day != null && !(typeof r.day === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(r.day) && r.day.slice(0, 4) <= String(new Date().getFullYear() + 2))) fail.push(`${kind} ${r.id}: day ${r.day} is not a date`);
     // Release dates (scripts/refresh/releases.mjs): a country, then dates in cinemas, digital and on disc.
     if (r.rel != null) {
       const x = r.rel, D = /^\d{4}-\d{2}-\d{2}$/;

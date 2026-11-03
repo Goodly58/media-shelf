@@ -51,6 +51,11 @@ export function broadGenres(labels) {
 
 /* -------------------------------------------------------------- screen */
 
+// Films of this year and last carry their release dates in cinemas, on digital and on disc.
+const RECENT = new Date().getFullYear() - 1;
+/** The first of a film's release dates (releases.mjs releaseInfo), or null. */
+export function firstOfRel(rel) { return (rel && [rel.t, rel.d, rel.p].filter(Boolean).sort()[0]) || null; }
+
 /** The backup trailers of each title, for the player: data/{movies,shows}-trailers.json. */
 function readBackups(kind) {
   try { return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', `${kind}-trailers.json`), 'utf8')); } catch { return {}; }
@@ -119,9 +124,12 @@ export async function mergeScreen(prevMovies, prevShows) {
       img: (t.kind === 'shows' && (tvmaze[t.id]?.img || (/tvmaze/.test(o.img || '') ? o.img : null))) || wikiImg || o.img ||
         (posters[t.id]?.p ? TMDB_IMG + posters[t.id].p : null),
       wiki: w.wiki || o.wiki || null,
-      // When a recent film reached (or reaches) cinemas, digital and Blu-ray (releases.mjs); a film
-      // TMDB has not been asked about keeps what it had.
-      rel: t.kind === 'movies' ? (releases[t.id] ? releases[t.id].rel || null : o.rel || null) : null,
+      // When a film of this year or last reached (or reaches) cinemas, digital and Blu-ray
+      // (releases.mjs); a film TMDB has not been asked about keeps what it had.
+      rel: t.kind === 'movies' && t.year >= RECENT ? (releases[t.id] ? releases[t.id].rel || null : o.rel || null) : null,
+      // The day it first came out, for Newest and Oldest within a year: TMDB's release date or
+      // first air date, else the first of a film's release dates, else the last one known.
+      day: releases[t.id]?.day || firstOfRel(releases[t.id]?.rel) || o.day || null,
       blurb: o.blurb || null,
       // A YouTube trailer for the reels view (its backups go to their own file, read only by the
       // player). Until a source has looked at a title, the last ones stand.
@@ -332,6 +340,7 @@ export function mergeGames(prevGames, { newApps = [] } = {}) {
   const reviews = loadCache('steam-reviews');
   const tags = loadCache('steam-tags');
   const details = loadCache('steam-details');
+  const movies = loadCache('steam-movies');
   const wds = loadCache('wikidata-steam');
   const mcg = loadCache('mc-games');
   const mcUser = loadCache('mc-user');
@@ -380,6 +389,8 @@ export function mergeGames(prevGames, { newApps = [] } = {}) {
       ign: g.ign ?? null, ignUrl: g.ignUrl ?? null,
       tags: g.tags || [], wiki: g.wiki || null, img: g.img || null, free: g.free || null,
       blurb: g.blurb || null,
+      // Steam's release date (gametrailers.mjs asks for it with the trailers), else the last one known.
+      day: (g.steamId && movies[g.steamId]?.day) || g.day || null,
     }));
   }
 
@@ -399,7 +410,7 @@ export function mergeGames(prevGames, { newApps = [] } = {}) {
     rows.push(finish({
       id: null, title: decode(d.name), year: d.year,
       genres: [classifyGame(tg?.tags) || 'Action'], steamId: a.appId,
-      free: d.isFree || null,
+      free: d.isFree || null, day: movies[a.appId]?.day || d.day || null,
     }));
   }
 
@@ -499,8 +510,9 @@ export function mergeBooks(prevBooks) {
       cover: ol[k]?.cover || b.cover || null,
       blurb: b.blurb || null,
       cv: b.cv || null,   // replaced by setCoverFiles, which keeps it while a new cover is on its way
+      day: b.day || null,   // when it first came out (Goodreads' "First published"), for Newest within a year
     };
-    if (g && g.rating) { row.rating = g.rating; row.ratings = g.count; row.gr = g.id || row.gr; row.isbn = g.isbn || row.isbn; fresh++; }
+    if (g && g.rating) { row.rating = g.rating; row.ratings = g.count; row.gr = g.id || row.gr; row.isbn = g.isbn || row.isbn; if (g.pub) row.day = g.pub; fresh++; }
     else if (row.rating != null) kept++;
     else { dropped++; continue; }
     // Goodreads' own shelves decide genres and tags once a book has been read from its page.
@@ -536,7 +548,7 @@ export function mergeBooks(prevBooks) {
     const shelves = g?.genres?.length && g.id === b.gr ? g.genres : null;
     row.genres = bookGenres(shelves, [bookGenre(b.genre, ol[k]?.subjects)]);
     row.tags = bookTags(shelves, ol[k]?.subjects);
-    if (g && g.rating && g.id === b.gr) { row.rating = g.rating; row.ratings = g.count; row.isbn = g.isbn || null; }
+    if (g && g.rating && g.id === b.gr) { row.rating = g.rating; row.ratings = g.count; row.isbn = g.isbn || null; row.day = g.pub || null; }
     row.year = ol[k]?.year || null;
     row.cover = ol[k]?.cover || null;
     if (row.isbn && editions[row.isbn]?.cover) row.cover = editions[row.isbn].cover;

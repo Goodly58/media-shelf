@@ -304,8 +304,9 @@
     az: function (a, b) { return a.title.localeCompare(b.title); },
     author: function (a, b) { return lastName(a.author).localeCompare(lastName(b.author)) || (a.year || 0) - (b.year || 0); },
   };
-  /* The day a film first came out: in cinemas, on a service or on disc, whichever came first. */
-  function firstDay(r) { var x = r.rel; return (x && [x.t, x.d, x.p].filter(Boolean).sort()[0]) || null; }
+  /* The day a title first came out (r.day: a film's release, a series' premiere, a game's release on
+     Steam, a book's first publication), else the first of a recent film's release dates. */
+  function firstDay(r) { var x = r.rel; return r.day || (x && [x.t, x.d, x.p].filter(Boolean).sort()[0]) || null; }
   /* Earlier day first (later first with later); a title without one after those with one. */
   function byDay(a, b, later) {
     var x = a._day, y = b._day;

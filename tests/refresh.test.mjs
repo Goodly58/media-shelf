@@ -1,11 +1,13 @@
 /* Unit tests for the refresh pipeline's matching and cleaning rules. No
    network: these are the pure functions that decide what gets written. */
 import fs from 'node:fs';
-import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid, setCoverFiles, isVideoExtra, mergeCredits } from '../scripts/refresh/merge.mjs';
+import { slugify, broadGenres, articleMatches, classifyGame, bookGenre, shapeGrid, setCoverFiles, isVideoExtra, mergeCredits, firstOfRel } from '../scripts/refresh/merge.mjs';
 import { episodeTitle, castNames, character } from '../scripts/refresh/imdb.mjs';
 import { tmdbFaces, facesFor } from '../scripts/refresh/castphotos.mjs';
 import { tmdbPoster } from '../scripts/refresh/posters.mjs';
-import { releaseInfo, releaseDue, service } from '../scripts/refresh/releases.mjs';
+import { releaseInfo, releaseDue, service, primaryDay, VERSION } from '../scripts/refresh/releases.mjs';
+import { publishedOn } from '../scripts/refresh/books.mjs';
+import { reviewSummary } from '../scripts/refresh/steam.mjs';
 import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTags, clientTaxonomy } from '../scripts/refresh/taxonomy.mjs';
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
@@ -13,7 +15,7 @@ import { pickTrailer, pickTrailers, kinoPick, kinoRanked, tmdbPick, tmdbRanked }
 import { slugRT, audienceOf } from '../scripts/refresh/rottentomatoes.mjs';
 import { userOf } from '../scripts/refresh/metacritic.mjs';
 import { coverStem } from '../scripts/refresh/covers.mjs';
-import { steamTrailers } from '../scripts/refresh/gametrailers.mjs';
+import { steamTrailers, steamDate, steamDay } from '../scripts/refresh/gametrailers.mjs';
 import { category } from '../scripts/refresh/awards.mjs';
 
 let pass = 0, fail = 0;
@@ -245,9 +247,25 @@ ok('a note that names no service is plain digital', service('IMAX') === null && 
 ok('HBO, the channel, is not streaming (Max is)', service('HBO') === null && service('Max') === 'Max');
 const at = Date.parse('2026-10-30T12:00:00Z');
 ok('never asked: due', releaseDue(undefined, at));
-ok('a film in cinemas is asked again the next day', releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 864e5, v: 2 }, at) && !releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 3600e3, v: 2 }, at));
-ok('one at home for months is asked monthly', !releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 10 * 864e5, v: 2 }, at) && releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 31 * 864e5, v: 2 }, at));
+ok('a film in cinemas is asked again the next day', releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 864e5, v: VERSION }, at) && !releaseDue({ rel: { c: 'US', t: '2026-10-03' }, at: at - 3600e3, v: VERSION }, at));
+ok('one at home for months is asked monthly', !releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 10 * 864e5, v: VERSION }, at) && releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 31 * 864e5, v: VERSION }, at));
 ok('dates worked out by an older version are asked again', releaseDue({ rel: { c: 'US', t: '2026-03-06', d: '2026-04-21' }, at: at - 3600e3 }, at));
+ok('an older film or a series is asked once a year', !releaseDue({ rel: null, day: '1994-09-23', at: at - 200 * 864e5, v: VERSION }, at, false) && releaseDue({ rel: null, day: '1994-09-23', at: at - 370 * 864e5, v: VERSION }, at, false));
+
+console.log('Steam reviews');
+const item = { success: 1, appid: 1174180, reviews: { summary_filtered: { review_count: 859596, percent_positive: 92, review_score: 8, review_score_label: 'Very Positive' } } };
+ok('the store\'s own score and count', JSON.stringify(reviewSummary(item)) === '{"score":92,"n":859596}', JSON.stringify(reviewSummary(item)));
+ok('no reviews, no score', reviewSummary({ success: 1, appid: 1, reviews: { summary_filtered: { review_count: 0, percent_positive: 0 } } }).score === null && reviewSummary({ success: 1, appid: 1 }).score === null && reviewSummary(null).score === null);
+
+console.log('release days');
+ok('a film\'s day is TMDB\'s release date, a series\' its first air date', primaryDay({ release_date: '1994-09-23' }, 'movies') === '1994-09-23' && primaryDay({ first_air_date: '2008-01-20', release_date: '1999-01-01' }, 'shows') === '2008-01-20');
+ok('no date, or not a date, is no day', primaryDay({ release_date: '' }, 'movies') === null && primaryDay(null, 'movies') === null && primaryDay({ release_date: '2026' }, 'movies') === null);
+ok('the first of a film\'s release dates', firstOfRel({ c: 'US', t: '2026-07-17', d: '2026-11-17', p: '2026-11-17' }) === '2026-07-17' && firstOfRel({ c: 'US', d: '2026-07-03', dn: 'ZEE5' }) === '2026-07-03' && firstOfRel(null) === null);
+ok('Steam\'s release dates, both ways round', steamDate('Dec 5, 2019') === '2019-12-05' && steamDate('5 Dec, 2019') === '2019-12-05' && steamDate('Sept 30, 2024') === '2024-09-30' && steamDate('November 14, 2023') === '2023-11-14');
+ok('a Steam date not set yet is no day', steamDate('Coming soon') === null && steamDate('Q1 2027') === null && steamDate('2027') === null && steamDate('To be announced') === null && steamDate('') === null);
+ok('the day in an appdetails answer', steamDay(1174180, { 1174180: { success: true, data: { release_date: { coming_soon: false, date: 'Dec 5, 2019' }, movies: [] } } }) === '2019-12-05' && steamDay(1, { 1: { success: false } }) === null && steamDay(1, null) === null);
+ok('a book\'s first publication on its Goodreads page', publishedOn('<p data-testid="publicationInfo">First published June 1, 1965</p>') === '1965-06-01' && publishedOn('<p data-testid="publicationInfo">Published March 3, 2020 by Tor Books</p>') === '2020-03-03' && publishedOn('<p data-testid="publicationInfo">Expected publication May 5, 2027</p>') === '2027-05-05');
+ok('a Goodreads page without a day is no day', publishedOn('<p data-testid="publicationInfo">First published 1965</p>') === null && publishedOn('<html></html>') === null && publishedOn(null) === null);
 
 console.log('TMDB posters');
 const found = { movie_results: [{ id: 1, poster_path: '/qJ2tW6WMUDux911r6m7haRef0WH.jpg' }], tv_results: [{ id: 2, poster_path: '/ggFHVNu6YYI5L9pCfOacjizRGt.jpg' }] };
