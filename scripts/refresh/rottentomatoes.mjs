@@ -36,7 +36,7 @@ export async function rtScore(path) {
   let card = null;
   try { card = JSON.parse(html.slice(s, html.indexOf('</script>', s))); } catch {}
   const cs = card?.criticsScore || {};
-  const score = cs.score === '' || cs.score == null ? null : Number(cs.score);
+  const score = scoreOf(cs);
   // The page's structured data near the top carries its release date.
   const year = Number((html.match(/"dateCreated":"(\d{4})/) || [])[1]) || null;
   return {
@@ -49,6 +49,23 @@ export async function rtScore(path) {
   };
 }
 
+/* Rotten Tomatoes dropped its scorecard's "score" field in November 2026 (scoreOf now reads
+   scorePercent). Pages read between then and the fix came back without a score although they had
+   one, and guessed addresses came back as misses: entries carry the parser that read them (p),
+   and those read by the old one since the break are read again. */
+const PARSER = 2, BROKE = Date.parse('2026-11-03');
+export function misread(c) {
+  return Boolean(c) && c.p !== PARSER && c.at >= BROKE && (c.none || (c.score == null && !c.missing && !c.mismatch));
+}
+
+/** A scorecard half's score as a number: its score field, or (since November 2026, when RT
+    dropped that) its scorePercent, "94%"; null when the page gives none. */
+export function scoreOf(half) {
+  const v = half?.score != null && half.score !== '' ? half.score : String(half?.scorePercent ?? '').replace('%', '').trim();
+  const n = v === '' ? NaN : Number(v);
+  return Number.isFinite(n) ? n : null;
+}
+
 /**
  * The audience half of a page's scorecard: { aud, audN }. RT publishes how many rated
  * a title only in bands ("25,000+ Ratings", "5,000+ Verified Ratings"), so audN is the
@@ -57,7 +74,7 @@ export async function rtScore(path) {
 export function audienceOf(card) {
   const a = card?.audienceScore || {};
   const band = String(a.bandedRatingCount || '');
-  const score = a.score === '' || a.score == null ? null : Number(a.score);
+  const score = scoreOf(a);
   // Not out yet (RT hides the score), or too few ratings for RT to give one.
   if (card?.hideAudienceScore || !Number.isFinite(score) || /fewer/i.test(band)) return { aud: null, audN: null };
   return { aud: score, audN: Number(band.replace(/\D/g, '')) || null };
@@ -85,7 +102,7 @@ export async function findRT(titles, { budgetMin = 12, maxAgeDays = 90, cacheNam
   const cache = loadCache(cacheName);
   const stale = Date.now() - maxAgeDays * 864e5;
   const deadline = Date.now() + budgetMin * 60e3;
-  const todo = titles.filter((t) => !cache[t.id] || cache[t.id].at < stale);
+  const todo = titles.filter((t) => !cache[t.id] || cache[t.id].at < stale || misread(cache[t.id]));
   let n = 0, found = 0;
   for (const t of todo) {
     if (Date.now() > deadline) break;
@@ -100,7 +117,7 @@ export async function findRT(titles, { budgetMin = 12, maxAgeDays = 90, cacheNam
       // A guessed page must also have a score: an unscored one is too thin to tell a namesake apart.
       if (r && !r.missing && r.score != null && same(r.title, t.title) && r.year && Math.abs(r.year - t.year) <= 2) { hit = r; break; }
     }
-    cache[t.id] = hit ? { ...hit, at: Date.now() } : { none: true, at: Date.now() };
+    cache[t.id] = hit ? { ...hit, at: Date.now(), p: PARSER } : { none: true, at: Date.now(), p: PARSER };
     n++;
     if (hit) found++;
     if (n % 50 === 0) saveCache(cacheName, cache);
@@ -119,8 +136,9 @@ export async function refreshRT(titles, { budgetMin = 60, maxAgeDays = 30, cache
   const others = cacheName === 'rt' ? {} : loadCache('rt');
   const stale = Date.now() - maxAgeDays * 864e5;
   const deadline = Date.now() + budgetMin * 60e3;
-  // Up to date: read lately, from this address, since pages were read for the audience score too.
-  const upToDate = (c, t) => c && c.src === t.rt && c.at >= stale && (c.missing || c.mismatch || 'aud' in c);
+  // Up to date: read lately, from this address, since pages were read for the audience score too,
+  // and not misread in November 2026's break.
+  const upToDate = (c, t) => c && c.src === t.rt && c.at >= stale && (c.missing || c.mismatch || 'aud' in c) && !misread(c);
   const todo = titles.filter((t) => t.rt && !upToDate(cache[t.id], t) && !upToDate(others[t.id], t));
   log(`rt: ${todo.length} of ${titles.length} due`);
   let done = 0, scored = 0, mismatch = 0;
@@ -134,7 +152,7 @@ export async function refreshRT(titles, { budgetMin = 60, maxAgeDays = 30, cache
       const a = fold(r.title), b = fold(t.title);
       if (a && b && !a.includes(b) && !b.includes(a) && !sharesWords(a, b)) { r = { ...r, score: null, mismatch: true }; mismatch++; }
     }
-    cache[t.id] = { ...r, src: t.rt, at: Date.now() };
+    cache[t.id] = { ...r, src: t.rt, at: Date.now(), p: PARSER };
     done++;
     if (r.score != null) scored++;
     if (done % 100 === 0) { saveCache(cacheName, cache); log(`rt: ${done}/${todo.length}, ${scored} scored, ${mismatch} mismatched`); }

@@ -12,7 +12,7 @@ import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTag
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
 import { pickTrailer, pickTrailers, kinoPick, kinoRanked, tmdbPick, tmdbRanked } from '../scripts/refresh/trailers.mjs';
-import { slugRT, audienceOf } from '../scripts/refresh/rottentomatoes.mjs';
+import { slugRT, audienceOf, scoreOf, misread } from '../scripts/refresh/rottentomatoes.mjs';
 import { userOf } from '../scripts/refresh/metacritic.mjs';
 import { coverStem } from '../scripts/refresh/covers.mjs';
 import { steamTrailers, steamDate, steamDay } from '../scripts/refresh/gametrailers.mjs';
@@ -126,6 +126,13 @@ ok('RT audience: score and the band it comes from', JSON.stringify(audienceOf(ca
 ok('RT audience: verified ratings count the same way', audienceOf(card({ score: '85', bandedRatingCount: '5,000+ Verified Ratings' })).audN === 5000);
 ok('RT audience: too few ratings is no score', audienceOf(card({ score: '90', bandedRatingCount: 'Fewer than 50 Ratings' })).aud === null);
 ok('RT audience: a hidden score is no score', audienceOf(card({ score: '90', bandedRatingCount: '250+ Ratings' }, true)).aud === null);
+// November 2026: RT's scorecard dropped "score" and gives only "scorePercent".
+ok('RT: the score from scorePercent, "94%"', scoreOf({ scorePercent: '94%', reviewCount: 337 }) === 94 && scoreOf({ score: '79' }) === 79);
+ok('RT: no score when the page gives none', scoreOf({ scorePercent: '' }) === null && scoreOf({}) === null && scoreOf(null) === null);
+ok('RT audience: the new format, score and band', JSON.stringify(audienceOf(card({ scorePercent: '94%', bandedRatingCount: '250,000+ Ratings' }))) === '{"aud":94,"audN":250000}');
+const nov9 = Date.parse('2026-11-09T13:00:00Z');
+ok('RT: a page read without a score in the break is read again', misread({ score: null, n: 337, aud: null, at: nov9 }) && misread({ none: true, at: nov9 }));
+ok('RT: but not one read before it, by the fixed parser, or missing or another film\'s', !misread({ score: null, n: 3, at: Date.parse('2026-10-20') }) && !misread({ score: null, n: 3, at: nov9, p: 2 }) && !misread({ missing: true, at: nov9 }) && !misread({ score: null, mismatch: true, at: nov9 }) && !misread({ score: 94, at: nov9 }) && !misread(undefined));
 ok('RT audience: none at all', audienceOf(card({ score: '' })).aud === null && audienceOf(null).aud === null);
 ok('Metacritic users: score and count', JSON.stringify(userOf({ data: { item: { score: 7.1, reviewCount: 2061 } } })) === '{"score":7.1,"n":2061}');
 ok('Metacritic users: nobody has rated it', userOf({ data: { item: { score: 0, reviewCount: 0 } } }).score === null);
