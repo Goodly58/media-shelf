@@ -153,14 +153,18 @@ export async function mergeScreen(prevMovies, prevShows) {
     // A page with too few critics for a Tomatometer keeps its count, so the site can say so.
     const g = rtFound[t.id];
     const page = r && !r.missing && !r.mismatch ? r : g && !g.none ? g : null;
-    if (page) {
+    // A page that counts five or more critics yet gives no score, for a title that had one, was
+    // misread (RT reshaped its page in November 2026 and every score came back empty): the last
+    // scores stand until it is read properly.
+    const misread = page && page.score == null && page.n >= 5 && o.rt != null;
+    if (page && !misread) {
       if (page.score != null) { row.rt = page.score; row.rtN = page.n; row.rtPath = page.path; }
       else if (page.n > 0) { row.rtN = page.n; row.rtPath = page.path; }
       // The audience's score from the same page; a page read before it was keeps the last one.
       const read = 'aud' in page;
       const aud = read ? page.aud : o.rta ?? null;
       if (aud != null) { row.rta = aud; row.rtaN = read ? page.audN : o.rtaN || null; row.rtPath = page.path; }
-    } else if (!r && !g) {
+    } else if (misread || (!r && !g)) {
       if (o.rt != null) { row.rt = o.rt; row.rtN = o.rtN || null; row.rtPath = o.rtPath || null; }
       if (o.rta != null) { row.rta = o.rta; row.rtaN = o.rtaN || null; row.rtPath = o.rtPath || null; }
     }
