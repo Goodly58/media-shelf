@@ -12,7 +12,7 @@ import { screenTags, screenBroad, screenCountries, gameTags, bookGenres, bookTag
 import { fold } from '../scripts/refresh/lib.mjs';
 import { assess } from '../scripts/refresh/health.mjs';
 import { pickTrailer, pickTrailers, kinoPick, kinoRanked, tmdbPick, tmdbRanked } from '../scripts/refresh/trailers.mjs';
-import { slugRT, audienceOf, scoreOf, misread } from '../scripts/refresh/rottentomatoes.mjs';
+import { slugRT, audienceOf, scoreOf, misread, upToDate } from '../scripts/refresh/rottentomatoes.mjs';
 import { userOf } from '../scripts/refresh/metacritic.mjs';
 import { coverStem } from '../scripts/refresh/covers.mjs';
 import { steamTrailers, steamDate, steamDay } from '../scripts/refresh/gametrailers.mjs';
@@ -133,6 +133,17 @@ ok('RT audience: the new format, score and band', JSON.stringify(audienceOf(card
 const nov9 = Date.parse('2026-11-09T13:00:00Z');
 ok('RT: a page read without a score in the break is read again', misread({ score: null, n: 337, aud: null, at: nov9 }) && misread({ none: true, at: nov9 }));
 ok('RT: but not one read before it, by the fixed parser, or missing or another film\'s', !misread({ score: null, n: 3, at: Date.parse('2026-10-20') }) && !misread({ score: null, n: 3, at: nov9, p: 2 }) && !misread({ missing: true, at: nov9 }) && !misread({ score: null, mismatch: true, at: nov9 }) && !misread({ score: 94, at: nov9 }) && !misread(undefined));
+{
+  const at = Date.parse('2026-11-14T12:00:00Z'), days = (n) => at - n * 864e5;
+  const read = (n) => ({ src: 'm/x', at: days(n), score: 96, n: 226, aud: 95, p: 2 });
+  ok('RT: a recent title is read again after six days, the rest after a month',
+    !upToDate(read(6.5), { rt: 'm/x', recent: true }, at) && upToDate(read(5.5), { rt: 'm/x', recent: true }, at)
+    && upToDate(read(20), { rt: 'm/x' }, at) && !upToDate(read(31), { rt: 'm/x' }, at));
+  const { aud, ...beforeAudience } = read(1);
+  ok('RT: read again at a new address, without the audience score, or misread in the break',
+    !upToDate(read(1), { rt: 'm/y' }, at) && !upToDate(beforeAudience, { rt: 'm/x' }, at)
+    && !upToDate({ src: 'm/x', at: days(5), score: null, n: 337, aud: null }, { rt: 'm/x' }, at) && !upToDate(undefined, { rt: 'm/x' }, at));
+}
 ok('RT audience: none at all', audienceOf(card({ score: '' })).aud === null && audienceOf(null).aud === null);
 ok('Metacritic users: score and count', JSON.stringify(userOf({ data: { item: { score: 7.1, reviewCount: 2061 } } })) === '{"score":7.1,"n":2061}');
 ok('Metacritic users: nobody has rated it', userOf({ data: { item: { score: 0, reviewCount: 0 } } }).score === null);

@@ -157,16 +157,19 @@ await Promise.all([
   step('rt', async () => {
     const wd = loadCache('wikidata');
     const prev = new Map([...before.movies, ...before.shows].map((r) => [r.id, r]));
-    const titles = selected().map((t) => ({ id: t.id, title: t.title, votes: t.votes, rt: wd[t.id]?.rt })).filter((t) => t.rt)
-      // never-checked first, then the most popular
-      .sort((a, b) => (prev.get(a.id)?.rt != null) - (prev.get(b.id)?.rt != null) || b.votes - a.votes);
+    // Titles from last year on are read every week (their scores still move), the rest monthly.
+    const from = new Date().getFullYear() - 1;
+    const titles = selected().map((t) => ({ id: t.id, title: t.title, votes: t.votes, rt: wd[t.id]?.rt, recent: t.year >= from })).filter((t) => t.rt)
+      // never-checked first, then the recent ones, then the most popular
+      .sort((a, b) => (prev.get(a.id)?.rt != null) - (prev.get(b.id)?.rt != null) || b.recent - a.recent || b.votes - a.votes);
     // A catch-up run (--only) keeps to its budget: a quarter of it goes to finding missing pages.
     const findMin = ONLY ? Math.round(BUDGET / 4) : 12;
     await refreshRT(titles, { budgetMin: ONLY ? BUDGET - findMin : BUDGET });
     // Films with no usable link on Wikidata (none, or one to another film's page): RT's own addresses.
     const rtc = { ...loadCache('rt-b'), ...loadCache('rt') };
     const lost = selected().filter((t) => t.kind === 'movies' && (!wd[t.id]?.rt || rtc[t.id]?.mismatch || rtc[t.id]?.missing))
-      .sort((a, b) => b.votes - a.votes);
+      .map((t) => ({ ...t, recent: t.year >= from }))
+      .sort((a, b) => b.recent - a.recent || b.votes - a.votes);
     await findRT(lost, { budgetMin: findMin });
   }),
   step('mcusers', async () => {

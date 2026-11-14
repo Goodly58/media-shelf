@@ -58,6 +58,14 @@ export function misread(c) {
   return Boolean(c) && c.p !== PARSER && c.at >= BROKE && (c.none || (c.score == null && !c.missing && !c.mismatch));
 }
 
+/** Whether a title's last read stands: read from this address within a month (within six days for
+    a title from last year on, whose score still moves as reviews come in; the weekly run reads it
+    every week), after the audience score was added, and not misread in November 2026's break. */
+export function upToDate(c, t, now = Date.now(), { maxAgeDays = 30, recentDays = 6 } = {}) {
+  return Boolean(c) && c.src === t.rt && c.at >= now - (t.recent ? recentDays : maxAgeDays) * 864e5
+    && Boolean(c.missing || c.mismatch || 'aud' in c) && !misread(c);
+}
+
 /** A scorecard half's score as a number: its score field, or (since November 2026, when RT
     dropped that) its scorePercent, "94%"; null when the page gives none. */
 export function scoreOf(half) {
@@ -96,13 +104,16 @@ const same = (a, b) => fold(a).replace(/ /g, '') === fold(b).replace(/ /g, '');
  * together ("m/trollhunter"). A page counts only when its title is the same as ours and its
  * year within two of ours (a foreign film often reaches the US a year or two later), so a
  * remake or namesake never does.
- * titles: [{ id, title, year }]. Cache: { id: { score, n, title, year, path, at } | { none, at } }.
+ * A recent film (from last year on) is tried again within a week: its score still moves, and its
+ * page may not have been up at the last try.
+ * titles: [{ id, title, year, recent }]. Cache: { id: { score, n, title, year, path, at } | { none, at } }.
  */
-export async function findRT(titles, { budgetMin = 12, maxAgeDays = 90, cacheName = 'rt-guess' } = {}) {
+export async function findRT(titles, { budgetMin = 12, maxAgeDays = 90, recentDays = 6, cacheName = 'rt-guess' } = {}) {
   const cache = loadCache(cacheName);
-  const stale = Date.now() - maxAgeDays * 864e5;
-  const deadline = Date.now() + budgetMin * 60e3;
-  const todo = titles.filter((t) => !cache[t.id] || cache[t.id].at < stale || misread(cache[t.id]));
+  const now = Date.now();
+  const deadline = now + budgetMin * 60e3;
+  const due = (t, c) => !c || c.at < now - (t.recent ? recentDays : maxAgeDays) * 864e5 || misread(c);
+  const todo = titles.filter((t) => due(t, cache[t.id]));
   let n = 0, found = 0;
   for (const t of todo) {
     if (Date.now() > deadline) break;
@@ -128,18 +139,16 @@ export async function findRT(titles, { budgetMin = 12, maxAgeDays = 90, cacheNam
 }
 
 /**
- * Fetch RT scores for titles ({id, title, rt}) in the order given, skipping
- * any checked within maxAgeDays, until the time budget runs out.
+ * Fetch RT scores for titles ({id, title, rt, recent}) in the order given, skipping
+ * any whose last read stands (upToDate), until the time budget runs out.
  */
-export async function refreshRT(titles, { budgetMin = 60, maxAgeDays = 30, cacheName = 'rt' } = {}) {
+export async function refreshRT(titles, { budgetMin = 60, maxAgeDays = 30, recentDays = 6, cacheName = 'rt' } = {}) {
   const cache = loadCache(cacheName);
   const others = cacheName === 'rt' ? {} : loadCache('rt');
-  const stale = Date.now() - maxAgeDays * 864e5;
-  const deadline = Date.now() + budgetMin * 60e3;
-  // Up to date: read lately, from this address, since pages were read for the audience score too,
-  // and not misread in November 2026's break.
-  const upToDate = (c, t) => c && c.src === t.rt && c.at >= stale && (c.missing || c.mismatch || 'aud' in c) && !misread(c);
-  const todo = titles.filter((t) => t.rt && !upToDate(cache[t.id], t) && !upToDate(others[t.id], t));
+  const now = Date.now();
+  const deadline = now + budgetMin * 60e3;
+  const fresh = (c, t) => upToDate(c, t, now, { maxAgeDays, recentDays });
+  const todo = titles.filter((t) => t.rt && !fresh(cache[t.id], t) && !fresh(others[t.id], t));
   log(`rt: ${todo.length} of ${titles.length} due`);
   let done = 0, scored = 0, mismatch = 0;
   for (const t of todo) {
